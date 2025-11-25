@@ -998,45 +998,7 @@ src/components/RelatedCourses.tsx
 src/components/TemporaryMarketplaceNav.tsx                                 
 src/context/ProfileContext.tsx                                             
 src/hooks/useMediaItem.ts                                                  
-src/hooks/UseMediaSearch.ts                                                
-src/lib/apolloClient.ts                                                    
-src/services/analyticsAPI.ts                                               
-src/services/api.ts                                                        
-src/services/courses.ts                                                    
-src/services/enquiryQueries.ts                                             
-src/services/mapAPI.ts                                                     
-src/services/mutations.ts                                                  
-src/steps/GenericStep.tsx                                                  
-src/types/course.ts                                                        
-src/types/formData.ts                                                      
-src/types/marketplace.ts                                                   
-src/utils/gitexMockData.ts                                                 
-src/utils/mediaMappers.ts                                                  
-src/utils/stepConfig.tsx                                                   
-api/storage/delete/delete.ts                                               
-api/storage/upload/upload.ts                                               
-src/components/Button/Button.tsx                                           
-src/components/Button/index.tsx                                            
-src/components/common/ErrorState.tsx                                       
-src/components/common/LoadingState.tsx                                     
-src/components/discoverAbuDhabi/VideoModal.tsx                             
-src/components/DocumentWallet/DocumentSection.tsx                          
-src/components/Enquiry/Enquiry.tsx                                         
-src/components/Enquiry/styles.ts                                           
-src/components/marketplace/KnowledgeHubGrid.tsx                            
-src/components/marketplace/ServiceCard.tsx                                 
-src/components/marketplace/ServiceComparison.tsx                           
-src/components/marketplace/ServiceGrid.tsx                                 
-src/components/marketplace/ServiceQuickViewModal.tsx                       
-src/components/overview/DocumentSection.tsx                                
-src/components/overview/TableSection.tsx                                   
-src/components/overview/TabSection.tsx                                     
-src/components/serviceRequests/ServiceRequestsPage.tsx                     
-src/components/Header/components/CTAButtons.tsx                            
-src/components/discoverAbuDhabi/components/MapComponent/FullscreenMap.tsx  
-src/components/discoverAbuDhabi/components/MapComponent/index.tsx          
-src/components/discoverAbuDhabi/components/MapComponent/MapControls.tsx    
-src/components/discoverAbuDhabi/components/MapComponent/MinimizedMap.tsx   
+
 [93m[4mUnused dependencies[24m[39m (4)
 @hookform/resolvers  package.json:20:10
 formidable           package.json:30:10
