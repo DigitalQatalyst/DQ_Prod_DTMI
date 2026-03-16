@@ -174,6 +174,7 @@ export function Header({ "data-id": dataId }: HeaderProps) {
                     : "text-white/80 hover:text-primary-500"
                 }`}
               >
+                // cahenged
                 Company
               </Link>  */}
               {/* Research link hidden - feature/stage02-hide */}
