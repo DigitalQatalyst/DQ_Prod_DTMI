@@ -3,7 +3,7 @@ import { Navigate, useLocation } from "react-router-dom";
 import { useAuth } from "./Header";
 
 /**
- * Guards routes behind MSAL authentication.
+ * Guards routes behind authentication.
  *
  * - While auth state is being determined → renders null (prevents flash)
  * - If unauthenticated → redirects to "/" preserving the "from" location

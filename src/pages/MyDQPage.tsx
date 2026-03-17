@@ -16,8 +16,7 @@ const MyDQPage = () => {
   };
 
   const handleSignIn = () => {
-    // Trigger the actual login flow
-    // This will redirect to MSAL authentication
+    // Trigger the login flow
     login();
   };
 

@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import AppLayout from '../components/AppLayout';
 import { getInterviews, createInterview, updateInterviewStatus } from '../../services/interviewService';
-import { quickCreateTeamsMeeting, checkTeamsPermissions, requestTeamsPermissions } from '../../services/teamsIntegrationService';
 import type { Interview, InterviewStatus, InterviewType } from '../../types/admin';
 import {
   Calendar,
@@ -19,6 +18,14 @@ import {
   CalendarX,
   Sparkles,
 } from 'lucide-react';
+
+// Teams integration stubs — to be replaced when Supabase auth is implemented
+const checkTeamsPermissions = async () => ({ hasPermissions: false });
+const requestTeamsPermissions = async () => ({ success: false });
+const quickCreateTeamsMeeting = async (_name: string, _email: string, _date: string, _duration: number) => ({
+  meeting: null,
+  error: "Teams integration not available",
+});
 
 export default function InterviewScheduler() {
   const [interviews, setInterviews] = useState<Interview[]>([]);

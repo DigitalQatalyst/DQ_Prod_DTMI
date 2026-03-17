@@ -9,10 +9,10 @@ export const serviceFormRoutes: Record<string, string> = {
   "Net House Development Fund": "",
   "Pack House and Infrastructure Development": "",
   "Expansion Loan": "",
-  "Request to Cancel Loan": "/forms/cancel-loan",
+  "Request to Cancel Loan": "",
   "Release Collateral for the Funded Project Assets": "",
-  "Loan Amendment Service": "/forms/request-to-amend-existing-loan-details",
-  "SME Loan Disbursement": "/forms/disburse-approved-loan",
+  "Loan Amendment Service": "",
+  "SME Loan Disbursement": "",
 
   // Non-Financial Services
   "Supplier & Vendor Support Incentives": "",
@@ -21,7 +21,7 @@ export const serviceFormRoutes: Record<string, string> = {
   "Registration Fee Exemptions Incentives": "",
   "Trade Facilitation & Export Documentation": "",
   "Tax Compliance & Advisory": "",
-  "Khalifa Fund Membership Subscription": "/forms/request-for-membership",
+  "Khalifa Fund Membership Subscription": "",
 };
 
 // Helper function to get the edit route for a service

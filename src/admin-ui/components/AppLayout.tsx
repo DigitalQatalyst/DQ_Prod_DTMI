@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Header } from "../../components/Header";
-import { useAuth } from "../../components/Header/context/AuthContext";
 import {
   Home as HomeIcon,
   BookOpen as BookOpenIcon,
@@ -14,7 +13,6 @@ import {
   BarChart3 as BarChart3Icon,
   Calendar as CalendarIcon,
   Bell as BellIcon,
-  Lock as LockIcon,
 } from "lucide-react";
 
 interface AppLayoutProps {
@@ -38,7 +36,6 @@ type NavSection = {
 const AppLayout: React.FC<AppLayoutProps> = ({ children, title }) => {
   const location = useLocation();
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const { isAdmin, isCreator, isHRAdmin, isHRViewer } = useAuth();
 
   const allNavigationItems: NavSection[] = [
     {
@@ -136,29 +133,7 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children, title }) => {
     },
   ];
 
-  /**
-   * Determine whether the current user meets the minimum role requirement
-   * for a nav item.
-   */
-  const canSeeItem = (item: NavItem): boolean => {
-    if (!item.minRole) return true;
-    if (item.minRole === "creator" && isCreator()) return true;
-    if (item.minRole === "admin" && isAdmin()) return true;
-    if (item.minRole === "HR-Admin" && isHRAdmin()) return true;
-    if (item.minRole === "HR-viewer" && isHRViewer()) return true;
-    return false;
-  };
-
-  /**
-   * Filter nav sections: only include items the user can see.
-   * Sections with no visible items are omitted.
-   */
-  const visibleNavigationItems = allNavigationItems
-    .map((section) => ({
-      ...section,
-      items: section.items.filter(canSeeItem),
-    }))
-    .filter((section) => section.items.length > 0);
+  const visibleNavigationItems = allNavigationItems;
 
   return (
     <div className="min-h-screen bg-white">

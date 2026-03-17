@@ -82,10 +82,8 @@ export const Sidebar: React.FC<SidebarProps> = ({
 }) => {
   const [tooltipItem, setTooltipItem] = useState<string | null>(null);
   const [companyDropdownOpen, setCompanyDropdownOpen] = useState(false);
-  const [formsDropdownOpen, setFormsDropdownOpen] = useState(false);
   const [focusedMenuIndex, setFocusedMenuIndex] = useState(-1);
   const dropdownRef = useRef<HTMLDivElement>(null);
-  const formsDropdownRef = useRef<HTMLDivElement>(null);
   const menuItemsRef = useRef<(HTMLDivElement | null)[]>([]);
   const location = useLocation();
   const [activeSection, setActiveSection] = useState("dashboard");
@@ -103,12 +101,6 @@ export const Sidebar: React.FC<SidebarProps> = ({
       ) {
         setCompanyDropdownOpen(false);
       }
-      if (
-        formsDropdownRef.current &&
-        !formsDropdownRef.current.contains(event.target as Node)
-      ) {
-        setFormsDropdownOpen(false);
-      }
     };
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
@@ -125,10 +117,6 @@ export const Sidebar: React.FC<SidebarProps> = ({
         case "Escape":
           if (companyDropdownOpen) {
             setCompanyDropdownOpen(false);
-            return;
-          }
-          if (formsDropdownOpen) {
-            setFormsDropdownOpen(false);
             return;
           }
           onClose?.();
@@ -156,7 +144,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
       document.addEventListener("keydown", handleKeyDown);
       return () => document.removeEventListener("keydown", handleKeyDown);
     }
-  }, [isOpen, companyDropdownOpen, formsDropdownOpen, onClose]);
+  }, [isOpen, companyDropdownOpen, onClose]);
 
   if (!isLoggedIn) return null;
 
@@ -428,123 +416,6 @@ export const Sidebar: React.FC<SidebarProps> = ({
             </>
           );
 
-          // Special handling for Forms dropdown
-          if (item.id === "forms" && !isDisabled) {
-            return (
-              <div key={item.id} className="relative" ref={formsDropdownRef}>
-                <div
-                  className={`${baseClasses} cursor-pointer`}
-                  onClick={() => setFormsDropdownOpen(!formsDropdownOpen)}
-                >
-                  <span className="w-8 flex items-center justify-center flex-shrink-0">
-                    {item.icon}
-                  </span>
-                  <span className="flex-1 ml-3">{item.label}</span>
-                  <ChevronDown
-                    size={16}
-                    className={`text-gray-500 transition-transform ml-2 flex-shrink-0 ${
-                      formsDropdownOpen ? "rotate-180" : ""
-                    }`}
-                  />
-                </div>
-                <div
-                  className={`overflow-hidden transition-all duration-300 ease-in-out ${
-                    formsDropdownOpen
-                      ? "max-h-96 opacity-100"
-                      : "max-h-0 opacity-0"
-                  }`}
-                >
-                  <div className="transform transition-transform duration-300 ease-in-out max-h-80 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
-                    <Link
-                      to="/dashboard/forms/book-consultation-for-entrepreneurship"
-                      className="flex items-center px-4 py-3 pl-12 text-gray-600 hover:bg-gray-100 hover:text-gray-900 transition-colors duration-200"
-                      onClick={() => setFormsDropdownOpen(false)}
-                    >
-                      Book Consultation for Entrepreneurship
-                    </Link>
-                    <Link
-                      to="/dashboard/forms/collateral-user-guide"
-                      className="flex items-center px-4 py-3 pl-12 text-gray-600 hover:bg-gray-100 hover:text-gray-900 transition-colors duration-200"
-                      onClick={() => setFormsDropdownOpen(false)}
-                    >
-                      Collateral User Guide
-                    </Link>
-                    <Link
-                      to="/dashboard/forms/cancel-loan"
-                      className="flex items-center px-4 py-3 pl-12 text-gray-600 hover:bg-gray-100 hover:text-gray-900 transition-colors duration-200"
-                      onClick={() => setFormsDropdownOpen(false)}
-                    >
-                      Cancel Loan
-                    </Link>
-
-                    <Link
-                      to="/dashboard/forms/disburse-approved-loan"
-                      className="flex items-center px-4 py-3 pl-12 text-gray-600 hover:bg-gray-100 hover:text-gray-900 transition-colors duration-200"
-                      onClick={() => setFormsDropdownOpen(false)}
-                    >
-                      Disburse an Approved Loan
-                    </Link>
-                    <Link
-                      to="/dashboard/forms/facilitate-communication"
-                      className="flex items-center px-4 py-3 pl-12 text-gray-600 hover:bg-gray-100 hover:text-gray-900 transition-colors duration-200"
-                      onClick={() => setFormsDropdownOpen(false)}
-                    >
-                      Facilitate Communication
-                    </Link>
-                    <Link
-                      to="/dashboard/forms/issue-support-letter"
-                      className="flex items-center px-4 py-3 pl-12 text-gray-600 hover:bg-gray-100 hover:text-gray-900 transition-colors duration-200"
-                      onClick={() => setFormsDropdownOpen(false)}
-                    >
-                      Issue Support Letter
-                    </Link>
-                    <Link
-                      to="/dashboard/forms/needs-assessment-form"
-                      className="flex items-center px-4 py-3 pl-12 text-gray-600 hover:bg-gray-100 hover:text-gray-900 transition-colors duration-200"
-                      onClick={() => setFormsDropdownOpen(false)}
-                    >
-                      Needs Assessment Form
-                    </Link>
-                    <Link
-                      to="/dashboard/forms/reallocation-of-loan-disbursement"
-                      className="flex items-center px-4 py-3 pl-12 text-gray-600 hover:bg-gray-100 hover:text-gray-900 transition-colors duration-200"
-                      onClick={() => setFormsDropdownOpen(false)}
-                    >
-                      Reallocation of Loan Disbursement
-                    </Link>
-                    <Link
-                      to="/dashboard/forms/request-for-funding"
-                      className="flex items-center px-4 py-3 pl-12 text-gray-600 hover:bg-gray-100 hover:text-gray-900 transition-colors duration-200"
-                      onClick={() => setFormsDropdownOpen(false)}
-                    >
-                      Request For Funding
-                    </Link>
-                    <Link
-                      to="/dashboard/forms/request-for-membership"
-                      className="flex items-center px-4 py-3 pl-12 text-gray-600 hover:bg-gray-100 hover:text-gray-900 transition-colors duration-200"
-                      onClick={() => setFormsDropdownOpen(false)}
-                    >
-                      Request for Membership
-                    </Link>
-                    <Link
-                      to="/dashboard/forms/request-to-amend-existing-loan-details"
-                      className="flex items-center px-4 py-3 pl-12 text-gray-600 hover:bg-gray-100 hover:text-gray-900 transition-colors duration-200"
-                      onClick={() => setFormsDropdownOpen(false)}
-                    >
-                      Request to Amend Existing Loan Details
-                    </Link>
-                    <Link
-                      to="/dashboard/forms/training-in-entrepreneurship"
-                      className="flex items-center px-4 py-3 pl-12 text-gray-600 hover:bg-gray-100 hover:text-gray-900 transition-colors duration-200"
-                      onClick={() => setFormsDropdownOpen(false)}
-                    >
-                      Training in Entrepreneurship
-                    </Link>
-                  </div>
-                </div>
-              </div>
-            );
-          }
 
           if (item.href && !isDisabled) {
             return item.external ? (
