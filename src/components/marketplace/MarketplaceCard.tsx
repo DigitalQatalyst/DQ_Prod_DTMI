@@ -1,6 +1,6 @@
-import React from 'react';
-import { useNavigate } from 'react-router-dom';
-import { getMarketplaceConfig } from '../../utils/marketplaceConfig';
+import React from "react";
+import { useNavigate } from "react-router-dom";
+import { getMarketplaceConfig } from "../../utils/marketplaceConfig";
 
 export interface MarketplaceItemProps {
   item: {
@@ -22,7 +22,7 @@ export interface MarketplaceItemProps {
 
 export const MarketplaceCard: React.FC<MarketplaceItemProps> = ({
   item,
-  marketplaceType
+  marketplaceType,
 }) => {
   const navigate = useNavigate();
   const config = getMarketplaceConfig(marketplaceType);
@@ -34,7 +34,18 @@ export const MarketplaceCard: React.FC<MarketplaceItemProps> = ({
 
   const handleViewDetails = (e: React.MouseEvent) => {
     e.stopPropagation();
-    console.log('View Details Clicked - Navigating to:', getItemRoute());
+
+    // For books and items with detailsUrl, use that instead of the default route
+    if (item.detailsUrl) {
+      console.log(
+        "View Details Clicked - Navigating to detailsUrl:",
+        item.detailsUrl,
+      );
+      navigate(item.detailsUrl);
+      return;
+    }
+
+    console.log("View Details Clicked - Navigating to:", getItemRoute());
     navigate(getItemRoute());
   };
 
@@ -42,31 +53,45 @@ export const MarketplaceCard: React.FC<MarketplaceItemProps> = ({
   const handlePrimaryAction = (e: React.MouseEvent) => {
     e.stopPropagation();
     // Log item details for debugging
-    console.log('Primary Action Clicked:', {
+    console.log("Primary Action Clicked:", {
       itemId: item.id,
       itemTitle: item.title,
       formUrl: item.formUrl,
+      detailsUrl: item.detailsUrl,
+      mediaType: item.mediaType,
       marketplaceType,
     });
+
+    // For books, navigate to the book page (same as view details)
+    if (item.mediaType === "Books" || item.filterType === "Books") {
+      const bookUrl = item.detailsUrl || item.bookUrl || "/books";
+      console.log("Book Primary Action - Navigating to:", bookUrl);
+      navigate(bookUrl);
+      return;
+    }
+
     // Apply external fallback if formUrl is null/falsy
     const effectiveUrl = item.formUrl || "https://www.tamm.abudhabi/en/login";
     // Handle external: open in new tab
-    if (effectiveUrl.startsWith('http')) {
-      window.open(effectiveUrl, '_blank', 'noopener,noreferrer');
-      console.log('Opening external URL:', effectiveUrl);
+    if (effectiveUrl.startsWith("http")) {
+      window.open(effectiveUrl, "_blank", "noopener,noreferrer");
+      console.log("Opening external URL:", effectiveUrl);
       return;
     }
     // Internal route: normalize with /forms/ prefix if needed
-    const targetUrl = effectiveUrl.startsWith('/forms/') ? effectiveUrl : `/forms/${effectiveUrl}`;
-    console.log('Navigating to internal route:', targetUrl);
+    const targetUrl = effectiveUrl.startsWith("/forms/")
+      ? effectiveUrl
+      : `/forms/${effectiveUrl}`;
+    console.log("Navigating to internal route:", targetUrl);
     navigate(targetUrl);
   };
 
   // Display tags if available, otherwise use category and deliveryMode
-  const displayTags = item.tags || [item.category, item.deliveryMode].filter(Boolean);
+  const displayTags =
+    item.tags || [item.category, item.deliveryMode].filter(Boolean);
 
   // Log item props on render to verify formUrl presence
-  console.log('MarketplaceCard Rendered:', {
+  console.log("MarketplaceCard Rendered:", {
     itemId: item.id,
     itemTitle: item.title,
     formUrl: item.formUrl,
@@ -74,9 +99,7 @@ export const MarketplaceCard: React.FC<MarketplaceItemProps> = ({
   });
 
   return (
-    <div
-      className="flex flex-col min-h-[340px] bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-200"
-    >
+    <div className="flex flex-col min-h-[340px] bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-200">
       {/* Card Header with fixed height for title and provider */}
       <div className="px-4 py-5 flex-grow flex flex-col">
         <div className="flex items-start mb-5">
@@ -85,7 +108,11 @@ export const MarketplaceCard: React.FC<MarketplaceItemProps> = ({
               {item.title}
             </h3>
             <p className="text-sm text-gray-500 min-h-[20px] mt-1">
-              {item.content_type || item.mediaType || (typeof item.provider === 'string' ? item.provider : item.provider.name)}
+              {item.content_type ||
+                item.mediaType ||
+                (typeof item.provider === "string"
+                  ? item.provider
+                  : item.provider.name)}
             </p>
           </div>
         </div>
@@ -98,9 +125,14 @@ export const MarketplaceCard: React.FC<MarketplaceItemProps> = ({
         {/* Tags and Actions in same row - fixed position */}
         <div className="flex justify-between items-center mt-auto">
           <div className="flex flex-wrap gap-1 max-w-[70%]">
-            {displayTags.map((tag, index) => <span key={index} className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium truncate ${index === 0 ? 'bg-blue-50 text-blue-700 border border-blue-100' : 'bg-green-50 text-green-700 border border-green-100'}`}>
+            {displayTags.map((tag, index) => (
+              <span
+                key={index}
+                className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium truncate ${index === 0 ? "bg-blue-50 text-blue-700 border border-blue-100" : "bg-green-50 text-green-700 border border-green-100"}`}
+              >
                 {tag}
-              </span>)}
+              </span>
+            ))}
           </div>
         </div>
       </div>

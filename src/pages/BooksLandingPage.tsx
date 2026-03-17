@@ -32,251 +32,76 @@ const BooksLandingPage = () => {
             <div className="grid lg:grid-cols-2 gap-12 items-center">
               {/* Left side - Content */}
               <div>
+                <div className="mb-6">
+                  <span className="bg-primary-500 text-white text-sm font-bold px-4 py-2 rounded-full mb-4 inline-block">
+                    The First Ever Comprehensive Guide to Digital Transformation
+                  </span>
+                </div>
                 <h1 className="text-4xl md:text-6xl font-bold mb-6">
-                  6xD - The Six Digital Perspectives
+                  Introducing 6xD – The Six Digital Perspectives
                 </h1>
                 <p className="text-xl md:text-2xl text-blue-100 mb-8 leading-relaxed">
-                  A comprehensive framework for understanding and navigating
-                  digital transformation through six critical perspectives
+                  Dr. Stéphane Niango's groundbreaking blueprint for building
+                  Digital Cognitive Organizations in the Age of AI.
                 </p>
-                <div className="flex flex-col sm:flex-row gap-4">
+
+                <div className="relative group">
                   <button
                     onClick={() => window.open("https://amazon.com", "_blank")}
                     className="bg-primary-500 hover:bg-primary-600 text-white px-8 py-4 rounded-lg font-semibold text-lg transition-all duration-200 shadow-lg"
                   >
-                    Buy on Amazon
+                    Pre-order Now
                   </button>
-                  <button
-                    onClick={() =>
-                      document
-                        .getElementById("featured-books")
-                        ?.scrollIntoView({ behavior: "smooth" })
-                    }
-                    className="border-2 border-white text-white hover:bg-white hover:text-brand-navy px-8 py-4 rounded-lg font-semibold text-lg transition-all duration-200"
-                  >
-                    Explore Books
-                  </button>
+
+                  {/* Hover tooltip */}
+                  <div className="absolute bottom-full left-0 mb-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
+                    <div className="bg-gray-900 text-white px-4 py-3 rounded-lg shadow-xl border border-gray-700 whitespace-nowrap">
+                      <div className="flex items-center mb-1">
+                        <span className="text-lg mr-2">🚀</span>
+                        <span className="font-bold text-yellow-300">
+                          Limited Pre-order Offer Available!
+                        </span>
+                      </div>
+                      <p className="text-sm text-gray-300">
+                        Be one of the first to experience this revolutionary
+                        guide.
+                      </p>
+                      {/* Arrow pointing down */}
+                      <div className="absolute top-full left-4 w-0 h-0 border-l-4 border-r-4 border-t-4 border-l-transparent border-r-transparent border-t-gray-900"></div>
+                    </div>
+                  </div>
                 </div>
               </div>
 
               {/* Right side - Book Cover Mockup */}
               <div className="flex justify-center">
-                <div className="relative" style={{ perspective: "1000px" }}>
-                  {/* Book Mockup with Realistic 3D Effect and Rotation */}
-                  <div
-                    className="relative w-80 h-96 transform hover:scale-105 transition-all duration-300 animate-pulse"
-                    style={{
-                      transformStyle: "preserve-3d",
-                      transform: "rotateY(-10deg) rotateX(5deg)",
-                      animation: "bookRotate 8s ease-in-out infinite",
-                    }}
-                  >
+                <div className="relative">
+                  {/* Book Mockup - Static Design */}
+                  <div className="relative w-80 h-96 hover:scale-105 transition-all duration-300">
                     {/* Book Shadow */}
-                    <div className="absolute -bottom-8 -right-8 w-80 h-96 bg-black opacity-20 rounded-lg blur-2xl transform translate-x-8 translate-y-8 -z-10"></div>
+                    <div className="absolute -bottom-4 -right-4 w-80 h-96 bg-black opacity-20 rounded-lg blur-xl transform translate-x-4 translate-y-4 -z-10"></div>
 
-                    {/* Book Spine with Hero Gradient */}
-                    <div
-                      className="absolute -right-3 top-0 w-6 h-96 bg-gradient-to-br from-brand-navy via-brand-navy to-blue-900 rounded-r-lg"
-                      style={{ transform: "rotateY(90deg) translateZ(3px)" }}
-                    ></div>
-
-                    {/* Main Book Cover with Hero Gradient Background */}
-                    <div className="relative w-80 h-96 rounded-lg overflow-hidden shadow-2xl bg-gradient-to-br from-brand-navy via-brand-navy to-blue-900">
+                    {/* Main Book Cover */}
+                    <div className="relative w-80 h-96 rounded-lg overflow-hidden shadow-2xl">
                       <img
-                        src="/book cover/Untitled design (5).png"
+                        src="/book cover/Untitled_design__5_-removebg-preview.png"
                         alt="6xD - The Six Digital Perspectives by Dr. Stéphane Niango"
-                        className="w-full h-full object-cover"
+                        className="w-full h-full object-contain bg-white"
                       />
-
-                      {/* Realistic book shine/reflection */}
-                      <div className="absolute inset-0 bg-gradient-to-br from-white/10 via-transparent to-black/5 pointer-events-none"></div>
                     </div>
                   </div>
                 </div>
-              </div>
-
-              {/* CSS Animation for Book Rotation */}
-              <style jsx>{`
-                @keyframes bookRotate {
-                  0%,
-                  100% {
-                    transform: rotateY(-10deg) rotateX(5deg);
-                  }
-                  25% {
-                    transform: rotateY(-5deg) rotateX(3deg);
-                  }
-                  50% {
-                    transform: rotateY(-15deg) rotateX(7deg);
-                  }
-                  75% {
-                    transform: rotateY(-8deg) rotateX(4deg);
-                  }
-                }
-              `}</style>
-            </div>
-          </div>
-        </section>
-        {/* Featured Books Section */}
-        <section id="featured-books" className="py-16 bg-white">
-          <div className="container mx-auto px-4 md:px-6">
-            <div className="flex items-center justify-between mb-12">
-              <div>
-                <div className="flex items-center mb-4">
-                  <div className="w-4 h-4 bg-emerald-600 rounded-full mr-3"></div>
-                  <span className="text-sm font-bold text-emerald-600 uppercase tracking-wider">
-                    Featured Books
-                  </span>
-                </div>
-                <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-                  Essential Reading
-                </h2>
-              </div>
-            </div>
-
-            {/* Books Grid */}
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {/* Book 1 */}
-              <div className="bg-white border border-gray-200 rounded-xl p-6 hover:shadow-lg transition-shadow">
-                <div className="h-64 bg-gradient-to-br from-blue-100 to-indigo-100 rounded-lg mb-6 flex items-center justify-center">
-                  <div className="text-center text-gray-600">
-                    <div className="w-12 h-12 mx-auto mb-2 bg-blue-600 rounded-lg flex items-center justify-center">
-                      <svg
-                        className="w-6 h-6 text-white"
-                        fill="currentColor"
-                        viewBox="0 0 20 20"
-                      >
-                        <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                      </svg>
-                    </div>
-                    <p className="text-sm font-medium">Book Cover</p>
-                  </div>
-                </div>
-                <h3 className="text-xl font-bold text-gray-900 mb-3">
-                  Digital Transformation Playbook
-                </h3>
-                <p className="text-gray-600 mb-4 text-sm">
-                  A comprehensive guide to leading successful digital
-                  transformation initiatives in modern organizations.
-                </p>
-                <div className="flex items-center justify-between mb-4">
-                  <span className="text-sm text-gray-500">Available Now</span>
-                  <div className="flex text-yellow-400">
-                    {[...Array(5)].map((_, i) => (
-                      <svg
-                        key={i}
-                        className="w-4 h-4 fill-current"
-                        viewBox="0 0 20 20"
-                      >
-                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                      </svg>
-                    ))}
-                  </div>
-                </div>
-                <button
-                  onClick={() => window.open("https://amazon.com", "_blank")}
-                  className="w-full bg-emerald-600 hover:bg-emerald-700 text-white py-3 rounded-lg font-semibold transition-colors"
-                >
-                  Buy on Amazon
-                </button>
-              </div>
-
-              {/* Book 2 */}
-              <div className="bg-white border border-gray-200 rounded-xl p-6 hover:shadow-lg transition-shadow">
-                <div className="h-64 bg-gradient-to-br from-purple-100 to-pink-100 rounded-lg mb-6 flex items-center justify-center">
-                  <div className="text-center text-gray-600">
-                    <div className="w-12 h-12 mx-auto mb-2 bg-purple-600 rounded-lg flex items-center justify-center">
-                      <svg
-                        className="w-6 h-6 text-white"
-                        fill="currentColor"
-                        viewBox="0 0 20 20"
-                      >
-                        <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                      </svg>
-                    </div>
-                    <p className="text-sm font-medium">Book Cover</p>
-                  </div>
-                </div>
-                <h3 className="text-xl font-bold text-gray-900 mb-3">
-                  AI Leadership in the Digital Age
-                </h3>
-                <p className="text-gray-600 mb-4 text-sm">
-                  Strategic insights on leveraging artificial intelligence for
-                  competitive advantage and organizational growth.
-                </p>
-                <div className="flex items-center justify-between mb-4">
-                  <span className="text-sm text-gray-500">Pre-order</span>
-                  <span className="text-sm text-purple-600 font-medium">
-                    Coming Soon
-                  </span>
-                </div>
-                <button
-                  onClick={() => window.open("https://amazon.com", "_blank")}
-                  className="w-full bg-purple-600 hover:bg-purple-700 text-white py-3 rounded-lg font-semibold transition-colors"
-                >
-                  Pre-order on Amazon
-                </button>
-              </div>
-
-              {/* Book 3 */}
-              <div className="bg-white border border-gray-200 rounded-xl p-6 hover:shadow-lg transition-shadow">
-                <div className="h-64 bg-gradient-to-br from-orange-100 to-red-100 rounded-lg mb-6 flex items-center justify-center">
-                  <div className="text-center text-gray-600">
-                    <div className="w-12 h-12 mx-auto mb-2 bg-orange-600 rounded-lg flex items-center justify-center">
-                      <svg
-                        className="w-6 h-6 text-white"
-                        fill="currentColor"
-                        viewBox="0 0 20 20"
-                      >
-                        <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                      </svg>
-                    </div>
-                    <p className="text-sm font-medium">Book Cover</p>
-                  </div>
-                </div>
-                <h3 className="text-xl font-bold text-gray-900 mb-3">
-                  The Future of Work
-                </h3>
-                <p className="text-gray-600 mb-4 text-sm">
-                  Exploring how digital transformation is reshaping workplace
-                  dynamics and employee experiences.
-                </p>
-                <div className="flex items-center justify-between mb-4">
-                  <span className="text-sm text-gray-500">Available Now</span>
-                  <div className="flex text-yellow-400">
-                    {[...Array(4)].map((_, i) => (
-                      <svg
-                        key={i}
-                        className="w-4 h-4 fill-current"
-                        viewBox="0 0 20 20"
-                      >
-                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                      </svg>
-                    ))}
-                    <svg
-                      className="w-4 h-4 text-gray-300 fill-current"
-                      viewBox="0 0 20 20"
-                    >
-                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                    </svg>
-                  </div>
-                </div>
-                <button
-                  onClick={() => window.open("https://amazon.com", "_blank")}
-                  className="w-full bg-orange-600 hover:bg-orange-700 text-white py-3 rounded-lg font-semibold transition-colors"
-                >
-                  Buy on Amazon
-                </button>
               </div>
             </div>
           </div>
         </section>
         {/* About the Author Section */}
-        <section className="py-16 bg-gray-50">
+        <section id="about-author" className="py-16 bg-gray-50">
           <div className="container mx-auto px-4 md:px-6">
             <div className="max-w-4xl mx-auto">
               <div className="text-center mb-12">
                 <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-                  About the Author
+                  About the Author – Dr. Stéphane Niango
                 </h2>
               </div>
 
@@ -292,49 +117,96 @@ const BooksLandingPage = () => {
                 </div>
 
                 <div>
-                  <h3 className="text-2xl font-bold text-gray-900 mb-4">
+                  <h3 className="text-2xl font-bold text-gray-900 mb-2">
                     Dr. Stéphane Niango
                   </h3>
-                  <p className="text-gray-600 mb-6 leading-relaxed">
-                    With over 15 years of experience in digital transformation
-                    consulting, Dr. Stéphane Niango has helped Fortune 500
-                    companies navigate complex technological changes and achieve
-                    sustainable growth. A recognized thought leader in the
-                    industry, he has spoken at major conferences worldwide and
-                    contributed to numerous publications on digital innovation.
+                  <p className="text-lg text-primary-600 font-semibold mb-6">
+                    Architect of the Digital Cognitive Organization
+                  </p>
+                  <p className="text-gray-600 mb-8 leading-relaxed">
+                    Dr. Stéphane Niango is a leading authority on AI integration
+                    and the creator of the 6xD framework—a definitive blueprint
+                    for navigating digital disruption. With 15+ years of
+                    experience, he transforms traditional enterprises into
+                    agile, AI-driven powerhouses.
                   </p>
 
-                  <div className="space-y-3">
-                    <div className="flex items-center text-gray-600">
-                      <svg
-                        className="w-5 h-5 mr-3 text-emerald-600"
-                        fill="currentColor"
-                        viewBox="0 0 20 20"
-                      >
-                        <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                      </svg>
-                      15+ years in digital transformation
+                  <div className="mb-8">
+                    <h4 className="text-lg font-bold text-gray-900 mb-4">
+                      Core Expertise
+                    </h4>
+                    <div className="space-y-3">
+                      <div className="flex items-start">
+                        <svg
+                          className="w-5 h-5 mr-3 text-emerald-600 mt-0.5 flex-shrink-0"
+                          fill="currentColor"
+                          viewBox="0 0 20 20"
+                        >
+                          <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        <div>
+                          <span className="font-semibold text-gray-900">
+                            Strategic Consulting:
+                          </span>
+                          <span className="text-gray-600">
+                            {" "}
+                            Trusted advisor to 100+ Fortune 500 leaders on AI
+                            adoption and innovation.
+                          </span>
+                        </div>
+                      </div>
+                      <div className="flex items-start">
+                        <svg
+                          className="w-5 h-5 mr-3 text-emerald-600 mt-0.5 flex-shrink-0"
+                          fill="currentColor"
+                          viewBox="0 0 20 20"
+                        >
+                          <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        <div>
+                          <span className="font-semibold text-gray-900">
+                            The 6xD Framework:
+                          </span>
+                          <span className="text-gray-600">
+                            {" "}
+                            Architect of a proven methodology that scales
+                            cognitive technologies across global industries.
+                          </span>
+                        </div>
+                      </div>
+                      <div className="flex items-start">
+                        <svg
+                          className="w-5 h-5 mr-3 text-emerald-600 mt-0.5 flex-shrink-0"
+                          fill="currentColor"
+                          viewBox="0 0 20 20"
+                        >
+                          <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        <div>
+                          <span className="font-semibold text-gray-900">
+                            Future of Work:
+                          </span>
+                          <span className="text-gray-600">
+                            {" "}
+                            A premier global keynote speaker helping
+                            organizations thrive in an increasingly automated
+                            economy.
+                          </span>
+                        </div>
+                      </div>
                     </div>
-                    <div className="flex items-center text-gray-600">
-                      <svg
-                        className="w-5 h-5 mr-3 text-emerald-600"
-                        fill="currentColor"
-                        viewBox="0 0 20 20"
-                      >
-                        <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                      </svg>
-                      Consulted for 100+ Fortune 500 companies
-                    </div>
-                    <div className="flex items-center text-gray-600">
-                      <svg
-                        className="w-5 h-5 mr-3 text-emerald-600"
-                        fill="currentColor"
-                        viewBox="0 0 20 20"
-                      >
-                        <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                      </svg>
-                      International keynote speaker
-                    </div>
+                  </div>
+
+                  <div className="bg-white p-6 rounded-lg border-l-4 border-primary-500">
+                    <h4 className="text-lg font-bold text-gray-900 mb-2">
+                      The Bottom Line
+                    </h4>
+                    <p className="text-gray-600">
+                      Dr. Niango bridges the gap between complex AI research and
+                      actionable business growth. His mission is to build
+                      sustainable, "cognitive" frameworks that don't just
+                      survive digital shifts—they lead them.
+                    </p>
                   </div>
                 </div>
               </div>
@@ -347,13 +219,13 @@ const BooksLandingPage = () => {
           <div className="container mx-auto px-4 md:px-6">
             <div className="text-center mb-12">
               <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-                What Readers Say
+                What Readers Are Saying About 6xD
               </h2>
             </div>
 
-            <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
-              <div className="bg-gray-50 p-6 rounded-xl">
-                <div className="flex text-yellow-400 mb-4">
+            <div className="grid md:grid-cols-3 gap-12 max-w-7xl mx-auto">
+              <div className="bg-gray-50 p-8 rounded-xl">
+                <div className="flex text-yellow-400 mb-6">
                   {[...Array(5)].map((_, i) => (
                     <svg
                       key={i}
@@ -364,18 +236,20 @@ const BooksLandingPage = () => {
                     </svg>
                   ))}
                 </div>
-                <p className="text-gray-600 mb-4 italic">
+                <p className="text-gray-600 mb-6 italic text-lg leading-relaxed">
                   "This book transformed how we approach digital initiatives.
                   The practical frameworks are invaluable for any leader."
                 </p>
                 <div className="text-sm">
-                  <p className="font-semibold text-gray-900">Sarah Johnson</p>
+                  <p className="font-semibold text-gray-900 text-base">
+                    Sarah Johnson
+                  </p>
                   <p className="text-gray-500">CTO, Tech Innovations Inc.</p>
                 </div>
               </div>
 
-              <div className="bg-gray-50 p-6 rounded-xl">
-                <div className="flex text-yellow-400 mb-4">
+              <div className="bg-gray-50 p-8 rounded-xl">
+                <div className="flex text-yellow-400 mb-6">
                   {[...Array(5)].map((_, i) => (
                     <svg
                       key={i}
@@ -386,21 +260,23 @@ const BooksLandingPage = () => {
                     </svg>
                   ))}
                 </div>
-                <p className="text-gray-600 mb-4 italic">
+                <p className="text-gray-600 mb-6 italic text-lg leading-relaxed">
                   "Clear, actionable insights backed by real-world experience. A
                   must-read for digital transformation professionals."
                 </p>
                 <div className="text-sm">
-                  <p className="font-semibold text-gray-900">Michael Chen</p>
+                  <p className="font-semibold text-gray-900 text-base">
+                    Michael Chen
+                  </p>
                   <p className="text-gray-500">
                     VP Digital Strategy, Global Corp
                   </p>
                 </div>
               </div>
 
-              <div className="bg-gray-50 p-6 rounded-xl">
-                <div className="flex text-yellow-400 mb-4">
-                  {[...Array(4)].map((_, i) => (
+              <div className="bg-gray-50 p-8 rounded-xl">
+                <div className="flex text-yellow-400 mb-6">
+                  {[...Array(5)].map((_, i) => (
                     <svg
                       key={i}
                       className="w-5 h-5 fill-current"
@@ -409,19 +285,15 @@ const BooksLandingPage = () => {
                       <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
                     </svg>
                   ))}
-                  <svg
-                    className="w-5 h-5 text-gray-300 fill-current"
-                    viewBox="0 0 20 20"
-                  >
-                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                  </svg>
                 </div>
-                <p className="text-gray-600 mb-4 italic">
+                <p className="text-gray-600 mb-6 italic text-lg leading-relaxed">
                   "Excellent resource for understanding the complexities of
                   modern digital transformation challenges."
                 </p>
                 <div className="text-sm">
-                  <p className="font-semibold text-gray-900">Emily Rodriguez</p>
+                  <p className="font-semibold text-gray-900 text-base">
+                    Emily Rodriguez
+                  </p>
                   <p className="text-gray-500">
                     Director of Innovation, StartupXYZ
                   </p>
@@ -450,7 +322,7 @@ const BooksLandingPage = () => {
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder="Enter your email address"
+                  placeholder="Enter your email to subscribe"
                   required
                   className="flex-1 px-4 py-3 rounded-lg text-gray-900 focus:ring-2 focus:ring-primary-500 focus:outline-none"
                 />
@@ -470,7 +342,7 @@ const BooksLandingPage = () => {
           </div>
         </section>
 
-        {/* Cross-promotion Section */}
+        {/* Explore More Resources Section */}
         <section className="py-16 bg-gray-50">
           <div className="container mx-auto px-4 md:px-6">
             <div className="text-center mb-12">
@@ -494,8 +366,8 @@ const BooksLandingPage = () => {
                   Insights
                 </h3>
                 <p className="text-gray-600 mb-6">
-                  Expert perspectives and actionable intelligence on digital
-                  transformation trends
+                  Explore expert perspectives and actionable intelligence on
+                  digital transformation trends.
                 </p>
                 <button
                   onClick={() => navigate("/insights")}
@@ -519,8 +391,8 @@ const BooksLandingPage = () => {
                   Research
                 </h3>
                 <p className="text-gray-600 mb-6">
-                  Comprehensive research reports and strategic analysis for
-                  informed decision-making
+                  Discover comprehensive research reports and strategic analysis
+                  for informed decision-making.
                 </p>
                 <button
                   onClick={() => navigate("/research")}
@@ -545,7 +417,7 @@ const BooksLandingPage = () => {
                 </h3>
                 <p className="text-gray-600 mb-6">
                   Early indicators and trend alerts to help you stay ahead of
-                  the curve
+                  the curve.
                 </p>
                 <button
                   onClick={() => navigate("/signals")}
@@ -559,7 +431,6 @@ const BooksLandingPage = () => {
         </section>
 
         {/* DTMI Footer */}
-        
       </main>
 
       <DTMIFooter />
