@@ -5,7 +5,7 @@ import { Footer } from "../../shared/Footer/Footer";
 import { FeaturedInsights } from "./components/FeaturedInsights";
 import { SectorInsights } from "./components/SectorInsights";
 import { NewsletterSignupForm } from "./components/NewsletterSignupForm";
-import { DTMIPageFooter } from "../../pages/dtmi/components/DTMIPageFooter";
+import { DTMIPageFooter } from "./components/DTMIPageFooter";
 import { DigitalPerspectives } from "./components/DigitalPerspectives";
 import { FeaturedBlogs } from "./components/FeaturedBlogs";
 import { DigitalDomains } from "./components/DigitalDomains";

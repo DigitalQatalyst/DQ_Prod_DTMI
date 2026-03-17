@@ -2,10 +2,10 @@ import { Calendar, Clock, User, TrendingUp, Target, DollarSign, Users, Mail, Lin
 import { motion, useInView, useAnimation } from 'framer-motion';
 import React, { useRef, useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { Header } from '../shared/Header/Header';
-import { Footer } from '../shared/Footer/Footer';
-import { NewsletterSubscription } from '../shared/NewsletterSubscription';
-import { blogService } from '../features/admin/shared/utils/supabase';
+import { Header } from '../../../shared/Header/Header';
+import { Footer } from '../../../shared/Footer/Footer';
+import { NewsletterSubscription } from '../../../shared/NewsletterSubscription';
+import { blogService } from '../../admin/shared/utils/supabase';
 
 // Add CSS styles for links in dangerouslySetInnerHTML content
 const linkStyles = `

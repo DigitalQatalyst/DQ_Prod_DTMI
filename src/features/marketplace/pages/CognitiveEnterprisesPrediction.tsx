@@ -2,8 +2,8 @@ import React from 'react';
 import { Calendar, Clock, User, TrendingUp, Target, DollarSign, Users, Share2, Download, Bookmark, Building2, Cpu, Briefcase, ArrowRight, Zap, AlertTriangle } from 'lucide-react';
 import { motion, useInView, useAnimation } from 'framer-motion';
 import { useRef, useEffect, useState } from 'react';
-import { Header } from '../shared/Header/Header';
-import { Footer } from '../shared/Footer/Footer';
+import { Header } from '../../../shared/Header/Header';
+import { Footer } from '../../../shared/Footer/Footer';
 
 // Add CSS styles for links in dangerouslySetInnerHTML content
 const linkStyles = `

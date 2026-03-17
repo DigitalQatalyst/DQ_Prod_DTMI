@@ -4,11 +4,11 @@ import { MarketplacePage } from './pages/MarketplacePage';
 import { SimpleMarketplacePage } from './pages/SimpleMarketplacePage';
 import MarketplaceDetailsPage from './pages/MarketplaceDetailsPage';
 import ServiceDetailPage from './pages/ServiceDetailPage';
-import PredictionAnalysisDetail from '../../pages/PredictionAnalysisDetail';
-import ContentGovernancePrediction from '../../pages/ContentGovernancePrediction';
-import AIDecisionMakingPrediction from '../../pages/AIDecisionMakingPrediction';
-import CognitiveEnterprisesPrediction from '../../pages/CognitiveEnterprisesPrediction';
-import DynamicPredictionAnalysis from '../../pages/DynamicPredictionAnalysis';
+import PredictionAnalysisDetail from './pages/PredictionAnalysisDetail';
+import ContentGovernancePrediction from './pages/ContentGovernancePrediction';
+import AIDecisionMakingPrediction from './pages/AIDecisionMakingPrediction';
+import CognitiveEnterprisesPrediction from './pages/CognitiveEnterprisesPrediction';
+import DynamicPredictionAnalysis from './pages/DynamicPredictionAnalysis';
 
 import { DollarSign, Briefcase, Calendar, BookOpen } from 'lucide-react';
 import { getMarketplaceConfig } from '../../utils/marketplaceConfig';
