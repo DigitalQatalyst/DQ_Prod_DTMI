@@ -5,7 +5,6 @@ import { Footer } from "../../shared/Footer/Footer";
 import { FeaturedInsights } from "./components/FeaturedInsights";
 import { SectorInsights } from "./components/SectorInsights";
 import { NewsletterSignupForm } from "./components/NewsletterSignupForm";
-import { DTMIPageFooter } from "./components/DTMIPageFooter";
 import { DigitalPerspectives } from "./components/DigitalPerspectives";
 import { FeaturedBlogs } from "./components/FeaturedBlogs";
 import { DigitalDomains } from "./components/DigitalDomains";
@@ -18,7 +17,6 @@ import { SignalsContent } from "../dtmi/content-tabs/SignalsContent";
 import { InsightsContent } from "../dtmi/content-tabs/InsightsContent";
 import { DeepAnalysisContent } from "../dtmi/content-tabs/DeepAnalysisContent";
 import { PredictionAnalysis } from "./components/PredictionAnalysis";
-import { Footer } from "../../shared/Footer/Footer";
 
 type TabType = "default" | "signals" | "insights" | "deep-analysis";
 
