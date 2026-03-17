@@ -1,5 +1,5 @@
 import { Header } from "../components/Header/Header";
-import { DTMIFooter } from "./dtmi/components/DTMIFooter";
+import { DTMIFooter } from "../features/landing/components/DTMIFooter";
 import { useNavigate } from "react-router-dom";
 import ModernDQChatbot from "../components/ModernDQChatbot";
 import { useState } from "react";

@@ -5,7 +5,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { Header } from '../components/Header/Header';
 import { Footer } from '../components/Footer/Footer';
 import { NewsletterSubscription } from '../components/NewsletterSubscription';
-import { blogService } from '../admin-ui/utils/supabase';
+import { blogService } from '../features/admin/shared/utils/supabase';
 
 // Add CSS styles for links in dangerouslySetInnerHTML content
 const linkStyles = `

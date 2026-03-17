@@ -2,7 +2,7 @@ import {
   getKnowledgeHubItems,
   mockKnowledgeHubItems,
 } from "../utils/mockMarketplaceData";
-import { getSupabase } from "../admin-ui/utils/supabaseClient";
+import { getSupabase } from "../features/admin/shared/utils/supabaseClient";
 
 export type GridCursor = {
   p: string; // published_at ISO

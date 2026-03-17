@@ -1,4 +1,4 @@
-import { PortableTextBlock } from '../api/types';
+import { PortableTextBlock } from '../../../features/dtmi/articles/api/types';
 
 interface PortableTextRendererProps {
   blocks: PortableTextBlock[];

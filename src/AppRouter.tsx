@@ -3,11 +3,11 @@ import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import { CourseType } from "./types/course";
 import { AuthProvider } from "./components/Header/context/AuthContext";
 import { GoogleAnalytics } from "./components/GoogleAnalytics";
-import { MarketplaceRouter } from "./pages/marketplace/MarketplaceRouter";
+import { MarketplaceRouter } from "./features/marketplace";
 import { ProductMarketplacePage } from "./pages/ProductMarketplacePage";
 import { ProductDetailPage } from "./pages/ProductDetailPage";
 import { App } from "./App";
-import MarketplaceDetailsPage from "./pages/marketplace/MarketplaceDetailsPage";
+import MarketplaceDetailsPage from "./features/marketplace/pages/MarketplaceDetailsPage";
 import ProtectedRoute from "./components/ProtectedRoute";
 import AboutUsPage from "./pages/AboutUsPage";
 import NotFound from "./pages/NotFound";
@@ -17,51 +17,50 @@ import ServicesPage from "./pages/ServicesPage";
 import ServiceDetailPage from "./pages/ServiceDetailPage";
 import { ABBCaseStudy } from "./pages/case-studies/ABBCaseStudy";
 import { PGCaseStudy } from "./pages/case-studies/PGCaseStudy";
-import LoginPage from "./pages/LoginPage";
+import LoginPage from "./features/auth/LoginPage";
 // Admin UI (integrated)
-import AdminDashboard from "./admin-ui/pages/Dashboard";
-import AdminMediaList from "./admin-ui/pages/MediaList";
-import BlogCreate from "./admin-ui/pages/BlogCreate";
-import BlogDetail from "./admin-ui/pages/BlogDetail";
-import AdminSettings from "./admin-ui/pages/Settings";
-import AuthorManagement from "./admin-ui/pages/AuthorManagement";
-import AuthorCreate from "./admin-ui/pages/AuthorCreate";
-import CategoryManagement from "./admin-ui/pages/CategoryManagement";
-import ContentSubmissions from "./admin-ui/pages/ContentSubmissions";
-import JobApplications from "./admin-ui/pages/JobApplications";
-import JobPostingsManagement from "./admin-ui/pages/JobPostingsManagement";
-import JobPostingCreate from "./admin-ui/pages/JobPostingCreate";
-import Analytics from "./admin-ui/pages/Analytics";
-import InterviewScheduler from "./admin-ui/pages/InterviewScheduler";
-import NotificationCenter from "./admin-ui/pages/NotificationCenter";
-import UserManagement from "./admin-ui/pages/UserManagement";
+import AdminDashboard from "./features/admin/overview/pages/Dashboard";
+import AdminMediaList from "./features/admin/content/pages/MediaList";
+import BlogCreate from "./features/admin/content/pages/BlogCreate";
+import BlogDetail from "./features/admin/content/pages/BlogDetail";
+import AdminSettings from "./features/admin/system/pages/Settings";
+import AuthorManagement from "./features/admin/authors/pages/AuthorManagement";
+import AuthorCreate from "./features/admin/authors/pages/AuthorCreate";
+import CategoryManagement from "./features/admin/categories/pages/CategoryManagement";
+import ContentSubmissions from "./features/admin/submissions/pages/ContentSubmissions";
+import JobApplications from "./features/admin/recruitment/pages/JobApplications";
+import JobPostingsManagement from "./features/admin/recruitment/pages/JobPostingsManagement";
+import JobPostingCreate from "./features/admin/recruitment/pages/JobPostingCreate";
+import Analytics from "./features/admin/overview/pages/Analytics";
+import InterviewScheduler from "./features/admin/recruitment/pages/InterviewScheduler";
+import NotificationCenter from "./features/admin/notifications/pages/NotificationCenter";
+import UserManagement from "./features/admin/system/pages/UserManagement";
 import GrowthAreasMarketplace from "./pages/GrowthAreasMarketplace";
 import GrowthAreasPage from "./pages/GrowthAreasPage";
 import BusinessDirectoryMarketplace from "./pages/BusinessDirectoryMarketplace";
 import { ComingSoon } from "./pages/ComingSoon";
-import WomenEntrepreneursHub from "./pages/WomenEntrepreneursHub";
-import DtmiLandingPage from "./pages/dtmi/DtmiLandingPage";
+import DtmiLandingPage from "./features/landing";
 import SignalsLandingPage from "./pages/SignalsLandingPage";
 import InsightsLandingPage from "./pages/InsightsLandingPage";
 import ResearchLandingPage from "./pages/ResearchLandingPage";
-import ContributorsMarketplacePage from "./pages/dtmi/ContributorsMarketplacePage";
-import ViewArticlePage from "./pages/dtmi/ViewArticlePage";
-import { SixDimensionsPage } from "./pages/dtmi/SixDimensionsPage";
+import ContributorsMarketplacePage from "./features/dtmi/contributors/ContributorsMarketplacePage";
+import ViewArticlePage from "./features/dtmi/articles/ViewArticlePage";
+import { SixDimensionsPage } from "./features/dtmi/six-dimensions/SixDimensionsPage";
 import ResearchReportPage from "./pages/ResearchReportPage";
 import ResearchReportDetailPage from "./pages/ResearchReportDetailPage";
 import WhitepaperDetailPage from "./pages/WhitepaperDetailPage";
 import WhitepaperScrollPage from "./pages/WhitepaperScrollPage";
-import MyDQPage from "./pages/MyDQPage";
-import ResearchPanelLandingPage from "./pages/dtmi/ResearchPanelLandingPage";
-import ResearchPanelApplicationPage from "./pages/dtmi/ResearchPanelApplicationPage";
-import SavedItemsPage from "./pages/dashboard/SavedItemsPage";
-import EmailSubscriptionsPage from "./pages/dashboard/EmailSubscriptionsPage";
-import ProfilePage from "./pages/dashboard/ProfilePage";
-import SettingsPage from "./pages/dashboard/SettingsPage";
-import DashboardLayout from "./pages/dashboard/DashboardLayout";
-import DashboardContent from "./pages/dashboard/DashboardContent";
-import ActivityCentre from "./pages/dashboard/ActivityCentre";
-import MyContentPage from "./pages/dashboard/MyContentPage";
+import MyDQPage from "./features/dashboard/MyDQPage";
+import ResearchPanelLandingPage from "./features/dtmi/research-panel/ResearchPanelLandingPage";
+import ResearchPanelApplicationPage from "./features/dtmi/research-panel/ResearchPanelApplicationPage";
+import SavedItemsPage from "./features/dashboard/SavedItemsPage";
+import EmailSubscriptionsPage from "./features/dashboard/EmailSubscriptionsPage";
+import ProfilePage from "./features/dashboard/ProfilePage";
+import SettingsPage from "./features/dashboard/SettingsPage";
+import DashboardLayout from "./features/dashboard/DashboardLayout";
+import DashboardContent from "./features/dashboard/DashboardContent";
+import ActivityCentre from "./features/dashboard/ActivityCentre";
+import MyContentPage from "./features/dashboard/MyContentPage";
 import BlogListPage from "./pages/blog/BlogListPage";
 import BlogPage from "./pages/blog/BlogPage";
 import { AuthorBioPage } from "./pages/AuthorBioPage/AuthorBioPage";
@@ -158,10 +157,6 @@ export function AppRouter() {
               <Route path="profile" element={<ProfilePage />} />
               <Route path="settings" element={<SettingsPage />} />
             </Route>
-            <Route
-              path="/women-entrepreneurs"
-              element={<WomenEntrepreneursHub />}
-            />
             <Route path="/about-us" element={<AboutUsPage />} />
             <Route
               path="/growth-areas-marketplace"
@@ -175,15 +170,7 @@ export function AppRouter() {
             <Route path="/coming-soon" element={<ComingSoon />} />
             <Route path="/coming-soon/:feature" element={<ComingSoon />} />
 
-            {/* Documentation routes - redirect to coming soon */}
-            <Route
-              path="/documentation"
-              element={<Navigate to="/coming-soon/documentation" replace />}
-            />
-            <Route
-              path="/documentation/*"
-              element={<Navigate to="/coming-soon/documentation" replace />}
-            />
+       
             <Route
               path="/admin-ui/settings"
               element={<AdminSettings />}
@@ -250,7 +237,6 @@ export function AppRouter() {
               element={<UserManagement />}
             />
 
-            <Route path="/dtmi" element={<DtmiLandingPage />} />
             <Route path="/signals" element={<SignalsLandingPage />} />
             <Route
               path="/signals-alerts-signup"

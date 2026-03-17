@@ -12,9 +12,9 @@ import {
 import ModernDQChatbot from "../../components/ModernDQChatbot";
 import { WeekHighlights } from "./components/WeekHighlights";
 import { EditorsPick } from "./components/EditorsPick";
-import { FilterableSignals } from "./components/FilterableSignals";
-import { ContributorAdvertCards } from "./components/ContributorAdvertCards";
-import { DTMIFooter } from "./components/DTMIFooter";
+import { FilterableSignals } from "../../features/dtmi/content-tabs/components/FilterableSignals";
+import { ContributorAdvertCards } from "../../features/landing/components/ContributorAdvertCards";
+import { DTMIFooter } from "../../features/landing/components/DTMIFooter";
 
 const SignalsLandingPage = () => {
   const navigate = useNavigate();

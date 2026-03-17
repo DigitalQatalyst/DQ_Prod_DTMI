@@ -5,7 +5,7 @@ import { Footer } from '../components/Footer';
 import ResearchHeroSection from '../components/research/ResearchHeroSection';
 import ResearchTableOfContents from '../components/research/ResearchTableOfContents';
 import ResearchReportContent from '../components/research/ResearchReportContent';
-import { blogService } from '../admin-ui/utils/supabase';
+import { blogService } from '../features/admin/shared/utils/supabase';
 import { Loader2 } from 'lucide-react';
 
 const ResearchReportDetailPage: React.FC = () => {

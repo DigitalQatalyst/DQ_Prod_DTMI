@@ -7,7 +7,7 @@ import { BlogContent } from "./BlogContent";
 import { BlogSidebar } from "../../components/blog/BlogSidebar";
 import { AuthorCard } from "../../components/blog/AuthorCard";
 import { RelatedPosts } from "../../components/blog/RelatedPosts";
-import { blogService, Blog } from "../../admin-ui/utils/supabase";
+import { blogService, Blog } from "../../features/admin/shared/utils/supabase";
 import { useBlogTracking } from "../../hooks/useAnalytics";
 import { mockBlogs } from "../../data/mockBlogs";
 

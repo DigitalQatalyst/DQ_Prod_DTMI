@@ -1,7 +1,7 @@
 import { request } from "./graphql/client";
 import { MARKETPLACE_QUERIES } from "./graphql/queries";
-import { FilterConfig } from "../components/marketplace/FilterSidebar";
-import { MarketplaceItem } from "../components/marketplace/MarketplaceGrid";
+import { FilterConfig } from "../features/marketplace/components/FilterSidebar";
+import { MarketplaceItem } from "../features/marketplace/components/MarketplaceGrid";
 import { getMarketplaceConfig } from "../utils/marketplaceConfig";
 
 /**

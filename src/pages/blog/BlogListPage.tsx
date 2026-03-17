@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Header } from '../../components/Header/Header';
 import { Footer } from '../../components/Footer/Footer';
-import { blogService, Blog } from '../../admin-ui/utils/supabase';
+import { blogService, Blog } from '../../features/admin/shared/utils/supabase';
 
 export default function BlogListPage() {
   const [selectedCategory, setSelectedCategory] = useState('All');

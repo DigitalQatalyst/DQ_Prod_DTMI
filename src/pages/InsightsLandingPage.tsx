@@ -1,8 +1,8 @@
 import { Header } from "../components/Header/Header";
 import { useNavigate } from "react-router-dom";
-import { ContributorAdvertCards } from "./dtmi/components/ContributorAdvertCards";
-import { NewsletterSignupForm } from "./dtmi/components/NewsletterSignupForm";
-import { DTMIFooter } from "./dtmi/components/DTMIFooter";
+import { ContributorAdvertCards } from "../features/landing/components/ContributorAdvertCards";
+import { NewsletterSignupForm } from "../features/landing/components/NewsletterSignupForm";
+import { DTMIFooter } from "../features/landing/components/DTMIFooter";
 import ModernDQChatbot from "../components/ModernDQChatbot";
 
 const InsightsLandingPage = () => {

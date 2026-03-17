@@ -17,7 +17,7 @@ import {
   Mail,
   Twitter,
 } from 'lucide-react'
-import { mediaService } from '../admin-ui/utils/supabase'
+import { mediaService } from '../features/admin/shared/utils/supabase'
 import { Header } from '../components/Header/Header'
 import { Footer } from '../components/Footer/Footer'
 

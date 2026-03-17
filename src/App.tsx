@@ -1,5 +1,5 @@
 import { AnalyticsProvider } from "./components/analytics/AnalyticsProvider";
-import DtmiLandingPage from "./pages/dtmi/DtmiLandingPage";
+import DtmiLandingPage from "./features/landing";
 
 export function App() {
   return (

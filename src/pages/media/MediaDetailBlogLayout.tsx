@@ -7,7 +7,7 @@ import { BlogSidebar } from "../../components/blog/BlogSidebar";
 import { BlogContent } from "../../components/blog/BlogContent";
 import { AuthorCard } from "../../components/blog/AuthorCard";
 import { RelatedPosts } from "../../components/blog/RelatedPosts";
-import { mediaService } from "../../admin-ui/utils/supabase";
+import { mediaService } from "../../features/admin/shared/utils/supabase";
 
 export default function MediaDetailBlogLayout() {
   const { id } = useParams<{ id: string }>();

@@ -17,7 +17,7 @@ import {
   authorService,
   Author,
   Blog,
-} from "../../admin-ui/utils/supabase";
+} from "../../features/admin/shared/utils/supabase";
 
 // Fallback author data when not in database
 const fallbackAuthors: Author[] = [

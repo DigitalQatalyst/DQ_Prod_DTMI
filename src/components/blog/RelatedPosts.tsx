@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { ArrowRight, Calendar, Clock } from 'lucide-react';
-import { getSupabase } from '../../admin-ui/utils/supabaseClient';
+import { getSupabase } from '../../features/admin/shared/utils/supabaseClient';
 
 interface RelatedPost {
   id: string;

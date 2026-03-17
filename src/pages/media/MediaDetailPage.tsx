@@ -22,7 +22,7 @@ import {
 import { Header } from '../../components/Header'
 import { Footer } from '../../components/Footer'
 import { MediaCard } from '../../components/Cards/MediaCard'
-import { getSupabase } from '../../admin-ui/utils/supabaseClient'
+import { getSupabase } from '../../features/admin/shared/utils/supabaseClient'
 import {
   VideoDurationInfo,
 } from '../../utils/videoUtils'

@@ -2,10 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams, Navigate } from 'react-router-dom';
 import { Header } from '../../components/Header/Header';
 import { Footer } from '../../components/Footer/Footer';
-import { mediaService, blogService } from '../../admin-ui/utils/supabase';
+import { mediaService, blogService } from '../../features/admin/shared/utils/supabase';
 import { getExpertInterviewBySlug, getRelatedContentForInterview } from '../../utils/mockMarketplaceData';
 import { Trash2, AlertCircle, Loader } from 'lucide-react';
-import Modal from '../../admin-ui/components/Modal';
+import Modal from '../../features/admin/shared/components/Modal';
 
 interface ExpertInterviewPageProps {
   interviewId?: string;
