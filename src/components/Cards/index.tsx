@@ -11,7 +11,7 @@ export { ServiceHighlightCard } from './ServiceHighlightCard';
 export { ResourceCard } from './ResourceCard';
 export { ServiceCard } from './ServiceCard';
 export { ReportCard } from './ReportCard';
-export { MarketplaceCard } from './MarketplaceCard';
+
 export { ContentItemCard } from './ContentItemCard';
 // TYPES - For TypeScript Support
 export type { UnifiedCardProps, CardContent, CardVariantConfig, ResponsiveCardGridProps } from './UnifiedCard';
@@ -23,7 +23,7 @@ export type { ServiceHighlightCardProps, ServiceHighlightItem } from './ServiceH
 export type { ResourceCardProps, ResourceItem } from './ResourceCard';
 export type { ServiceCardProps, ServiceItem } from './ServiceCard';
 export type { ReportCardProps, ReportItem } from './ReportCard';
-export type { MarketplaceCardProps, MarketplaceItem } from './MarketplaceCard';
+
 export type { ContentType } from './ContentItemCard';
 // DESIGN SYSTEM - For Advanced Customization
 export { designTokens, tagVariants } from './designTokens';

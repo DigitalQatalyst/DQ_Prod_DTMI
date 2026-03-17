@@ -1,49 +1,30 @@
-import React from 'react'
-import { Header, AuthProvider } from '../components/Header'
-import { Footer } from '../components/Footer'
-import HeroSection from '../components/women-entrepreneurs/HeroSection'
-import RegionalHighlights from '../components/women-entrepreneurs/RegionalHighlights'
-import FeaturedStories from '../components/women-entrepreneurs/FeaturedStories'
-import EcosystemMap from '../components/women-entrepreneurs/EcosystemMap'
-import PlatformOfferings from '../components/women-entrepreneurs/PlatformOfferings'
-import ProgramsInitiatives from '../components/women-entrepreneurs/ProgramsInitiatives'
-import GetInvolved from '../components/women-entrepreneurs/GetInvolved'
-const WomenEntrepreneursPage: React.FC = () => {
+import React from 'react';
+import { Header } from '../components/Header/Header';
+import { Footer } from '../components/Footer/Footer';
+
+const WomenEntrepreneursHub: React.FC = () => {
   return (
-    <AuthProvider>
-      <div className="flex flex-col w-full min-h-screen bg-white">
-        <Header
-          toggleSidebar={() => {}}
-          sidebarOpen={false}
-          data-id="enterprise-journey-header"
-        />
-        <main className="flex-1" role="main">
-          <HeroSection 
-            onExploreClick={() => {
-              // Scroll to featured stories section
-              const element = document.getElementById('featured-stories');
-              if (element) {
-                element.scrollIntoView({ behavior: 'smooth' });
-              }
-            }}
-            onShareClick={() => {
-              // Scroll to ecosystem map section
-              const element = document.getElementById('ecosystem-map');
-              if (element) {
-                element.scrollIntoView({ behavior: 'smooth' });
-              }
-            }}
-          />
-          <RegionalHighlights />
-          <FeaturedStories />
-          <EcosystemMap />
-          <PlatformOfferings />
-          <ProgramsInitiatives />
-          <GetInvolved />
-        </main>
-        <Footer data-id="enterprise-journey-footer" />
-      </div>
-    </AuthProvider>
-  )
-}
-export default WomenEntrepreneursPage
+    <div className="min-h-screen bg-gray-50">
+      <Header />
+      <main className="container mx-auto px-4 py-8">
+        <div className="text-center">
+          <h1 className="text-4xl font-bold text-gray-900 mb-4">
+            Women Entrepreneurs Hub
+          </h1>
+          <p className="text-lg text-gray-600 mb-8">
+            Empowering women entrepreneurs with resources, networking, and support.
+          </p>
+          <div className="bg-white rounded-lg shadow-md p-8">
+            <p className="text-gray-700">
+              This page is currently being rebuilt. Please check back soon for our comprehensive 
+              women entrepreneurs resources and community features.
+            </p>
+          </div>
+        </div>
+      </main>
+      <Footer />
+    </div>
+  );
+};
+
+export default WomenEntrepreneursHub;

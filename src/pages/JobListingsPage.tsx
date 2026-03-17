@@ -63,25 +63,12 @@ export default function JobListingsPage() {
   // Fetch job postings from database
   useEffect(() => {
     const fetchJobs = async () => {
-      console.log('[JobListingsPage] Starting to fetch jobs...');
       setLoading(true);
       const result = await getPublicJobPostings();
-      
-      console.log('[JobListingsPage] Fetch result:', {
-        hasError: !!result.error,
-        error: result.error,
-        dataCount: result.data?.length || 0
-      });
       
       if (!result.error && result.data) {
         // Transform JobPosting to JobListing format
         const jobs: JobListing[] = result.data.map((job: JobPosting) => {
-          console.log('[JobListingsPage] Processing job:', {
-            id: job.id,
-            title: job.title,
-            reqType: typeof job.requirements,
-            respType: typeof job.responsibilities
-          });
 
           // Handle requirements - convert from jsonb to array if needed
           let requirements: string[] = [];
@@ -131,13 +118,8 @@ export default function JobListingsPage() {
           };
         });
         
-        console.log('[JobListingsPage] Transformed jobs:', {
-          count: jobs.length,
-          jobs: jobs.map(j => ({ id: j.id, title: j.title }))
-        });
         setOpenPositions(jobs);
       } else {
-        console.error('[JobListingsPage] Error fetching jobs:', result.error);
       }
       
       setLoading(false);
