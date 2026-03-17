@@ -1,7 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import {
-  Mail,
   Linkedin,
   Twitter,
   Instagram,
@@ -29,18 +28,6 @@ export function DTMIFooter() {
               Stay updated with the latest digital transformation insights,
               solutions, and innovations from Digital Qatalyst.
             </p>
-
-            {/* Newsletter Signup */}
-            <div className="flex">
-              <input
-                type="email"
-                placeholder="Enter your email"
-                className="flex-1 px-4 py-2 rounded-l-lg text-gray-900 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
-              />
-              <button className="bg-orange-500 hover:bg-orange-600 px-4 py-2 rounded-r-lg transition-colors">
-                <Mail className="w-4 h-4" />
-              </button>
-            </div>
           </div>
 
           {/* DTMI Intelligence Layers */}
@@ -242,26 +229,6 @@ export function DTMIFooter() {
             <p className="text-gray-400 text-sm mb-4 md:mb-0">
               © 2024 Digital Qatalyst. All rights reserved.
             </p>
-            <div className="flex items-center gap-6 text-sm">
-              <Link
-                to="/newsletter-signup"
-                className="text-gray-300 hover:text-white transition-colors"
-              >
-                Newsletter Signup
-              </Link>
-              <Link
-                to="/request-demo"
-                className="text-gray-300 hover:text-white transition-colors"
-              >
-                Request Demo
-              </Link>
-              <Link
-                to="/dtmi/research-panel-application"
-                className="bg-orange-500 hover:bg-orange-600 px-4 py-2 rounded transition-colors"
-              >
-                Join Research Panel
-              </Link>
-            </div>
           </div>
         </div>
       </div>

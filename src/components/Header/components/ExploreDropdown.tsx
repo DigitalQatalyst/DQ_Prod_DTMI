@@ -2,10 +2,8 @@ import React, { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { ChevronDownIcon } from "lucide-react";
 import {
-  BuildingIcon,
   NewspaperIcon,
   UsersIcon,
-  PackageIcon,
   LucideProps,
 } from "lucide-react";
 
@@ -20,22 +18,6 @@ interface Marketplace {
 }
 
 const marketplaces: Marketplace[] = [
-  {
-    id: "services",
-    name: "Service Marketplace",
-    description:
-      "Explore our comprehensive digital transformation services across all sectors",
-    icon: BuildingIcon,
-    href: "/marketplace/services",
-  },
-  {
-    id: "products",
-    name: "Product Marketplace",
-    description:
-      "Discover our digital accelerators: TMaaS, DTO4T, DTMP, DTMA, DTMI, DTMB, DWS",
-    icon: PackageIcon,
-    href: "/products",
-  },
   {
     id: "dtmi-resources",
     name: "DTMI Resource Marketplace",

@@ -28,9 +28,6 @@ const fallbackAuthors: Author[] = [
     bio: "Expert in Digital Cognitive Organizations & Strategic Transformation with 10+ published works",
     avatar: "/images/Stephane_Avatar.png",
     linkedIn: "linkedin.com/in/stephane-niango",
-    location: "Global",
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
   },
   {
     id: "fallback-2",
@@ -39,9 +36,6 @@ const fallbackAuthors: Author[] = [
     bio: "Content Engagement Strategist specializing in coherent system design with 9+ published works",
     avatar: "/images/Kaylynn_Avatar.png",
     linkedIn: "linkedin.com/in/kaylynn-oceanne",
-    location: "Global",
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
   },
   {
     id: "fallback-3",
@@ -50,9 +44,6 @@ const fallbackAuthors: Author[] = [
     bio: "Explores leadership, culture, and strategy in driving meaningful organisational transformation",
     avatar: "/images/MK-Avatar.png",
     linkedIn: "linkedin.com/in/mark-kerry",
-    location: "Global",
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
   },
   {
     id: "fallback-4",
@@ -61,9 +52,6 @@ const fallbackAuthors: Author[] = [
     bio: "Explores frameworks, tools, and mindsets for building scalable and resilient digital solutions",
     avatar: "/images/Sharavi-Avatar.png",
     linkedIn: "linkedin.com/in/sharavi-chander",
-    location: "Global",
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
   },
   {
     id: "fallback-5",
@@ -72,9 +60,22 @@ const fallbackAuthors: Author[] = [
     bio: "Explores the interplay of customer needs, business goals, and product strategy",
     avatar: "/images/Salem-Avatar.png",
     linkedIn: "linkedin.com/in/salem-wasike",
-    location: "Global",
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
+  },
+  {
+    id: "fallback-6",
+    name: "Carimi Medah",
+    title: "Editorial Lead & Strategic Communication Specialist",
+    bio: "Expert in Digital Cognitive Organizations & Strategic Communication with 7 years of extensive experience in editorial leadership, bringing dual degrees in Linguistics and Media & Communication.",
+    avatar: "/images/Carimi_Avatar.png",
+    linkedIn: "linkedin.com/in/carimi-medah",
+  },
+  {
+    id: "fallback-7",
+    name: "Hellen Mweu",
+    title: "Digital Transformation Strategy & Editorial Expert",
+    bio: "Expert in Digital Cognitive Organizations & Strategic Communication with a strong focus on organizational change, digital strategy, and innovation.",
+    avatar: "/images/Hellen_Avatar.png",
+    linkedIn: "linkedin.com/in/hellen-mweu",
   },
 ];
 
@@ -120,7 +121,8 @@ export function AuthorBioPage() {
 
           // Try to get blogs for this author
           try {
-            const allBlogs = await blogService.getBlogs();
+            const blogsResponse = await blogService.getBlogs();
+            const allBlogs = blogsResponse.data || [];
             setBlogs(allBlogs.filter((b) => b.authorId === foundAuthor.id));
           } catch (err) {
             console.error("Failed to load blogs", err);
@@ -173,7 +175,173 @@ export function AuthorBioPage() {
 
   // Get expanded content based on author
   const getExpandedContent = () => {
-    if (authorSlug === "kaylynn-oceanne") {
+    if (authorSlug === "carimi-medah") {
+      return {
+        continuedSummary: (
+          <p className="text-gray-700 leading-relaxed mb-4">
+            Holding dual degrees in Linguistics and Media & Communication from Moi University, Carimi possesses a unique skill set that combines a deep understanding of language, communication theory, and the strategic use of media to craft compelling narratives. With a passion for digital transformation, she excels in transforming complex, cutting-edge concepts into insightful, engaging, and actionable content that empowers organizations to thrive in the rapidly evolving digital landscape.
+          </p>
+        ),
+        sections: [
+          {
+            title: "Thought Leadership",
+            content: (
+              <div className="prose prose-lg max-w-none">
+                <p className="text-gray-700 leading-relaxed mb-4">
+                  Carimi's vision is rooted in her belief that content has the power to ignite transformation. By simplifying complex ideas, she enables businesses to not only understand but also embrace digital change. Drawing from her academic foundation in linguistics and media communication, she has mastered the art of making sophisticated technology, especially in AI and digital transformation, relatable and actionable for every audience.
+                </p>
+                <p className="text-gray-700 leading-relaxed mb-4">
+                  Her work at DQ focuses on Digital Cognitive Organizations (DCOs), where she crafts stories that guide organizations through their digital journeys, providing them with the strategies and insights needed to lead in an increasingly AI-driven world.
+                </p>
+                <p className="text-gray-700 leading-relaxed">
+                  As a thought leader, Carimi advocates for the role of clear communication in enabling organizational success. Through her work, she strives to inspire confidence and action in those who are navigating the challenges of digital disruption.
+                </p>
+              </div>
+            ),
+          },
+          {
+            title: "Academic Background & Research Contributions",
+            content: (
+              <div className="prose prose-lg max-w-none">
+                <p className="text-gray-700 leading-relaxed mb-4">
+                  Carimi earned her BA in Linguistics and BA in Media & Communication from Moi University, where she studied the impact of language and media on public perception and behavior. Her academic training has shaped her ability to break down complex ideas into compelling, simple narratives.
+                </p>
+                <p className="text-gray-700 leading-relaxed">
+                  Carimi's deep understanding of language empowers her to create content that not only informs but also inspires. Her research interests include the intersection of linguistics and media in the context of technology and digital transformation, ensuring that her content is always ahead of the curve, informed by both theory and practice.
+                </p>
+              </div>
+            ),
+          },
+          {
+            title: "Notable Contributions & Impact",
+            content: (
+              <div className="prose prose-lg max-w-none">
+                <p className="text-gray-700 leading-relaxed mb-4">
+                  Carimi has played a key role in shaping DQ's editorial direction, ensuring that content remains at the forefront of the digital transformation conversation. She has been instrumental in communicating the vision of Digital Cognitive Organizations, designing content that illustrates the role of AI and cognitive technologies in reshaping business models, operations, and cultures.
+                </p>
+                <p className="text-gray-700 leading-relaxed">
+                  Her strategic communication efforts have directly supported DQ's goal of enabling businesses to harness the full potential of AI, data, and digital tools, equipping them with the knowledge and clarity needed to drive long-term success in the digital economy.
+                </p>
+              </div>
+            ),
+          },
+        ],
+        expertise: [
+          {
+            title: "Linguistics & Media Communication",
+            description:
+              "Leveraging linguistic principles to craft content that connects with diverse audiences, ensuring clarity, engagement, and actionable insights.",
+          },
+          {
+            title: "Digital Cognitive Organizations (DCOs)",
+            description:
+              "Leading content strategy for organizations transitioning to AI-powered, fully integrated digital ecosystems.",
+          },
+          {
+            title: "Strategic Communication",
+            description:
+              "Designing and executing communication strategies that bridge the gap between technology and business needs, ensuring alignment with organizational goals.",
+          },
+          {
+            title: "Digital Transformation Narratives",
+            description:
+              "Crafting impactful stories that drive change, innovation, and AI adoption, supporting businesses in embracing digital transformation across all levels.",
+          },
+          {
+            title: "Content Strategy & Innovation for Technology",
+            description:
+              "Developing forward-thinking content strategies that simplify technical language and make emerging tech like AI, machine learning, and automation accessible to all stakeholders.",
+          },
+        ],
+      };
+    } else if (authorSlug === "hellen-mweu") {
+      return {
+        continuedSummary: (
+          <p className="text-gray-700 leading-relaxed mb-4">
+            As part of the Editorial Publication Team at DigitalQatalyst, she brings a deep understanding of digital business practices, helping shape the content and direction of DTMI (Digital Transformation Management Insights). With a professional background centered on digital technologies and business optimization, Hellen works alongside key industry leaders to share insights, best practices, and real-world case studies.
+          </p>
+        ),
+        sections: [
+          {
+            title: "Editorial & Content Strategy",
+            content: (
+              <div className="prose prose-lg max-w-none">
+                <p className="text-gray-700 leading-relaxed mb-4">
+                  Hellen's contributions to DTMI aim to bridge the gap between technical advancements and their strategic impact on businesses and industries globally. She specializes in crafting compelling narratives that simplify complex topics and drive actionable insights for DTMI's audience.
+                </p>
+                <p className="text-gray-700 leading-relaxed">
+                  Her editorial work focuses on ensuring that DTMI's content remains relevant and impactful, helping organizations understand and adopt new technologies while preparing them for the challenges and opportunities of the digital era.
+                </p>
+              </div>
+            ),
+          },
+          {
+            title: "Digital Transformation Expertise",
+            content: (
+              <div className="prose prose-lg max-w-none">
+                <p className="text-gray-700 leading-relaxed mb-4">
+                  Hellen's expertise in digital transformation strategy helps organizations navigate the complexities of digital transformation and align their efforts with long-term strategic goals. Her work includes:
+                </p>
+                <ul className="space-y-2 mb-4 list-disc pl-6">
+                  <li className="text-gray-700">
+                    Helping organizations manage cultural shifts and integrate new digital tools to enhance operational efficiency
+                  </li>
+                  <li className="text-gray-700">
+                    Exploring the role of artificial intelligence in accelerating digital transformation and improving business decision-making
+                  </li>
+                  <li className="text-gray-700">
+                    Engaging with industry experts to produce high-impact thought leadership content
+                  </li>
+                  <li className="text-gray-700">
+                    Contributing to articles, blogs, and resources aimed at helping organizations embrace digital transformation
+                  </li>
+                </ul>
+              </div>
+            ),
+          },
+          {
+            title: "Notable Contributions & Leadership",
+            content: (
+              <div className="prose prose-lg max-w-none">
+                <p className="text-gray-700 leading-relaxed mb-4">
+                  As an active member of the DigitalQatalyst Editorial Publication Team, Hellen plays a pivotal role in ensuring that DTMI's content remains relevant and impactful. She contributes regularly to articles, blogs, and other resources aimed at helping organizations embrace digital transformation and leverage cutting-edge technology for sustainable growth.
+                </p>
+                <p className="text-gray-700 leading-relaxed">
+                  Hellen's work empowers leaders across industries to understand and adopt new technologies, ensuring they are prepared for the challenges and opportunities of the digital era. Her contributions help businesses stay ahead in a rapidly changing digital landscape.
+                </p>
+              </div>
+            ),
+          },
+        ],
+        expertise: [
+          {
+            title: "Digital Transformation Strategy",
+            description:
+              "Helping organizations navigate the complexities of digital transformation and align their efforts with long-term strategic goals.",
+          },
+          {
+            title: "Editorial & Content Strategy",
+            description:
+              "Crafting compelling narratives that simplify complex topics and drive actionable insights for DTMI's audience.",
+          },
+          {
+            title: "Organizational Change",
+            description:
+              "Offering insights on how to manage cultural shifts and integrate new digital tools to enhance operational efficiency.",
+          },
+          {
+            title: "AI & Automation",
+            description:
+              "Exploring the role of artificial intelligence in accelerating digital transformation and improving business decision-making.",
+          },
+          {
+            title: "Thought Leadership",
+            description:
+              "Engaging with industry experts to produce high-impact thought leadership that helps businesses stay ahead in a rapidly changing digital landscape.",
+          },
+        ],
+      };
+    } else if (authorSlug === "kaylynn-oceanne") {
       return {
         continuedSummary: (
           <p className="text-gray-700 leading-relaxed mb-4">
@@ -788,7 +956,7 @@ export function AuthorBioPage() {
 
                   <div className="flex items-center gap-2 text-gray-600 mb-6">
                     <MapPin size={18} />
-                    <span>{author.location}</span>
+                    <span>Global</span>
                   </div>
 
                   {/* Social Links */}
@@ -826,7 +994,15 @@ export function AuthorBioPage() {
                   Professional Summary
                 </h2>
                 <div className="prose prose-lg max-w-none">
-                  {authorSlug === "kaylynn-oceanne" ? (
+                  {authorSlug === "carimi-medah" ? (
+                    <p className="text-gray-700 leading-relaxed mb-4">
+                      Carimi Medah is a seasoned editorial lead at DigitalQatalyst (DQ), bringing 7 years of extensive experience in the editorial field. In her role at DQ, Carimi leads high-impact content strategies that guide businesses through the transformative journey of becoming Digital Cognitive Organizations (DCOs). Her expertise lies in synthesizing intricate technological trends, AI advancements, and organizational change into clear, accessible content that resonates with a wide range of stakeholders, from executives to technical teams.
+                    </p>
+                  ) : authorSlug === "hellen-mweu" ? (
+                    <p className="text-gray-700 leading-relaxed mb-4">
+                      Hellen Mweu is an experienced contributor in the field of digital transformation, with a strong focus on organizational change, digital strategy, and innovation. As part of the Editorial Publication Team at DigitalQatalyst, she brings a deep understanding of digital business practices, helping shape the content and direction of DTMI (Digital Transformation Management Insights).
+                    </p>
+                  ) : authorSlug === "kaylynn-oceanne" ? (
                     <p className="text-gray-700 leading-relaxed mb-4">
                       Kaylynn Océanne is a Content Engagement Strategist at
                       DigitalQatalyst, specializing in the design of the
@@ -920,7 +1096,11 @@ export function AuthorBioPage() {
                     </h2>
                     <div className="prose prose-lg max-w-none mb-6">
                       <p className="text-gray-700 leading-relaxed">
-                        {authorSlug === "kaylynn-oceanne"
+                        {authorSlug === "carimi-medah"
+                          ? "Carimi has expertise in linguistics, media communication, and strategic content development for digital transformation. Her work focuses on:"
+                          : authorSlug === "hellen-mweu"
+                          ? "Hellen has expertise in digital transformation strategy, editorial content development, and organizational change management. Her work focuses on:"
+                          : authorSlug === "kaylynn-oceanne"
                           ? "Kaylynn is building and applying expertise in content strategy, engagement design, and research analysis. Her key areas include:"
                           : authorSlug === "mark-kerry"
                             ? "Mark has expertise in leadership development, culture transformation, and strategic account management. His work focuses on:"
@@ -1078,7 +1258,11 @@ export function AuthorBioPage() {
                   Connect with {author.name}
                 </h3>
                 <p className="text-lg text-gray-700 mb-6">
-                  {authorSlug === "kaylynn-oceanne"
+                  {authorSlug === "carimi-medah"
+                    ? "Interested in learning more about strategic communication, digital transformation narratives, or exploring collaboration opportunities? Get in touch."
+                    : authorSlug === "hellen-mweu"
+                    ? "Interested in learning more about digital transformation strategy, editorial content development, or exploring collaboration opportunities? Get in touch."
+                    : authorSlug === "kaylynn-oceanne"
                     ? "Interested in learning more about content strategy, engagement design, or collaboration opportunities? Get in touch."
                     : authorSlug === "mark-kerry"
                       ? "Interested in learning more about leadership development, culture transformation, or exploring collaboration opportunities? Get in touch."
