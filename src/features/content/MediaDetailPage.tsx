@@ -19,9 +19,9 @@ import {
   VolumeXIcon,
   Loader,
 } from 'lucide-react'
-import { Header } from '../../components/Header'
-import { Footer } from '../../components/Footer'
-import { MediaCard } from '../../components/Cards/MediaCard'
+import { Header } from '../../shared/Header'
+import { Footer } from '../../shared/Footer'
+import { MediaCard } from './components/MediaCard'
 import { getSupabase } from '../admin/shared/utils/supabaseClient'
 import {
   VideoDurationInfo,

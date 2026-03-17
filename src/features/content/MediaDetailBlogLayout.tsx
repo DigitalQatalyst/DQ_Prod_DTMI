@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { Header } from "../../components/Header";
-import { Footer } from "../../components/Footer";
-import { MediaBlogHeader } from "../../components/media/MediaBlogHeader";
-import { BlogSidebar } from "../../components/blog/BlogSidebar";
-import { BlogContent } from "../../components/blog/BlogContent";
-import { AuthorCard } from "../../components/blog/AuthorCard";
-import { RelatedPosts } from "../../components/blog/RelatedPosts";
+import { Header } from "../../shared/Header";
+import { Footer } from "../../shared/Footer";
+import { MediaBlogHeader } from "./components/media/MediaBlogHeader";
+import { BlogSidebar } from "./components/blog/BlogSidebar";
+import { BlogContent } from "./components/blog/BlogContent";
+import { AuthorCard } from "./components/blog/AuthorCard";
+import { RelatedPosts } from "./components/blog/RelatedPosts";
 import { mediaService } from "../admin/shared/utils/supabase";
 
 export default function MediaDetailBlogLayout() {

@@ -2,12 +2,12 @@ import React, { useState, useCallback, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { FilterSidebar, FilterConfig } from "../components/FilterSidebar";
 import { MarketplaceGrid } from "../components/MarketplaceGrid";
-import { SearchBar } from "../../../components/SearchBar";
+import { SearchBar } from "../../../shared/SearchBar";
 import { SubMarketplaceTabs, SubMarketplaceTab } from "../components/SubMarketplaceTabs";
 import { FilterIcon, XIcon, HomeIcon, ChevronRightIcon } from "lucide-react";
 import { getMarketplaceConfig } from "../../../utils/marketplaceConfig";
-import { Header } from "../../../components/Header";
-import { Footer } from "../../../components/Footer";
+import { Header } from "../../../shared/Header";
+import { Footer } from "../../../shared/Footer";
 // import { mockServiceData } from "../../data/mockServiceData"; // COMMENTED OUT - Now using Supabase data only
 
 export interface SimpleMarketplacePageProps {

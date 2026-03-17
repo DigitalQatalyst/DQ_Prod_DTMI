@@ -1,9 +1,9 @@
-import { Header } from "../../components/Header/Header";
+import { Header } from "../../shared/Header/Header";
 import { useNavigate } from "react-router-dom";
 import { ContributorAdvertCards } from "../landing/components/ContributorAdvertCards";
 import { NewsletterSignupForm } from "../landing/components/NewsletterSignupForm";
 import { DTMIFooter } from "../landing/components/DTMIFooter";
-import ModernDQChatbot from "../../components/ModernDQChatbot";
+import ModernDQChatbot from "../../shared/ModernDQChatbot";
 
 const InsightsLandingPage = () => {
   const navigate = useNavigate();

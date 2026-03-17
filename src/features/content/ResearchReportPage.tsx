@@ -1,9 +1,9 @@
 import React from 'react';
-import { Header } from '../../components/Header';
-import { Footer } from '../../components/Footer';
-import ResearchHeroSection from '../../components/research/ResearchHeroSection';
-import ResearchTableOfContents from '../../components/research/ResearchTableOfContents';
-import ResearchReportContent from '../../components/research/ResearchReportContent';
+import { Header } from '../../shared/Header';
+import { Footer } from '../../shared/Footer';
+import ResearchHeroSection from './components/research/ResearchHeroSection';
+import ResearchTableOfContents from './components/research/ResearchTableOfContents';
+import ResearchReportContent from './components/research/ResearchReportContent';
 
 const ResearchReportPage: React.FC = () => {
   return (

@@ -1,14 +1,14 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { useEffect, useRef, useState } from "react";
-import { Header } from "../../../components/Header/Header";
-import { Footer } from "../../../components/Footer/Footer";
+import { Header } from "../../../shared/Header/Header";
+import { Footer } from "../../../shared/Footer/Footer";
 import { Article1Content } from "./Article1Content";
 import { Article2Content } from "./Article2Content";
 import { Article3Content } from "./Article3Content";
 import { ArticleLayout } from "./ArticleLayout";
 import { useArticleBySlug } from "./api/hooks";
-import { useToast } from "../../../components/ui/Toast";
-import AttractButton from "../../../components/ui/AttractButton";
+import { useToast } from "../../../shared/ui/Toast";
+import AttractButton from "../../../shared/ui/AttractButton";
 
 // Article metadata configuration
 const ARTICLE_CONFIG: Record<string, {

@@ -1,12 +1,12 @@
 import { useRef, useState, useEffect } from "react";
-import { Header } from "../../../components/Header/Header";
-import { Footer } from "../../../components/Footer/Footer";
-import AttractButton from "../../../components/ui/AttractButton";
-import { useToast } from "../../../components/ui/Toast";
+import { Header } from "../../../shared/Header/Header";
+import { Footer } from "../../../shared/Footer/Footer";
+import AttractButton from "../../../shared/ui/AttractButton";
+import { useToast } from "../../../shared/ui/Toast";
 import { submitNewsletterSubscription } from "../../../services/airtableService";
 import { ArticleAuthorCard } from "./ArticleAuthorCard";
-import { RelatedPosts } from "../../../components/blog/RelatedPosts";
-import { WhitepaperAccessModal } from "../../../components/WhitepaperAccessModal";
+import { RelatedPosts } from "../../content/components/blog/RelatedPosts";
+import { WhitepaperAccessModal } from "./WhitepaperAccessModal";
 
 interface ArticleLayoutProps {
   id?: string;

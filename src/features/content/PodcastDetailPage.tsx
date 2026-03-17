@@ -18,8 +18,8 @@ import {
   Twitter,
 } from 'lucide-react'
 import { mediaService } from '../admin/shared/utils/supabase'
-import { Header } from '../../components/Header/Header'
-import { Footer } from '../../components/Footer/Footer'
+import { Header } from '../../shared/Header/Header'
+import { Footer } from '../../shared/Footer/Footer'
 
 const PodcastDetailPage: React.FC = () => {
   const { id } = useParams<{ id: string }>()

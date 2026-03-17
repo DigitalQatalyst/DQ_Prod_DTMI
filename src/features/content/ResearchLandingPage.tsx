@@ -1,10 +1,10 @@
-import { Header } from "../../components/Header/Header";
+import { Header } from "../../shared/Header/Header";
 import { useNavigate } from "react-router-dom";
 import { ContributorAdvertCards } from "../landing/components/ContributorAdvertCards";
 import { NewsletterSignupForm } from "../landing/components/NewsletterSignupForm";
 import { DTMIFooter } from "../landing/components/DTMIFooter";
-import ModernDQChatbot from "../../components/ModernDQChatbot";
-import { LeadCaptureModal } from "../../components/LeadCaptureModal";
+import ModernDQChatbot from "../../shared/ModernDQChatbot";
+import { LeadCaptureModal } from "../../shared/LeadCaptureModal";
 import { useState } from "react";
 
 const ResearchLandingPage = () => {

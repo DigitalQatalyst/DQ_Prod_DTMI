@@ -2,8 +2,8 @@ import { Calendar, Clock, User, TrendingUp, Target, DollarSign, Users, Mail, Lin
 import { motion, useInView, useAnimation } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { useRef, useEffect, useState } from 'react';
-import { Header } from '../components/Header/Header';
-import { Footer } from '../components/Footer/Footer';
+import { Header } from '../shared/Header/Header';
+import { Footer } from '../shared/Footer/Footer';
 
 // Add CSS styles for links in dangerouslySetInnerHTML content
 const linkStyles = `

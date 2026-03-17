@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import { Header } from "../../components/Header/Header";
-import { Footer } from "../../components/Footer/Footer";
+import { Header } from "../../shared/Header/Header";
+import { Footer } from "../../shared/Footer/Footer";
 import { Mail, Phone, MapPin, Send, CheckCircle } from "lucide-react";
 
 interface ContactFormData {

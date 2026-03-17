@@ -1,12 +1,12 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
-import { Header } from "../../components/Header/Header";
-import { Footer } from "../../components/Footer/Footer";
-import { BlogHeader } from "../../components/blog/BlogHeader";
+import { Header } from "../../shared/Header/Header";
+import { Footer } from "../../shared/Footer/Footer";
+import { BlogHeader } from "../content/components/blog/BlogHeader";
 import { BlogContent } from "./BlogContent";
-import { BlogSidebar } from "../../components/blog/BlogSidebar";
-import { AuthorCard } from "../../components/blog/AuthorCard";
-import { RelatedPosts } from "../../components/blog/RelatedPosts";
+import { BlogSidebar } from "../content/components/blog/BlogSidebar";
+import { AuthorCard } from "../content/components/blog/AuthorCard";
+import { RelatedPosts } from "../content/components/blog/RelatedPosts";
 import { blogService, Blog } from "../../features/admin/shared/utils/supabase";
 import { useBlogTracking } from "../../hooks/useAnalytics";
 import { mockBlogs } from "../../data/mockBlogs";

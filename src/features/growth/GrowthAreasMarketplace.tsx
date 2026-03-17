@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowLeftIcon, SearchIcon, SlidersIcon, TrendingUpIcon, ZapIcon, DatabaseIcon, GlobeIcon, ShoppingBagIcon, HeartIcon, BookOpenIcon, TruckIcon, LeafIcon, PaletteIcon, PlaneIcon, FilterIcon, XIcon, ChevronDownIcon, ChevronUpIcon, CheckIcon, DownloadIcon } from 'lucide-react';
-import SectorCard from '../../components/SectorCard';
+import SectorCard from '../sectors/components/SectorCard';
 // Types for our marketplace
 interface Sector {
   id: string;

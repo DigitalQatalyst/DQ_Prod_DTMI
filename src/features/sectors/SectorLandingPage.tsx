@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { Header } from '../../components/Header/Header';
-import { Footer } from '../../components/Footer/Footer';
+import { Header } from '../../shared/Header/Header';
+import { Footer } from '../../shared/Footer/Footer';
 import { ArrowRight, CheckCircle, TrendingUp, Users, Zap } from 'lucide-react';
 import { listPublicMedia } from '../../services/knowledgeHubGrid';
 

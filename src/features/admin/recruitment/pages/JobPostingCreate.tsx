@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import AppLayout from "../../shared/components/AppLayout";
 import { createJobPosting } from "../../../../services/jobPostingService";
 import type { JobPostingInput } from "../../../../services/jobPostingService";
-import { useToast } from "../../../../components/ui/Toast";
+import { useToast } from "../../../../shared/ui/Toast";
 import {
   Plus,
   X,

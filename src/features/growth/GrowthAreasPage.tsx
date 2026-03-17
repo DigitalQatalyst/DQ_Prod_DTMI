@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { Link } from 'react-router-dom';
-import SectorCard from '../../components/SectorCard';
+import SectorCard from '../sectors/components/SectorCard';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid, Legend } from 'recharts';
 import { TrendingUpIcon, ZapIcon, DatabaseIcon, GlobeIcon, ShoppingBagIcon, HeartIcon, ArrowLeftIcon, CheckIcon, BookOpenIcon, TruckIcon, LeafIcon, PaletteIcon, PlaneIcon, DownloadIcon } from 'lucide-react';
 // Reuse the same sector data from GrowthAreasSection

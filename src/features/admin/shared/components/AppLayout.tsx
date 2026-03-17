@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { Header } from "../../../../components/Header";
+import { Header } from "../../../../shared/Header";
 import {
   Home as HomeIcon,
   BookOpen as BookOpenIcon,

@@ -1,13 +1,11 @@
 import React, { useEffect, useState, useRef } from "react";
-import { useParams, useNavigate, useSearchParams } from "react-router-dom";
-import {
-  BookmarkIcon,
+import { useParams, useNavigate, useSearchParams } from "react-router-dom";import {
   StarIcon,
   ChevronRightIcon,
   HomeIcon,
 } from "lucide-react";
-import { Header } from "../../../components/Header";
-import { Footer } from "../../../components/Footer";
+import { Header } from "../../../shared/Header";
+import { Footer } from "../../../shared/Footer";
 import RequiredDocumentsTab from "../components/details/tabs/RequiredDocumentsTab";
 import ProviderTab from "../components/details/tabs/ProviderTab";
 import AboutTab from "../components/details/tabs/AboutTab";
@@ -19,11 +17,11 @@ import SummaryCard from "../components/details/SummaryCard";
 import TabsNav from "../components/details/TabsNav";
 import { getMarketplaceConfig } from "../../../utils/marketplaceConfig";
 import { addCompareId } from "../../../utils/comparisonStorage";
-import { ErrorDisplay } from "../../../components/SkeletonLoader";
+import { ErrorDisplay } from "../../../shared/SkeletonLoader";
 import { Link } from "react-router-dom";
 import { useProductDetails } from "../../../hooks/useProductDetails";
 interface MarketplaceDetailsPageProps {
-  marketplaceType: "courses" | "financial" | "non-financial" | "dtmi";
+  marketplaceType: "courses" | "financial" | "non-financial";
   bookmarkedItems?: string[];
   onToggleBookmark?: (itemId: string) => void;
   onAddToComparison?: (item: any) => void;
@@ -31,7 +29,6 @@ interface MarketplaceDetailsPageProps {
 const MarketplaceDetailsPage: React.FC<MarketplaceDetailsPageProps> = ({
   marketplaceType,
   bookmarkedItems = [],
-  onToggleBookmark = (_: string) => {},
   onAddToComparison = (_: any) => {},
 }) => {
   const { itemId } = useParams<{
@@ -41,14 +38,11 @@ const MarketplaceDetailsPage: React.FC<MarketplaceDetailsPageProps> = ({
   const [searchParams] = useSearchParams();
   const shouldTakeAction = searchParams.get("action") === "true";
   const config = getMarketplaceConfig(marketplaceType);
-  const [isBookmarked, setIsBookmarked] = useState(false);
-  const [sidebarOpen, setSidebarOpen] = useState(false);
   const [showTabsMenu, setShowTabsMenu] = useState(false);
   const [showNavigation, setShowNavigation] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
   const [isFloatingCardVisible, setIsFloatingCardVisible] = useState(true);
   const [showStickyBottomCTA, setShowStickyBottomCTA] = useState(false);
-  const [headerHeight, setHeaderHeight] = useState(80);
   const mainContentRef = useRef<HTMLDivElement>(null);
   const tabsRef = useRef<HTMLDivElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -62,11 +56,7 @@ const MarketplaceDetailsPage: React.FC<MarketplaceDetailsPageProps> = ({
   });
 
   // Sync bookmark state when item or bookmarks change
-  useEffect(() => {
-    if (item?.id) {
-      setIsBookmarked(bookmarkedItems.includes(item.id));
-    }
-  }, [item?.id, bookmarkedItems]);
+  useEffect(() => {}, [item?.id, bookmarkedItems]);
   // Check if tabs overflow and need navigation controls
   const checkOverflow = () => {
     if (tabsRef.current && containerRef.current) {
@@ -89,7 +79,6 @@ const MarketplaceDetailsPage: React.FC<MarketplaceDetailsPageProps> = ({
       // Get header height dynamically
       const header = document.querySelector("header");
       const headerHeight = header ? header.offsetHeight : 80;
-      setHeaderHeight(headerHeight);
       if (heroRef.current && mainContentRef.current) {
         const heroRect = heroRef.current.getBoundingClientRect();
         const heroBottom = heroRect.bottom;
@@ -159,12 +148,6 @@ const MarketplaceDetailsPage: React.FC<MarketplaceDetailsPageProps> = ({
   const reviewCount = (item as any)?.reviewCount
     ? Number((item as any).reviewCount)
     : Math.floor(Math.random() * 50) + 10;
-  const handleToggleBookmark = () => {
-    if (item) {
-      onToggleBookmark(item.id);
-      setIsBookmarked(!isBookmarked);
-    }
-  };
   const handleAddToComparison = () => {
     if (item) {
       // Persist selection locally so it is available on marketplace pages
@@ -203,10 +186,7 @@ const MarketplaceDetailsPage: React.FC<MarketplaceDetailsPageProps> = ({
   if (loading) {
     return (
       <div className="min-h-screen flex flex-col bg-gray-50">
-        <Header
-          toggleSidebar={() => setSidebarOpen(!sidebarOpen)}
-          sidebarOpen={sidebarOpen}
-        />
+        <Header />
         <div className="container mx-auto px-4 py-8 flex items-center justify-center min-h-[300px] flex-grow">
           <div className="animate-pulse flex flex-col items-center">
             <div className="h-8 w-32 bg-gray-200 rounded mb-4"></div>
@@ -220,10 +200,7 @@ const MarketplaceDetailsPage: React.FC<MarketplaceDetailsPageProps> = ({
   if (error) {
     return (
       <div className="min-h-screen flex flex-col bg-gray-50">
-        <Header
-          toggleSidebar={() => setSidebarOpen(!sidebarOpen)}
-          sidebarOpen={sidebarOpen}
-        />
+        <Header />
         <div className="container mx-auto px-4 py-8 flex-grow">
           <nav className="flex mb-4" aria-label="Breadcrumb">
             <ol className="inline-flex items-center space-x-1 md:space-x-2">
@@ -257,10 +234,7 @@ const MarketplaceDetailsPage: React.FC<MarketplaceDetailsPageProps> = ({
   if (!item) {
     return (
       <div className="min-h-screen flex flex-col bg-gray-50">
-        <Header
-          toggleSidebar={() => setSidebarOpen(!sidebarOpen)}
-          sidebarOpen={sidebarOpen}
-        />
+        <Header />
         <div className="container mx-auto px-4 py-8 flex items-center justify-center min-h-[300px] flex-grow">
           <div className="text-center">
             <h2 className="text-xl font-medium text-gray-900 mb-2">
@@ -288,7 +262,6 @@ const MarketplaceDetailsPage: React.FC<MarketplaceDetailsPageProps> = ({
   const serviceApplication = item.serviceApplication;
   const provider = item.provider;
   const primaryAction = config.primaryCTA;
-  const secondaryAction = config.secondaryCTA;
   // Extract tags based on marketplace type
   const displayTags =
     item.tags ||
@@ -388,10 +361,7 @@ const MarketplaceDetailsPage: React.FC<MarketplaceDetailsPageProps> = ({
   // SummaryCard is now an external presentational component
   return (
     <div className="bg-white min-h-screen flex flex-col">
-      <Header
-        toggleSidebar={() => setSidebarOpen(!sidebarOpen)}
-        sidebarOpen={sidebarOpen}
-      />
+      <Header />
       <main className="flex-grow">
         {/* Hero Banner - consistent header layout */}
         <div
@@ -515,8 +485,8 @@ const MarketplaceDetailsPage: React.FC<MarketplaceDetailsPageProps> = ({
           showNavigation={showNavigation}
           showTabsMenu={showTabsMenu}
           setShowTabsMenu={setShowTabsMenu}
-          tabsRef={tabsRef}
-          containerRef={containerRef}
+          tabsRef={tabsRef as React.RefObject<HTMLDivElement>}
+          containerRef={containerRef as React.RefObject<HTMLDivElement>}
           scrollLeft={scrollLeft}
           scrollRight={scrollRight}
         />
@@ -547,7 +517,7 @@ const MarketplaceDetailsPage: React.FC<MarketplaceDetailsPageProps> = ({
                 <div className="lg:hidden mt-8">
                   <SummaryCard
                     isFloating={false}
-                    summaryCardRef={summaryCardRef}
+                    summaryCardRef={summaryCardRef as React.RefObject<HTMLDivElement>}
                     config={config}
                     detailItems={detailItems}
                     highlights={highlights}
@@ -697,3 +667,4 @@ const MarketplaceDetailsPage: React.FC<MarketplaceDetailsPageProps> = ({
   );
 };
 export default MarketplaceDetailsPage;
+

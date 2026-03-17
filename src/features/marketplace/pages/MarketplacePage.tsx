@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { FilterSidebar, FilterConfig } from "../components/FilterSidebar.tsx";
 import { MarketplaceGrid } from "../components/MarketplaceGrid.tsx";
-import { SearchBar } from "../../../components/SearchBar.tsx";
+import { SearchBar } from "../../../shared/SearchBar.tsx";
 import { SubMarketplaceTabs, SubMarketplaceTab } from "../components/SubMarketplaceTabs.tsx";
 import { IntelligenceLayersSection } from "../components/IntelligenceLayersSection.tsx";
 import {
@@ -14,11 +14,11 @@ import {
   ChevronDownIcon,
   ChevronUpIcon,
 } from "lucide-react";
-import { ErrorDisplay, CourseCardSkeleton } from "../../../components/SkeletonLoader.tsx";
+import { ErrorDisplay, CourseCardSkeleton } from "../../../shared/SkeletonLoader.tsx";
 import { getMarketplaceConfig } from "../../../utils/marketplaceConfig.ts";
 import { MarketplaceComparison } from "../components/MarketplaceComparison";
-import { Header } from "../../../components/Header/index.tsx";
-import { Footer } from "../../../components/Footer/index.tsx";
+import { Header } from "../../../shared/Header/index.tsx";
+import { Footer } from "../../../shared/Footer/index.tsx";
 import {
   getStoredCompareIds,
   setStoredCompareIds,

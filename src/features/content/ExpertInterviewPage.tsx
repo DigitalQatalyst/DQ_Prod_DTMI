@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams, Navigate } from 'react-router-dom';
-import { Header } from '../../components/Header/Header';
-import { Footer } from '../../components/Footer/Footer';
+import { Header } from '../../shared/Header/Header';
+import { Footer } from '../../shared/Footer/Footer';
 import { mediaService, blogService } from '../admin/shared/utils/supabase';
 import { getExpertInterviewBySlug, getRelatedContentForInterview } from '../../utils/mockMarketplaceData';
 import { Trash2, AlertCircle, Loader } from 'lucide-react';

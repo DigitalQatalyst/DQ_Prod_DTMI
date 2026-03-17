@@ -1,4 +1,4 @@
-import { AnalyticsProvider } from "./components/analytics/AnalyticsProvider";
+import { AnalyticsProvider } from "./shared/analytics/AnalyticsProvider";
 import DtmiLandingPage from "./features/landing";
 
 export function App() {

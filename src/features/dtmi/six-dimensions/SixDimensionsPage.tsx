@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { Search, Menu } from "lucide-react";
-import { Footer } from "../../../components/Footer";
+import { Footer } from "../../../shared/Footer";
 import { getKnowledgeHubItems } from "../../../utils/mockMarketplaceData";
 
 interface ContentItem {

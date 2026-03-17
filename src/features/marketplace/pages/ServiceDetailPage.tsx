@@ -1,7 +1,7 @@
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { useState, useEffect } from 'react';
-import { Header } from '../../../components/Header';
-import { Footer } from '../../../components/Footer';
+import { Header } from '../../../shared/Header';
+import { Footer } from '../../../shared/Footer';
 import { mockServiceData, ServiceItem } from '../../../data/mockServiceData';
 import {
   CheckCircle,

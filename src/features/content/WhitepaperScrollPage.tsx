@@ -1,6 +1,6 @@
-import WhitepaperNav from "../../components/whitepaper/WhitepaperNav";
-import ParallaxSection from "../../components/whitepaper/ParallaxSection";
-import ContentSection from "../../components/whitepaper/ContentSection";
+import WhitepaperNav from "./components/whitepaper/WhitepaperNav";
+import ParallaxSection from "./components/whitepaper/ParallaxSection";
+import ContentSection from "./components/whitepaper/ContentSection";
 
 import heroImg from "/images/whitepaper/whitepaper-hero.jpg";
 import forewordImg from "/images/whitepaper/whitepaper-foreword.jpg";

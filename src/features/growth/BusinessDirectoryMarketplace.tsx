@@ -1,8 +1,8 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowLeftIcon, SearchIcon, FilterIcon, XIcon, ChevronDownIcon, ChevronUpIcon, SlidersIcon } from 'lucide-react';
-import ProfileCard from '../../components/ProfileCard';
-import ProfileModal from '../../components/ProfileModal';
+import ProfileCard from './components/ProfileCard';
+import ProfileModal from './components/ProfileModal';
 // Types for our marketplace
 interface Business {
   id: number;

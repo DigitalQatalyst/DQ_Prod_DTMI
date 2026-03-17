@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Header } from '../../components/Header';
-import { Footer } from '../../components/Footer';
-import ResearchHeroSection from '../../components/research/ResearchHeroSection';
-import ResearchTableOfContents from '../../components/research/ResearchTableOfContents';
-import ResearchReportContent from '../../components/research/ResearchReportContent';
+import { Header } from '../../shared/Header';
+import { Footer } from '../../shared/Footer';
+import ResearchHeroSection from './components/research/ResearchHeroSection';
+import ResearchTableOfContents from './components/research/ResearchTableOfContents';
+import ResearchReportContent from './components/research/ResearchReportContent';
 import { blogService } from '../admin/shared/utils/supabase';
 import { Loader2 } from 'lucide-react';
 

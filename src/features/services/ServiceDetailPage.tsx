@@ -1,7 +1,7 @@
 import { useParams, useNavigate, Link } from "react-router-dom";
-import { Header } from "../../components/Header/Header";
-import { Footer } from "../../components/Footer/Footer";
-import { ConsultationFormCard } from "../../components/ConsultationFormCard";
+import { Header } from "../../shared/Header/Header";
+import { Footer } from "../../shared/Footer/Footer";
+import { ConsultationFormCard } from "./components/ConsultationFormCard";
 import React, { useEffect, useRef, useState } from "react";
 import { useMethodologySteps } from "../../hooks/useMethodologySteps";
 import { getSidebarCtaContent, getOverviewClosingText, getServiceAreasTitle, getFaqSectionTitle } from "../../data/serviceDetailData";

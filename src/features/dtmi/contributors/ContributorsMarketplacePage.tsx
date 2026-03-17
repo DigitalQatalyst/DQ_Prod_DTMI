@@ -11,8 +11,8 @@ import {
   Sparkles,
 } from "lucide-react";
 import { Link, useSearchParams } from "react-router-dom";
-import { Header } from "../../../components/Header/Header";
-import { Footer } from "../../../components/Footer/Footer";
+import { Header } from "../../../shared/Header/Header";
+import { Footer } from "../../../shared/Footer/Footer";
 import {
   contributorProfiles,
   ContributorProfile,

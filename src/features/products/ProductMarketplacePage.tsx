@@ -1,11 +1,11 @@
 import React, { useMemo, useState } from "react";
-import { Header } from "../../components/Header";
-import { Footer } from "../../components/Footer";
-import { ProductCard } from "../../components/ProductCard";
-import { ProductFilterSidebar } from "../../components/ProductFilterSidebar";
+import { Header } from "../../shared/Header";
+import { Footer } from "../../shared/Footer";
+import { ProductCard } from "./components/ProductCard";
+import { ProductFilterSidebar } from "./components/ProductFilterSidebar";
 import { dqProducts } from "../../utils/productData";
 import { HomeIcon, ChevronRightIcon, FilterIcon, XIcon, SearchIcon } from "lucide-react";
-import ModernDQChatbot from "../../components/ModernDQChatbot";
+import ModernDQChatbot from "../../shared/ModernDQChatbot";
 
 export function ProductMarketplacePage() {
   const [sidebarOpen, setSidebarOpen] = useState(false);

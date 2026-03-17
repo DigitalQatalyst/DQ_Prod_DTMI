@@ -1,5 +1,5 @@
-import { Header } from "../../components/Header";
-import { Footer } from "../../components/Footer";
+import { Header } from "../../shared/Header";
+import { Footer } from "../../shared/Footer";
 import { Link } from "react-router-dom";
 import {
   Briefcase,
@@ -13,7 +13,7 @@ import {
   Target,
   Sparkles,
 } from "lucide-react";
-import CallToAction from "../../components/CallToAction";
+import CallToAction from "../../shared/CallToAction";
 
 const careerStats = [
   { value: "50+", label: "Team Members" },

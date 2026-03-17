@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { useAuth } from "../../components/Header/context/AuthContext";
+import { useAuth } from "../../shared/Header/context/AuthContext";
 import {
   supabase,
   getUserByAuthId,

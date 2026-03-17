@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { useAuth } from "../../components/Header";
+import { useAuth } from "../../shared/Header";
 import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 
 interface LocationState {

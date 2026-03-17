@@ -1,7 +1,7 @@
-import { Header } from "../../components/Header/Header";
+import { Header } from "../../shared/Header/Header";
 import { DTMIFooter } from "../landing/components/DTMIFooter";
 import { useNavigate } from "react-router-dom";
-import ModernDQChatbot from "../../components/ModernDQChatbot";
+import ModernDQChatbot from "../../shared/ModernDQChatbot";
 import { useState } from "react";
 
 const BooksLandingPage = () => {

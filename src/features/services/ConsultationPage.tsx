@@ -1,8 +1,8 @@
 import React from "react";
-import { Header } from "../../components/Header/Header";
-import { Footer } from "../../components/Footer/Footer";
-import CallToAction from "../../components/CallToAction";
-import ModernDQChatbot from "../../components/ModernDQChatbot";
+import { Header } from "../../shared/Header/Header";
+import { Footer } from "../../shared/Footer/Footer";
+import CallToAction from "../../shared/CallToAction";
+import ModernDQChatbot from "../../shared/ModernDQChatbot";
 
 export default function ConsultationPage() {
   return (

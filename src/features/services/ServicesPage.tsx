@@ -1,8 +1,8 @@
-import { Header } from "../../components/Header/Header";
-import { Footer } from "../../components/Footer/Footer";
+import { Header } from "../../shared/Header/Header";
+import { Footer } from "../../shared/Footer/Footer";
 import { useNavigate, Link } from "react-router-dom";
-import ModernDQChatbot from "../../components/ModernDQChatbot";
-import DiscoverProducts from "../../components/DiscoverProducts";
+import ModernDQChatbot from "../../shared/ModernDQChatbot";
+import DiscoverProducts from "./components/DiscoverProducts";
 import { 
   Palette, 
   Rocket, 

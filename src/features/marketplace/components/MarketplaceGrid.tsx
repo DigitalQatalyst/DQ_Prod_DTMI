@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { PromoCard } from "../../../components/PromoCard";
+import { PromoCard } from "../../../shared/PromoCard";
 import { MarketplaceCard } from "./MarketplaceCard";
-import { ContentItemCard, ContentType } from "../../../components/Cards/ContentItemCard";
+import { ContentItemCard, ContentType } from "./ContentItemCard";
 import { getFallbackItems } from "../../../utils/fallbackData";
 export interface MarketplaceItem {
   id: string;

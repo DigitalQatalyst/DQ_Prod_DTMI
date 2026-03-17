@@ -1,8 +1,8 @@
-import { Header } from "../../components/Header/Header";
-import { Footer } from "../../components/Footer/Footer";
+import { Header } from "../../shared/Header/Header";
+import { Footer } from "../../shared/Footer/Footer";
 import { useNavigate } from "react-router-dom";
 import { ArrowRight, Search, BookOpen } from "lucide-react";
-import ModernDQChatbot from "../../components/ModernDQChatbot";
+import ModernDQChatbot from "../../shared/ModernDQChatbot";
 
 const InsightsLandingPage = () => {
   const navigate = useNavigate();

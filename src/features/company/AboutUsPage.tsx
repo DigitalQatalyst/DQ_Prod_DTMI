@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import { Header } from "../../components/Header";
-import { Footer } from "../../components/Footer";
+import { Header } from "../../shared/Header";
+import { Footer } from "../../shared/Footer";
 import {
   Sparkles,
   ArrowRight,
@@ -11,10 +11,10 @@ import {
   LineChart,
   Shield,
 } from "lucide-react";
-import ModernDQChatbot from "../../components/ModernDQChatbot";
+import ModernDQChatbot from "../../shared/ModernDQChatbot";
 import { leadershipTeam } from "../../data/leadershipTeam";
-import ClientLogosCarousel from "../../components/ClientLogosCarousel";
-import CallToActionSimple from "../../components/CallToActionSimple";
+import ClientLogosCarousel from "./components/ClientLogosCarousel";
+import CallToActionSimple from "./components/CallToActionSimple";
 
 const impactStats = [
   { value: "2015", label: "Founded in Dubai, UAE" },

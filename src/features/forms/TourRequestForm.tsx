@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Header } from '../../components/Header';
-import { Footer } from '../../components/Footer';
+import { Header } from '../../shared/Header';
+import { Footer } from '../../shared/Footer';
 import { ArrowRight, CheckCircle, MapPin } from 'lucide-react';
 import { submitTourRequest } from '../../services/airtableService';
 

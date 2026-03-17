@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { ArticleAuthorCard } from './ArticleAuthorCard.tsx';
-import { WhitepaperAccessModal } from '../../../components/WhitepaperAccessModal.tsx';
+import { WhitepaperAccessModal } from './WhitepaperAccessModal.tsx';
 
 export function Article3Content() {
   const [isModalOpen, setIsModalOpen] = useState(false);

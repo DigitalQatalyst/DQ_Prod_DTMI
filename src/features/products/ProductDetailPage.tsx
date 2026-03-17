@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { Header } from "../../components/Header";
-import { Footer } from "../../components/Footer";
-import { WaitlistModal } from "../../components/WaitlistModal";
+import { Header } from "../../shared/Header";
+import { Footer } from "../../shared/Footer";
+import { WaitlistModal } from "./components/WaitlistModal";
 import { dqProducts } from "../../utils/productData";
 import type { ProductType } from "../../types/product";
 import { HomeIcon, ChevronRightIcon, CheckCircleIcon } from "lucide-react";

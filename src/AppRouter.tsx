@@ -1,14 +1,14 @@
 import { useState } from "react";
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import { CourseType } from "./types/course";
-import { AuthProvider } from "./components/Header/context/AuthContext";
-import { GoogleAnalytics } from "./components/GoogleAnalytics";
+import { AuthProvider } from "./shared/Header/context/AuthContext";
+import { GoogleAnalytics } from "./shared/GoogleAnalytics";
 import { MarketplaceRouter } from "./features/marketplace";
 import { ProductMarketplacePage } from "./features/products/ProductMarketplacePage";
 import { ProductDetailPage } from "./features/products/ProductDetailPage";
 import { App } from "./App";
 import MarketplaceDetailsPage from "./features/marketplace/pages/MarketplaceDetailsPage";
-import ProtectedRoute from "./components/ProtectedRoute";
+import ProtectedRoute from "./shared/ProtectedRoute";
 import AboutUsPage from "./features/company/AboutUsPage";
 import NotFound from "./features/misc/NotFound";
 import MediaDetailPage from "./features/content/MediaDetailPage";

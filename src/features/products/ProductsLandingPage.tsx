@@ -1,5 +1,5 @@
-import { Header } from "../../components/Header";
-import { Footer } from "../../components/Footer";
+import { Header } from "../../shared/Header";
+import { Footer } from "../../shared/Footer";
 import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 import {
@@ -18,8 +18,8 @@ import {
   ArrowRightLeft,
   CheckCircle,
 } from "lucide-react";
-import CallToAction from "../../components/CallToAction";
-import { ProductCard } from "../../components/ProductCard";
+import CallToAction from "../../shared/CallToAction";
+import { ProductCard } from "./components/ProductCard";
 import { dqProducts } from "../../utils/productData";
 import { submitConsultationRequest } from "../../services/airtableService";
 

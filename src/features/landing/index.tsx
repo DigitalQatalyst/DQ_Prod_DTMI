@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { DtmiHeroSection } from "./components/HeroSection";
-import { Header } from "../../components/Header/Header";
-import { Footer } from "../../components/Footer/Footer";
+import { Header } from "../../shared/Header/Header";
+import { Footer } from "../../shared/Footer/Footer";
 import { FeaturedInsights } from "./components/FeaturedInsights";
 import { SectorInsights } from "./components/SectorInsights";
 import { NewsletterSignupForm } from "./components/NewsletterSignupForm";
@@ -13,7 +13,7 @@ import { MarketplaceOfMinds } from "./components/MarketplaceOfMinds";
 import { ContributorAdvertCards } from "./components/ContributorAdvertCards";
 import { FeaturedContent } from "./components/FeaturedContent";
 import { WeekHighlightsHomepage } from "./components/WeekHighlightsHomepage";
-import ModernDQChatbot from "../../components/ModernDQChatbot";
+import ModernDQChatbot from "../../shared/ModernDQChatbot";
 import { SignalsContent } from "../dtmi/content-tabs/SignalsContent";
 import { InsightsContent } from "../dtmi/content-tabs/InsightsContent";
 import { DeepAnalysisContent } from "../dtmi/content-tabs/DeepAnalysisContent";

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import { Header } from "../../components/Header";
-import { Footer } from "../../components/Footer";
+import { Header } from "../../shared/Header";
+import { Footer } from "../../shared/Footer";
 import { ArrowRight, CheckCircle, Zap, Target, Users } from "lucide-react";
 import { submitConsultationRequest } from "../../services/airtableService";
 

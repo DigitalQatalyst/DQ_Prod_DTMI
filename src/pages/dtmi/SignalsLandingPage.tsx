@@ -1,5 +1,5 @@
-import { Header } from "../../components/Header/Header";
-import { Footer } from "../../components/Footer/Footer";
+import { Header } from "../../shared/Header/Header";
+import { Footer } from "../../shared/Footer/Footer";
 import { useNavigate } from "react-router-dom";
 import {
   ArrowRight,
@@ -9,7 +9,7 @@ import {
   Target,
   Lightbulb,
 } from "lucide-react";
-import ModernDQChatbot from "../../components/ModernDQChatbot";
+import ModernDQChatbot from "../../shared/ModernDQChatbot";
 import { WeekHighlights } from "./components/WeekHighlights";
 import { EditorsPick } from "./components/EditorsPick";
 import { FilterableSignals } from "../../features/dtmi/content-tabs/components/FilterableSignals";

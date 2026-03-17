@@ -9,7 +9,7 @@ import { getAllJobPostings } from "../../../../services/jobPostingService";
 import type { JobPosting } from "../../../../services/jobPostingService";
 import { getAdminUsers } from "../../../../services/adminUserService";
 import type { AdminUser } from "../../../../types/admin";
-import { useAuth } from "../../../../components/Header/context/AuthContext";
+import { useAuth } from "../../../../shared/Header/context/AuthContext";
 import {
   TrendingUp as TrendingUpIcon,
   Loader,

@@ -1,5 +1,5 @@
 import { useNavigate, useLocation, Outlet } from "react-router-dom";
-import { Header } from "../../components/Header/Header";
+import { Header } from "../../shared/Header/Header";
 import {
   LayoutDashboard,
   Bell,
