@@ -18,7 +18,7 @@ import { SignalsContent } from "../dtmi/content-tabs/SignalsContent";
 import { InsightsContent } from "../dtmi/content-tabs/InsightsContent";
 import { DeepAnalysisContent } from "../dtmi/content-tabs/DeepAnalysisContent";
 import { PredictionAnalysis } from "./components/PredictionAnalysis";
-import { DTMIFooter } from "./components/DTMIFooter";
+import { Footer } from "../../shared/Footer/Footer";
 
 type TabType = "default" | "signals" | "insights" | "deep-analysis";
 
@@ -73,7 +73,7 @@ const DtmiLandingPage = () => {
           />
         )}
       </main>
-      <DTMIFooter />
+      <Footer />
 
       {/* DQ AI Chatbot */}
       <ModernDQChatbot />

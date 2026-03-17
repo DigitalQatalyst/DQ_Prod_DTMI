@@ -14,7 +14,7 @@ import { WeekHighlights } from "./components/WeekHighlights";
 import { EditorsPick } from "./components/EditorsPick";
 import { FilterableSignals } from "../../features/dtmi/content-tabs/components/FilterableSignals";
 import { ContributorAdvertCards } from "../../features/landing/components/ContributorAdvertCards";
-import { DTMIFooter } from "../../features/landing/components/DTMIFooter";
+import { Footer } from "../../shared/Footer/Footer";
 
 const SignalsLandingPage = () => {
   const navigate = useNavigate();
@@ -215,7 +215,7 @@ const SignalsLandingPage = () => {
         </section>
       </main>
 
-      <DTMIFooter />
+      <Footer />
       <ModernDQChatbot />
     </div>
   );

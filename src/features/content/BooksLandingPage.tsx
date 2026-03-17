@@ -1,5 +1,5 @@
 import { Header } from "../../shared/Header/Header";
-import { DTMIFooter } from "../landing/components/DTMIFooter";
+import { Footer } from "../../shared/Footer/Footer";
 import { useNavigate } from "react-router-dom";
 import ModernDQChatbot from "../../shared/ModernDQChatbot";
 import { useState } from "react";
@@ -562,7 +562,7 @@ const BooksLandingPage = () => {
         
       </main>
 
-      <DTMIFooter />
+      <Footer />
       <ModernDQChatbot />
     </div>
   );

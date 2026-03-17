@@ -2,7 +2,7 @@ import { Header } from "../../shared/Header/Header";
 import { useNavigate } from "react-router-dom";
 import { ContributorAdvertCards } from "../landing/components/ContributorAdvertCards";
 import { NewsletterSignupForm } from "../landing/components/NewsletterSignupForm";
-import { DTMIFooter } from "../landing/components/DTMIFooter";
+import { Footer } from "../../shared/Footer/Footer";
 import ModernDQChatbot from "../../shared/ModernDQChatbot";
 import { LeadCaptureModal } from "../../shared/LeadCaptureModal";
 import { useState } from "react";
@@ -1088,7 +1088,7 @@ const ResearchLandingPage = () => {
         <NewsletterSignupForm />
 
         {/* DTMI Footer */}
-        <DTMIFooter />
+        <Footer />
       </main>
 
       <ModernDQChatbot />
