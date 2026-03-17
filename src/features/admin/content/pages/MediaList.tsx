@@ -140,7 +140,7 @@ const MediaList: React.FC = () => {
     setLoadingAuthorData(true);
     try {
       const posts = await blogService.getBlogs({ authorId: author.id });
-      setAuthorPosts(posts);
+      setAuthorPosts(posts.data);
     } catch (err) {
       console.error('Failed to load author insight', err);
     } finally {
