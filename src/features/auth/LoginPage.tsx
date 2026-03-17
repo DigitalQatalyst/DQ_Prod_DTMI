@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { useAuth } from "../components/Header";
+import { useAuth } from "../../components/Header";
 import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 
 interface LocationState {
@@ -64,3 +64,5 @@ export const LoginPage: React.FC = () => {
 };
 
 export default LoginPage;
+
+
