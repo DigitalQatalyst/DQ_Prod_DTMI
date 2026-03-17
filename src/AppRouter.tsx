@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import { MsalProvider } from "@azure/msal-react";
 import { msalInstance, initializeMsal } from "./services/auth/msal";
-import { CourseType } from "./utils/mockData";
+import { CourseType } from "./types/course";
 import { AuthProvider } from "./components/Header/context/AuthContext";
 import { GoogleAnalytics } from "./components/GoogleAnalytics";
 import { MarketplaceRouter } from "./pages/marketplace/MarketplaceRouter";

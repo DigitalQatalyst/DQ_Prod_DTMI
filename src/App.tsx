@@ -1,5 +1,4 @@
 import React from "react";
-import HomePage from "./components/HomePage";
 import { AnalyticsProvider } from "./components/analytics/AnalyticsProvider";
 import DtmiLandingPage from "./pages/dtmi/DtmiLandingPage";
 
