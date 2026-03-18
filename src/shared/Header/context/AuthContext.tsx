@@ -8,7 +8,7 @@ import {
   ReactNode,
 } from "react";
 import { supabase } from "../../../lib/supabase";
-import type { Session, User } from "@supabase/supabase-js";
+import type { Session } from "@supabase/supabase-js";
 
 type UserRole = "admin" | "creator" | "viewer" | "HR-Admin" | "HR-viewer";
 
@@ -51,17 +51,30 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-/** Map a Supabase auth user + DB profile row into our UserProfile shape */
-function buildUserProfile(authUser: User, dbRow: Record<string, unknown> | null): UserProfile {
+/**
+ * Build UserProfile from the JWT claims embedded by custom_access_token_hook.
+ * This is zero-latency — no DB round-trip needed on auth state changes.
+ * Falls back to user_metadata for fields not yet in the token (e.g. right after signup).
+ */
+function buildProfileFromSession(session: Session): UserProfile {
+  const { user } = session;
+  // JWT claims injected by custom_access_token_hook
+  const claims = session.access_token
+    ? (JSON.parse(atob(session.access_token.split(".")[1])) as Record<string, unknown>)
+    : {};
+
   return {
-    id: (dbRow?.id as string) ?? authUser.id,
-    supabaseUserId: authUser.id,
-    email: authUser.email ?? "",
-    name: (dbRow?.name as string) ?? authUser.user_metadata?.full_name ?? authUser.email ?? "",
-    givenName: authUser.user_metadata?.given_name,
-    familyName: authUser.user_metadata?.family_name,
-    picture: (dbRow?.avatar_url as string) ?? authUser.user_metadata?.avatar_url,
-    role: (dbRow?.role as UserRole) ?? "viewer",
+    id: (claims.profile_id as string) || user.id,
+    supabaseUserId: user.id,
+    email: user.email ?? "",
+    name:
+      (claims.full_name as string) ||
+      user.user_metadata?.full_name ||
+      user.user_metadata?.name ||
+      user.email?.split("@")[0] ||
+      "",
+    picture: (claims.avatar_url as string) || user.user_metadata?.avatar_url || "",
+    role: ((claims.user_role as UserRole) ?? "viewer"),
     permissions: [],
   };
 }
@@ -73,24 +86,27 @@ export function AuthProvider({ children }: Readonly<{ children: ReactNode }>) {
   const [isSyncing, setIsSyncing] = useState(false);
   const [syncError, setSyncError] = useState<string | null>(null);
 
-  /** Fetch the matching row from public.users and build UserProfile */
-  const syncUserProfile = useCallback(async (authUser: User) => {
+  /**
+   * Refresh profile from DB and force a token refresh so the new JWT claims
+   * are picked up. Use this after role changes or profile updates.
+   */
+  const syncUserProfile = useCallback(async (_authUser?: unknown) => {
     setIsSyncing(true);
     setSyncError(null);
     try {
-      const { data, error } = await supabase
-        .from("users")
-        .select("id, name, email, role, avatar_url, is_active")
-        .eq("auth_user_id", authUser.id)
-        .maybeSingle();
-
+      // Force token refresh so custom_access_token_hook re-runs with latest DB data
+      const { data: { session: fresh }, error } = await supabase.auth.refreshSession();
       if (error) throw error;
-      setUser(buildUserProfile(authUser, data));
+      if (fresh) {
+        setSession(fresh);
+        setUser(buildProfileFromSession(fresh));
+      }
     } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : "Failed to load profile";
+      // Fallback: build from current session without DB data
+      const msg = err instanceof Error ? err.message : "Failed to refresh profile";
       setSyncError(msg);
-      // Still set a minimal profile so the user isn't locked out
-      setUser(buildUserProfile(authUser, null));
+      const { data: { session: current } } = await supabase.auth.getSession();
+      if (current) setUser(buildProfileFromSession(current));
     } finally {
       setIsSyncing(false);
     }
@@ -103,18 +119,15 @@ export function AuthProvider({ children }: Readonly<{ children: ReactNode }>) {
     supabase.auth.getSession().then(({ data: { session: s } }) => {
       if (!mounted) return;
       setSession(s);
-      if (s?.user) {
-        syncUserProfile(s.user).finally(() => setIsLoading(false));
-      } else {
-        setIsLoading(false);
-      }
+      if (s) setUser(buildProfileFromSession(s));
+      setIsLoading(false);
     });
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, s) => {
       if (!mounted) return;
       setSession(s);
-      if (s?.user) {
-        syncUserProfile(s.user);
+      if (s) {
+        setUser(buildProfileFromSession(s));
       } else {
         setUser(null);
       }
@@ -124,7 +137,7 @@ export function AuthProvider({ children }: Readonly<{ children: ReactNode }>) {
       mounted = false;
       subscription.unsubscribe();
     };
-  }, [syncUserProfile]);
+  }, []);
 
   const login = useCallback(async (email?: string, password?: string) => {
     if (!email || !password) {
@@ -189,8 +202,8 @@ export function AuthProvider({ children }: Readonly<{ children: ReactNode }>) {
   );
 
   const refreshAvatar = useCallback(async () => {
-    if (session?.user) await syncUserProfile(session.user);
-  }, [session, syncUserProfile]);
+    await syncUserProfile();
+  }, [syncUserProfile]);
 
   const contextValue = useMemo<AuthContextType>(
     () => ({
