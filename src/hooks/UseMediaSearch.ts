@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from 'react'
 import { getFallbackKnowledgeHubItems } from '../utils/fallbackData'
 import { mapApiItemToCardProps } from '../utils/mediaMappers'
-import { getSupabase } from '../admin-ui/utils/supabaseClient'
+import { getSupabase } from '../features/admin/shared/utils/supabaseClient'
 
 // Known media types - these are filter values that map to the 'type' field in the database
 const KNOWN_TYPES = ['News', 'Reports', 'Toolkits & Templates', 'Guides', 'Events', 'Videos', 'Podcasts', 'Expert Interview', 'Prediction Analysis', 'Article', 'Blog']

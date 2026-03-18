@@ -1,5 +1,5 @@
 // Mock data for Knowledge Hub marketplace
-import { mediaService } from '../admin-ui/utils/supabase';
+import { mediaService } from '../features/admin/shared/utils/supabase';
 
 const getFirstHeroImageFromContent = (content: string | null, type: string): string | null => {
   // Only extract hero images for whitepapers

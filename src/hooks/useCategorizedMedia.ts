@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { getSupabase } from '../admin-ui/utils/supabaseClient';
+import { getSupabase } from '../features/admin/shared/utils/supabaseClient';
 
 // Known tags to categorize data
 const TAGS = ['Article', 'Knowledge', 'Technology & Innovation'];
