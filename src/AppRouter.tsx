@@ -1,121 +1,95 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
-import { MsalProvider } from "@azure/msal-react";
-import { msalInstance, initializeMsal } from "./services/auth/msal";
-import { CourseType } from "./utils/mockData";
-import { AuthProvider } from "./components/Header/context/AuthContext";
-import { GoogleAnalytics } from "./components/GoogleAnalytics";
-import { MarketplaceRouter } from "./pages/marketplace/MarketplaceRouter";
-import { ProductMarketplacePage } from "./pages/ProductMarketplacePage";
-import { ProductDetailPage } from "./pages/ProductDetailPage";
+import { CourseType } from "./types/course";
+import { AuthProvider } from "./shared/Header/context/AuthContext";
+import { GoogleAnalytics } from "./shared/GoogleAnalytics";
+import { MarketplaceRouter } from "./features/marketplace";
+import { ProductMarketplacePage } from "./features/products/ProductMarketplacePage";
+import { ProductDetailPage } from "./features/products/ProductDetailPage";
 import { App } from "./App";
-import MarketplaceDetailsPage from "./pages/marketplace/MarketplaceDetailsPage";
-import DashboardRouter from "./pages/dashboard/DashboardRouter";
-import ProtectedRoute from "./components/ProtectedRoute";
-import AuthorizedRoute from "./components/AuthorizedRoute";
-import AboutUsPage from "./pages/AboutUsPage";
-import NotFound from "./pages/NotFound";
-import MediaDetailPage from "./pages/media/MediaDetailPage";
-import MediaDetailBlogLayout from "./pages/media/MediaDetailBlogLayout";
-import ServicesPage from "./pages/ServicesPage";
-import ServiceDetailPage from "./pages/ServiceDetailPage";
-import { ABBCaseStudy } from "./pages/case-studies/ABBCaseStudy";
-import { PGCaseStudy } from "./pages/case-studies/PGCaseStudy";
-import { CaseStudiesPage } from "./pages/case-studies/CaseStudiesPage";
-import LoginPage from "./pages/LoginPage";
+import MarketplaceDetailsPage from "./features/marketplace/pages/MarketplaceDetailsPage";
+import ProtectedRoute from "./shared/ProtectedRoute";
+import AboutUsPage from "./features/company/AboutUsPage";
+import NotFound from "./features/misc/NotFound";
+import MediaDetailPage from "./features/content/MediaDetailPage";
+import MediaDetailBlogLayout from "./features/content/MediaDetailBlogLayout";
+import ServicesPage from "./features/services/ServicesPage";
+import ServiceDetailPage from "./features/services/ServiceDetailPage";
+import { ABBCaseStudy } from "./features/company/case-studies/ABBCaseStudy";
+import { PGCaseStudy } from "./features/company/case-studies/PGCaseStudy";
+import LoginPage from "./features/auth/LoginPage";
 // Admin UI (integrated)
-import AdminDashboard from "./admin-ui/pages/Dashboard";
-import AdminMediaList from "./admin-ui/pages/MediaList";
-import BlogCreate from "./admin-ui/pages/BlogCreate";
-import BlogDetail from "./admin-ui/pages/BlogDetail";
-import AdminSettings from "./admin-ui/pages/Settings";
-import AuthorManagement from "./admin-ui/pages/AuthorManagement";
-import AuthorCreate from "./admin-ui/pages/AuthorCreate";
-import CategoryManagement from "./admin-ui/pages/CategoryManagement";
-import ContentSubmissions from "./admin-ui/pages/ContentSubmissions";
-import JobApplications from "./admin-ui/pages/JobApplications";
-import JobPostingsManagement from "./admin-ui/pages/JobPostingsManagement";
-import JobPostingCreate from "./admin-ui/pages/JobPostingCreate";
-import Analytics from "./admin-ui/pages/Analytics";
-import InterviewScheduler from "./admin-ui/pages/InterviewScheduler";
-import NotificationCenter from "./admin-ui/pages/NotificationCenter";
-import UserManagement from "./admin-ui/pages/UserManagement";
-// Forms
-import NeedsAssessmentForm from "./pages/forms/NeedsAssessmentForm";
-import RequestForMembership from "./pages/forms/RequestForMembership";
-import RequestForFunding from "./pages/forms/RequestForFunding";
-import BookConsultationForEntrepreneurship from "./pages/forms/BookConsultationForEntrepreneurship";
-import CancelLoan from "./pages/forms/CancelLoan";
-import CollateralUserGuide from "./pages/forms/CollateralUserGuide";
-import DisburseApprovedLoan from "./pages/forms/DisburseApprovedLoan";
-import FacilitateCommunication from "./pages/forms/FacilitateCommunication";
-import ReallocationOfLoanDisbursement from "./pages/forms/ReallocationOfLoanDisbursement";
-import RequestToAmendExistingLoanDetails from "./pages/forms/RequestToAmendExistingLoanDetails";
-import TrainingInEntrepreneurship from "./pages/forms/TrainingInEntrepreneurship";
-import IssueSupportLetter from "./pages/forms/IssueSupportLetter";
-import GrowthAreasMarketplace from "./pages/GrowthAreasMarketplace";
-import GrowthAreasPage from "./pages/GrowthAreasPage";
-import BusinessDirectoryMarketplace from "./pages/BusinessDirectoryMarketplace";
-import { ComingSoon } from "./pages/ComingSoon";
-import WomenEntrepreneursHub from "./pages/WomenEntrepreneursHub";
-import DtmiLandingPage from "./pages/dtmi/DtmiLandingPage";
-import SignalsLandingPage from "./pages/SignalsLandingPage";
-import InsightsLandingPage from "./pages/InsightsLandingPage";
-import ResearchLandingPage from "./pages/ResearchLandingPage";
-import DeepAnalysisLandingPage from "./pages/dtmi/DeepAnalysisLandingPage";
-import ContributorsMarketplacePage from "./pages/dtmi/ContributorsMarketplacePage";
-import ViewArticlePage from "./pages/dtmi/ViewArticlePage";
-import { SixDimensionsPage } from "./pages/dtmi/SixDimensionsPage";
-import ResearchReportPage from "./pages/ResearchReportPage";
-import ResearchReportDetailPage from "./pages/ResearchReportDetailPage";
-import WhitepaperDetailPage from "./pages/WhitepaperDetailPage";
-import WhitepaperScrollPage from "./pages/WhitepaperScrollPage";
-import MyDQPage from "./pages/MyDQPage";
-import ResearchPanelLandingPage from "./pages/dtmi/ResearchPanelLandingPage";
-import ResearchPanelApplicationPage from "./pages/dtmi/ResearchPanelApplicationPage";
-import DashboardOverview from "./pages/dashboard/DashboardOverview";
-import SavedItemsPage from "./pages/dashboard/SavedItemsPage";
-import EmailSubscriptionsPage from "./pages/dashboard/EmailSubscriptionsPage";
-import ProfilePage from "./pages/dashboard/ProfilePage";
-import SettingsPage from "./pages/dashboard/SettingsPage";
-import DashboardLayout from "./pages/dashboard/DashboardLayout";
-import DashboardContent from "./pages/dashboard/DashboardContent";
-import ActivityCentre from "./pages/dashboard/ActivityCentre";
-import MyContentPage from "./pages/dashboard/MyContentPage";
-import BlogListPage from "./pages/blog/BlogListPage";
-import BlogPage from "./pages/blog/BlogPage";
-import { AuthorBioPage } from "./pages/AuthorBioPage/AuthorBioPage";
-import ConsultationPage from "./pages/ConsultationPage";
-import RequestDemoPage from "./pages/RequestDemoPage";
-import ServiceRequestForm from "./pages/forms/ServiceRequestForm";
-import ProductDemoRequestForm from "./pages/forms/ProductDemoRequestForm";
-import TourRequestForm from "./pages/forms/TourRequestForm";
-import ExpertInterviewPage from "./pages/expert-interviews/ExpertInterviewPage";
-import { TermsOfServicePage } from "./pages/TermsOfServicePage";
-import { PrivacyPolicyPage } from "./pages/PrivacyPolicyPage";
-import CareersPage from "./pages/CareersPage";
-import ContactUsPage from "./pages/ContactUsPage";
-import JobListingsPage from "./pages/JobListingsPage";
-import JobDetailPage from "./pages/JobDetailPage";
-import ProductsLandingPage from "./pages/ProductsLandingPage";
-import PodcastDetailPage from "./pages/PodcastDetailPage";
-import JobApplicationForm from "./pages/forms/JobApplicationForm";
-import NewsletterSignupPage from "./pages/NewsletterSignupPage";
-import SectorLandingPage from "./pages/sectors/SectorLandingPage";
-import SignalsAlertsSignupPage from "./pages/SignalsAlertsSignupPage";
-import InsightsUpdatesSignupPage from "./pages/InsightsUpdatesSignupPage";
-import ResearchUpdatesSignupPage from "./pages/ResearchUpdatesSignupPage";
-import BooksLandingPage from "./pages/BooksLandingPage";
-import { ClientTestimonialsPage } from "./pages/ClientTestimonialsPage";
+import AdminDashboard from "./features/admin/overview/pages/Dashboard";
+import AdminMediaList from "./features/admin/content/pages/MediaList";
+import BlogCreate from "./features/admin/content/pages/BlogCreate";
+import BlogDetail from "./features/admin/content/pages/BlogDetail";
+import AdminSettings from "./features/admin/system/pages/Settings";
+import AuthorManagement from "./features/admin/authors/pages/AuthorManagement";
+import AuthorCreate from "./features/admin/authors/pages/AuthorCreate";
+import CategoryManagement from "./features/admin/categories/pages/CategoryManagement";
+import ContentSubmissions from "./features/admin/submissions/pages/ContentSubmissions";
+import JobApplications from "./features/admin/recruitment/pages/JobApplications";
+import JobPostingsManagement from "./features/admin/recruitment/pages/JobPostingsManagement";
+import JobPostingCreate from "./features/admin/recruitment/pages/JobPostingCreate";
+import Analytics from "./features/admin/overview/pages/Analytics";
+import InterviewScheduler from "./features/admin/recruitment/pages/InterviewScheduler";
+import NotificationCenter from "./features/admin/notifications/pages/NotificationCenter";
+import UserManagement from "./features/admin/system/pages/UserManagement";
+import GrowthAreasMarketplace from "./features/growth/GrowthAreasMarketplace";
+import GrowthAreasPage from "./features/growth/GrowthAreasPage";
+import BusinessDirectoryMarketplace from "./features/growth/BusinessDirectoryMarketplace";
+import { ComingSoon } from "./features/misc/ComingSoon";
+import SignalsLandingPage from "./features/content/SignalsLandingPage";
+import InsightsLandingPage from "./features/content/InsightsLandingPage";
+import ResearchLandingPage from "./features/content/ResearchLandingPage";
+import ContributorsMarketplacePage from "./features/dtmi/contributors/ContributorsMarketplacePage";
+import ViewArticlePage from "./features/dtmi/articles/ViewArticlePage";
+import { SixDimensionsPage } from "./features/dtmi/six-dimensions/SixDimensionsPage";
+import ResearchReportPage from "./features/content/ResearchReportPage";
+import ResearchReportDetailPage from "./features/content/ResearchReportDetailPage";
+import WhitepaperDetailPage from "./features/content/WhitepaperDetailPage";
+import WhitepaperScrollPage from "./features/content/WhitepaperScrollPage";
+import MyDQPage from "./features/dashboard/MyDQPage";
+import ResearchPanelLandingPage from "./features/dtmi/research-panel/ResearchPanelLandingPage";
+import ResearchPanelApplicationPage from "./features/dtmi/research-panel/ResearchPanelApplicationPage";
+import SavedItemsPage from "./features/dashboard/SavedItemsPage";
+import EmailSubscriptionsPage from "./features/dashboard/EmailSubscriptionsPage";
+import ProfilePage from "./features/dashboard/ProfilePage";
+import SettingsPage from "./features/dashboard/SettingsPage";
+import DashboardLayout from "./features/dashboard/DashboardLayout";
+import DashboardContent from "./features/dashboard/DashboardContent";
+import ActivityCentre from "./features/dashboard/ActivityCentre";
+import MyContentPage from "./features/dashboard/MyContentPage";
+import BlogListPage from "./features/blog/BlogListPage";
+import BlogPage from "./features/blog/BlogPage";
+import { AuthorBioPage } from "./features/blog/AuthorBioPage";
+import ConsultationPage from "./features/services/ConsultationPage";
+import RequestDemoPage from "./features/services/RequestDemoPage";
+import ServiceRequestForm from "./features/forms/ServiceRequestForm";
+import ProductDemoRequestForm from "./features/forms/ProductDemoRequestForm";
+import TourRequestForm from "./features/forms/TourRequestForm";
+import ExpertInterviewPage from "./features/content/ExpertInterviewPage";
+import { TermsOfServicePage } from "./features/company/TermsOfServicePage";
+import { PrivacyPolicyPage } from "./features/company/PrivacyPolicyPage";
+import CareersPage from "./features/careers/CareersPage";
+import ContactUsPage from "./features/company/ContactUsPage";
+import JobListingsPage from "./features/careers/JobListingsPage";
+import JobDetailPage from "./features/careers/JobDetailPage";
+import ProductsLandingPage from "./features/products/ProductsLandingPage";
+import PodcastDetailPage from "./features/content/PodcastDetailPage";
+import JobApplicationForm from "./features/forms/JobApplicationForm";
+import NewsletterSignupPage from "./features/content/NewsletterSignupPage";
+import SectorLandingPage from "./features/sectors/SectorLandingPage";
+import SignalsAlertsSignupPage from "./features/content/SignalsAlertsSignupPage";
+import InsightsUpdatesSignupPage from "./features/content/InsightsUpdatesSignupPage";
+import ResearchUpdatesSignupPage from "./features/content/ResearchUpdatesSignupPage";
+import BooksLandingPage from "./features/content/BooksLandingPage";
+import { ClientTestimonialsPage } from "./features/company/ClientTestimonialsPage";
 
 export function AppRouter() {
   const [bookmarkedCourses, setBookmarkedCourses] = useState<string[]>([]);
   const [compareCourses, setCompareCourses] = useState<CourseType[]>([]);
 
-  // Initialize MSAL on component mount
-  useEffect(() => {
-    initializeMsal();
-  }, []);
 
   const toggleBookmark = (courseId: string) => {
     setBookmarkedCourses((prev) => {
@@ -138,8 +112,7 @@ export function AppRouter() {
   return (
     <BrowserRouter>
       <GoogleAnalytics />
-      <MsalProvider instance={msalInstance}>
-        <AuthProvider>
+      <AuthProvider>
           <Routes>
             <Route path="/" element={<App />} />
             <Route path="/login" element={<LoginPage />} />
@@ -168,9 +141,8 @@ export function AppRouter() {
             <Route
               path="/dashboard"
               element={
-                <ProtectedRoute>
                   <DashboardLayout />
-                </ProtectedRoute>
+              
               }
             >
               <Route index element={<DashboardContent />} />
@@ -184,10 +156,6 @@ export function AppRouter() {
               <Route path="profile" element={<ProfilePage />} />
               <Route path="settings" element={<SettingsPage />} />
             </Route>
-            <Route
-              path="/women-entrepreneurs"
-              element={<WomenEntrepreneursHub />}
-            />
             <Route path="/about-us" element={<AboutUsPage />} />
             <Route
               path="/growth-areas-marketplace"
@@ -201,263 +169,73 @@ export function AppRouter() {
             <Route path="/coming-soon" element={<ComingSoon />} />
             <Route path="/coming-soon/:feature" element={<ComingSoon />} />
 
-            {/* Documentation routes - redirect to coming soon */}
-            <Route
-              path="/documentation"
-              element={<Navigate to="/coming-soon/documentation" replace />}
-            />
-            <Route
-              path="/documentation/*"
-              element={<Navigate to="/coming-soon/documentation" replace />}
-            />
+       
             <Route
               path="/admin-ui/settings"
-              element={
-                <AuthorizedRoute
-                  allowedRoles={["admin"]}
-                  deniedMessage="Settings are restricted to administrators only."
-                >
-                  <AdminSettings />
-                </AuthorizedRoute>
-              }
+              element={<AdminSettings />}
             />
-            {/* Embedded Admin UI - role-protected */}
+            {/* Embedded Admin UI */}
             <Route
               path="/admin-ui/dashboard"
-              element={
-                <AuthorizedRoute
-                  allowedRoles={["admin", "creator", "HR-Admin", "HR-viewer"]}
-                  deniedMessage="The admin dashboard requires admin, creator, or HR access."
-                >
-                  <AdminDashboard />
-                </AuthorizedRoute>
-              }
+              element={<AdminDashboard />}
             />
             <Route
               path="/admin-ui/media"
-              element={
-                <AuthorizedRoute allowedRoles={["admin", "creator"]}>
-                  <AdminMediaList />
-                </AuthorizedRoute>
-              }
+              element={<AdminMediaList />}
             />
             <Route
               path="/admin-ui/media/new"
-              element={
-                <AuthorizedRoute
-                  allowedRoles={["admin", "creator"]}
-                  requiredPermission={{ resource: "blogs", action: "create" }}
-                >
-                  <BlogCreate />
-                </AuthorizedRoute>
-              }
+              element={<BlogCreate />}
             />
             <Route
               path="/admin-ui/media/:id"
-              element={
-                <AuthorizedRoute allowedRoles={["admin", "creator"]}>
-                  <BlogDetail />
-                </AuthorizedRoute>
-              }
+              element={<BlogDetail />}
             />
             <Route
               path="/admin-ui/authors"
-              element={
-                <AuthorizedRoute allowedRoles={["admin", "creator"]}>
-                  <AuthorManagement />
-                </AuthorizedRoute>
-              }
+              element={<AuthorManagement />}
             />
             <Route
               path="/admin-ui/authors/new"
-              element={
-                <AuthorizedRoute
-                  allowedRoles={["admin"]}
-                  deniedMessage="Creating authors requires admin access."
-                >
-                  <AuthorCreate />
-                </AuthorizedRoute>
-              }
+              element={<AuthorCreate />}
             />
             <Route
               path="/admin-ui/categories"
-              element={
-                <AuthorizedRoute allowedRoles={["admin"]}>
-                  <CategoryManagement />
-                </AuthorizedRoute>
-              }
+              element={<CategoryManagement />}
             />
             <Route
               path="/admin-ui/submissions"
-              element={
-                <AuthorizedRoute allowedRoles={["admin", "creator"]}>
-                  <ContentSubmissions />
-                </AuthorizedRoute>
-              }
+              element={<ContentSubmissions />}
             />
             <Route
               path="/admin-ui/job-applications"
-              element={
-                <AuthorizedRoute
-                  allowedRoles={["admin", "HR-Admin", "HR-viewer"]}
-                  deniedMessage="Job applications are restricted to administrators and HR roles."
-                >
-                  <JobApplications />
-                </AuthorizedRoute>
-              }
+              element={<JobApplications />}
             />
             <Route
               path="/admin-ui/job-postings"
-              element={
-                <AuthorizedRoute allowedRoles={["admin", "HR-Admin"]}>
-                  <JobPostingsManagement />
-                </AuthorizedRoute>
-              }
+              element={<JobPostingsManagement />}
             />
             <Route
               path="/admin-ui/job-postings/new"
-              element={
-                <AuthorizedRoute allowedRoles={["admin", "HR-Admin"]}>
-                  <JobPostingCreate />
-                </AuthorizedRoute>
-              }
+              element={<JobPostingCreate />}
             />
             <Route
               path="/admin-ui/analytics"
-              element={
-                <AuthorizedRoute
-                  allowedRoles={["admin", "HR-Admin", "HR-viewer"]}
-                >
-                  <Analytics />
-                </AuthorizedRoute>
-              }
+              element={<Analytics />}
             />
             <Route
               path="/admin-ui/interviews"
-              element={
-                <AuthorizedRoute allowedRoles={["admin", "HR-Admin"]}>
-                  <InterviewScheduler />
-                </AuthorizedRoute>
-              }
+              element={<InterviewScheduler />}
             />
             <Route
               path="/admin-ui/notifications"
-              element={
-                <AuthorizedRoute allowedRoles={["admin", "creator"]}>
-                  <NotificationCenter />
-                </AuthorizedRoute>
-              }
+              element={<NotificationCenter />}
             />
             <Route
               path="/admin-ui/users"
-              element={
-                <AuthorizedRoute
-                  allowedRoles={["admin"]}
-                  deniedMessage="User management is restricted to administrators only."
-                >
-                  <UserManagement />
-                </AuthorizedRoute>
-              }
-            />
-            {/** Forms routes - all protected */}
-            <Route
-              path="/forms/needs-assessment"
-              element={
-                <ProtectedRoute>
-                  <NeedsAssessmentForm />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/forms/request-for-membership"
-              element={
-                <ProtectedRoute>
-                  <RequestForMembership />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/forms/request-for-funding"
-              element={
-                <ProtectedRoute>
-                  <RequestForFunding />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/forms/book-consultation"
-              element={
-                <ProtectedRoute>
-                  <BookConsultationForEntrepreneurship />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/forms/cancel-loan"
-              element={
-                <ProtectedRoute>
-                  <CancelLoan />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/forms/collateral-user-guide"
-              element={
-                <ProtectedRoute>
-                  <CollateralUserGuide />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/forms/disburse-approved-loan"
-              element={
-                <ProtectedRoute>
-                  <DisburseApprovedLoan />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/forms/facilitate-communication"
-              element={
-                <ProtectedRoute>
-                  <FacilitateCommunication />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/forms/reallocation-of-loan-disbursement"
-              element={
-                <ProtectedRoute>
-                  <ReallocationOfLoanDisbursement />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/forms/request-to-amend-existing-loan-details"
-              element={
-                <ProtectedRoute>
-                  <RequestToAmendExistingLoanDetails />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/forms/training-in-entrepreneurship"
-              element={
-                <ProtectedRoute>
-                  <TrainingInEntrepreneurship />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/forms/issue-support-letter"
-              element={
-                <ProtectedRoute>
-                  <IssueSupportLetter />
-                </ProtectedRoute>
-              }
+              element={<UserManagement />}
             />
 
-            <Route path="/dtmi" element={<DtmiLandingPage />} />
             <Route path="/signals" element={<SignalsLandingPage />} />
             <Route
               path="/signals-alerts-signup"
@@ -590,7 +368,11 @@ export function AppRouter() {
             <Route path="*" element={<Navigate to="/404" replace />} />
           </Routes>
         </AuthProvider>
-      </MsalProvider>
     </BrowserRouter>
   );
 }
+
+
+
+
+
