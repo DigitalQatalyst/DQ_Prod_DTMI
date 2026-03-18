@@ -1,11 +1,14 @@
-import React, {
+import {
   createContext,
   useCallback,
   useContext,
+  useEffect,
   useMemo,
   useState,
   ReactNode,
 } from "react";
+import { supabase } from "../../../lib/supabase";
+import type { Session, User } from "@supabase/supabase-js";
 
 type UserRole = "admin" | "creator" | "viewer" | "HR-Admin" | "HR-viewer";
 
@@ -30,12 +33,13 @@ export interface UserProfile {
 
 interface AuthContextType {
   user: UserProfile | null;
+  session: Session | null;
   isLoading: boolean;
   isSyncing: boolean;
   syncError: string | null;
-  login: () => void;
-  signup: () => void;
-  logout: () => void;
+  login: (email?: string, password?: string) => Promise<void>;
+  signup: (email?: string, password?: string, name?: string) => Promise<void>;
+  logout: () => Promise<void>;
   hasPermission: (resource: string, action: string) => boolean;
   isAdmin: () => boolean;
   isCreator: () => boolean;
@@ -47,28 +51,117 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-/**
- * Stub AuthProvider — Azure B2C removed, Supabase auth to be implemented.
- * All auth methods are no-ops; user is always null until Supabase is wired up.
- */
+/** Map a Supabase auth user + DB profile row into our UserProfile shape */
+function buildUserProfile(authUser: User, dbRow: Record<string, unknown> | null): UserProfile {
+  return {
+    id: (dbRow?.id as string) ?? authUser.id,
+    supabaseUserId: authUser.id,
+    email: authUser.email ?? "",
+    name: (dbRow?.name as string) ?? authUser.user_metadata?.full_name ?? authUser.email ?? "",
+    givenName: authUser.user_metadata?.given_name,
+    familyName: authUser.user_metadata?.family_name,
+    picture: (dbRow?.avatar_url as string) ?? authUser.user_metadata?.avatar_url,
+    role: (dbRow?.role as UserRole) ?? "viewer",
+    permissions: [],
+  };
+}
+
 export function AuthProvider({ children }: Readonly<{ children: ReactNode }>) {
-  const [user] = useState<UserProfile | null>(null);
+  const [user, setUser] = useState<UserProfile | null>(null);
+  const [session, setSession] = useState<Session | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isSyncing, setIsSyncing] = useState(false);
+  const [syncError, setSyncError] = useState<string | null>(null);
 
-  const login = useCallback(() => {
-    console.log("[Auth] login() called — Supabase auth not yet implemented");
+  /** Fetch the matching row from public.users and build UserProfile */
+  const syncUserProfile = useCallback(async (authUser: User) => {
+    setIsSyncing(true);
+    setSyncError(null);
+    try {
+      const { data, error } = await supabase
+        .from("users")
+        .select("id, name, email, role, avatar_url, is_active")
+        .eq("auth_user_id", authUser.id)
+        .maybeSingle();
+
+      if (error) throw error;
+      setUser(buildUserProfile(authUser, data));
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : "Failed to load profile";
+      setSyncError(msg);
+      // Still set a minimal profile so the user isn't locked out
+      setUser(buildUserProfile(authUser, null));
+    } finally {
+      setIsSyncing(false);
+    }
   }, []);
 
-  const signup = useCallback(() => {
-    console.log("[Auth] signup() called — Supabase auth not yet implemented");
+  // Bootstrap: restore session on mount and listen for auth changes
+  useEffect(() => {
+    let mounted = true;
+
+    supabase.auth.getSession().then(({ data: { session: s } }) => {
+      if (!mounted) return;
+      setSession(s);
+      if (s?.user) {
+        syncUserProfile(s.user).finally(() => setIsLoading(false));
+      } else {
+        setIsLoading(false);
+      }
+    });
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, s) => {
+      if (!mounted) return;
+      setSession(s);
+      if (s?.user) {
+        syncUserProfile(s.user);
+      } else {
+        setUser(null);
+      }
+    });
+
+    return () => {
+      mounted = false;
+      subscription.unsubscribe();
+    };
+  }, [syncUserProfile]);
+
+  const login = useCallback(async (email?: string, password?: string) => {
+    if (!email || !password) {
+      console.warn("[Auth] login() requires email and password");
+      return;
+    }
+    const { error } = await supabase.auth.signInWithPassword({ email, password });
+    if (error) throw error;
   }, []);
 
-  const logout = useCallback(() => {
-    console.log("[Auth] logout() called — Supabase auth not yet implemented");
+  const signup = useCallback(async (email?: string, password?: string, name?: string) => {
+    if (!email || !password) {
+      console.warn("[Auth] signup() requires email and password");
+      return;
+    }
+    const { error } = await supabase.auth.signUp({
+      email,
+      password,
+      options: { data: { full_name: name } },
+    });
+    if (error) throw error;
+  }, []);
+
+  const logout = useCallback(async () => {
+    await supabase.auth.signOut();
+    setUser(null);
+    setSession(null);
   }, []);
 
   const hasPermission = useCallback(
-    (_resource: string, _action: string): boolean => false,
-    []
+    (resource: string, action: string): boolean => {
+      if (!user?.permissions) return false;
+      return user.permissions.some(
+        (p) => p.resource === resource && p.action === action && p.can_perform
+      );
+    },
+    [user]
   );
 
   const isAdmin = useCallback(() => user?.role === "admin", [user]);
@@ -95,14 +188,17 @@ export function AuthProvider({ children }: Readonly<{ children: ReactNode }>) {
     [user]
   );
 
-  const refreshAvatar = useCallback(async () => {}, []);
+  const refreshAvatar = useCallback(async () => {
+    if (session?.user) await syncUserProfile(session.user);
+  }, [session, syncUserProfile]);
 
   const contextValue = useMemo<AuthContextType>(
     () => ({
       user,
-      isLoading: false,
-      isSyncing: false,
-      syncError: null,
+      session,
+      isLoading,
+      isSyncing,
+      syncError,
       login,
       signup,
       logout,
@@ -116,6 +212,10 @@ export function AuthProvider({ children }: Readonly<{ children: ReactNode }>) {
     }),
     [
       user,
+      session,
+      isLoading,
+      isSyncing,
+      syncError,
       login,
       signup,
       logout,
