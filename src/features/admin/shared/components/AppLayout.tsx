@@ -25,7 +25,7 @@ type NavItem = {
   label: string;
   icon: React.ReactElement;
   /** Minimum role required to see this nav item. undefined = any logged-in user */
-  minRole?: "admin" | "creator" | "HR-Admin" | "HR-viewer";
+  minRole?: "admin" | "viewer";
 };
 
 type NavSection = {
@@ -46,7 +46,7 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children, title }) => {
           path: "/admin-ui/analytics",
           label: "Analytics",
           icon: <BarChart3Icon />,
-          minRole: "HR-viewer",
+          minRole: "admin",
         },
       ],
     },
@@ -86,13 +86,13 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children, title }) => {
           path: "/admin-ui/media",
           label: "Library",
           icon: <BookOpenIcon />,
-          minRole: "creator",
+          minRole: "admin",
         },
         {
           path: "/admin-ui/authors",
           label: "Authors",
           icon: <UsersIcon />,
-          minRole: "creator",
+          minRole: "admin",
         },
         {
           path: "/admin-ui/categories",
@@ -104,7 +104,7 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children, title }) => {
           path: "/admin-ui/submissions",
           label: "Submissions",
           icon: <MessageIcon />,
-          minRole: "creator",
+          minRole: "admin",
         },
       ],
     },
@@ -115,7 +115,7 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children, title }) => {
           path: "/admin-ui/notifications",
           label: "Notifications",
           icon: <BellIcon />,
-          minRole: "creator",
+          minRole: "admin",
         },
         {
           path: "/admin-ui/users",

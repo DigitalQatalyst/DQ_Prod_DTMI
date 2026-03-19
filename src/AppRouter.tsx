@@ -177,19 +177,19 @@ export function AppRouter() {
             {/* Embedded Admin UI */}
             <Route
               path="/admin-ui/dashboard"
-              element={<AuthorizedRoute allowedRoles={['admin', 'creator']}><AdminDashboard /></AuthorizedRoute>}
+              element={<AuthorizedRoute allowedRoles={['admin']}><AdminDashboard /></AuthorizedRoute>}
             />
             <Route
               path="/admin-ui/media"
-              element={<AuthorizedRoute allowedRoles={['admin', 'creator']}><AdminMediaList /></AuthorizedRoute>}
+              element={<AuthorizedRoute allowedRoles={['admin']}><AdminMediaList /></AuthorizedRoute>}
             />
             <Route
               path="/admin-ui/media/new"
-              element={<AuthorizedRoute allowedRoles={['admin', 'creator']}><BlogCreate /></AuthorizedRoute>}
+              element={<AuthorizedRoute allowedRoles={['admin']}><BlogCreate /></AuthorizedRoute>}
             />
             <Route
               path="/admin-ui/media/:id"
-              element={<AuthorizedRoute allowedRoles={['admin', 'creator']}><BlogDetail /></AuthorizedRoute>}
+              element={<AuthorizedRoute allowedRoles={['admin']}><BlogDetail /></AuthorizedRoute>}
             />
             <Route
               path="/admin-ui/authors"
@@ -205,19 +205,19 @@ export function AppRouter() {
             />
             <Route
               path="/admin-ui/submissions"
-              element={<AuthorizedRoute allowedRoles={['admin', 'creator']}><ContentSubmissions /></AuthorizedRoute>}
+              element={<AuthorizedRoute allowedRoles={['admin']}><ContentSubmissions /></AuthorizedRoute>}
             />
             <Route
               path="/admin-ui/job-applications"
-              element={<AuthorizedRoute allowedRoles={['admin', 'HR-Admin']}><JobApplications /></AuthorizedRoute>}
+              element={<AuthorizedRoute allowedRoles={['admin']}><JobApplications /></AuthorizedRoute>}
             />
             <Route
               path="/admin-ui/job-postings"
-              element={<AuthorizedRoute allowedRoles={['admin', 'HR-Admin']}><JobPostingsManagement /></AuthorizedRoute>}
+              element={<AuthorizedRoute allowedRoles={['admin']}><JobPostingsManagement /></AuthorizedRoute>}
             />
             <Route
               path="/admin-ui/job-postings/new"
-              element={<AuthorizedRoute allowedRoles={['admin', 'HR-Admin']}><JobPostingCreate /></AuthorizedRoute>}
+              element={<AuthorizedRoute allowedRoles={['admin']}><JobPostingCreate /></AuthorizedRoute>}
             />
             <Route
               path="/admin-ui/analytics"
@@ -225,11 +225,11 @@ export function AppRouter() {
             />
             <Route
               path="/admin-ui/interviews"
-              element={<AuthorizedRoute allowedRoles={['admin', 'HR-Admin']}><InterviewScheduler /></AuthorizedRoute>}
+              element={<AuthorizedRoute allowedRoles={['admin']}><InterviewScheduler /></AuthorizedRoute>}
             />
             <Route
               path="/admin-ui/notifications"
-              element={<AuthorizedRoute allowedRoles={['admin', 'creator']}><NotificationCenter /></AuthorizedRoute>}
+              element={<AuthorizedRoute allowedRoles={['admin']}><NotificationCenter /></AuthorizedRoute>}
             />
             <Route
               path="/admin-ui/users"

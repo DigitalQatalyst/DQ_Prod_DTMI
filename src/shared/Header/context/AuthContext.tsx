@@ -10,7 +10,7 @@ import {
 import { supabase } from "../../../lib/supabase";
 import type { Session } from "@supabase/supabase-js";
 
-type UserRole = "admin" | "creator" | "viewer" | "HR-Admin" | "HR-viewer";
+type UserRole = "admin" | "viewer";
 
 interface Permission {
   resource: string;
@@ -42,39 +42,31 @@ interface AuthContextType {
   logout: () => Promise<void>;
   hasPermission: (resource: string, action: string) => boolean;
   isAdmin: () => boolean;
-  isCreator: () => boolean;
   isViewer: () => boolean;
-  isHRAdmin: () => boolean;
-  isHRViewer: () => boolean;
   refreshAvatar: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 /**
- * Build UserProfile from the JWT claims embedded by custom_access_token_hook.
- * This is zero-latency — no DB round-trip needed on auth state changes.
- * Falls back to user_metadata for fields not yet in the token (e.g. right after signup).
+ * Fetch the user's profile row from public.users.
+ * Simple and direct — no JWT hook needed.
  */
-function buildProfileFromSession(session: Session): UserProfile {
-  const { user } = session;
-  // JWT claims injected by custom_access_token_hook
-  const claims = session.access_token
-    ? (JSON.parse(atob(session.access_token.split(".")[1])) as Record<string, unknown>)
-    : {};
+async function fetchUserProfile(authUserId: string): Promise<UserProfile | null> {
+  const { data, error } = await supabase
+    .from("users")
+    .select("id, name, email, role, avatar_url, is_active")
+    .eq("auth_user_id", authUserId)
+    .maybeSingle();
 
+  if (error || !data) return null;
   return {
-    id: (claims.profile_id as string) || user.id,
-    supabaseUserId: user.id,
-    email: user.email ?? "",
-    name:
-      (claims.full_name as string) ||
-      user.user_metadata?.full_name ||
-      user.user_metadata?.name ||
-      user.email?.split("@")[0] ||
-      "",
-    picture: (claims.avatar_url as string) || user.user_metadata?.avatar_url || "",
-    role: ((claims.user_role as UserRole) ?? "viewer"),
+    id: data.id,
+    supabaseUserId: authUserId,
+    email: data.email ?? "",
+    name: data.name ?? "",
+    picture: data.avatar_url ?? "",
+    role: (data.role as UserRole) ?? "viewer",
     permissions: [],
   };
 }
@@ -86,27 +78,17 @@ export function AuthProvider({ children }: Readonly<{ children: ReactNode }>) {
   const [isSyncing, setIsSyncing] = useState(false);
   const [syncError, setSyncError] = useState<string | null>(null);
 
-  /**
-   * Refresh profile from DB and force a token refresh so the new JWT claims
-   * are picked up. Use this after role changes or profile updates.
-   */
+  /** Fetch fresh profile from DB. Call this after role/profile updates. */
   const syncUserProfile = useCallback(async (_authUser?: unknown) => {
     setIsSyncing(true);
     setSyncError(null);
     try {
-      // Force token refresh so custom_access_token_hook re-runs with latest DB data
-      const { data: { session: fresh }, error } = await supabase.auth.refreshSession();
-      if (error) throw error;
-      if (fresh) {
-        setSession(fresh);
-        setUser(buildProfileFromSession(fresh));
-      }
+      const { data: { session: s } } = await supabase.auth.getSession();
+      if (!s) return;
+      const profile = await fetchUserProfile(s.user.id);
+      if (profile) setUser(profile);
     } catch (err: unknown) {
-      // Fallback: build from current session without DB data
-      const msg = err instanceof Error ? err.message : "Failed to refresh profile";
-      setSyncError(msg);
-      const { data: { session: current } } = await supabase.auth.getSession();
-      if (current) setUser(buildProfileFromSession(current));
+      setSyncError(err instanceof Error ? err.message : "Failed to refresh profile");
     } finally {
       setIsSyncing(false);
     }
@@ -116,18 +98,22 @@ export function AuthProvider({ children }: Readonly<{ children: ReactNode }>) {
   useEffect(() => {
     let mounted = true;
 
-    supabase.auth.getSession().then(({ data: { session: s } }) => {
-      if (!mounted) return;
-      setSession(s);
-      if (s) setUser(buildProfileFromSession(s));
-      setIsLoading(false);
-    });
-
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, s) => {
+    supabase.auth.getSession().then(async ({ data: { session: s } }) => {
       if (!mounted) return;
       setSession(s);
       if (s) {
-        setUser(buildProfileFromSession(s));
+        const profile = await fetchUserProfile(s.user.id);
+        if (mounted) setUser(profile ?? { id: s.user.id, supabaseUserId: s.user.id, email: s.user.email ?? "", name: s.user.user_metadata?.full_name ?? "", role: "viewer", permissions: [] });
+      }
+      if (mounted) setIsLoading(false);
+    });
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, s) => {
+      if (!mounted) return;
+      setSession(s);
+      if (s) {
+        const profile = await fetchUserProfile(s.user.id);
+        if (mounted) setUser(profile ?? { id: s.user.id, supabaseUserId: s.user.id, email: s.user.email ?? "", name: s.user.user_metadata?.full_name ?? "", role: "viewer", permissions: [] });
       } else {
         setUser(null);
       }
@@ -178,28 +164,7 @@ export function AuthProvider({ children }: Readonly<{ children: ReactNode }>) {
   );
 
   const isAdmin = useCallback(() => user?.role === "admin", [user]);
-  const isCreator = useCallback(
-    () => user?.role === "creator" || user?.role === "admin",
-    [user]
-  );
-  const isViewer = useCallback(
-    () =>
-      user?.role === "viewer" ||
-      user?.role === "creator" ||
-      user?.role === "admin",
-    [user]
-  );
-  const isHRAdmin = useCallback(
-    () => user?.role === "HR-Admin" || user?.role === "admin",
-    [user]
-  );
-  const isHRViewer = useCallback(
-    () =>
-      user?.role === "HR-viewer" ||
-      user?.role === "HR-Admin" ||
-      user?.role === "admin",
-    [user]
-  );
+  const isViewer = useCallback(() => user?.role === "viewer" || user?.role === "admin", [user]);
 
   const refreshAvatar = useCallback(async () => {
     await syncUserProfile();
@@ -217,10 +182,7 @@ export function AuthProvider({ children }: Readonly<{ children: ReactNode }>) {
       logout,
       hasPermission,
       isAdmin,
-      isCreator,
       isViewer,
-      isHRAdmin,
-      isHRViewer,
       refreshAvatar,
     }),
     [
@@ -234,10 +196,7 @@ export function AuthProvider({ children }: Readonly<{ children: ReactNode }>) {
       logout,
       hasPermission,
       isAdmin,
-      isCreator,
       isViewer,
-      isHRAdmin,
-      isHRViewer,
       refreshAvatar,
     ]
   );
