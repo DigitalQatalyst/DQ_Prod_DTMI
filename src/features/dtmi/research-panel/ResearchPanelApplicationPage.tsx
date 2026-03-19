@@ -105,7 +105,6 @@ export default function ResearchPanelApplicationPage() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     // Here you would typically send the data to your backend
-    console.log("Form submitted:", formData);
     setIsSubmitted(true);
   };
 

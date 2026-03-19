@@ -195,7 +195,6 @@ const MediaDetailPage: React.FC = () => {
             return
           }
         } catch (e) {
-          console.warn('Supabase query failed:', e)
         }
 
         // Fallback to mock data
@@ -213,7 +212,6 @@ const MediaDetailPage: React.FC = () => {
             return
           }
         } catch (e) {
-          console.warn('Mock data fallback failed:', e)
         }
 
         // Not found anywhere
@@ -255,7 +253,6 @@ const MediaDetailPage: React.FC = () => {
 
       // Check if date is valid
       if (isNaN(eventDate.getTime())) {
-        console.warn('Invalid date detected:', item.date)
         setCountdown({
           days: 0,
           hours: 0,
@@ -321,7 +318,6 @@ const MediaDetailPage: React.FC = () => {
         }))
         setProviderPosts(posts)
       } catch (e) {
-        console.warn('Provider posts query failed:', e)
         setProviderPosts([])
       }
     }
@@ -2840,7 +2836,6 @@ const MediaDetailPage: React.FC = () => {
                 onSubmit={(e) => {
                   e.preventDefault()
                   // Handle form submission
-                  console.log('Registration data:', registrationData)
                   alert('Registration submitted successfully!')
                   setShowRegistrationModal(false)
                   // Reset form

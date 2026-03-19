@@ -34,7 +34,7 @@ interface DashboardStats {
 }
 
 const Dashboard: React.FC = () => {
-  const { isAdmin, isHRAdmin, isHRViewer } = useAuth();
+  const { isAdmin } = useAuth();
   const [stats, setStats] = useState<DashboardStats>({
     totalApplications: 0,
     pendingReview: 0,
@@ -192,7 +192,7 @@ const Dashboard: React.FC = () => {
 
         {/* Stats Overview */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-          {(isAdmin() || isHRAdmin() || isHRViewer()) && (
+          {isAdmin() && (
             <div className="bg-white rounded-xl border border-gray-200 p-4 border-r-[3px] border-r-blue-900">
               <div className="flex items-start justify-between">
                 <div>
@@ -210,7 +210,7 @@ const Dashboard: React.FC = () => {
             </div>
           )}
 
-          {(isAdmin() || isHRAdmin() || isHRViewer()) && (
+          {isAdmin() && (
             <div className="bg-white rounded-xl border border-gray-200 p-4 border-r-[3px] border-r-blue-900">
               <div className="flex items-start justify-between">
                 <div>
@@ -244,7 +244,7 @@ const Dashboard: React.FC = () => {
             </div>
           )}
 
-          {(isAdmin() || isHRAdmin() || isHRViewer()) && (
+          {isAdmin() && (
             <div className="bg-white rounded-xl border border-gray-200 p-4 border-r-[3px] border-r-blue-900">
               <div className="flex items-start justify-between">
                 <div>
@@ -265,7 +265,7 @@ const Dashboard: React.FC = () => {
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {/* Recent Applications - HR roles only */}
-          {(isAdmin() || isHRAdmin() || isHRViewer()) && (
+          {isAdmin() && (
             <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
               <div className="px-6 py-4 border-b border-gray-100 flex items-center justify-between bg-gray-50/50">
                 <h3 className="font-semibold text-gray-900">
@@ -323,7 +323,7 @@ const Dashboard: React.FC = () => {
           )}
 
           {/* Recent Interviews - HR roles only */}
-          {(isAdmin() || isHRAdmin()) && (
+          {isAdmin() && (
             <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
               <div className="px-6 py-4 border-b border-gray-100 flex items-center justify-between bg-gray-50/50">
                 <h3 className="font-semibold text-gray-900">
@@ -387,7 +387,7 @@ const Dashboard: React.FC = () => {
           )}
 
           {/* Recent Job Postings - HR roles only */}
-          {(isAdmin() || isHRAdmin()) && (
+          {isAdmin() && (
             <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
               <div className="px-6 py-4 border-b border-gray-100 flex items-center justify-between bg-gray-50/50">
                 <h3 className="font-semibold text-gray-900">

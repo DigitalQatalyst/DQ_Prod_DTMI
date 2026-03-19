@@ -17,7 +17,7 @@ import {
 } from "lucide-react";
 
 export default function Analytics() {
-  const { isAdmin, isCreator, isHRAdmin, isHRViewer } = useAuth();
+  const { isAdmin } = useAuth();
   const [summary, setSummary] = useState<AnalyticsSummary | null>(null);
   const [loading, setLoading] = useState(true);
   const [dateRange, setDateRange] = useState("30"); // days
@@ -67,7 +67,7 @@ export default function Analytics() {
         </div>
 
         {/* Content Analytics - Admin and Creator only */}
-        {(isAdmin() || isCreator()) && (
+        {isAdmin() && (
           <div>
             <h2 className="text-lg font-semibold text-gray-900 mb-4">
               Content Performance
@@ -142,7 +142,7 @@ export default function Analytics() {
         )}
 
         {/* Recruitment Analytics - Admin and HR roles */}
-        {(isAdmin() || isHRAdmin() || isHRViewer()) && (
+        {isAdmin() && (
           <div>
             <h2 className="text-lg font-semibold text-gray-900 mb-4">
               Recruitment Performance
@@ -220,7 +220,7 @@ export default function Analytics() {
         {/* Charts */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {/* Content Performance Trend - Admin/Creator only */}
-          {(isAdmin() || isCreator()) && (
+          {isAdmin() && (
             <div className="bg-white rounded-xl border border-gray-200 p-6">
               <h3 className="text-sm font-semibold text-gray-900 mb-4">
                 Content Performance Trend
@@ -307,7 +307,7 @@ export default function Analytics() {
           )}
 
           {/* Application Funnel - Admin/HR roles only */}
-          {(isAdmin() || isHRAdmin() || isHRViewer()) && (
+          {isAdmin() && (
             <div className="bg-white rounded-xl border border-gray-200 p-6">
               <h3 className="text-sm font-semibold text-gray-900 mb-6">
                 Application Funnel

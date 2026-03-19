@@ -14,7 +14,6 @@ const SettingsPage = () => {
   };
 
   const handleDeleteAccount = () => {
-    console.log("Account deletion requested");
     setShowDeleteConfirmation(false);
     // Add account deletion logic here
   };

@@ -52,6 +52,7 @@ export interface Blog {
 export interface Author {
   id: string;
   name: string;
+  slug?: string;
   title: string;
   avatar: string;
   bio: string;
@@ -59,6 +60,9 @@ export interface Author {
   twitter?: string;
   website?: string;
   email?: string;
+  location?: string;
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 export interface Category {
@@ -85,7 +89,6 @@ const deleteStorageFileFromUrl = async (url: string | null | undefined) => {
   if (error) {
     console.error(`Error deleting file [${path}] from storage:`, error);
   } else {
-    console.log(`Successfully deleted file [${path}] from storage`);
   }
 };
 
@@ -239,6 +242,7 @@ export const blogService = {
       author: {
         id: row.author_id,
         name: row.author_name,
+        slug: row.author_slug,
         title: row.author_title,
         avatar: row.author_avatar,
         bio: row.author_bio,
@@ -294,7 +298,6 @@ export const blogService = {
           }
         }
       } catch (e) {
-        console.warn("Failed to parse content JSON for mapping:", e);
       }
     }
 
@@ -391,7 +394,6 @@ export const blogService = {
           await deleteStorageFileFromUrl(existingRow.hero_image);
         }
       } catch (err) {
-        console.warn("Could not check for old image to delete:", err);
       }
     }
 
@@ -454,7 +456,6 @@ export const blogService = {
         await deleteStorageFileFromUrl(existingRow.hero_image);
       }
     } catch (err) {
-      console.warn("Could not fetch blog for image deletion:", err);
     }
 
     const { error } = await getSupabaseAdmin()
@@ -502,126 +503,169 @@ export const blogService = {
 };
 
 export const authorService = {
-  async getAuthors() {
-    const { data, error } = await getSupabase()
-      .from("users" as any)
+  async getAuthors(activeOnly = true) {
+    let query = getSupabase()
+      .from("authors" as any)
       .select("*")
       .order("name", { ascending: true });
+    if (activeOnly) query = (query as any).eq("is_active", true);
 
+    const { data, error } = await query;
     if (error) throw error;
-    return (data || []).map((user: any) => ({
-      id: user.id,
-      name: user.name,
-      title: user.title,
-      avatar: user.avatar_url,
-      bio: user.bio,
+    return (data || []).map((a: any) => ({
+      id: a.id,
+      name: a.name,
+      slug: a.slug,
+      title: a.title,
+      avatar: a.avatar_url,
+      bio: a.bio,
+      linkedIn: a.linkedin_url,
+      twitter: a.twitter_url,
+      website: a.website_url,
+      email: a.email,
+      location: a.location,
+      createdAt: a.created_at,
+      updatedAt: a.updated_at,
     })) as Author[];
   },
 
+  async getAuthorById(id: string) {
+    const { data, error } = (await getSupabase()
+      .from("authors" as any)
+      .select("*")
+      .eq("id", id)
+      .limit(1)) as any;
+    if (error) throw error;
+    if (!data || data.length === 0) return null;
+    const a = data[0];
+    return {
+      id: a.id,
+      name: a.name,
+      slug: a.slug,
+      title: a.title,
+      avatar: a.avatar_url,
+      bio: a.bio,
+      linkedIn: a.linkedin_url,
+      twitter: a.twitter_url,
+      website: a.website_url,
+      email: a.email,
+      location: a.location,
+      createdAt: a.created_at,
+      updatedAt: a.updated_at,
+    } as Author;
+  },
+
   async createAuthor(authorData: Partial<Author>) {
-    const userData = {
+    const payload = {
       id: uuidv4(),
       name: authorData.name,
       title: authorData.title,
       avatar_url: authorData.avatar,
       bio: authorData.bio,
+      linkedin_url: authorData.linkedIn,
+      twitter_url: authorData.twitter,
+      website_url: authorData.website,
+      email: authorData.email,
+      location: authorData.location,
       is_active: true,
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString(),
     };
 
     const { data, error } = await (
-      getSupabaseAdmin().from("users" as any) as any
+      getSupabaseAdmin().from("authors" as any) as any
     )
-      .insert([userData])
-      .select("id, name, title, avatar_url, bio");
+      .insert([payload])
+      .select();
 
     if (error) throw error;
     if (!data || data.length === 0) return null as any;
-
-    const user = data[0];
+    const a = data[0];
     return {
-      id: user.id,
-      name: user.name,
-      title: user.title,
-      avatar: user.avatar_url,
-      bio: user.bio,
+      id: a.id,
+      name: a.name,
+      slug: a.slug,
+      title: a.title,
+      avatar: a.avatar_url,
+      bio: a.bio,
+      linkedIn: a.linkedin_url,
+      twitter: a.twitter_url,
+      website: a.website_url,
+      email: a.email,
+      location: a.location,
+      createdAt: a.created_at,
+      updatedAt: a.updated_at,
     } as Author;
   },
 
   async updateAuthor(id: string, authorData: Partial<Author>) {
-    // If avatar is being updated, handle old avatar deletion
     if (authorData.avatar) {
       try {
         const { data: existing } = (await getSupabase()
-          .from("users" as any)
-          .select("avatar")
+          .from("authors" as any)
+          .select("avatar_url")
           .eq("id", id)
           .limit(1)) as any;
-
-        const existingAuthor =
-          existing && existing.length > 0 ? existing[0] : null;
-
-        if (
-          existingAuthor?.avatar_url &&
-          existingAuthor.avatar_url !== authorData.avatar
-        ) {
+        const existingAuthor = existing && existing.length > 0 ? existing[0] : null;
+        if (existingAuthor?.avatar_url && existingAuthor.avatar_url !== authorData.avatar) {
           await deleteStorageFileFromUrl(existingAuthor.avatar_url);
         }
       } catch (err) {
-        console.warn("Could not check for old avatar to delete:", err);
       }
     }
 
-    const userData: any = {
-      updated_at: new Date().toISOString(),
-    };
-    if (authorData.name) userData.name = authorData.name;
-    if (authorData.title) userData.title = authorData.title;
-    if (authorData.avatar) userData.avatar_url = authorData.avatar;
-    if (authorData.bio) userData.bio = authorData.bio;
+    const payload: any = { updated_at: new Date().toISOString() };
+    if (authorData.name !== undefined) payload.name = authorData.name;
+    if (authorData.title !== undefined) payload.title = authorData.title;
+    if (authorData.avatar !== undefined) payload.avatar_url = authorData.avatar;
+    if (authorData.bio !== undefined) payload.bio = authorData.bio;
+    if (authorData.linkedIn !== undefined) payload.linkedin_url = authorData.linkedIn;
+    if (authorData.twitter !== undefined) payload.twitter_url = authorData.twitter;
+    if (authorData.website !== undefined) payload.website_url = authorData.website;
+    if (authorData.email !== undefined) payload.email = authorData.email;
+    if (authorData.location !== undefined) payload.location = authorData.location;
 
     const { data, error } = await (
-      getSupabaseAdmin().from("users" as any) as any
+      getSupabaseAdmin().from("authors" as any) as any
     )
-      .update(userData)
+      .update(payload)
       .eq("id", id)
-      .select("id, name, title, avatar_url, bio");
+      .select();
 
     if (error) throw error;
     if (!data || data.length === 0) return null as any;
-
-    const user = data[0];
+    const a = data[0];
     return {
-      id: user.id,
-      name: user.name,
-      title: user.title,
-      avatar: user.avatar_url,
-      bio: user.bio,
+      id: a.id,
+      name: a.name,
+      slug: a.slug,
+      title: a.title,
+      avatar: a.avatar_url,
+      bio: a.bio,
+      linkedIn: a.linkedin_url,
+      twitter: a.twitter_url,
+      website: a.website_url,
+      email: a.email,
+      location: a.location,
+      createdAt: a.created_at,
+      updatedAt: a.updated_at,
     } as Author;
   },
 
   async deleteAuthor(id: string) {
-    // Fetch old avatar URL before deleting record
     try {
       const { data: existing } = (await getSupabase()
-        .from("users" as any)
+        .from("authors" as any)
         .select("avatar_url")
         .eq("id", id)
         .limit(1)) as any;
-
-      const existingAuthor =
-        existing && existing.length > 0 ? existing[0] : null;
-
+      const existingAuthor = existing && existing.length > 0 ? existing[0] : null;
       if (existingAuthor?.avatar_url) {
         await deleteStorageFileFromUrl(existingAuthor.avatar_url);
       }
     } catch (err) {
-      console.warn("Could not fetch author for avatar deletion:", err);
     }
 
     const { error } = await getSupabaseAdmin()
-      .from("users" as any)
+      .from("authors" as any)
       .delete()
       .eq("id", id);
 
@@ -637,13 +681,8 @@ export const authorService = {
   async uploadAvatar(file: File): Promise<string> {
     const supabase = getSupabaseAdmin();
     const key = `avatars/${uuidv4()}-${file.name.replace(/[^a-z0-9.]/gi, "-")}`;
-
-    const { error } = await supabase.storage
-      .from("blog-content")
-      .upload(key, file);
-
+    const { error } = await supabase.storage.from("blog-content").upload(key, file);
     if (error) throw error;
-
     const { data } = supabase.storage.from("blog-content").getPublicUrl(key);
     return data.publicUrl;
   },

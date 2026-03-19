@@ -12,7 +12,6 @@ export const GA_MEASUREMENT_ID = '';
 // Initialize Google Analytics
 export const initGA = () => {
   if (!GA_MEASUREMENT_ID) {
-    console.warn('GA4 Measurement ID not found. Please set REACT_APP_GA_MEASUREMENT_ID in your environment variables.');
     return;
   }
 

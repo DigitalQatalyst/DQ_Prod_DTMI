@@ -783,8 +783,6 @@ const RelatedAnalyses = ({ analyses }: any) => {
 };
 
 const ContentGovernancePrediction = () => {
-  console.log('ContentGovernancePrediction component is rendering');
-
   // Comprehensive prediction data for AI-Powered Digital Platforms
   const predictionData = {
     header: {

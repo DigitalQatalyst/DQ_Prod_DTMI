@@ -27,7 +27,6 @@ export function getPrimarySupabase(): SupabaseClient {
 export function getJobsSupabase(): SupabaseClient {
   // If no secondary configured, use primary
   if (!SECONDARY_SUPABASE_URL || !SECONDARY_SUPABASE_KEY) {
-    console.log('No secondary Supabase configured, using primary');
     return getPrimarySupabase();
   }
   

@@ -124,9 +124,6 @@ const TourRequestForm: React.FC = () => {
         preferredTime: formData.preferredTime,
         message: formData.message,
       });
-      
-      console.log('✅ Studio tour request saved to Airtable successfully');
-
       // Send email notification
       const emailFormData = new FormData();
       emailFormData.append('Name', formData.name);
@@ -150,9 +147,7 @@ const TourRequestForm: React.FC = () => {
         body: emailFormData,
         mode: 'no-cors'
       }).then(() => {
-        console.log('📧 Email notification sent via FormSubmit');
       }).catch(error => {
-        console.log('⚠️ Email notification failed (non-critical):', error);
       });
 
       setFormSuccess(true);

@@ -149,15 +149,6 @@ export const MarketplaceGrid: React.FC<MarketplaceGridProps> = ({
               // Get category/source to display - show category or digital perspective
               const getDisplaySource = (item: any): string => {
                 // Debug logging
-                console.log('🔍 Item display source data:', {
-                  id: item.id,
-                  title: item.title?.substring(0, 30),
-                  digital_perspective: item.digital_perspective,
-                  categoryName: item.categoryName,
-                  category: item.category,
-                  provider: item.provider?.name
-                });
-
                 // Priority: digital_perspective > categoryName > category > provider name
                 if (item.digital_perspective) {
                   // Map short codes (D1, D2, etc.) to full names

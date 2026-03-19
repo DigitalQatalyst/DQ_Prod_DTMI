@@ -209,9 +209,6 @@ const CallToAction: React.FC = () => {
         interest: partnerFormData.message || "",
         message: contactFormData.message,
       });
-
-      console.log("✅ Consultation request saved to Airtable successfully");
-
       // Also send email notification via FormSubmit (backup notification system)
       const formData = new FormData();
       formData.append("Name", contactFormData.name);
@@ -243,10 +240,8 @@ const CallToAction: React.FC = () => {
         mode: "no-cors",
       })
         .then(() => {
-          console.log("📧 Email notification sent via FormSubmit");
         })
         .catch((error) => {
-          console.log("⚠️ Email notification failed (non-critical):", error);
         });
 
       setContactFormSuccess(true);

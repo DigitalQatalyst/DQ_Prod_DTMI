@@ -9,6 +9,7 @@ import { ProductDetailPage } from "./features/products/ProductDetailPage";
 import { App } from "./App";
 import MarketplaceDetailsPage from "./features/marketplace/pages/MarketplaceDetailsPage";
 import ProtectedRoute from "./shared/ProtectedRoute";
+import AuthorizedRoute from "./shared/AuthorizedRoute";
 import AboutUsPage from "./features/company/AboutUsPage";
 import NotFound from "./features/misc/NotFound";
 import MediaDetailPage from "./features/content/MediaDetailPage";
@@ -25,7 +26,6 @@ import BlogCreate from "./features/admin/content/pages/BlogCreate";
 import BlogDetail from "./features/admin/content/pages/BlogDetail";
 import AdminSettings from "./features/admin/system/pages/Settings";
 import AuthorManagement from "./features/admin/authors/pages/AuthorManagement";
-import AuthorCreate from "./features/admin/authors/pages/AuthorCreate";
 import CategoryManagement from "./features/admin/categories/pages/CategoryManagement";
 import ContentSubmissions from "./features/admin/submissions/pages/ContentSubmissions";
 import JobApplications from "./features/admin/recruitment/pages/JobApplications";
@@ -49,7 +49,6 @@ import ResearchReportPage from "./features/content/ResearchReportPage";
 import ResearchReportDetailPage from "./features/content/ResearchReportDetailPage";
 import WhitepaperDetailPage from "./features/content/WhitepaperDetailPage";
 import WhitepaperScrollPage from "./features/content/WhitepaperScrollPage";
-import MyDQPage from "./features/dashboard/MyDQPage";
 import ResearchPanelLandingPage from "./features/dtmi/research-panel/ResearchPanelLandingPage";
 import ResearchPanelApplicationPage from "./features/dtmi/research-panel/ResearchPanelApplicationPage";
 import SavedItemsPage from "./features/dashboard/SavedItemsPage";
@@ -172,68 +171,64 @@ export function AppRouter() {
        
             <Route
               path="/admin-ui/settings"
-              element={<AdminSettings />}
+              element={<AuthorizedRoute allowedRoles={['admin']}><AdminSettings /></AuthorizedRoute>}
             />
             {/* Embedded Admin UI */}
             <Route
               path="/admin-ui/dashboard"
-              element={<AdminDashboard />}
+              element={<AuthorizedRoute allowedRoles={['admin']}><AdminDashboard /></AuthorizedRoute>}
             />
             <Route
               path="/admin-ui/media"
-              element={<AdminMediaList />}
+              element={<AuthorizedRoute allowedRoles={['admin']}><AdminMediaList /></AuthorizedRoute>}
             />
             <Route
               path="/admin-ui/media/new"
-              element={<BlogCreate />}
+              element={<AuthorizedRoute allowedRoles={['admin']}><BlogCreate /></AuthorizedRoute>}
             />
             <Route
               path="/admin-ui/media/:id"
-              element={<BlogDetail />}
+              element={<AuthorizedRoute allowedRoles={['admin']}><BlogDetail /></AuthorizedRoute>}
             />
             <Route
               path="/admin-ui/authors"
-              element={<AuthorManagement />}
-            />
-            <Route
-              path="/admin-ui/authors/new"
-              element={<AuthorCreate />}
+              element={<AuthorizedRoute allowedRoles={['admin']}><AuthorManagement /></AuthorizedRoute>}
             />
             <Route
               path="/admin-ui/categories"
-              element={<CategoryManagement />}
+              element={<AuthorizedRoute allowedRoles={['admin']}><CategoryManagement /></AuthorizedRoute>}
             />
             <Route
               path="/admin-ui/submissions"
-              element={<ContentSubmissions />}
+              element={<AuthorizedRoute allowedRoles={['admin']}><ContentSubmissions /></AuthorizedRoute>}
             />
             <Route
               path="/admin-ui/job-applications"
-              element={<JobApplications />}
+              element={<AuthorizedRoute allowedRoles={['admin']}><JobApplications /></AuthorizedRoute>}
             />
             <Route
               path="/admin-ui/job-postings"
-              element={<JobPostingsManagement />}
+              element={<AuthorizedRoute allowedRoles={['admin']}><JobPostingsManagement /></AuthorizedRoute>}
             />
             <Route
               path="/admin-ui/job-postings/new"
-              element={<JobPostingCreate />}
+              element={<AuthorizedRoute allowedRoles={['admin']}><JobPostingCreate /></AuthorizedRoute>}
             />
             <Route
               path="/admin-ui/analytics"
-              element={<Analytics />}
+              element={<AuthorizedRoute allowedRoles={['admin']}><Analytics /></AuthorizedRoute>}
             />
             <Route
               path="/admin-ui/interviews"
-              element={<InterviewScheduler />}
+              element={<AuthorizedRoute allowedRoles={['admin']}><InterviewScheduler /></AuthorizedRoute>}
             />
             <Route
               path="/admin-ui/notifications"
-              element={<NotificationCenter />}
+              element={<AuthorizedRoute allowedRoles={['admin']}><NotificationCenter /></AuthorizedRoute>}
             />
             <Route
               path="/admin-ui/users"
-              element={<UserManagement />}
+              element={<AuthorizedRoute allowedRoles={['admin']}><UserManagement /></AuthorizedRoute>}
             />
 
             <Route path="/signals" element={<SignalsLandingPage />} />
@@ -298,7 +293,6 @@ export function AppRouter() {
             <Route path="/blog" element={<BlogListPage />} />
             <Route path="/blog/:slug" element={<BlogPage />} />
             <Route path="/authors/:slug" element={<AuthorBioPage />} />
-            <Route path="/my-dq" element={<MyDQPage />} />
             <Route path="/services" element={<ServicesPage />} />
             <Route path="/services/:slug" element={<ServiceDetailPage />} />
             <Route path="/client-testimonials" element={<ClientTestimonialsPage />} />

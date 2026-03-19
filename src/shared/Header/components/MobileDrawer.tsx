@@ -120,7 +120,7 @@ function isExternal(href: string) {
 export function MobileDrawer({ isSignedIn }: MobileDrawerProps) {
   const navigate = useNavigate();
   const location = useLocation();
-  const { login, logout } = useAuth();
+  const { logout } = useAuth();
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [isExploreExpanded, setIsExploreExpanded] = useState(false);
 
@@ -145,7 +145,7 @@ export function MobileDrawer({ isSignedIn }: MobileDrawerProps) {
   };
 
   const handleLoginClick = () => {
-    login();
+    navigate("/login");
     setIsDrawerOpen(false);
   };
 

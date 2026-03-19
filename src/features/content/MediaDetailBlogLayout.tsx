@@ -26,13 +26,6 @@ export default function MediaDetailBlogLayout() {
         const mediaItem = await mediaService.getMediaItemById(id);
 
         if (mediaItem) {
-          console.log("📊 Media data fetched:", {
-            id: mediaItem.id,
-            type: mediaItem.type,
-            title: mediaItem.title,
-            author: mediaItem.author,
-          });
-
           // Map author information from the mediaItem
           const authorInfo = mediaItem.author?.name
             ? {
@@ -47,10 +40,6 @@ export default function MediaDetailBlogLayout() {
                 email: mediaItem.author.email || null,
               }
             : null;
-
-          console.log("👤 Author info mapped:", authorInfo);
-          console.log("🔗 LinkedIn URL:", authorInfo?.linkedIn);
-
           setItem({
             id: mediaItem.id,
             title: mediaItem.title,
@@ -175,12 +164,6 @@ export default function MediaDetailBlogLayout() {
               {/* Author Card for Blogs or Provider Card for other content */}
               {item.mediaType === "Blog" ? (
                 <>
-                  {console.log("🎯 AuthorCard Debug:", {
-                    mediaType: item.mediaType,
-                    hasAuthor: !!item.author,
-                    authorName: item.author?.name,
-                    authorData: item.author,
-                  })}
                   <AuthorCard
                     author={{
                       name: item.author?.name || "Blog Author",
@@ -198,12 +181,6 @@ export default function MediaDetailBlogLayout() {
                 </>
               ) : (
                 <>
-                  {console.log("🎯 Provider Card Debug:", {
-                    mediaType: item.mediaType,
-                    hasAuthor: !!item.author,
-                    authorName: item.author?.name,
-                    provider: item.provider,
-                  })}
                   <div className="bg-gray-50 rounded-xl p-6 border border-gray-200">
                     <div className="flex items-start gap-4">
                       <img

@@ -34,7 +34,6 @@ export const MarketplaceCard: React.FC<MarketplaceItemProps> = ({
 
   const handleViewDetails = (e: React.MouseEvent) => {
     e.stopPropagation();
-    console.log('View Details Clicked - Navigating to:', getItemRoute());
     navigate(getItemRoute());
   };
 
@@ -42,23 +41,15 @@ export const MarketplaceCard: React.FC<MarketplaceItemProps> = ({
   const handlePrimaryAction = (e: React.MouseEvent) => {
     e.stopPropagation();
     // Log item details for debugging
-    console.log('Primary Action Clicked:', {
-      itemId: item.id,
-      itemTitle: item.title,
-      formUrl: item.formUrl,
-      marketplaceType,
-    });
     // Apply external fallback if formUrl is null/falsy
     const effectiveUrl = item.formUrl || "https://www.tamm.abudhabi/en/login";
     // Handle external: open in new tab
     if (effectiveUrl.startsWith('http')) {
       window.open(effectiveUrl, '_blank', 'noopener,noreferrer');
-      console.log('Opening external URL:', effectiveUrl);
       return;
     }
     // Internal route: normalize with /forms/ prefix if needed
     const targetUrl = effectiveUrl.startsWith('/forms/') ? effectiveUrl : `/forms/${effectiveUrl}`;
-    console.log('Navigating to internal route:', targetUrl);
     navigate(targetUrl);
   };
 
@@ -66,13 +57,6 @@ export const MarketplaceCard: React.FC<MarketplaceItemProps> = ({
   const displayTags = item.tags || [item.category, item.deliveryMode].filter(Boolean);
 
   // Log item props on render to verify formUrl presence
-  console.log('MarketplaceCard Rendered:', {
-    itemId: item.id,
-    itemTitle: item.title,
-    formUrl: item.formUrl,
-    marketplaceType,
-  });
-
   return (
     <div
       className="flex flex-col min-h-[340px] bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-200"

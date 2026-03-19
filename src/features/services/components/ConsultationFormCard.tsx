@@ -313,9 +313,6 @@ export const ConsultationFormCard: React.FC<ConsultationFormCardProps> = ({
         interest: businessDetails.interest || '',
         message: contactFormData.message,
       });
-      
-      console.log('✅ Consultation request saved to Airtable successfully');
-
       // Also send email notification via FormSubmit (backup notification system)
       const formData = new FormData();
       formData.append('Name', contactFormData.name);
@@ -337,9 +334,7 @@ export const ConsultationFormCard: React.FC<ConsultationFormCardProps> = ({
         body: formData,
         mode: 'no-cors'
       }).then(() => {
-        console.log('📧 Email notification sent via FormSubmit');
       }).catch(error => {
-        console.log('⚠️ Email notification failed (non-critical):', error);
       });
 
       setIsSuccess(true);

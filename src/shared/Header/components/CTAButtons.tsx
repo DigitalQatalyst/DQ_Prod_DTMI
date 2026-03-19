@@ -14,7 +14,6 @@ export function CTAButtons({
     setIsMobileMenuOpen(false);
   };
   const handleCTAClick = (action: string) => {
-    console.log(`${action} clicked`);
     setIsMobileMenuOpen(false);
   };
   return <>

@@ -109,7 +109,7 @@ export function AuthorBioPage() {
         };
 
         const foundAuthor = combinedAuthors.find(
-          (a) => normalizeForSlug(a.name) === authorSlug,
+          (a) => (a.slug && a.slug === authorSlug) || normalizeForSlug(a.name) === authorSlug,
         );
 
         if (foundAuthor) {

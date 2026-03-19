@@ -960,16 +960,12 @@ ${window.location.href}`);
         if (itemId) {
           try {
             blogData = await blogService.getBlogById(itemId);
-            console.log('Successfully fetched blog data from Supabase:', blogData);
-            
             // Validate that fetched data is a prediction analysis
             if (blogData && 'type' in blogData && blogData.type !== 'prediction-analysis') {
-              console.warn('Fetched item is not a prediction analysis, type:', (blogData as any).type);
               // Don't use invalid data, continue to fallback
               blogData = null;
             }
           } catch (supabaseError: any) {
-            console.warn('Failed to fetch from Supabase, trying localStorage:', supabaseError);
             // Check if it's a 404 or specific error
             if (supabaseError && supabaseError.message && supabaseError.message.includes('not found')) {
               setError('Prediction analysis not found. It may have been deleted or moved.');
@@ -983,7 +979,6 @@ ${window.location.href}`);
           const marketplaceState = JSON.parse(localStorage.getItem('marketplacePredictionState') || '{}');
           if (marketplaceState && marketplaceState.item) {
             blogData = marketplaceState.item;
-            console.log('Using localStorage data as fallback');
           }
         }
         
@@ -999,7 +994,6 @@ ${window.location.href}`);
               
               // Validate parsed content structure
               if (!parsedContent || typeof parsedContent !== 'object') {
-                console.warn('Invalid content structure for prediction analysis');
                 return;
               }
               
@@ -1017,7 +1011,6 @@ ${window.location.href}`);
                   detailedSections: parsedContent.detailedSections || prev.detailedSections
                 }));
               } else {
-                console.warn('Missing visualSummary in parsed content, using defaults');
               }
             } catch (parseError) {
               console.error('Failed to parse prediction analysis content:', parseError);
@@ -1026,7 +1019,6 @@ ${window.location.href}`);
           } else if (blogData && 'type' in blogData && blogData.type !== 'prediction-analysis') {
             setError('This content is not a prediction analysis.');
           } else {
-            console.warn('No content found for prediction analysis');
           }
         } else {
           // Final fallback data structure

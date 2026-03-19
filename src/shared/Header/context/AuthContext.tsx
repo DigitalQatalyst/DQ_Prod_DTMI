@@ -1,13 +1,16 @@
-import React, {
+import {
   createContext,
   useCallback,
   useContext,
+  useEffect,
   useMemo,
   useState,
   ReactNode,
 } from "react";
+import { supabase } from "../../../lib/supabase";
+import type { Session } from "@supabase/supabase-js";
 
-type UserRole = "admin" | "creator" | "viewer" | "HR-Admin" | "HR-viewer";
+type UserRole = "admin" | "viewer";
 
 interface Permission {
   resource: string;
@@ -30,101 +33,191 @@ export interface UserProfile {
 
 interface AuthContextType {
   user: UserProfile | null;
+  session: Session | null;
   isLoading: boolean;
   isSyncing: boolean;
   syncError: string | null;
-  login: () => void;
-  signup: () => void;
-  logout: () => void;
+  login: (email?: string, password?: string) => Promise<void>;
+  signup: (email?: string, password?: string, name?: string) => Promise<void>;
+  logout: () => Promise<void>;
   hasPermission: (resource: string, action: string) => boolean;
   isAdmin: () => boolean;
-  isCreator: () => boolean;
   isViewer: () => boolean;
-  isHRAdmin: () => boolean;
-  isHRViewer: () => boolean;
   refreshAvatar: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 /**
- * Stub AuthProvider — Azure B2C removed, Supabase auth to be implemented.
- * All auth methods are no-ops; user is always null until Supabase is wired up.
+ * Fetch the user's profile row from public.users.
+ * Simple and direct — no JWT hook needed.
  */
+async function fetchUserProfile(authUserId: string): Promise<UserProfile | null> {
+  const { data, error } = await supabase
+    .from("users")
+    .select("id, name, email, role, avatar_url, is_active")
+    .eq("auth_user_id", authUserId)
+    .maybeSingle();
+
+  if (error || !data) return null;
+  return {
+    id: data.id,
+    supabaseUserId: authUserId,
+    email: data.email ?? "",
+    name: data.name ?? "",
+    picture: data.avatar_url ?? "",
+    role: (data.role as UserRole) ?? "viewer",
+    permissions: [],
+  };
+}
+
 export function AuthProvider({ children }: Readonly<{ children: ReactNode }>) {
-  const [user] = useState<UserProfile | null>(null);
+  const [user, setUser] = useState<UserProfile | null>(null);
+  const [session, setSession] = useState<Session | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isSyncing, setIsSyncing] = useState(false);
+  const [syncError, setSyncError] = useState<string | null>(null);
 
-  const login = useCallback(() => {
-    console.log("[Auth] login() called — Supabase auth not yet implemented");
+  /** Fetch fresh profile from DB. Call this after role/profile updates. */
+  const syncUserProfile = useCallback(async (_authUser?: unknown) => {
+    setIsSyncing(true);
+    setSyncError(null);
+    try {
+      const { data: { session: s } } = await supabase.auth.getSession();
+      if (!s) return;
+      const profile = await fetchUserProfile(s.user.id);
+      if (profile) setUser(profile);
+    } catch (err: unknown) {
+      setSyncError(err instanceof Error ? err.message : "Failed to refresh profile");
+    } finally {
+      setIsSyncing(false);
+    }
   }, []);
 
-  const signup = useCallback(() => {
-    console.log("[Auth] signup() called — Supabase auth not yet implemented");
+  // Bootstrap: restore session on mount and listen for auth changes
+  useEffect(() => {
+    let mounted = true;
+
+    supabase.auth.getSession().then(({ data: { session: s } }) => {
+      if (!mounted) return;
+      setSession(s);
+      if (s) {
+        // Keep isLoading true until DB profile is ready — prevents redirect flash
+        fetchUserProfile(s.user.id).then((profile) => {
+          if (mounted) {
+            setUser(profile ?? {
+              id: s.user.id,
+              supabaseUserId: s.user.id,
+              email: s.user.email ?? "",
+              name: s.user.user_metadata?.full_name ?? "",
+              role: "viewer",
+              permissions: [],
+            });
+            console.log("[Auth] Logged in user:", profile);
+          }
+        }).finally(() => {
+          if (mounted) setIsLoading(false);
+        });
+      } else {
+        setIsLoading(false);
+      }
+    });
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, s) => {
+      if (!mounted) return;
+      setSession(s);
+      if (s) {
+        fetchUserProfile(s.user.id).then((profile) => {
+          if (mounted) setUser(profile ?? {
+            id: s.user.id,
+            supabaseUserId: s.user.id,
+            email: s.user.email ?? "",
+            name: s.user.user_metadata?.full_name ?? "",
+            role: "viewer",
+            permissions: [],
+          });
+        });
+      } else {
+        setUser(null);
+      }
+    });
+
+    return () => {
+      mounted = false;
+      subscription.unsubscribe();
+    };
   }, []);
 
-  const logout = useCallback(() => {
-    console.log("[Auth] logout() called — Supabase auth not yet implemented");
+  const login = useCallback(async (email?: string, password?: string) => {
+    if (!email || !password) {
+      return;
+    }
+    const { error } = await supabase.auth.signInWithPassword({ email, password });
+    if (error) throw error;
+  }, []);
+
+  const signup = useCallback(async (email?: string, password?: string, name?: string) => {
+    if (!email || !password) {
+      return;
+    }
+    const { error } = await supabase.auth.signUp({
+      email,
+      password,
+      options: { data: { full_name: name } },
+    });
+    if (error) throw error;
+  }, []);
+
+  const logout = useCallback(async () => {
+    await supabase.auth.signOut();
+    setUser(null);
+    setSession(null);
   }, []);
 
   const hasPermission = useCallback(
-    (_resource: string, _action: string): boolean => false,
-    []
+    (resource: string, action: string): boolean => {
+      if (!user?.permissions) return false;
+      return user.permissions.some(
+        (p) => p.resource === resource && p.action === action && p.can_perform
+      );
+    },
+    [user]
   );
 
   const isAdmin = useCallback(() => user?.role === "admin", [user]);
-  const isCreator = useCallback(
-    () => user?.role === "creator" || user?.role === "admin",
-    [user]
-  );
-  const isViewer = useCallback(
-    () =>
-      user?.role === "viewer" ||
-      user?.role === "creator" ||
-      user?.role === "admin",
-    [user]
-  );
-  const isHRAdmin = useCallback(
-    () => user?.role === "HR-Admin" || user?.role === "admin",
-    [user]
-  );
-  const isHRViewer = useCallback(
-    () =>
-      user?.role === "HR-viewer" ||
-      user?.role === "HR-Admin" ||
-      user?.role === "admin",
-    [user]
-  );
+  const isViewer = useCallback(() => user?.role === "viewer" || user?.role === "admin", [user]);
 
-  const refreshAvatar = useCallback(async () => {}, []);
+  const refreshAvatar = useCallback(async () => {
+    await syncUserProfile();
+  }, [syncUserProfile]);
 
   const contextValue = useMemo<AuthContextType>(
     () => ({
       user,
-      isLoading: false,
-      isSyncing: false,
-      syncError: null,
+      session,
+      isLoading,
+      isSyncing,
+      syncError,
       login,
       signup,
       logout,
       hasPermission,
       isAdmin,
-      isCreator,
       isViewer,
-      isHRAdmin,
-      isHRViewer,
       refreshAvatar,
     }),
     [
       user,
+      session,
+      isLoading,
+      isSyncing,
+      syncError,
       login,
       signup,
       logout,
       hasPermission,
       isAdmin,
-      isCreator,
       isViewer,
-      isHRAdmin,
-      isHRViewer,
       refreshAvatar,
     ]
   );

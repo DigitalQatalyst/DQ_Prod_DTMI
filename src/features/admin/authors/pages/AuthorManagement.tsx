@@ -15,7 +15,9 @@ import {
   ExternalLink,
   Camera,
   CheckCircle2,
-  X
+  X,
+  Linkedin,
+  Twitter
 } from 'lucide-react';
 import { Toast, ToastType } from '../../shared/components/Toast';
 import Modal from '../../shared/components/Modal';
@@ -439,6 +441,32 @@ const AuthorManagement: React.FC = () => {
               className="w-full p-4 bg-gray-50 border border-gray-100 rounded-xl text-xs leading-relaxed focus:ring-1 focus:ring-gray-200 outline-none transition-all"
               placeholder="Share a short story about this author's expertise..."
             />
+          </div>
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-1">
+              <label className="text-xs text-gray-500 flex items-center gap-1.5">
+                <Linkedin size={11} /> LinkedIn URL
+              </label>
+              <input
+                type="url"
+                value={currentAuthor?.linkedIn || ''}
+                onChange={e => setCurrentAuthor(prev => ({ ...prev, linkedIn: e.target.value }))}
+                className="w-full px-3 py-2 bg-gray-50 border border-gray-100 rounded-lg text-xs focus:ring-1 focus:ring-gray-200 outline-none transition-all"
+                placeholder="https://linkedin.com/in/username"
+              />
+            </div>
+            <div className="space-y-1">
+              <label className="text-xs text-gray-500 flex items-center gap-1.5">
+                <Twitter size={11} /> X (Twitter) URL
+              </label>
+              <input
+                type="url"
+                value={currentAuthor?.twitter || ''}
+                onChange={e => setCurrentAuthor(prev => ({ ...prev, twitter: e.target.value }))}
+                className="w-full px-3 py-2 bg-gray-50 border border-gray-100 rounded-lg text-xs focus:ring-1 focus:ring-gray-200 outline-none transition-all"
+                placeholder="https://x.com/username"
+              />
+            </div>
           </div>
         </form>
       </Modal>
