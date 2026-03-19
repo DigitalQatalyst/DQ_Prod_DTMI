@@ -210,7 +210,7 @@ export function AuthorBioPage() {
                 {otherAuthors.slice(0, 8).map((other) => {
                   const slug = other.slug || authorSlugFromName(other.name);
                   return (
-                    <Link key={other.id} to={`/authors/${slug}`}
+                    <Link key={other.id} to={`/contributors/${slug}`}
                       className="group bg-white border border-gray-100 rounded-xl p-4 flex flex-col items-center text-center hover:shadow-md hover:border-gray-200 transition-all">
                       {other.avatar ? (
                         <img src={other.avatar} alt={other.name}

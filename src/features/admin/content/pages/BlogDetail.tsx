@@ -576,7 +576,7 @@ export const BlogDetail: React.FC = () => {
                 formData.type === "expert-interview"
                   ? `/expert-interviews/${formData.slug}`
                   : formData.type === "article"
-                    ? `/dtmi/article/${formData.slug}`
+                    ? `/article/${formData.slug}`
                     : formData.type === "podcast"
                       ? `/podcast/${formData.slug}`
                       : `/blog/${formData.slug}`

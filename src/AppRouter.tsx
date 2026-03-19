@@ -223,32 +223,20 @@ export function AppRouter() {
               path="/research-updates-signup"
               element={<ResearchUpdatesSignupPage />}
             />
-            <Route
-              path="/dtmi/signals"
-              element={<Navigate to="/signals" replace />}
-            />
-            <Route
-              path="/dtmi/insights"
-              element={<Navigate to="/insights" replace />}
-            />
-            <Route
-              path="/dtmi/deep-analysis"
-              element={<Navigate to="/research" replace />}
-            />
-            <Route path="/dtmi/6xd" element={<SixDimensionsPage />} />
-            <Route
-              path="/dtmi/contributors"
-              element={<ContributorsMarketplacePage />}
-            />
-            <Route
-              path="/dtmi/research-panel"
-              element={<ResearchPanelLandingPage />}
-            />
-            <Route
-              path="/dtmi/research-panel-application"
-              element={<ResearchPanelApplicationPage />}
-            />
-            <Route path="/dtmi/article/:slug" element={<ViewArticlePage />} />
+            <Route path="/dtmi/signals" element={<Navigate to="/signals" replace />} />
+            <Route path="/dtmi/insights" element={<Navigate to="/insights" replace />} />
+            <Route path="/dtmi/deep-analysis" element={<Navigate to="/research" replace />} />
+            <Route path="/dtmi/contributors" element={<Navigate to="/contributors" replace />} />
+            <Route path="/dtmi/6xd" element={<Navigate to="/6xd" replace />} />
+            <Route path="/dtmi/research-panel" element={<Navigate to="/research-panel" replace />} />
+            <Route path="/dtmi/research-panel-application" element={<Navigate to="/research-panel-application" replace />} />
+            <Route path="/dtmi/article/:slug" element={<Navigate to="/article/:slug" replace />} />
+            <Route path="/6xd" element={<SixDimensionsPage />} />
+            <Route path="/contributors" element={<ContributorsMarketplacePage />} />
+            <Route path="/contributors/:slug" element={<AuthorBioPage />} />
+            <Route path="/research-panel" element={<ResearchPanelLandingPage />} />
+            <Route path="/research-panel-application" element={<ResearchPanelApplicationPage />} />
+            <Route path="/article/:slug" element={<ViewArticlePage />} />
             <Route
               path="/newsletter-signup"
               element={<NewsletterSignupPage />}
@@ -268,7 +256,6 @@ export function AppRouter() {
             />
             <Route path="/blog" element={<BlogListPage />} />
             <Route path="/blog/:slug" element={<BlogPage />} />
-            <Route path="/authors/:slug" element={<AuthorBioPage />} />
             <Route path="/services" element={<ServicesPage />} />
             <Route path="/services/:slug" element={<ServiceDetailPage />} />
             <Route path="/client-testimonials" element={<ClientTestimonialsPage />} />

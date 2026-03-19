@@ -26,7 +26,7 @@ const marketplaces: Marketplace[] = [
     name: "DTMI Contributors Marketplace",
     description: "Connect with digital transformation experts, thought leaders, and industry contributors",
     icon: UsersIcon,
-    href: "/dtmi/contributors",
+    href: "/contributors",
   },
 ];
 

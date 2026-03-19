@@ -103,14 +103,14 @@ export function Footer({ 'data-id': dataId }: FooterProps) {
                 <li><Link to="/signals" className="text-gray-300 hover:text-primary text-sm block">Signals</Link></li>
                 <li><Link to="/insights" className="text-gray-300 hover:text-primary text-sm block">Insights</Link></li>
                 <li><Link to="/research" className="text-gray-300 hover:text-primary text-sm block">Deep Analysis</Link></li>
-                <li><Link to="/dtmi/6xd" className="text-gray-300 hover:text-primary text-sm block">6xD Framework</Link></li>
+                <li><Link to="/6xd" className="text-gray-300 hover:text-primary text-sm block">6xD Framework</Link></li>
                 <li><Link to="/marketplace/dtmi" className="text-gray-300 hover:text-primary text-sm block">DTMI Marketplace</Link></li>
               </ul>
             </AccordionSection>
             <AccordionSection title="Content &amp; Research">
               <ul className="space-y-3">
-                <li><Link to="/dtmi/contributors" className="text-gray-300 hover:text-primary text-sm block">Contributors Marketplace</Link></li>
-                <li><Link to="/dtmi/research-panel" className="text-gray-300 hover:text-primary text-sm block">Research Panel</Link></li>
+                <li><Link to="/contributors" className="text-gray-300 hover:text-primary text-sm block">Contributors Marketplace</Link></li>
+                <li><Link to="/research-panel" className="text-gray-300 hover:text-primary text-sm block">Research Panel</Link></li>
                 <li><Link to="/marketplace/dtmi?contentType=articles" className="text-gray-300 hover:text-primary text-sm block">Articles</Link></li>
                 <li><Link to="/marketplace/dtmi?contentType=expert-interviews" className="text-gray-300 hover:text-primary text-sm block">Expert Interviews</Link></li>
                 <li><Link to="/marketplace/dtmi?contentType=podcasts" className="text-gray-300 hover:text-primary text-sm block">Podcast <span className="text-xs text-orange-400">(Coming Soon)</span></Link></li>
@@ -141,7 +141,7 @@ export function Footer({ 'data-id': dataId }: FooterProps) {
             <div className="flex flex-wrap justify-center gap-4 text-sm">
               <Link to="/newsletter-signup" className="text-gray-300 hover:text-white transition-colors">Newsletter Signup</Link>
               <Link to="/request-demo" className="text-gray-300 hover:text-white transition-colors">Request Demo</Link>
-              <Link to="/dtmi/research-panel-application" className="bg-orange-500 hover:bg-orange-600 px-4 py-2 rounded transition-colors text-white">Join Research Panel</Link>
+              <Link to="/research-panel-application" className="bg-orange-500 hover:bg-orange-600 px-4 py-2 rounded transition-colors text-white">Join Research Panel</Link>
             </div>
             <p className="text-gray-300 text-xs">© 2026 DigitalQatalyst. All rights reserved.</p>
             <p className="text-gray-400 text-xs">Dubai, UAE</p>
@@ -194,7 +194,7 @@ export function Footer({ 'data-id': dataId }: FooterProps) {
                 <li><Link to="/signals" className="text-gray-300 hover:text-primary text-sm">Signals</Link></li>
                 <li><Link to="/insights" className="text-gray-300 hover:text-primary text-sm">Insights</Link></li>
                 <li><Link to="/research" className="text-gray-300 hover:text-primary text-sm">Deep Analysis</Link></li>
-                <li><Link to="/dtmi/6xd" className="text-gray-300 hover:text-primary text-sm">6xD Framework</Link></li>
+                <li><Link to="/6xd" className="text-gray-300 hover:text-primary text-sm">6xD Framework</Link></li>
                 <li><Link to="/marketplace/dtmi" className="text-gray-300 hover:text-primary text-sm">DTMI Marketplace</Link></li>
               </ul>
             </div>
@@ -203,8 +203,8 @@ export function Footer({ 'data-id': dataId }: FooterProps) {
             <div>
               <h3 className="font-semibold text-lg mb-6">Content &amp; Research</h3>
               <ul className="space-y-4">
-                <li><Link to="/dtmi/contributors" className="text-gray-300 hover:text-primary text-sm">Contributors Marketplace</Link></li>
-                <li><Link to="/dtmi/research-panel" className="text-gray-300 hover:text-primary text-sm">Research Panel</Link></li>
+                <li><Link to="/contributors" className="text-gray-300 hover:text-primary text-sm">Contributors Marketplace</Link></li>
+                <li><Link to="/research-panel" className="text-gray-300 hover:text-primary text-sm">Research Panel</Link></li>
                 <li><Link to="/marketplace/dtmi?contentType=articles" className="text-gray-300 hover:text-primary text-sm">Articles</Link></li>
                 <li><Link to="/marketplace/dtmi?contentType=expert-interviews" className="text-gray-300 hover:text-primary text-sm">Expert Interviews</Link></li>
                 <li><Link to="/marketplace/dtmi?contentType=podcasts" className="text-gray-300 hover:text-primary text-sm">Podcast <span className="text-xs text-orange-400">(Coming Soon)</span></Link></li>
@@ -232,7 +232,7 @@ export function Footer({ 'data-id': dataId }: FooterProps) {
             <div className="flex items-center gap-6 text-sm">
               <Link to="/newsletter-signup" className="text-gray-300 hover:text-white transition-colors">Newsletter Signup</Link>
               <Link to="/request-demo" className="text-gray-300 hover:text-white transition-colors">Request Demo</Link>
-              <Link to="/dtmi/research-panel-application" className="bg-orange-500 hover:bg-orange-600 px-4 py-2 rounded transition-colors">Join Research Panel</Link>
+              <Link to="/research-panel-application" className="bg-orange-500 hover:bg-orange-600 px-4 py-2 rounded transition-colors">Join Research Panel</Link>
             </div>
             <p className="text-gray-400 text-sm">Dubai, UAE</p>
           </div>

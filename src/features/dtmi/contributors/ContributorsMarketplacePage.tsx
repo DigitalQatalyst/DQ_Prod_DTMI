@@ -13,10 +13,8 @@ import {
 import { Link, useSearchParams } from "react-router-dom";
 import { Header } from "../../../shared/Header/Header";
 import { Footer } from "../../../shared/Footer/Footer";
-import {
-  contributorProfiles,
-  ContributorProfile,
-} from "../../../data/dtmiContributors";
+import { authorService } from "../../admin/shared/utils/supabase";
+import { ContributorProfile } from "../../../data/dtmiContributors";
 
 type ContributorFilters = {
   type: string[];
@@ -116,7 +114,8 @@ type FilterOption = {
 export function ContributorsMarketplacePage() {
   const [searchParams, setSearchParams] = useSearchParams();
   const selectedCategory = searchParams.get('category');
-  const viewAll = searchParams.get('view') === 'all';
+  // Show grid view when ?view=all OR ?category=xxx is present
+  const showGrid = searchParams.get('view') === 'all' || !!selectedCategory;
   
   const [filters, setFilters] = useState<ContributorFilters>(initialFilters);
   const [showFilters, setShowFilters] = useState(false);
@@ -128,45 +127,64 @@ export function ContributorsMarketplacePage() {
     worksRange: false,
   });
 
-  // Update filters when category parameter changes
+  // DB authors only — no static fallbacks
+  const [contributorProfiles, setContributorProfiles] = useState<ContributorProfile[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    authorService.getAuthors().then((authors) => {
+      // Show all authors — contributor_type is used for filtering, not gating
+      const dbProfiles: ContributorProfile[] = authors
+        .map((a, i) => {
+          const slug = a.slug || a.name.toLowerCase().normalize('NFD')
+            .replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+          return {
+            id: 1000 + i,
+            name: a.name,
+            type: a.contributorType || 'Contributor',
+            subCategory: a.subCategory || '',
+            affiliation: a.affiliation || 'DigitalQatalyst',
+            expertise: a.expertise || a.title || '',
+            tags: a.tags || [],
+            works: a.worksCount ?? 0,
+            bio: a.bio || '',
+            avatar: a.avatar || undefined,
+            profileUrl: `/contributors/${slug}`,
+          };
+        });
+      setContributorProfiles(dbProfiles);
+    }).catch(err => console.error('Failed to load contributors', err))
+    .finally(() => setLoading(false));
+  }, []);
+
+  // Sync type filter with category URL param
   useEffect(() => {
     if (selectedCategory) {
       const categoryName = CONTRIBUTOR_CATEGORIES.find(cat => cat.id === selectedCategory)?.name;
-      if (categoryName) {
-        setFilters(prev => ({
-          ...prev,
-          type: [categoryName]
-        }));
-      }
-    } else if (viewAll) {
-      setFilters(initialFilters);
+      setFilters(prev => ({
+        ...prev,
+        type: categoryName ? [categoryName] : [],
+      }));
     } else {
       setFilters(initialFilters);
     }
-  }, [selectedCategory, viewAll]);
+  }, [selectedCategory]);
 
   const typeOptions: FilterOption[] = useMemo(() => {
-    // Define the new contributor type categories
     const standardTypes: FilterOption[] = [
       { id: "Research Leadership", label: "Research Leadership" },
       { id: "Human Intelligence Analysts", label: "Human Intelligence Analysts" },
       { id: "AI Research Agents", label: "AI Research Agents" },
       { id: "Editorial Publication Team", label: "Editorial Publication Team" },
     ];
-    
-    // Get any existing types from contributor profiles that aren't in the standard list
-    // Exclude "Content Author" and "Registered Author" from filters
-    const excludedTypes = ["Content Author", "Registered Author"];
-    const existingTypes = Array.from(
-      new Set(contributorProfiles.map((profile) => profile.type))
+    const extraTypes = Array.from(
+      new Set(contributorProfiles.map((p) => p.type))
     )
-      .filter(type => !standardTypes.find(std => std.id === type) && !excludedTypes.includes(type))
+      .filter(type => !standardTypes.find(std => std.id === type))
       .sort()
       .map((value) => ({ id: value, label: value }));
-    
-    // Combine standard types with any existing ones
-    return [...standardTypes, ...existingTypes];
-  }, []);
+    return [...standardTypes, ...extraTypes];
+  }, [contributorProfiles]);
 
   const tagOptions: FilterOption[] = useMemo(() => {
     return Array.from(
@@ -174,7 +192,7 @@ export function ContributorsMarketplacePage() {
     )
       .sort()
       .map((value) => ({ id: value, label: value }));
-  }, []);
+  }, [contributorProfiles]);
 
   const worksOptions: FilterOption[] = WORKS_BUCKETS.map(({ id, label }) => ({
     id,
@@ -236,34 +254,21 @@ export function ContributorsMarketplacePage() {
     
     setFilters(newFilters);
     
-    // Update URL parameters based on filter changes
     if (filterType === 'type') {
-      if (newFilters.type.length === 0) {
-        // No type filters selected - switch to "All Contributors" view
-        setSearchParams({ view: 'all' });
-      } else if (newFilters.type.length === 1) {
-        // Single type filter - check if it matches a category
+      if (newFilters.type.length === 1) {
         const categoryMatch = CONTRIBUTOR_CATEGORIES.find(cat => cat.name === newFilters.type[0]);
         if (categoryMatch) {
           setSearchParams({ category: categoryMatch.id });
-        } else {
-          setSearchParams({ view: 'all' });
+          return;
         }
-      } else {
-        // Multiple type filters - switch to "All Contributors" view
-        setSearchParams({ view: 'all' });
       }
+      setSearchParams({ view: 'all' });
     }
   };
 
   const resetFilters = () => {
     setFilters(initialFilters);
-    // When resetting filters, switch to "All Contributors" view if we're currently in a category
-    if (selectedCategory) {
-      setSearchParams({ view: 'all' });
-    } else {
-      setSearchParams({});
-    }
+    setSearchParams({ view: 'all' });
   };
 
   const toggleGroup = (group: keyof ContributorFilters) => {
@@ -275,6 +280,10 @@ export function ContributorsMarketplacePage() {
     filters.tag.length > 0 ||
     filters.worksRange.length > 0;
 
+  const breadcrumbLabel = selectedCategory
+    ? CONTRIBUTOR_CATEGORIES.find(cat => cat.id === selectedCategory)?.name ?? 'All Contributors'
+    : 'All Contributors';
+
   return (
     <div className="min-h-screen flex flex-col bg-gray-50">
       <Header />
@@ -284,34 +293,29 @@ export function ContributorsMarketplacePage() {
             <ol className="inline-flex items-center space-x-1 md:space-x-2">
               <li className="inline-flex items-center">
                 <Link
-                  to="/dtmi"
+                  to="/"
                   className="inline-flex items-center text-gray-600 hover:text-brand-coral transition-colors"
                 >
                   <HomeIcon size={16} className="mr-1" />
-                  DTMI
+                  Home
                 </Link>
               </li>
               <li>
                 <div className="flex items-center text-gray-500">
                   <ChevronRightIcon size={16} className="text-gray-400" />
                   <Link
-                    to="/dtmi/contributors"
+                    to="/contributors"
                     className="ml-1 md:ml-2 text-gray-600 hover:text-brand-coral transition-colors"
                   >
                     Contributors Marketplace
                   </Link>
                 </div>
               </li>
-              {(selectedCategory || viewAll) && (
+              {showGrid && (
                 <li aria-current="page">
                   <div className="flex items-center text-gray-500">
                     <ChevronRightIcon size={16} className="text-gray-400" />
-                    <span className="ml-1 md:ml-2">
-                      {selectedCategory && filters.type.length > 0 && filters.type.includes(CONTRIBUTOR_CATEGORIES.find(cat => cat.id === selectedCategory)?.name || '')
-                        ? CONTRIBUTOR_CATEGORIES.find(cat => cat.id === selectedCategory)?.name
-                        : "All Contributors"
-                      }
-                    </span>
+                    <span className="ml-1 md:ml-2">{breadcrumbLabel}</span>
                   </div>
                 </li>
               )}
@@ -327,7 +331,8 @@ export function ContributorsMarketplacePage() {
             </p>
           </header>
 
-          {(selectedCategory || viewAll) && (
+          {/* Mobile filter toggle — only in grid view */}
+          {showGrid && (
             <div className="xl:hidden bg-white rounded-2xl shadow-sm border border-gray-100 mb-6">
               <button
                 onClick={() => setShowFilters((prev) => !prev)}
@@ -375,10 +380,7 @@ export function ContributorsMarketplacePage() {
                     onSelect={(value) => handleFilterChange("worksRange", value)}
                   />
                   {hasActiveFilters && (
-                    <button
-                      onClick={resetFilters}
-                      className="text-sm font-semibold text-blue-600"
-                    >
+                    <button onClick={resetFilters} className="text-sm font-semibold text-blue-600">
                       Reset Filters
                     </button>
                   )}
@@ -388,16 +390,14 @@ export function ContributorsMarketplacePage() {
           )}
 
           <div className="flex flex-col xl:flex-row gap-6">
-            {(selectedCategory || viewAll) && (
+            {/* Sidebar filters — only in grid view */}
+            {showGrid && (
               <aside className="hidden xl:block xl:w-1/4">
                 <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-5 space-y-6 sticky top-24">
                   <div className="flex items-center justify-between">
                     <h2 className="text-lg font-semibold text-gray-900">Filters</h2>
                     {hasActiveFilters && (
-                      <button
-                        onClick={resetFilters}
-                        className="text-sm font-semibold text-blue-600"
-                      >
+                      <button onClick={resetFilters} className="text-sm font-semibold text-blue-600">
                         Reset
                       </button>
                     )}
@@ -431,17 +431,17 @@ export function ContributorsMarketplacePage() {
               </aside>
             )}
 
-            <section className={(selectedCategory || viewAll) ? "xl:w-3/4" : "w-full"}>
-              {!selectedCategory && !viewAll ? (
-                // Show category cards when no category is selected
+            <section className={showGrid ? "xl:w-3/4" : "w-full"}>
+              {!showGrid ? (
+                // ── Category overview ──
                 <>
                   <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6 gap-4">
                     <span className="text-sm text-gray-600">
                       Explore {CONTRIBUTOR_CATEGORIES.length} contributor categories
                     </span>
                     <Link
-                      to="/dtmi/contributors?view=all"
-                      className="inline-flex items-center gap-2 px-4 py-2 bg-brand-coral text-white rounded-lg hover:bg-brand-coral-dark transition-colors font-medium"
+                      to="/contributors?view=all"
+                      className="inline-flex items-center gap-2 px-4 py-2 bg-brand-coral text-white rounded-lg hover:opacity-90 transition-opacity font-medium"
                     >
                       View All Contributors
                       <ArrowRight className="h-4 w-4" />
@@ -454,46 +454,63 @@ export function ContributorsMarketplacePage() {
                   </div>
                 </>
               ) : (
-                // Show filtered contributors when a category is selected
+                // ── Filtered contributor grid ──
                 <>
                   <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4 gap-2 text-sm text-gray-600">
                     <span>
-                      Showing {filteredContributors.length} of {contributorProfiles.length}{" "}
-                      contributors
+                      {loading
+                        ? 'Loading contributors…'
+                        : `Showing ${filteredContributors.length} of ${contributorProfiles.length} contributors`}
                     </span>
-                    {hasActiveFilters && (
-                      <button
-                        onClick={resetFilters}
-                        className="text-blue-600 font-semibold"
-                      >
-                        Clear filters
-                      </button>
-                    )}
-                  </div>
-
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    {contributorsWithAdverts.map((item, index) => 
-                      item.type === 'contributor' ? (
-                        <ContributorCard key={`contributor-${item.data.id}`} contributor={item.data} />
-                      ) : (
-                        <AdvertCard key={`advert-${item.data.id}-${index}`} advert={item.data} />
-                      )
-                    )}
-                  </div>
-
-                  {filteredContributors.length === 0 && (
-                    <div className="bg-white border border-dashed border-gray-200 rounded-2xl p-10 text-center mt-6">
-                      <h3 className="text-xl font-semibold text-gray-900 mb-2">
-                        No contributors found
-                      </h3>
-                      <p className="text-gray-600 mb-4">
-                        Try adjusting your filters or clearing selections to explore the full
-                        marketplace.
-                      </p>
-                      <button onClick={resetFilters} className="text-blue-600 font-semibold">
-                        Reset Filters
-                      </button>
+                    <div className="flex items-center gap-4">
+                      {hasActiveFilters && (
+                        <button onClick={resetFilters} className="text-blue-600 font-semibold">
+                          Clear filters
+                        </button>
+                      )}
+                      <Link to="/contributors" className="text-gray-500 hover:text-gray-700 text-xs">
+                        ← Back to categories
+                      </Link>
                     </div>
+                  </div>
+
+                  {loading ? (
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      {[1, 2, 3, 4].map(i => (
+                        <div key={i} className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 animate-pulse h-48" />
+                      ))}
+                    </div>
+                  ) : (
+                    <>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        {contributorsWithAdverts.map((item, index) =>
+                          item.type === 'contributor' ? (
+                            <ContributorCard key={`contributor-${item.data.id}`} contributor={item.data} />
+                          ) : (
+                            <AdvertCard key={`advert-${item.data.id}-${index}`} advert={item.data} />
+                          )
+                        )}
+                      </div>
+
+                      {filteredContributors.length === 0 && (
+                        <div className="bg-white border border-dashed border-gray-200 rounded-2xl p-10 text-center mt-6">
+                          <Users className="w-12 h-12 text-gray-300 mx-auto mb-4" />
+                          <h3 className="text-xl font-semibold text-gray-900 mb-2">
+                            No contributors yet
+                          </h3>
+                          <p className="text-gray-500 mb-4">
+                            {hasActiveFilters
+                              ? 'Try adjusting your filters or clearing selections.'
+                              : 'Contributors will appear here once added via the admin panel.'}
+                          </p>
+                          {hasActiveFilters && (
+                            <button onClick={resetFilters} className="text-blue-600 font-semibold">
+                              Reset Filters
+                            </button>
+                          )}
+                        </div>
+                      )}
+                    </>
                   )}
                 </>
               )}
@@ -621,7 +638,7 @@ function AdvertCard({ advert }: { advert: typeof CONTRIBUTOR_ADVERTS[0] }) {
 function CategoryCard({ category }: { category: typeof CONTRIBUTOR_CATEGORIES[0] }) {
   return (
     <Link
-      to={`/dtmi/contributors?category=${category.id}`}
+      to={`/contributors?category=${category.id}`}
       className="block"
     >
       <article className="bg-white border border-gray-100 rounded-2xl p-6 shadow-md hover:shadow-lg transition-shadow duration-200 flex flex-col gap-4 h-full">
@@ -723,7 +740,7 @@ function ContributorCard({ contributor }: { contributor: ContributorProfile }) {
 
       <div className="flex items-center justify-between border-t border-gray-100 pt-4">
         <Link
-          to={contributor.profileUrl || "/dtmi/contributors"}
+          to={contributor.profileUrl || "/contributors"}
           className="inline-flex items-center gap-2 text-sm font-semibold text-brand-coral hover:text-brand-coral-dark"
         >
           Read Contributor Bio

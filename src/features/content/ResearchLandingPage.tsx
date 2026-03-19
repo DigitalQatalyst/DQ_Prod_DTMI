@@ -83,7 +83,7 @@ const ResearchLandingPage = () => {
               {/* Additional CTA for Research Panel */}
               <div className="mt-6 text-center">
                 <button
-                  onClick={() => navigate("/dtmi/research-panel")}
+                  onClick={() => navigate("/research-panel")}
                   className="text-blue-100 hover:text-white underline font-medium transition-colors"
                 >
                   Or join our Research Panel →

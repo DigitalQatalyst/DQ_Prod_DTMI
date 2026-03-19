@@ -524,6 +524,70 @@ const AuthorManagement: React.FC = () => {
               />
             </div>
           </div>
+
+          {/* Contributor marketplace fields */}
+          <div className="pt-2 border-t border-gray-100">
+            <p className="text-xs font-medium text-gray-400 mb-3">Contributor Profile</p>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-1">
+                <label className="text-xs text-gray-500">Contributor Type</label>
+                <select
+                  value={currentAuthor?.contributorType || ''}
+                  onChange={e => setCurrentAuthor(prev => ({ ...prev, contributorType: e.target.value }))}
+                  className="w-full px-3 py-2 bg-gray-50 border border-gray-100 rounded-lg text-xs focus:ring-1 focus:ring-gray-200 outline-none transition-all"
+                >
+                  <option value="">— Select type —</option>
+                  <option value="Research Leadership">Research Leadership</option>
+                  <option value="Human Intelligence Analysts">Human Intelligence Analysts</option>
+                  <option value="AI Research Agents">AI Research Agents</option>
+                  <option value="Editorial Publication Team">Editorial Publication Team</option>
+                </select>
+              </div>
+              <div className="space-y-1">
+                <label className="text-xs text-gray-500">Sub-Category</label>
+                <input
+                  type="text"
+                  value={currentAuthor?.subCategory || ''}
+                  onChange={e => setCurrentAuthor(prev => ({ ...prev, subCategory: e.target.value }))}
+                  className="w-full px-3 py-2 bg-gray-50 border border-gray-100 rounded-lg text-xs focus:ring-1 focus:ring-gray-200 outline-none transition-all"
+                  placeholder="e.g. Research Director"
+                />
+              </div>
+              <div className="space-y-1">
+                <label className="text-xs text-gray-500">Affiliation</label>
+                <input
+                  type="text"
+                  value={currentAuthor?.affiliation || 'DigitalQatalyst'}
+                  onChange={e => setCurrentAuthor(prev => ({ ...prev, affiliation: e.target.value }))}
+                  className="w-full px-3 py-2 bg-gray-50 border border-gray-100 rounded-lg text-xs focus:ring-1 focus:ring-gray-200 outline-none transition-all"
+                  placeholder="DigitalQatalyst"
+                />
+              </div>
+              <div className="space-y-1">
+                <label className="text-xs text-gray-500">Expertise</label>
+                <input
+                  type="text"
+                  value={currentAuthor?.expertise || ''}
+                  onChange={e => setCurrentAuthor(prev => ({ ...prev, expertise: e.target.value }))}
+                  className="w-full px-3 py-2 bg-gray-50 border border-gray-100 rounded-lg text-xs focus:ring-1 focus:ring-gray-200 outline-none transition-all"
+                  placeholder="e.g. DCO Strategy, Applied AI"
+                />
+              </div>
+            </div>
+            <div className="space-y-1 mt-4">
+              <label className="text-xs text-gray-500">Tags <span className="text-gray-400">(comma-separated)</span></label>
+              <input
+                type="text"
+                value={(currentAuthor?.tags || []).join(', ')}
+                onChange={e => setCurrentAuthor(prev => ({
+                  ...prev,
+                  tags: e.target.value.split(',').map(t => t.trim()).filter(Boolean)
+                }))}
+                className="w-full px-3 py-2 bg-gray-50 border border-gray-100 rounded-lg text-xs focus:ring-1 focus:ring-gray-200 outline-none transition-all"
+                placeholder="e.g. Visionary, Analyst, Practitioner"
+              />
+            </div>
+          </div>
         </form>
       </Modal>
 
