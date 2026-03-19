@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import AppLayout from '../../shared/components/AppLayout';
 import { authorService, blogService, Author, Blog } from '../../shared/utils/supabase';
 import {
@@ -9,88 +10,24 @@ import {
   Edit,
   Loader,
   AlertCircle,
-  Camera,
   CheckCircle2,
-  Linkedin,
-  Twitter
 } from 'lucide-react';
 import { Toast, ToastType } from '../../shared/components/Toast';
 import Modal from '../../shared/components/Modal';
-import { RichTextEditor, Link as TiptapLink } from '@mantine/tiptap';
-import { useEditor } from '@tiptap/react';
-import StarterKit from '@tiptap/starter-kit';
-import Underline from '@tiptap/extension-underline';
-import Placeholder from '@tiptap/extension-placeholder';
-import '@mantine/tiptap/styles.css';
-
-// Lightweight rich text editor for author bio
-function BioEditor({ value, onChange }: { value: string; onChange: (html: string) => void }) {
-  const editor = useEditor({
-    extensions: [
-      StarterKit,
-      Underline,
-      TiptapLink,
-      Placeholder.configure({ placeholder: 'Share a short story about this author\'s expertise...' }),
-    ],
-    content: value || '',
-    onUpdate: ({ editor }) => onChange(editor.getHTML()),
-  });
-
-  // Sync external value changes (e.g. when opening modal for different author)
-  useEffect(() => {
-    if (!editor) return;
-    if (value !== editor.getHTML()) {
-      editor.commands.setContent(value || '');
-    }
-  }, [value]);
-
-  return (
-    <RichTextEditor
-      editor={editor}
-      style={{ border: '1px solid #f3f4f6', borderRadius: '12px', overflow: 'hidden' }}
-    >
-      <RichTextEditor.Toolbar style={{ borderBottom: '1px solid #f3f4f6', background: '#fafafa' }}>
-        <RichTextEditor.ControlsGroup>
-          <RichTextEditor.Bold />
-          <RichTextEditor.Italic />
-          <RichTextEditor.Underline />
-          <RichTextEditor.ClearFormatting />
-        </RichTextEditor.ControlsGroup>
-        <RichTextEditor.ControlsGroup>
-          <RichTextEditor.BulletList />
-          <RichTextEditor.OrderedList />
-        </RichTextEditor.ControlsGroup>
-        <RichTextEditor.ControlsGroup>
-          <RichTextEditor.Link />
-          <RichTextEditor.Unlink />
-        </RichTextEditor.ControlsGroup>
-      </RichTextEditor.Toolbar>
-      <RichTextEditor.Content style={{ minHeight: '160px', fontSize: '13px' }} />
-    </RichTextEditor>
-  );
-}
 
 const AuthorManagement: React.FC = () => {
+  const navigate = useNavigate();
   const [authors, setAuthors] = useState<Author[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [toast, setToast] = useState<{ message: string; type: ToastType } | null>(null);
 
-  // Selection state
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
-
-  // Modal states
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-  const [isUpsertModalOpen, setIsUpsertModalOpen] = useState(false);
   const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
-
-  // Data for modals
   const [currentAuthor, setCurrentAuthor] = useState<Partial<Author> | null>(null);
   const [authorPosts, setAuthorPosts] = useState<Blog[]>([]);
   const [loadingPosts, setLoadingPosts] = useState(false);
-  const [avatarFile, setAvatarFile] = useState<File | null>(null);
-  const [avatarPreview, setAvatarPreview] = useState<string>('');
-  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const fetchAuthors = async () => {
     setLoading(true);
@@ -110,29 +47,12 @@ const AuthorManagement: React.FC = () => {
   }, []);
 
   const handleSelectAll = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.checked) {
-      setSelectedIds(filteredAuthors.map(a => a.id));
-    } else {
-      setSelectedIds([]);
-    }
+    if (e.target.checked) setSelectedIds(filteredAuthors.map(a => a.id));
+    else setSelectedIds([]);
   };
 
   const handleSelectOne = (id: string) => {
-    setSelectedIds(prev =>
-      prev.includes(id) ? prev.filter(i => i !== id) : [...prev, id]
-    );
-  };
-
-  const openUpsertModal = (author: Author | null = null) => {
-    if (author) {
-      setCurrentAuthor(author);
-      setAvatarPreview(author.avatar || '');
-    } else {
-      setCurrentAuthor({ name: '', title: '', bio: '' });
-      setAvatarPreview('');
-    }
-    setAvatarFile(null);
-    setIsUpsertModalOpen(true);
+    setSelectedIds(prev => prev.includes(id) ? prev.filter(i => i !== id) : [...prev, id]);
   };
 
   const openDetailsModal = async (author: Author) => {
@@ -150,36 +70,6 @@ const AuthorManagement: React.FC = () => {
     }
   };
 
-  const handleUpsertSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!currentAuthor?.name || !currentAuthor?.title) {
-      setToast({ message: 'Name and Title are required', type: 'error' });
-      return;
-    }
-
-    setIsSubmitting(true);
-    try {
-      let avatarUrl = currentAuthor.avatar || '';
-      if (avatarFile) {
-        avatarUrl = await authorService.uploadAvatar(avatarFile);
-      }
-
-      if (currentAuthor.id) {
-        await authorService.updateAuthor(currentAuthor.id, { ...currentAuthor, avatar: avatarUrl });
-        setToast({ message: 'Author updated', type: 'success' });
-      } else {
-        await authorService.createAuthor({ ...currentAuthor, avatar: avatarUrl });
-        setToast({ message: 'Author created', type: 'success' });
-      }
-      setIsUpsertModalOpen(false);
-      fetchAuthors();
-    } catch (error: any) {
-      setToast({ message: error.message, type: 'error' });
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
-
   const handleDelete = async () => {
     try {
       if (selectedIds.length > 0) {
@@ -194,14 +84,6 @@ const AuthorManagement: React.FC = () => {
       fetchAuthors();
     } catch (error: any) {
       setToast({ message: error.message, type: 'error' });
-    }
-  };
-
-  const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      setAvatarFile(file);
-      setAvatarPreview(URL.createObjectURL(file));
     }
   };
 
@@ -236,7 +118,7 @@ const AuthorManagement: React.FC = () => {
               </button>
             )}
             <button
-              onClick={() => openUpsertModal()}
+              onClick={() => navigate('/admin-ui/authors/new')}
               className="flex items-center gap-2 px-4 py-2 bg-black text-white font-medium text-xs rounded-lg hover:bg-gray-800 transition-colors shadow-sm whitespace-nowrap"
             >
               <Plus size={16} /> Add Author
@@ -309,7 +191,7 @@ const AuthorManagement: React.FC = () => {
                         <td className="px-6 py-4 text-right">
                           <div className="flex items-center justify-end gap-1">
                             <button
-                              onClick={() => openUpsertModal(author)}
+                              onClick={() => navigate(`/admin-ui/authors/${author.id}/edit`)}
                               className="p-2 text-gray-400 hover:text-black hover:bg-white rounded-lg transition-all border border-transparent hover:border-gray-100"
                               title="Edit Profile"
                             >
@@ -406,189 +288,6 @@ const AuthorManagement: React.FC = () => {
             </div>
           </div>
         )}
-      </Modal>
-
-      {/* Upsert Modal (Create/Edit) */}
-      <Modal
-        isOpen={isUpsertModalOpen}
-        onClose={() => !isSubmitting && setIsUpsertModalOpen(false)}
-        title={currentAuthor?.id ? 'Refine Profile' : 'New Identity'}
-        size="xl"
-        footer={(
-          <div className="flex items-center justify-between w-full">
-            <button
-              onClick={() => setIsUpsertModalOpen(false)}
-              className="text-xs font-medium text-gray-400 hover:text-black"
-              disabled={isSubmitting}
-            >
-              Cancel
-            </button>
-            <button
-              onClick={handleUpsertSubmit}
-              disabled={isSubmitting}
-              className="px-6 py-2 bg-black text-white text-xs font-medium rounded-lg hover:bg-gray-800 disabled:bg-gray-200 transition-all flex items-center gap-2"
-            >
-              {isSubmitting ? <Loader className="animate-spin" size={14} /> : (currentAuthor?.id ? <CheckCircle2 size={14} /> : <Plus size={14} />)}
-              {isSubmitting ? 'Syncing...' : (currentAuthor?.id ? 'Update Profile' : 'Create Profile')}
-            </button>
-          </div>
-        )}
-      >
-        <form className="space-y-6">
-          <div className="flex items-center gap-6">
-            <div className="relative group w-20 h-20 shrink-0">
-              <div className="w-full h-full rounded-2xl bg-gray-50 border border-gray-100 overflow-hidden flex items-center justify-center">
-                {avatarPreview ? (
-                  <img src={avatarPreview} alt="Preview" className="w-full h-full object-cover" />
-                ) : (
-                  <UserIcon size={24} className="text-gray-300" />
-                )}
-              </div>
-              <input
-                type="file"
-                id="modal-avatar-upload"
-                className="hidden"
-                accept="image/*"
-                onChange={handleAvatarChange}
-              />
-              <label
-                htmlFor="modal-avatar-upload"
-                className="absolute -bottom-1 -right-1 p-1.5 bg-white border border-gray-200 rounded-full shadow-lg cursor-pointer hover:bg-gray-50 transition-all"
-              >
-                <Camera size={12} />
-              </label>
-            </div>
-            <div className="space-y-4 flex-1">
-              <div className="space-y-1">
-                <label className="text-xs text-gray-500">Full Name</label>
-                <input
-                  type="text"
-                  value={currentAuthor?.name || ''}
-                  onChange={e => setCurrentAuthor(prev => ({ ...prev, name: e.target.value }))}
-                  className="w-full px-0 py-1 bg-transparent border-b border-gray-100 focus:border-black text-sm font-semibold outline-none transition-all placeholder:text-gray-200"
-                  placeholder="e.g. Elena Vance"
-                />
-              </div>
-              <div className="space-y-1">
-                <label className="text-xs text-gray-500">Professional Title</label>
-                <input
-                  type="text"
-                  value={currentAuthor?.title || ''}
-                  onChange={e => setCurrentAuthor(prev => ({ ...prev, title: e.target.value }))}
-                  className="w-full px-0 py-1 bg-transparent border-b border-gray-100 focus:border-black text-xs font-medium outline-none transition-all placeholder:text-gray-200"
-                  placeholder="e.g. Lead Technologist"
-                />
-              </div>
-            </div>
-          </div>
-          <div className="space-y-2">
-            <label className="text-xs text-gray-500">Short Bio <span className="text-gray-400">(tagline / excerpt)</span></label>
-            <input
-              type="text"
-              value={currentAuthor?.bio || ''}
-              onChange={e => setCurrentAuthor(prev => ({ ...prev, bio: e.target.value }))}
-              className="w-full px-3 py-2 bg-gray-50 border border-gray-100 rounded-lg text-xs focus:ring-1 focus:ring-gray-200 outline-none transition-all"
-              placeholder="One-line summary shown on author cards..."
-            />
-          </div>
-          <div className="space-y-2">
-            <label className="text-xs text-gray-500">Detailed Bio <span className="text-gray-400">(rich text)</span></label>
-            <BioEditor
-              value={currentAuthor?.bioHtml || currentAuthor?.bio || ''}
-              onChange={(html) => setCurrentAuthor(prev => ({ ...prev, bioHtml: html }))}
-            />
-          </div>
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-1">
-              <label className="text-xs text-gray-500 flex items-center gap-1.5">
-                <Linkedin size={11} /> LinkedIn URL
-              </label>
-              <input
-                type="url"
-                value={currentAuthor?.linkedIn || ''}
-                onChange={e => setCurrentAuthor(prev => ({ ...prev, linkedIn: e.target.value }))}
-                className="w-full px-3 py-2 bg-gray-50 border border-gray-100 rounded-lg text-xs focus:ring-1 focus:ring-gray-200 outline-none transition-all"
-                placeholder="https://linkedin.com/in/username"
-              />
-            </div>
-            <div className="space-y-1">
-              <label className="text-xs text-gray-500 flex items-center gap-1.5">
-                <Twitter size={11} /> X (Twitter) URL
-              </label>
-              <input
-                type="url"
-                value={currentAuthor?.twitter || ''}
-                onChange={e => setCurrentAuthor(prev => ({ ...prev, twitter: e.target.value }))}
-                className="w-full px-3 py-2 bg-gray-50 border border-gray-100 rounded-lg text-xs focus:ring-1 focus:ring-gray-200 outline-none transition-all"
-                placeholder="https://x.com/username"
-              />
-            </div>
-          </div>
-
-          {/* Contributor marketplace fields */}
-          <div className="pt-2 border-t border-gray-100">
-            <p className="text-xs font-medium text-gray-400 mb-3">Contributor Profile</p>
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-1">
-                <label className="text-xs text-gray-500">Contributor Type</label>
-                <select
-                  value={currentAuthor?.contributorType || ''}
-                  onChange={e => setCurrentAuthor(prev => ({ ...prev, contributorType: e.target.value }))}
-                  className="w-full px-3 py-2 bg-gray-50 border border-gray-100 rounded-lg text-xs focus:ring-1 focus:ring-gray-200 outline-none transition-all"
-                >
-                  <option value="">— Select type —</option>
-                  <option value="Research Leadership">Research Leadership</option>
-                  <option value="Human Intelligence Analysts">Human Intelligence Analysts</option>
-                  <option value="AI Research Agents">AI Research Agents</option>
-                  <option value="Editorial Publication Team">Editorial Publication Team</option>
-                </select>
-              </div>
-              <div className="space-y-1">
-                <label className="text-xs text-gray-500">Sub-Category</label>
-                <input
-                  type="text"
-                  value={currentAuthor?.subCategory || ''}
-                  onChange={e => setCurrentAuthor(prev => ({ ...prev, subCategory: e.target.value }))}
-                  className="w-full px-3 py-2 bg-gray-50 border border-gray-100 rounded-lg text-xs focus:ring-1 focus:ring-gray-200 outline-none transition-all"
-                  placeholder="e.g. Research Director"
-                />
-              </div>
-              <div className="space-y-1">
-                <label className="text-xs text-gray-500">Affiliation</label>
-                <input
-                  type="text"
-                  value={currentAuthor?.affiliation || 'DigitalQatalyst'}
-                  onChange={e => setCurrentAuthor(prev => ({ ...prev, affiliation: e.target.value }))}
-                  className="w-full px-3 py-2 bg-gray-50 border border-gray-100 rounded-lg text-xs focus:ring-1 focus:ring-gray-200 outline-none transition-all"
-                  placeholder="DigitalQatalyst"
-                />
-              </div>
-              <div className="space-y-1">
-                <label className="text-xs text-gray-500">Expertise</label>
-                <input
-                  type="text"
-                  value={currentAuthor?.expertise || ''}
-                  onChange={e => setCurrentAuthor(prev => ({ ...prev, expertise: e.target.value }))}
-                  className="w-full px-3 py-2 bg-gray-50 border border-gray-100 rounded-lg text-xs focus:ring-1 focus:ring-gray-200 outline-none transition-all"
-                  placeholder="e.g. DCO Strategy, Applied AI"
-                />
-              </div>
-            </div>
-            <div className="space-y-1 mt-4">
-              <label className="text-xs text-gray-500">Tags <span className="text-gray-400">(comma-separated)</span></label>
-              <input
-                type="text"
-                value={(currentAuthor?.tags || []).join(', ')}
-                onChange={e => setCurrentAuthor(prev => ({
-                  ...prev,
-                  tags: e.target.value.split(',').map(t => t.trim()).filter(Boolean)
-                }))}
-                className="w-full px-3 py-2 bg-gray-50 border border-gray-100 rounded-lg text-xs focus:ring-1 focus:ring-gray-200 outline-none transition-all"
-                placeholder="e.g. Visionary, Analyst, Practitioner"
-              />
-            </div>
-          </div>
-        </form>
       </Modal>
 
       {/* Delete Confirmation Modal */}

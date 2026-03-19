@@ -20,12 +20,14 @@ type ContributorFilters = {
   type: string[];
   tag: string[];
   worksRange: string[];
+  search: string;
 };
 
 const initialFilters: ContributorFilters = {
   type: [],
   tag: [],
   worksRange: [],
+  search: '',
 };
 
 const WORKS_BUCKETS = [
@@ -114,13 +116,11 @@ type FilterOption = {
 export function ContributorsMarketplacePage() {
   const [searchParams, setSearchParams] = useSearchParams();
   const selectedCategory = searchParams.get('category');
-  // Show grid view when ?view=all OR ?category=xxx is present
-  const showGrid = searchParams.get('view') === 'all' || !!selectedCategory;
   
   const [filters, setFilters] = useState<ContributorFilters>(initialFilters);
   const [showFilters, setShowFilters] = useState(false);
   const [collapsedGroups, setCollapsedGroups] = useState<
-    Record<keyof ContributorFilters, boolean>
+    Record<'type' | 'tag' | 'worksRange', boolean>
   >({
     type: false,
     tag: false,
@@ -166,7 +166,7 @@ export function ContributorsMarketplacePage() {
         type: categoryName ? [categoryName] : [],
       }));
     } else {
-      setFilters(initialFilters);
+      setFilters(prev => ({ ...prev, type: [] }));
     }
   }, [selectedCategory]);
 
@@ -212,9 +212,15 @@ export function ContributorsMarketplacePage() {
           const bucket = WORKS_BUCKETS.find((b) => b.id === bucketId);
           return bucket ? bucket.matches(profile.works) : true;
         });
-      return typeMatch && tagMatch && worksMatch;
+      const searchMatch =
+        filters.search.trim() === '' ||
+        profile.name.toLowerCase().includes(filters.search.toLowerCase()) ||
+        profile.expertise.toLowerCase().includes(filters.search.toLowerCase()) ||
+        profile.tags.some(t => t.toLowerCase().includes(filters.search.toLowerCase())) ||
+        profile.bio.toLowerCase().includes(filters.search.toLowerCase());
+      return typeMatch && tagMatch && worksMatch && searchMatch;
     });
-  }, [filters]);
+  }, [filters, contributorProfiles]);
 
   // Function to insert advert cards into contributor grid
   const contributorsWithAdverts = useMemo(() => {
@@ -242,14 +248,14 @@ export function ContributorsMarketplacePage() {
   }, [filteredContributors]);
 
   const handleFilterChange = (
-    filterType: keyof ContributorFilters,
+    filterType: keyof Omit<ContributorFilters, 'search'>,
     value: string,
   ) => {
     const newFilters = {
       ...filters,
       [filterType]: filters[filterType].includes(value)
-        ? filters[filterType].filter((item) => item !== value)
-        : [...filters[filterType], value],
+        ? (filters[filterType] as string[]).filter((item) => item !== value)
+        : [...(filters[filterType] as string[]), value],
     };
     
     setFilters(newFilters);
@@ -262,23 +268,24 @@ export function ContributorsMarketplacePage() {
           return;
         }
       }
-      setSearchParams({ view: 'all' });
+      setSearchParams({});
     }
   };
 
   const resetFilters = () => {
     setFilters(initialFilters);
-    setSearchParams({ view: 'all' });
+    setSearchParams({});
   };
 
-  const toggleGroup = (group: keyof ContributorFilters) => {
+  const toggleGroup = (group: 'type' | 'tag' | 'worksRange') => {
     setCollapsedGroups((prev) => ({ ...prev, [group]: !prev[group] }));
   };
 
   const hasActiveFilters =
     filters.type.length > 0 ||
     filters.tag.length > 0 ||
-    filters.worksRange.length > 0;
+    filters.worksRange.length > 0 ||
+    filters.search.trim() !== '';
 
   const breadcrumbLabel = selectedCategory
     ? CONTRIBUTOR_CATEGORIES.find(cat => cat.id === selectedCategory)?.name ?? 'All Contributors'
@@ -303,15 +310,10 @@ export function ContributorsMarketplacePage() {
               <li>
                 <div className="flex items-center text-gray-500">
                   <ChevronRightIcon size={16} className="text-gray-400" />
-                  <Link
-                    to="/contributors"
-                    className="ml-1 md:ml-2 text-gray-600 hover:text-brand-coral transition-colors"
-                  >
-                    Contributors Marketplace
-                  </Link>
+                  <span className="ml-1 md:ml-2 text-gray-600">Contributors</span>
                 </div>
               </li>
-              {showGrid && (
+              {selectedCategory && (
                 <li aria-current="page">
                   <div className="flex items-center text-gray-500">
                     <ChevronRightIcon size={16} className="text-gray-400" />
@@ -331,186 +333,162 @@ export function ContributorsMarketplacePage() {
             </p>
           </header>
 
-          {/* Mobile filter toggle — only in grid view */}
-          {showGrid && (
-            <div className="xl:hidden bg-white rounded-2xl shadow-sm border border-gray-100 mb-6">
-              <button
-                onClick={() => setShowFilters((prev) => !prev)}
-                className="w-full flex items-center justify-between px-4 py-3 text-gray-700 font-medium"
-                aria-expanded={showFilters}
-                aria-controls="mobile-contributor-filters"
+          {/* Search bar */}
+          <div className="mb-6">
+            <input
+              type="text"
+              placeholder="Search by name, expertise, or interest..."
+              value={filters.search}
+              onChange={(e) => setFilters(prev => ({ ...prev, search: e.target.value }))}
+              className="w-full max-w-xl px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-gray-300 bg-white shadow-sm"
+            />
+          </div>
+
+          {/* Mobile filter toggle */}
+          <div className="xl:hidden bg-white rounded-2xl shadow-sm border border-gray-100 mb-6">
+            <button
+              onClick={() => setShowFilters((prev) => !prev)}
+              className="w-full flex items-center justify-between px-4 py-3 text-gray-700 font-medium"
+              aria-expanded={showFilters}
+              aria-controls="mobile-contributor-filters"
+            >
+              <span className="inline-flex items-center gap-2">
+                <FilterIcon size={18} />
+                {showFilters ? "Hide Filters" : "Show Filters"}
+              </span>
+              <XIcon
+                size={18}
+                className={`transition-transform ${showFilters ? "rotate-45" : ""}`}
+              />
+            </button>
+            {showFilters && (
+              <div
+                id="mobile-contributor-filters"
+                className="px-4 pb-4 space-y-5 border-t border-gray-100"
               >
-                <span className="inline-flex items-center gap-2">
-                  <FilterIcon size={18} />
-                  {showFilters ? "Hide Filters" : "Show Filters"}
-                </span>
-                <XIcon
-                  size={18}
-                  className={`transition-transform ${showFilters ? "rotate-45" : ""}`}
+                <FilterGroup
+                  title="Contributor Type"
+                  options={typeOptions}
+                  selected={filters.type}
+                  collapsed={collapsedGroups.type}
+                  isFirst
+                  onToggleCollapse={() => toggleGroup("type")}
+                  onSelect={(value) => handleFilterChange("type", value)}
                 />
-              </button>
-              {showFilters && (
-                <div
-                  id="mobile-contributor-filters"
-                  className="px-4 pb-4 space-y-5 border-t border-gray-100"
-                >
-                  <FilterGroup
-                    title="Contributor Type"
-                    options={typeOptions}
-                    selected={filters.type}
-                    collapsed={collapsedGroups.type}
-                    isFirst
-                    onToggleCollapse={() => toggleGroup("type")}
-                    onSelect={(value) => handleFilterChange("type", value)}
-                  />
-                  <FilterGroup
-                    title="Tags"
-                    options={tagOptions}
-                    selected={filters.tag}
-                    collapsed={collapsedGroups.tag}
-                    onToggleCollapse={() => toggleGroup("tag")}
-                    onSelect={(value) => handleFilterChange("tag", value)}
-                  />
-                  <FilterGroup
-                    title="Contribution Volume"
-                    options={worksOptions}
-                    selected={filters.worksRange}
-                    collapsed={collapsedGroups.worksRange}
-                    onToggleCollapse={() => toggleGroup("worksRange")}
-                    onSelect={(value) => handleFilterChange("worksRange", value)}
-                  />
+                <FilterGroup
+                  title="Interests / Tags"
+                  options={tagOptions}
+                  selected={filters.tag}
+                  collapsed={collapsedGroups.tag}
+                  onToggleCollapse={() => toggleGroup("tag")}
+                  onSelect={(value) => handleFilterChange("tag", value)}
+                />
+                <FilterGroup
+                  title="Contribution Volume"
+                  options={worksOptions}
+                  selected={filters.worksRange}
+                  collapsed={collapsedGroups.worksRange}
+                  onToggleCollapse={() => toggleGroup("worksRange")}
+                  onSelect={(value) => handleFilterChange("worksRange", value)}
+                />
+                {hasActiveFilters && (
+                  <button onClick={resetFilters} className="text-sm font-semibold text-blue-600">
+                    Reset Filters
+                  </button>
+                )}
+              </div>
+            )}
+          </div>
+
+          <div className="flex flex-col xl:flex-row gap-6">
+            {/* Sidebar filters */}
+            <aside className="hidden xl:block xl:w-1/4">
+              <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-5 space-y-6 sticky top-24">
+                <div className="flex items-center justify-between">
+                  <h2 className="text-lg font-semibold text-gray-900">Filters</h2>
                   {hasActiveFilters && (
                     <button onClick={resetFilters} className="text-sm font-semibold text-blue-600">
-                      Reset Filters
+                      Reset
                     </button>
                   )}
                 </div>
-              )}
-            </div>
-          )}
+                <FilterGroup
+                  title="Contributor Type"
+                  options={typeOptions}
+                  selected={filters.type}
+                  collapsed={collapsedGroups.type}
+                  isFirst
+                  onToggleCollapse={() => toggleGroup("type")}
+                  onSelect={(value) => handleFilterChange("type", value)}
+                />
+                <FilterGroup
+                  title="Interests / Tags"
+                  options={tagOptions}
+                  selected={filters.tag}
+                  collapsed={collapsedGroups.tag}
+                  onToggleCollapse={() => toggleGroup("tag")}
+                  onSelect={(value) => handleFilterChange("tag", value)}
+                />
+                <FilterGroup
+                  title="Contribution Volume"
+                  options={worksOptions}
+                  selected={filters.worksRange}
+                  collapsed={collapsedGroups.worksRange}
+                  onToggleCollapse={() => toggleGroup("worksRange")}
+                  onSelect={(value) => handleFilterChange("worksRange", value)}
+                />
+              </div>
+            </aside>
 
-          <div className="flex flex-col xl:flex-row gap-6">
-            {/* Sidebar filters — only in grid view */}
-            {showGrid && (
-              <aside className="hidden xl:block xl:w-1/4">
-                <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-5 space-y-6 sticky top-24">
-                  <div className="flex items-center justify-between">
-                    <h2 className="text-lg font-semibold text-gray-900">Filters</h2>
-                    {hasActiveFilters && (
-                      <button onClick={resetFilters} className="text-sm font-semibold text-blue-600">
-                        Reset
-                      </button>
+            <section className="xl:w-3/4">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4 gap-2 text-sm text-gray-600">
+                <span>
+                  {loading
+                    ? 'Loading contributors…'
+                    : `Showing ${filteredContributors.length} of ${contributorProfiles.length} contributors`}
+                </span>
+                {hasActiveFilters && (
+                  <button onClick={resetFilters} className="text-blue-600 font-semibold">
+                    Clear filters
+                  </button>
+                )}
+              </div>
+
+              {loading ? (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  {[1, 2, 3, 4].map(i => (
+                    <div key={i} className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 animate-pulse h-48" />
+                  ))}
+                </div>
+              ) : (
+                <>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    {contributorsWithAdverts.map((item, index) =>
+                      item.type === 'contributor' ? (
+                        <ContributorCard key={`contributor-${item.data.id}`} contributor={item.data} />
+                      ) : (
+                        <AdvertCard key={`advert-${item.data.id}-${index}`} advert={item.data} />
+                      )
                     )}
                   </div>
-                  <FilterGroup
-                    title="Contributor Type"
-                    options={typeOptions}
-                    selected={filters.type}
-                    collapsed={collapsedGroups.type}
-                    isFirst
-                    onToggleCollapse={() => toggleGroup("type")}
-                    onSelect={(value) => handleFilterChange("type", value)}
-                  />
-                  <FilterGroup
-                    title="Tags"
-                    options={tagOptions}
-                    selected={filters.tag}
-                    collapsed={collapsedGroups.tag}
-                    onToggleCollapse={() => toggleGroup("tag")}
-                    onSelect={(value) => handleFilterChange("tag", value)}
-                  />
-                  <FilterGroup
-                    title="Contribution Volume"
-                    options={worksOptions}
-                    selected={filters.worksRange}
-                    collapsed={collapsedGroups.worksRange}
-                    onToggleCollapse={() => toggleGroup("worksRange")}
-                    onSelect={(value) => handleFilterChange("worksRange", value)}
-                  />
-                </div>
-              </aside>
-            )}
 
-            <section className={showGrid ? "xl:w-3/4" : "w-full"}>
-              {!showGrid ? (
-                // ── Category overview ──
-                <>
-                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6 gap-4">
-                    <span className="text-sm text-gray-600">
-                      Explore {CONTRIBUTOR_CATEGORIES.length} contributor categories
-                    </span>
-                    <Link
-                      to="/contributors?view=all"
-                      className="inline-flex items-center gap-2 px-4 py-2 bg-brand-coral text-white rounded-lg hover:opacity-90 transition-opacity font-medium"
-                    >
-                      View All Contributors
-                      <ArrowRight className="h-4 w-4" />
-                    </Link>
-                  </div>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    {CONTRIBUTOR_CATEGORIES.map((category) => (
-                      <CategoryCard key={category.id} category={category} />
-                    ))}
-                  </div>
-                </>
-              ) : (
-                // ── Filtered contributor grid ──
-                <>
-                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4 gap-2 text-sm text-gray-600">
-                    <span>
-                      {loading
-                        ? 'Loading contributors…'
-                        : `Showing ${filteredContributors.length} of ${contributorProfiles.length} contributors`}
-                    </span>
-                    <div className="flex items-center gap-4">
+                  {filteredContributors.length === 0 && (
+                    <div className="bg-white border border-dashed border-gray-200 rounded-2xl p-10 text-center mt-6">
+                      <Users className="w-12 h-12 text-gray-300 mx-auto mb-4" />
+                      <h3 className="text-xl font-semibold text-gray-900 mb-2">
+                        No contributors found
+                      </h3>
+                      <p className="text-gray-500 mb-4">
+                        {hasActiveFilters
+                          ? 'Try adjusting your filters or search term.'
+                          : 'Contributors will appear here once added via the admin panel.'}
+                      </p>
                       {hasActiveFilters && (
                         <button onClick={resetFilters} className="text-blue-600 font-semibold">
-                          Clear filters
+                          Reset Filters
                         </button>
                       )}
-                      <Link to="/contributors" className="text-gray-500 hover:text-gray-700 text-xs">
-                        ← Back to categories
-                      </Link>
                     </div>
-                  </div>
-
-                  {loading ? (
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                      {[1, 2, 3, 4].map(i => (
-                        <div key={i} className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 animate-pulse h-48" />
-                      ))}
-                    </div>
-                  ) : (
-                    <>
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        {contributorsWithAdverts.map((item, index) =>
-                          item.type === 'contributor' ? (
-                            <ContributorCard key={`contributor-${item.data.id}`} contributor={item.data} />
-                          ) : (
-                            <AdvertCard key={`advert-${item.data.id}-${index}`} advert={item.data} />
-                          )
-                        )}
-                      </div>
-
-                      {filteredContributors.length === 0 && (
-                        <div className="bg-white border border-dashed border-gray-200 rounded-2xl p-10 text-center mt-6">
-                          <Users className="w-12 h-12 text-gray-300 mx-auto mb-4" />
-                          <h3 className="text-xl font-semibold text-gray-900 mb-2">
-                            No contributors yet
-                          </h3>
-                          <p className="text-gray-500 mb-4">
-                            {hasActiveFilters
-                              ? 'Try adjusting your filters or clearing selections.'
-                              : 'Contributors will appear here once added via the admin panel.'}
-                          </p>
-                          {hasActiveFilters && (
-                            <button onClick={resetFilters} className="text-blue-600 font-semibold">
-                              Reset Filters
-                            </button>
-                          )}
-                        </div>
-                      )}
-                    </>
                   )}
                 </>
               )}
@@ -694,60 +672,69 @@ function ContributorCard({ contributor }: { contributor: ContributorProfile }) {
     )}`;
 
   return (
-    <article className="bg-white border border-gray-100 rounded-2xl p-6 shadow-md hover:shadow-lg transition-shadow duration-200 flex flex-col gap-4">
-      <div className="flex items-start justify-between gap-4">
-        <div className="flex items-start gap-4">
-          <img
-            src={avatarUrl}
-            alt={contributor.name}
-            className="w-14 h-14 rounded-full object-cover border border-gray-100 bg-gray-100"
-            loading="lazy"
-          />
-          <div>
-            <h3 className="text-xl font-semibold text-gray-900 leading-tight">
-              {contributor.name}
-            </h3>
-            <p className="text-sm text-gray-500">{contributor.affiliation}</p>
+    <Link
+      to={contributor.profileUrl || "/contributors"}
+      className="block"
+    >
+      <article className="bg-white border border-gray-100 rounded-2xl p-6 shadow-md hover:shadow-lg transition-shadow duration-200 flex flex-col gap-4 h-full cursor-pointer">
+        <div className="flex items-start justify-between gap-4">
+          <div className="flex items-start gap-4">
+            <img
+              src={avatarUrl}
+              alt={contributor.name}
+              className="w-14 h-14 rounded-full object-cover border border-gray-100 bg-gray-100"
+              loading="lazy"
+            />
+            <div>
+              <h3 className="text-xl font-semibold text-gray-900 leading-tight hover:underline">
+                {contributor.name}
+              </h3>
+              <p className="text-sm text-gray-500">{contributor.affiliation}</p>
+            </div>
+          </div>
+          <div className="text-right">
+            <p className="text-xs uppercase tracking-wide text-gray-400">Works</p>
+            <p className="text-lg font-semibold text-gray-900">
+              {contributor.works}
+            </p>
           </div>
         </div>
-        <div className="text-right">
-          <p className="text-xs uppercase tracking-wide text-gray-400">Works</p>
-          <p className="text-lg font-semibold text-gray-900">
-            {contributor.works}
-          </p>
+
+        <p className="text-sm text-gray-700 line-clamp-3">{contributor.bio}</p>
+
+        <div className="text-sm text-gray-600 flex gap-2">
+          <span className="font-semibold text-gray-900">Expertise:</span>
+          <span className="line-clamp-1">{contributor.expertise}</span>
         </div>
-      </div>
 
-      <p className="text-sm text-gray-700">{contributor.bio}</p>
-
-      <div className="text-sm text-gray-600 flex gap-2">
-        <span className="font-semibold text-gray-900">Expertise:</span>
-        <span>{contributor.expertise}</span>
-      </div>
-
-      <div className="mb-2 flex flex-wrap gap-2">
-        <span className="inline-flex items-center text-xs font-semibold tracking-wide text-blue-700 uppercase">
-          <span className="px-2 py-0.5 bg-blue-50 text-blue-600 rounded-full">
-            {contributor.type.replace(/s$/, '')}
+        <div className="mb-2 flex flex-wrap gap-2">
+          <span className="inline-flex items-center text-xs font-semibold tracking-wide text-blue-700 uppercase">
+            <span className="px-2 py-0.5 bg-blue-50 text-blue-600 rounded-full">
+              {contributor.type.replace(/s$/, '')}
+            </span>
           </span>
-        </span>
-        <span className="inline-flex items-center text-xs font-semibold tracking-wide text-green-700">
-          <span className="px-2 py-0.5 bg-green-50 text-green-600 rounded-full">
-            {contributor.subCategory}
-          </span>
-        </span>
-      </div>
+          {contributor.subCategory && (
+            <span className="inline-flex items-center text-xs font-semibold tracking-wide text-green-700">
+              <span className="px-2 py-0.5 bg-green-50 text-green-600 rounded-full">
+                {contributor.subCategory}
+              </span>
+            </span>
+          )}
+          {contributor.tags.slice(0, 2).map(tag => (
+            <span key={tag} className="px-2 py-0.5 bg-gray-100 text-gray-600 rounded-full text-xs">
+              {tag}
+            </span>
+          ))}
+        </div>
 
-      <div className="flex items-center justify-between border-t border-gray-100 pt-4">
-        <Link
-          to={contributor.profileUrl || "/contributors"}
-          className="inline-flex items-center gap-2 text-sm font-semibold text-brand-coral hover:text-brand-coral-dark"
-        >
-          Read Contributor Bio
-          <ArrowRight className="h-4 w-4" />
-        </Link>
-      </div>
-    </article>
+        <div className="flex items-center justify-between border-t border-gray-100 pt-4 mt-auto">
+          <span className="inline-flex items-center gap-2 text-sm font-semibold text-brand-coral">
+            View Profile
+            <ArrowRight className="h-4 w-4" />
+          </span>
+        </div>
+      </article>
+    </Link>
   );
 }
 

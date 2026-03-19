@@ -26,6 +26,7 @@ import BlogCreate from "./features/admin/content/pages/BlogCreate";
 import BlogDetail from "./features/admin/content/pages/BlogDetail";
 import AdminSettings from "./features/admin/system/pages/Settings";
 import AuthorManagement from "./features/admin/authors/pages/AuthorManagement";
+import AuthorForm from "./features/admin/authors/pages/AuthorForm";
 import CategoryManagement from "./features/admin/categories/pages/CategoryManagement";
 import ContentSubmissions from "./features/admin/submissions/pages/ContentSubmissions";
 import Analytics from "./features/admin/overview/pages/Analytics";
@@ -185,6 +186,14 @@ export function AppRouter() {
             <Route
               path="/admin-ui/authors"
               element={<AuthorizedRoute allowedRoles={['admin']}><AuthorManagement /></AuthorizedRoute>}
+            />
+            <Route
+              path="/admin-ui/authors/new"
+              element={<AuthorizedRoute allowedRoles={['admin']}><AuthorForm /></AuthorizedRoute>}
+            />
+            <Route
+              path="/admin-ui/authors/:id/edit"
+              element={<AuthorizedRoute allowedRoles={['admin']}><AuthorForm /></AuthorizedRoute>}
             />
             <Route
               path="/admin-ui/categories"
