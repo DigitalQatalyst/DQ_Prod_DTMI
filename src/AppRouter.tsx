@@ -28,11 +28,7 @@ import AdminSettings from "./features/admin/system/pages/Settings";
 import AuthorManagement from "./features/admin/authors/pages/AuthorManagement";
 import CategoryManagement from "./features/admin/categories/pages/CategoryManagement";
 import ContentSubmissions from "./features/admin/submissions/pages/ContentSubmissions";
-import JobApplications from "./features/admin/recruitment/pages/JobApplications";
-import JobPostingsManagement from "./features/admin/recruitment/pages/JobPostingsManagement";
-import JobPostingCreate from "./features/admin/recruitment/pages/JobPostingCreate";
 import Analytics from "./features/admin/overview/pages/Analytics";
-import InterviewScheduler from "./features/admin/recruitment/pages/InterviewScheduler";
 import NotificationCenter from "./features/admin/notifications/pages/NotificationCenter";
 import UserManagement from "./features/admin/system/pages/UserManagement";
 import GrowthAreasMarketplace from "./features/growth/GrowthAreasMarketplace";
@@ -70,13 +66,9 @@ import TourRequestForm from "./features/forms/TourRequestForm";
 import ExpertInterviewPage from "./features/content/ExpertInterviewPage";
 import { TermsOfServicePage } from "./features/company/TermsOfServicePage";
 import { PrivacyPolicyPage } from "./features/company/PrivacyPolicyPage";
-import CareersPage from "./features/careers/CareersPage";
-import ContactUsPage from "./features/company/ContactUsPage";
-import JobListingsPage from "./features/careers/JobListingsPage";
-import JobDetailPage from "./features/careers/JobDetailPage";
 import ProductsLandingPage from "./features/products/ProductsLandingPage";
 import PodcastDetailPage from "./features/content/PodcastDetailPage";
-import JobApplicationForm from "./features/forms/JobApplicationForm";
+import ContactUsPage from "./features/company/ContactUsPage";
 import NewsletterSignupPage from "./features/content/NewsletterSignupPage";
 import SectorLandingPage from "./features/sectors/SectorLandingPage";
 import SignalsAlertsSignupPage from "./features/content/SignalsAlertsSignupPage";
@@ -203,24 +195,8 @@ export function AppRouter() {
               element={<AuthorizedRoute allowedRoles={['admin']}><ContentSubmissions /></AuthorizedRoute>}
             />
             <Route
-              path="/admin-ui/job-applications"
-              element={<AuthorizedRoute allowedRoles={['admin']}><JobApplications /></AuthorizedRoute>}
-            />
-            <Route
-              path="/admin-ui/job-postings"
-              element={<AuthorizedRoute allowedRoles={['admin']}><JobPostingsManagement /></AuthorizedRoute>}
-            />
-            <Route
-              path="/admin-ui/job-postings/new"
-              element={<AuthorizedRoute allowedRoles={['admin']}><JobPostingCreate /></AuthorizedRoute>}
-            />
-            <Route
               path="/admin-ui/analytics"
               element={<AuthorizedRoute allowedRoles={['admin']}><Analytics /></AuthorizedRoute>}
-            />
-            <Route
-              path="/admin-ui/interviews"
-              element={<AuthorizedRoute allowedRoles={['admin']}><InterviewScheduler /></AuthorizedRoute>}
             />
             <Route
               path="/admin-ui/notifications"
@@ -338,18 +314,7 @@ export function AppRouter() {
             <Route path="/podcast/:id" element={<PodcastDetailPage />} />
             <Route path="/terms-of-service" element={<TermsOfServicePage />} />
             <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
-            <Route path="/careers" element={<CareersPage />} />
             <Route path="/contact" element={<ContactUsPage />} />
-            <Route path="/jobs" element={<JobListingsPage />} />
-            <Route path="/jobs/:jobId" element={<JobDetailPage />} />
-            <Route
-              path="/jobs/:jobId/apply"
-              element={
-                <ProtectedRoute>
-                  <JobApplicationForm />
-                </ProtectedRoute>
-              }
-            />
             <Route path="/media/blog/:id" element={<BlogPage />} />
             <Route
               path="/media/:type/:id"
