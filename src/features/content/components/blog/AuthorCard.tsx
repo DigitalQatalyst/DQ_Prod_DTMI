@@ -33,7 +33,7 @@ export function AuthorCard({ author }: AuthorCardProps) {
   };
 
   return (
-    <div className="mt-12 pt-12 border-t border-gray-200">
+    <div className="mt-6 pt-6">
       <div className="bg-gradient-to-br from-gray-50 to-white border border-gray-200 rounded-2xl p-8">
         <div className="flex flex-col md:flex-row gap-6">
           <div className="flex-shrink-0">
