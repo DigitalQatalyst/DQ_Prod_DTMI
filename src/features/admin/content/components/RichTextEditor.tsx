@@ -85,7 +85,7 @@ export default function RichTextEditorComponent({
   }, [valueJson, valueHtml])
 
   return (
-    <RichTextEditor editor={editor} className={className} style={{ minHeight, marginTop: 0, border: 'none' }}>
+    <RichTextEditor editor={editor} className={className} style={{ minHeight, marginTop: 0, border: 'none', display: 'flex', flexDirection: 'column' }}>
       <RichTextEditor.Toolbar>
 
         {/* Text formatting */}
@@ -139,7 +139,7 @@ export default function RichTextEditorComponent({
 
       </RichTextEditor.Toolbar>
 
-      <RichTextEditor.Content />
+      <RichTextEditor.Content style={{ flex: 1, minHeight: '400px' }} />
     </RichTextEditor>
   )
 }

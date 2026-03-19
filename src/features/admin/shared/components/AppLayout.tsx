@@ -143,7 +143,7 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children, title }) => {
       <div className="flex">
         {/* Sidebar */}
         <aside
-          className={`bg-[#fafafa] border-r border-gray-200 w-64 fixed h-[calc(100vh-64px)] overflow-y-auto z-40 transition-transform duration-300 md:translate-x-0 ${
+          className={`bg-[#fafafa] border-r border-gray-200 w-64 fixed top-[72px] h-[calc(100vh-72px)] overflow-y-auto z-40 transition-transform duration-300 md:translate-x-0 ${
             sidebarOpen ? "translate-x-0" : "-translate-x-full"
           }`}
         >
