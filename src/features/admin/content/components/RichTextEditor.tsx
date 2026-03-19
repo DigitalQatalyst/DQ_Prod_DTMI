@@ -8,6 +8,15 @@ import Highlight from '@tiptap/extension-highlight'
 import { TextStyle } from '@tiptap/extension-text-style'
 import Placeholder from '@tiptap/extension-placeholder'
 import Image from '@tiptap/extension-image'
+import Subscript from '@tiptap/extension-subscript'
+import Superscript from '@tiptap/extension-superscript'
+import TaskList from '@tiptap/extension-task-list'
+import TaskItem from '@tiptap/extension-task-item'
+import Youtube from '@tiptap/extension-youtube'
+import { Table } from '@tiptap/extension-table'
+import { TableRow } from '@tiptap/extension-table-row'
+import { TableCell } from '@tiptap/extension-table-cell'
+import { TableHeader } from '@tiptap/extension-table-header'
 import DOMPurify from 'dompurify'
 import '@mantine/tiptap/styles.css'
 
@@ -38,6 +47,15 @@ export default function RichTextEditorComponent({
       TextStyle,
       Placeholder.configure({ placeholder }),
       Image.configure({ inline: false, allowBase64: true }),
+      Subscript,
+      Superscript,
+      TaskList,
+      TaskItem.configure({ nested: true }),
+      Youtube.configure({ controls: true }),
+      Table.configure({ resizable: true }),
+      TableRow,
+      TableCell,
+      TableHeader,
     ],
     content: valueJson ?? valueHtml ?? '',
     onUpdate: ({ editor }) => {
@@ -48,8 +66,11 @@ export default function RichTextEditorComponent({
           'h1', 'h2', 'h3', 'h4', 'h5', 'h6',
           'ul', 'ol', 'li', 'blockquote', 'a',
           'div', 'span', 'img', 'mark',
+          'sub', 'sup',
+          'table', 'thead', 'tbody', 'tr', 'th', 'td',
+          'input',
         ],
-        ALLOWED_ATTR: ['href', 'target', 'rel', 'class', 'style', 'src', 'alt'],
+        ALLOWED_ATTR: ['href', 'target', 'rel', 'class', 'style', 'src', 'alt', 'type', 'checked', 'data-*'],
       })
       onChange(json, html, editor.getText())
     },
@@ -66,15 +87,20 @@ export default function RichTextEditorComponent({
   return (
     <RichTextEditor editor={editor} className={className} style={{ minHeight, marginTop: 0, border: 'none' }}>
       <RichTextEditor.Toolbar>
+
+        {/* Text formatting */}
         <RichTextEditor.ControlsGroup>
           <RichTextEditor.Bold />
           <RichTextEditor.Italic />
           <RichTextEditor.Underline />
           <RichTextEditor.Strikethrough />
           <RichTextEditor.Highlight />
+          <RichTextEditor.Subscript />
+          <RichTextEditor.Superscript />
           <RichTextEditor.ClearFormatting />
         </RichTextEditor.ControlsGroup>
 
+        {/* Headings */}
         <RichTextEditor.ControlsGroup>
           <RichTextEditor.H1 />
           <RichTextEditor.H2 />
@@ -82,11 +108,14 @@ export default function RichTextEditorComponent({
           <RichTextEditor.H4 />
         </RichTextEditor.ControlsGroup>
 
+        {/* Lists */}
         <RichTextEditor.ControlsGroup>
           <RichTextEditor.BulletList />
           <RichTextEditor.OrderedList />
+          <RichTextEditor.TaskList />
         </RichTextEditor.ControlsGroup>
 
+        {/* Alignment */}
         <RichTextEditor.ControlsGroup>
           <RichTextEditor.AlignLeft />
           <RichTextEditor.AlignCenter />
@@ -94,6 +123,7 @@ export default function RichTextEditorComponent({
           <RichTextEditor.AlignJustify />
         </RichTextEditor.ControlsGroup>
 
+        {/* Blocks */}
         <RichTextEditor.ControlsGroup>
           <RichTextEditor.Blockquote />
           <RichTextEditor.Code />
@@ -101,10 +131,12 @@ export default function RichTextEditorComponent({
           <RichTextEditor.Hr />
         </RichTextEditor.ControlsGroup>
 
+        {/* Media & Links */}
         <RichTextEditor.ControlsGroup>
           <RichTextEditor.Link />
           <RichTextEditor.Unlink />
         </RichTextEditor.ControlsGroup>
+
       </RichTextEditor.Toolbar>
 
       <RichTextEditor.Content />
