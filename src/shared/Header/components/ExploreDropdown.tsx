@@ -1,13 +1,9 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { ChevronDownIcon } from "lucide-react";
-import {
-  BuildingIcon,
-  NewspaperIcon,
-  UsersIcon,
-  PackageIcon,
-  LucideProps,
-} from "lucide-react";
+import { Popover } from "@mantine/core";
+import { useDisclosure } from "@mantine/hooks";
+import { ChevronDownIcon, NewspaperIcon, UsersIcon } from "lucide-react";
+import type { LucideProps } from "lucide-react";
 
 interface Marketplace {
   id: string;
@@ -15,204 +11,98 @@ interface Marketplace {
   description: string;
   icon: React.ComponentType<LucideProps>;
   href: string;
-  target?: string;
-  rel?: string;
 }
 
 const marketplaces: Marketplace[] = [
   {
-    id: "services",
-    name: "Service Marketplace",
-    description:
-      "Explore our comprehensive digital transformation services across all sectors",
-    icon: BuildingIcon,
-    href: "/marketplace/services",
-  },
-  {
-    id: "products",
-    name: "Product Marketplace",
-    description:
-      "Discover our digital accelerators: TMaaS, DTO4T, DTMP, DTMA, DTMI, DTMB, DWS",
-    icon: PackageIcon,
-    href: "/products",
-  },
-  {
     id: "dtmi-resources",
     name: "DTMI Resource Marketplace",
-    description:
-      "Access research-driven insights, articles, case studies, and digital transformation content",
+    description: "Access research-driven insights, articles, case studies, and digital transformation content",
     icon: NewspaperIcon,
     href: "/marketplace/dtmi",
   },
   {
     id: "dtmi-contributors",
     name: "DTMI Contributors Marketplace",
-    description:
-      "Connect with digital transformation experts, thought leaders, and industry contributors",
+    description: "Connect with digital transformation experts, thought leaders, and industry contributors",
     icon: UsersIcon,
     href: "/dtmi/contributors",
   },
 ];
 
-// TODO: Add more marketplaces
 interface ExploreDropdownProps {
   isCompact?: boolean;
 }
 
-function isExternal(href: string) {
-  return /^https?:\/\//i.test(href);
-}
-
 export function ExploreDropdown({ isCompact = false }: ExploreDropdownProps) {
   const navigate = useNavigate();
-  const [isOpen, setIsOpen] = useState(false);
-  const [focusedIndex, setFocusedIndex] = useState(-1);
-  const dropdownRef = useRef<HTMLDivElement>(null);
-  const buttonRef = useRef<HTMLButtonElement>(null);
-  const itemRefs = useRef<(HTMLAnchorElement | null)[]>([]);
+  const [opened, { close, toggle }] = useDisclosure(false);
 
-  // Close dropdown when clicking outside
+  // Close on scroll so the popover doesn't flicker while repositioning
   useEffect(() => {
-    function handleClickOutside(event: MouseEvent) {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
-        setIsOpen(false);
-        setFocusedIndex(-1);
-      }
-    }
-    if (isOpen) document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, [isOpen]);
-
-  // Handle keyboard navigation
-  const handleKeyDown = (event: React.KeyboardEvent) => {
-    if (!isOpen) {
-      if (event.key === "Enter" || event.key === " " || event.key === "ArrowDown") {
-        event.preventDefault();
-        setIsOpen(true);
-        setFocusedIndex(0);
-      }
-      return;
-    }
-    switch (event.key) {
-      case "Escape":
-        event.preventDefault();
-        setIsOpen(false);
-        setFocusedIndex(-1);
-        buttonRef.current?.focus();
-        break;
-      case "ArrowDown":
-        event.preventDefault();
-        setFocusedIndex((prev) => (prev + 1) % marketplaces.length);
-        break;
-      case "ArrowUp":
-        event.preventDefault();
-        setFocusedIndex((prev) => (prev <= 0 ? marketplaces.length - 1 : prev - 1));
-        break;
-      case "Enter":
-      case " ":
-        event.preventDefault();
-        if (focusedIndex >= 0 && itemRefs.current[focusedIndex]) {
-          itemRefs.current[focusedIndex]?.click();
-        }
-        break;
-      case "Tab":
-        setIsOpen(false);
-        setFocusedIndex(-1);
-        break;
-    }
-  };
-
-  // Focus management
-  useEffect(() => {
-    if (isOpen && focusedIndex >= 0 && itemRefs.current[focusedIndex]) {
-      itemRefs.current[focusedIndex]?.focus();
-    }
-  }, [focusedIndex, isOpen]);
-
-  const handleInternalNav = (href: string) => {
-    setIsOpen(false);
-    setFocusedIndex(-1);
-    navigate(href);
-  };
+    if (!opened) return;
+    const handleScroll = () => close();
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [opened, close]);
 
   return (
-    <div className="relative" ref={dropdownRef}>
-      <button
-        ref={buttonRef}
-        className="flex items-center text-white hover:text-gray-200 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-white/20 rounded-md px-2 py-1"
-        onClick={() => setIsOpen((v) => !v)}
-        onKeyDown={handleKeyDown}
-        aria-expanded={isOpen}
-        aria-haspopup="true"
-        aria-label="Explore marketplaces menu"
-      >
-        <span>Explore</span>
-        <ChevronDownIcon
-          size={16}
-          className={`ml-1 transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`}
-        />
-      </button>
-
-      {isOpen && (
-        <div
-          className="absolute top-full left-0 mt-2 w-80 bg-white rounded-lg shadow-xl border border-gray-200 z-50 py-2"
-          role="menu"
-          aria-orientation="vertical"
-          aria-labelledby="explore-menu"
+    <Popover
+      opened={opened}
+      onChange={close}
+      width={320}
+      position="bottom-start"
+      shadow="md"
+      radius="md"
+      withinPortal={false}
+      transitionProps={{ transition: "pop-top-left", duration: 150 }}
+    >
+      <Popover.Target>
+        <button
+          onClick={toggle}
+          className="flex items-center gap-1 text-white hover:text-gray-200 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-white/20 rounded-md px-2 py-1 text-sm font-semibold"
+          aria-label="Explore marketplaces"
+          aria-expanded={opened}
         >
-          <div className="px-4 py-2 border-b border-gray-100">
-            <h3 className="text-sm font-semibold text-gray-800">Explore Marketplaces</h3>
-            <p className="text-xs text-gray-500 mt-1">
-              Discover DigitalQatalyst&apos;s services, products, and transformation resources
-            </p>
-          </div>
+          Explore
+          <ChevronDownIcon
+            size={15}
+            className={`transition-transform duration-200 ${opened ? "rotate-180" : ""}`}
+          />
+        </button>
+      </Popover.Target>
 
-          <div className="max-h-96 overflow-y-auto">
-            {marketplaces.map((marketplace, index) => {
-              const Icon = marketplace.icon;
-              const external = isExternal(marketplace.href);
-
-              return (
-                <a
-                  key={marketplace.id}
-                  ref={(el) => { itemRefs.current[index] = el; }}
-                  href={marketplace.href}
-                  // Respect explicit per-item settings, otherwise set sensible defaults
-                  target={marketplace.target ?? (external ? "_blank" : undefined)}
-                  rel={marketplace.rel ?? (external ? "noopener noreferrer" : undefined)}
-                  className={`flex items-start px-4 py-3 text-left hover:bg-gray-50 focus:bg-gray-50 focus:outline-none transition-colors duration-150 ${
-                    focusedIndex === index ? "bg-gray-50" : ""
-                  }`}
-                  role="menuitem"
-                  tabIndex={-1}
-                  onClick={(e) => {
-                    // Internal routes: prevent default and route via react-router
-                    if (!external) {
-                      e.preventDefault();
-                      handleInternalNav(marketplace.href);
-                    }
-                    // External routes: let the browser handle it (respects target/rel)
-                  }}
-                  onMouseEnter={() => setFocusedIndex(index)}
-                  onFocus={() => setFocusedIndex(index)}
-                >
-                  <div className="flex-shrink-0 mt-0.5">
-                    <Icon size={20} className="text-primary" />
-                  </div>
-                  <div className="ml-3 flex-1 min-w-0">
-                    <p className="text-sm font-medium text-gray-900 truncate">
-                      {marketplace.name}
-                    </p>
-                    <p className="text-xs text-gray-500 mt-1 line-clamp-2">
-                      {marketplace.description}
-                    </p>
-                  </div>
-                </a>
-              );
-            })}
-          </div>
+      <Popover.Dropdown p={0} style={{ border: "1px solid #e5e7eb" }}>
+        {/* Header */}
+        <div className="px-4 py-3 border-b border-gray-100">
+          <p className="text-sm font-semibold text-gray-900">Explore Marketplaces</p>
+          <p className="text-xs text-gray-500 mt-0.5">
+            Discover DigitalQatalyst&apos;s services, products, and transformation resources
+          </p>
         </div>
-      )}
-    </div>
+
+        {/* Items */}
+        <div>
+          {marketplaces.map((item) => {
+            const Icon = item.icon;
+            return (
+              <button
+                key={item.id}
+                onClick={() => { close(); navigate(item.href); }}
+                className="w-full flex items-start gap-3 px-4 py-3 text-left hover:bg-gray-50 transition-colors duration-150 focus:outline-none focus:bg-gray-50"
+              >
+                <div className="shrink-0 mt-0.5 w-8 h-8 rounded-md bg-orange-50 flex items-center justify-center">
+                  <Icon size={16} className="text-primary" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-semibold text-gray-900">{item.name}</p>
+                  <p className="text-xs text-gray-500 mt-0.5 leading-relaxed">{item.description}</p>
+                </div>
+              </button>
+            );
+          })}
+        </div>
+      </Popover.Dropdown>
+    </Popover>
   );
 }
