@@ -1,4 +1,5 @@
 import "./index.css";
+import "@mantine/core/styles.css";
 import { AppRouter } from "./AppRouter";
 import { createRoot } from "react-dom/client";
 import { ApolloClient, HttpLink, InMemoryCache } from "@apollo/client";
