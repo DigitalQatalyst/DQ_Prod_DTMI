@@ -72,40 +72,13 @@ export async function listPublicMedia({
   q,
   subMarketplace,
 }: ListPublicMediaParams = {}): Promise<ListPublicMediaResult> {
-  console.log("🔍 [KnowledgeHubGrid] listPublicMedia called with params:", {
-    limit,
-    after,
-    tag,
-    q,
-    subMarketplace,
-  });
-
   try {
     // Use our enhanced getKnowledgeHubItems function that combines real + mock data
-    console.log(
-      "📊 [KnowledgeHubGrid] Fetching items using getKnowledgeHubItems...",
-    );
     const allItems = await getKnowledgeHubItems();
-
-    console.log("✅ [KnowledgeHubGrid] Got items from getKnowledgeHubItems:", {
-      totalCount: allItems.length,
-      types: allItems.reduce(
-        (acc, item) => {
-          acc[item.mediaType] = (acc[item.mediaType] || 0) + 1;
-          return acc;
-        },
-        {} as Record<string, number>,
-      ),
-    });
-
     let filteredItems = allItems;
 
     // Apply sub-marketplace filter (Knowledge Depth)
     if (subMarketplace) {
-      console.log(
-        "🔽 [KnowledgeHubGrid] Applying knowledge depth filter:",
-        subMarketplace,
-      );
       if (subMarketplace === "signals") {
         // Signals: Short-form content (Blogs, Commentary, Market Signals)
         filteredItems = filteredItems.filter((item) =>
@@ -129,15 +102,10 @@ export async function listPublicMedia({
           ].includes(item.mediaType),
         );
       }
-      console.log(
-        "📝 [KnowledgeHubGrid] After knowledge depth filter:",
-        filteredItems.length,
-      );
     }
 
     // Apply tag/type filter
     if (tag) {
-      console.log("🏷️ [KnowledgeHubGrid] Applying tag/type filter:", tag);
       const filterTypes = tag.split(",").map((t) => t.trim().toLowerCase());
 
       filteredItems = filteredItems.filter((item) => {
@@ -156,15 +124,10 @@ export async function listPublicMedia({
 
         return typeMatch || tagMatch;
       });
-      console.log(
-        "📝 [KnowledgeHubGrid] After tag/type filter:",
-        filteredItems.length,
-      );
     }
 
     // Apply search filter
     if (q && q.trim()) {
-      console.log("🔍 [KnowledgeHubGrid] Applying search filter:", q);
       const searchQuery = q.toLowerCase();
       filteredItems = filteredItems.filter(
         (item) =>
@@ -175,10 +138,6 @@ export async function listPublicMedia({
             item.tags.some((tag) =>
               String(tag).toLowerCase().includes(searchQuery),
             )),
-      );
-      console.log(
-        "📝 [KnowledgeHubGrid] After search filter:",
-        filteredItems.length,
       );
     }
 
@@ -199,41 +158,17 @@ export async function listPublicMedia({
       detailsUrl: item.detailsUrl,
       provider: item.provider,
     }));
-
-    console.log(
-      "🔄 [KnowledgeHubGrid] Converted to PublicMediaItem format:",
-      publicItems.length,
-    );
-
     // Proper pagination using cursor
     const cursor = decodeCursor(after);
     const startIndex =
       cursor && cursor.id ? parseInt(String(cursor.id), 10) : 0;
     const endIndex = startIndex + limit;
     const paginatedItems = publicItems.slice(startIndex, endIndex);
-
-    console.log("📄 [KnowledgeHubGrid] Paginated result:", {
-      requested: limit,
-      returned: paginatedItems.length,
-      startIndex,
-      endIndex,
-      totalItems: publicItems.length,
-      hasMore: endIndex < publicItems.length,
-    });
-
     // Simple next cursor
     const nextCursor =
       paginatedItems.length === limit && endIndex < publicItems.length
         ? encodeCursor({ p: new Date().toISOString(), id: String(endIndex) })
         : null;
-
-    console.log("🎯 [KnowledgeHubGrid] Final result:", {
-      itemCount: paginatedItems.length,
-      totalCount: publicItems.length,
-      hasNextCursor: !!nextCursor,
-      sampleTitles: paginatedItems.slice(0, 3).map((item) => item.title),
-    });
-
     return {
       items: paginatedItems,
       nextCursor,
@@ -290,12 +225,6 @@ export async function listPublicMedia({
         last && last.published_at
           ? encodeCursor({ p: last.published_at, id: last.id })
           : null;
-
-      console.log(
-        "⚠️ [KnowledgeHubGrid] Used fallback Supabase query, returned:",
-        items.length,
-        "items",
-      );
       return { items, nextCursor, totalCount: items.length }; // Fallback count is just current set
     } catch (supabaseError) {
       console.error(

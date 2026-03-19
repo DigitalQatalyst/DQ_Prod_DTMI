@@ -240,8 +240,6 @@ export const MarketplacePage: React.FC<MarketplacePageProps> = ({
   const [filteredItems, setFilteredItems] = useState<any[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [filters, setFilters] = useState<Record<string, string[]>>({});
-  console.log("items fetched", items);
-
   // Filter sidebar visibility - should be visible on desktop, hidden on mobile by default
   const [showFilters, setShowFilters] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -393,7 +391,6 @@ export const MarketplacePage: React.FC<MarketplacePageProps> = ({
     }
     if (facetError) {
       console.error("GraphQL facets query error:", facetError);
-      console.warn("Facets query failed, using fallback filter configuration");
     }
   }, [productError, courseError, facetError]);
 
@@ -423,20 +420,6 @@ export const MarketplacePage: React.FC<MarketplacePageProps> = ({
     const format = searchParams.get("format");
     const popularity = searchParams.get("popularity");
     const expandCategory = searchParams.get("expandCategory");
-
-    console.log("🔍 [MarketplacePage] URL Parameters:", {
-      tab,
-      contentType,
-      category,
-      sector,
-      stream,
-      domain,
-      dimension,
-      format,
-      popularity,
-      expandCategory,
-    });
-
     // Handle tab parameter to set active sub-marketplace
     if (tab) {
       const validTabs = [
@@ -478,7 +461,6 @@ export const MarketplacePage: React.FC<MarketplacePageProps> = ({
 
     // Handle category parameter (general category filtering and digital perspectives)
     if (category) {
-      console.log("📂 [MarketplacePage] Category filter:", category);
       // Handle comma-separated categories
       const categories = category.split(",").map((c) => c.trim());
       
@@ -507,7 +489,6 @@ export const MarketplacePage: React.FC<MarketplacePageProps> = ({
       
       // If digital perspective filters are applied, automatically expand category filter section
       if (hasDigitalPerspectiveFilters) {
-        console.log("🎯 [MarketplacePage] Digital perspective filters detected, expanding category filter section");
         setCollapsedCategories((prev) => ({
           ...prev,
           "content-type": true, // Keep Content Type collapsed
@@ -526,7 +507,6 @@ export const MarketplacePage: React.FC<MarketplacePageProps> = ({
     
     // Handle expandCategory parameter to expand specific category sections
     if (expandCategory) {
-      console.log("📂 [MarketplacePage] Expanding category:", expandCategory);
       if (expandCategory === "digital-perspectives") {
         setCollapsedCategories((prev) => ({
           ...prev,
@@ -546,7 +526,6 @@ export const MarketplacePage: React.FC<MarketplacePageProps> = ({
           const categorySection = document.querySelector('[data-filter-section="category"]');
           if (categorySection) {
             categorySection.scrollIntoView({ behavior: 'smooth', block: 'start' });
-            console.log("✅ [MarketplacePage] Scrolled to Category section");
           }
         }, 500);
       } else if (expandCategory === "digital-sectors") {
@@ -566,7 +545,6 @@ export const MarketplacePage: React.FC<MarketplacePageProps> = ({
         // Scroll to Digital Sectors subsection with multiple attempts to ensure DOM is ready
         const attemptScroll = (attempts = 0) => {
           if (attempts > 10) {
-            console.warn("⚠️ [MarketplacePage] Failed to find Digital Sectors subsection after 10 attempts");
             return;
           }
           
@@ -580,9 +558,7 @@ export const MarketplacePage: React.FC<MarketplacePageProps> = ({
             const scrollPosition = filterContainer.scrollTop + (subsectionTop - containerTop);
             
             filterContainer.scrollTo({ top: scrollPosition, behavior: 'smooth' });
-            console.log("✅ [MarketplacePage] Scrolled to Digital Sectors subsection", { scrollPosition });
           } else {
-            console.log(`🔄 [MarketplacePage] Attempt ${attempts + 1}: Waiting for Digital Sectors subsection to render...`);
             setTimeout(() => attemptScroll(attempts + 1), 200);
           }
         };
@@ -607,7 +583,6 @@ export const MarketplacePage: React.FC<MarketplacePageProps> = ({
           const categorySection = document.querySelector('[data-filter-section="category"]');
           if (categorySection) {
             categorySection.scrollIntoView({ behavior: 'smooth', block: 'start' });
-            console.log("✅ [MarketplacePage] Scrolled to Category section");
           }
         }, 500);
       }
@@ -615,7 +590,6 @@ export const MarketplacePage: React.FC<MarketplacePageProps> = ({
 
     // Handle sector parameter (for sector-specific filtering)
     if (sector) {
-      console.log("🏢 [MarketplacePage] Sector filter:", sector);
       // Handle comma-separated sectors
       const sectors = sector.split(",").map((s) => s.trim());
       
@@ -650,7 +624,6 @@ export const MarketplacePage: React.FC<MarketplacePageProps> = ({
       // If digital sector filters are applied, automatically expand category filter section
       // and collapse other subcategories to make Digital Sectors more visible
       if (hasDigitalSectorFilters) {
-        console.log("🎯 [MarketplacePage] Digital sector filters detected, expanding category filter section");
         setCollapsedCategories((prev) => ({
           ...prev,
           "content-type": true, // Keep Content Type collapsed
@@ -669,7 +642,6 @@ export const MarketplacePage: React.FC<MarketplacePageProps> = ({
 
     // Handle domain parameter (for digital domain filtering)
     if (domain) {
-      console.log("🌐 [MarketplacePage] Domain filter:", domain);
       // Handle comma-separated domains
       const domains = domain.split(",").map((d) => d.trim());
       
@@ -704,7 +676,6 @@ export const MarketplacePage: React.FC<MarketplacePageProps> = ({
       
       // If digital domain filters are applied, automatically expand category filter section
       if (hasDigitalDomainFilters) {
-        console.log("🎯 [MarketplacePage] Digital domain filters detected, expanding category filter section");
         setCollapsedCategories((prev) => ({
           ...prev,
           "content-type": true, // Keep Content Type collapsed
@@ -723,7 +694,6 @@ export const MarketplacePage: React.FC<MarketplacePageProps> = ({
 
     // Handle stream parameter (for digital stream filtering)
     if (stream) {
-      console.log("🌊 [MarketplacePage] Stream filter:", stream);
       // Handle comma-separated streams
       const streams = stream.split(",").map((s) => s.trim());
       
@@ -749,7 +719,6 @@ export const MarketplacePage: React.FC<MarketplacePageProps> = ({
       
       // If digital stream filters are applied, automatically expand category filter section
       if (hasDigitalStreamFilters) {
-        console.log("🎯 [MarketplacePage] Digital stream filters detected, expanding category filter section");
         setCollapsedCategories((prev) => ({
           ...prev,
           "content-type": true, // Keep Content Type collapsed
@@ -768,7 +737,6 @@ export const MarketplacePage: React.FC<MarketplacePageProps> = ({
 
     // Handle dimension parameter (for 6XD dimension filtering)
     if (dimension) {
-      console.log("📊 [MarketplacePage] Dimension filter:", dimension);
       setSearchQuery(decodeURIComponent(dimension));
     }
 
@@ -803,10 +771,6 @@ export const MarketplacePage: React.FC<MarketplacePageProps> = ({
     }
 
     if (filtersToApply.length > 0) {
-      console.log(
-        "✅ [MarketplacePage] Applying filters from URL:",
-        filtersToApply,
-      );
       setActiveFilters(filtersToApply);
     }
 
@@ -1034,11 +998,6 @@ export const MarketplacePage: React.FC<MarketplacePageProps> = ({
         const uniqueTypes = [...new Set(mappedTypes)];
         contentTypeParam =
           uniqueTypes.length > 0 ? uniqueTypes.join(",") : null;
-        console.log("🔄 [MarketplacePage] Mapped filters:", {
-          activeFilters,
-          mappedTypes: uniqueTypes,
-          contentTypeParam,
-        });
       }
 
       const {
@@ -1074,7 +1033,6 @@ export const MarketplacePage: React.FC<MarketplacePageProps> = ({
         totalCount,
       };
     } catch (e) {
-      console.warn("Knowledge Hub initial fetch failed", e);
     } finally {
       setKhFetching(false);
     }
@@ -1212,7 +1170,6 @@ export const MarketplacePage: React.FC<MarketplacePageProps> = ({
         setKhCursor(nextCursor);
         setKhHasMore(Boolean(nextCursor));
       } catch (e) {
-        console.warn("Knowledge Hub next page failed", e);
         // Revert current page on error
         setCurrentPage(target - 1);
       } finally {
@@ -1239,16 +1196,6 @@ export const MarketplacePage: React.FC<MarketplacePageProps> = ({
           // Use static config for DTMI filters - same for all Knowledge Depth tabs
           const filterOptions: FilterConfig[] =
             config.writtenFilterCategories || config.filterCategories;
-
-          console.log("DTMI Filter Debug:", {
-            activeSubMarketplace,
-            hasWrittenFilters: !!config.writtenFilterCategories,
-            writtenFiltersCount: config.writtenFilterCategories?.length,
-            legacyFiltersCount: config.filterCategories?.length,
-            selectedFilters: filterOptions.length,
-            filterOptions: filterOptions,
-          });
-
           setFilterConfig(filterOptions);
 
           // Initialize empty filters based on the configuration
@@ -1340,8 +1287,6 @@ export const MarketplacePage: React.FC<MarketplacePageProps> = ({
               };
             })
             .filter((config): config is FilterConfig => config !== null);
-
-          console.log("filterOptions:", filterOptions);
           setFilterConfig(filterOptions);
 
           // Initialize empty filters based on the configuration
@@ -1607,12 +1552,6 @@ export const MarketplacePage: React.FC<MarketplacePageProps> = ({
                 rawFormUrl || "https://www.tamm.abudhabi/en/login";
 
               if (product.id === "133" || !rawFormUrl) {
-                console.log(
-                  `Product "${product.name}" (ID: ${product.id}): Raw formUrl =`,
-                  rawFormUrl,
-                  "| Final =",
-                  finalFormUrl,
-                );
               }
 
               return {
@@ -1681,10 +1620,6 @@ export const MarketplacePage: React.FC<MarketplacePageProps> = ({
             if (b.id === "133") return 1;
             return 0;
           });
-
-          console.log("filters:", filters);
-          console.log("filteredItems:", prioritized);
-
           setItems(mappedItems);
           setFilteredItems(prioritized);
           setLoading(false);

@@ -89,7 +89,6 @@ const deleteStorageFileFromUrl = async (url: string | null | undefined) => {
   if (error) {
     console.error(`Error deleting file [${path}] from storage:`, error);
   } else {
-    console.log(`Successfully deleted file [${path}] from storage`);
   }
 };
 
@@ -299,7 +298,6 @@ export const blogService = {
           }
         }
       } catch (e) {
-        console.warn("Failed to parse content JSON for mapping:", e);
       }
     }
 
@@ -396,7 +394,6 @@ export const blogService = {
           await deleteStorageFileFromUrl(existingRow.hero_image);
         }
       } catch (err) {
-        console.warn("Could not check for old image to delete:", err);
       }
     }
 
@@ -459,7 +456,6 @@ export const blogService = {
         await deleteStorageFileFromUrl(existingRow.hero_image);
       }
     } catch (err) {
-      console.warn("Could not fetch blog for image deletion:", err);
     }
 
     const { error } = await getSupabaseAdmin()
@@ -613,7 +609,6 @@ export const authorService = {
           await deleteStorageFileFromUrl(existingAuthor.avatar_url);
         }
       } catch (err) {
-        console.warn("Could not check for old avatar to delete:", err);
       }
     }
 
@@ -667,7 +662,6 @@ export const authorService = {
         await deleteStorageFileFromUrl(existingAuthor.avatar_url);
       }
     } catch (err) {
-      console.warn("Could not fetch author for avatar deletion:", err);
     }
 
     const { error } = await getSupabaseAdmin()

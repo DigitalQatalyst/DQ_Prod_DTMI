@@ -343,8 +343,6 @@ class ConnectionService {
     const timestamp = new Date().toISOString();
     
     if (result.isConnected) {
-      console.log(`[ConnectionService] ${timestamp} - ✅ All systems connected (${result.overallLatency?.toFixed(0)}ms)`);
-      console.log(`[ConnectionService] Database: ${result.database.latency?.toFixed(0)}ms, Storage: ${result.storage.latency?.toFixed(0)}ms`);
     } else {
       console.error(`[ConnectionService] ${timestamp} - ❌ Connection issues detected`);
     }
@@ -362,7 +360,6 @@ class ConnectionService {
 
     // Log warnings
     result.warnings.forEach(warning => {
-      console.warn(`[ConnectionService] ⚠️ ${warning}`);
     });
   }
 

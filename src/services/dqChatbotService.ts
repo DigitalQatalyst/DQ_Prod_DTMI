@@ -370,7 +370,6 @@ export const dqChatbotService = {
 
       // Check for and correct any incorrect platform references
       if (content.toLowerCase().includes('abu dhabi enterprise journey platform')) {
-        console.warn('DQ Chatbot: Detected incorrect platform reference, using fallback');
         return dqChatbotService.getFallbackResponse(message);
       }
 

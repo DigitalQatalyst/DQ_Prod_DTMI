@@ -185,9 +185,6 @@ export function ArticleLayout({
         )}
 
         {(() => {
-          console.log('🔍 ArticleLayout - Author prop received:', author);
-          console.log('🔍 ArticleLayout - Author exists?', !!author);
-          console.log('🔍 ArticleLayout - Author name:', author?.name);
           return null;
         })()}
 

@@ -39,7 +39,6 @@ export default function BlogPage() {
             blogData = await blogService.getBlogById(id);
           }
         } catch (dbError) {
-          console.log("Blog not found in database, checking mockBlogs...");
           // Fallback to mockBlogs if database fetch fails
           if (slug) {
             const mockBlog = mockBlogs.find(b => b.slug === slug);

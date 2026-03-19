@@ -37,9 +37,6 @@ const ResearchLandingPage = () => {
     company: string;
   }) => {
     // Here you would typically send the data to your backend
-    console.log("Lead capture data:", data);
-    console.log("Content requested:", modalState.contentTitle);
-
     // Simulate API call
     await new Promise((resolve) => setTimeout(resolve, 1000));
 

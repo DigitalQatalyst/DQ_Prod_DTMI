@@ -32,13 +32,9 @@ export function FeaturedBlogs() {
 
       // Filter for blogs only
       const blogs = allItems.filter((item) => item.mediaType === "Blog");
-
-      console.log("Featured Signals - fetched blogs:", blogs.length);
-
       if (blogs && blogs.length > 0) {
         // Map knowledge hub items to component format
         const mappedBlogs = blogs.slice(0, 5).map((blog: any) => {
-          console.log("Blog image URL:", blog.title, "→", blog.imageUrl);
           return {
             id: blog.id,
             title: blog.title,

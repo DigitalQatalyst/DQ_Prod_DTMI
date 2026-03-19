@@ -127,7 +127,6 @@ export function BlogSidebar({ blogTitle, blogSlug }: BlogSidebarProps) {
         });
         break;
       default:
-        console.log(`Sharing on ${platform}`);
     }
   };
   

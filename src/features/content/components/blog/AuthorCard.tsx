@@ -17,17 +17,6 @@ export function AuthorCard({
   const navigate = useNavigate();
   
   // Debug logging to see what author data is received
-  console.log('🎯 AuthorCard received data:', {
-    name: author.name,
-    role: author.role,
-    bio: author.bio,
-    avatar: author.avatar,
-    linkedIn: author.linkedIn,
-    twitter: author.twitter,
-    website: author.website,
-    email: author.email
-  });
-  
   const handleAvatarClick = () => {
     // Create a slug from the author name - handle special characters properly
     let authorSlug = author.name.toLowerCase()

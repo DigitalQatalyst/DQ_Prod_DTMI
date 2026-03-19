@@ -108,7 +108,6 @@ export function useOnboardingFormRHF(steps: Step[], onComplete: () => void) {
       if (user?.id) {
         const currentUserId = currentValues.userId;
         if (!currentUserId || currentUserId === "") {
-          console.log("Setting userId from auth:", user.id);
           setValue("userId", user.id);
         }
       }
@@ -116,7 +115,6 @@ export function useOnboardingFormRHF(steps: Step[], onComplete: () => void) {
       // Ensure formId is set
       if (!currentValues.formId || currentValues.formId === "") {
         const newFormId = uuidv4();
-        console.log("Setting formId:", newFormId);
         setValue("formId", newFormId);
       }
     };
@@ -148,8 +146,6 @@ export function useOnboardingFormRHF(steps: Step[], onComplete: () => void) {
             }
           }
         });
-
-        console.log("Restored onboarding data from storage", data);
       } catch (e) {
         console.error("Failed to load saved onboarding progress:", e);
       } finally {
@@ -180,22 +176,15 @@ export function useOnboardingFormRHF(steps: Step[], onComplete: () => void) {
   const validateCurrentStep = async () => {
     if (currentStep === 0) return true; // Welcome step - always valid
     if (currentStep === steps.length - 1) return true; // Review step
-
-    console.log("Validating step:", currentStep);
-    console.log("Step validation triggers:", stepValidationTriggers);
-    console.log("Step validation status:", stepValidationStatus);
-
     // Use the step's own validation trigger if available
     const stepTrigger = stepValidationTriggers[currentStep];
     if (stepTrigger) {
       const result = await stepTrigger();
-      console.log("Step trigger result:", result);
       return result;
     }
 
     // Fallback to checking step validation status
     const statusResult = stepValidationStatus[currentStep];
-    console.log("Step validation status result:", statusResult);
     return statusResult;
   };
 
@@ -266,9 +255,6 @@ export function useOnboardingFormRHF(steps: Step[], onComplete: () => void) {
       const formData = getValues();
       formData.formId = uuidv4(); // Generate new UUID for each submission
       formData.userId = user?.id || ""; // Ensure we have the current user ID
-
-      console.log("formData", formData);
-
       // Simple API call - replace with your actual endpoint
       const response = await fetch(
         "https://kfrealexpressserver.vercel.app/api/v1/auth/onboarding",

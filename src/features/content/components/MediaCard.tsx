@@ -250,11 +250,6 @@ export const MediaCard: React.FC<MediaCardProps> = ({
       e.stopPropagation()
     }
     if (!detailsHref) {
-      console.warn('Missing href for card', {
-        title,
-        type,
-        cta,
-      })
       return
     }
     if (onClick) {

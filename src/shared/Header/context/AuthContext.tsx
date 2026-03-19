@@ -94,26 +94,45 @@ export function AuthProvider({ children }: Readonly<{ children: ReactNode }>) {
     }
   }, []);
 
+  /** Build a minimal profile from session claims — no DB call needed. */
+  const profileFromSession = useCallback((s: Session): UserProfile => ({
+    id: s.user.id,
+    supabaseUserId: s.user.id,
+    email: s.user.email ?? "",
+    name: s.user.user_metadata?.full_name ?? "",
+    role: "viewer",
+    permissions: [],
+  }), []);
+
   // Bootstrap: restore session on mount and listen for auth changes
   useEffect(() => {
     let mounted = true;
 
-    supabase.auth.getSession().then(async ({ data: { session: s } }) => {
+    supabase.auth.getSession().then(({ data: { session: s } }) => {
       if (!mounted) return;
       setSession(s);
+      // Unblock the UI immediately using JWT claims
+      if (s) setUser(profileFromSession(s));
+      setIsLoading(false);
+      // Hydrate role/avatar from DB in the background
       if (s) {
-        const profile = await fetchUserProfile(s.user.id);
-        if (mounted) setUser(profile ?? { id: s.user.id, supabaseUserId: s.user.id, email: s.user.email ?? "", name: s.user.user_metadata?.full_name ?? "", role: "viewer", permissions: [] });
+        fetchUserProfile(s.user.id).then((profile) => {
+          if (mounted && profile) {
+            setUser(profile);
+          }
+        });
       }
-      if (mounted) setIsLoading(false);
     });
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, s) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, s) => {
       if (!mounted) return;
       setSession(s);
       if (s) {
-        const profile = await fetchUserProfile(s.user.id);
-        if (mounted) setUser(profile ?? { id: s.user.id, supabaseUserId: s.user.id, email: s.user.email ?? "", name: s.user.user_metadata?.full_name ?? "", role: "viewer", permissions: [] });
+        // Unblock immediately, then hydrate
+        setUser(profileFromSession(s));
+        fetchUserProfile(s.user.id).then((profile) => {
+          if (mounted && profile) setUser(profile);
+        });
       } else {
         setUser(null);
       }
@@ -123,11 +142,10 @@ export function AuthProvider({ children }: Readonly<{ children: ReactNode }>) {
       mounted = false;
       subscription.unsubscribe();
     };
-  }, []);
+  }, [profileFromSession]);
 
   const login = useCallback(async (email?: string, password?: string) => {
     if (!email || !password) {
-      console.warn("[Auth] login() requires email and password");
       return;
     }
     const { error } = await supabase.auth.signInWithPassword({ email, password });
@@ -136,7 +154,6 @@ export function AuthProvider({ children }: Readonly<{ children: ReactNode }>) {
 
   const signup = useCallback(async (email?: string, password?: string, name?: string) => {
     if (!email || !password) {
-      console.warn("[Auth] signup() requires email and password");
       return;
     }
     const { error } = await supabase.auth.signUp({

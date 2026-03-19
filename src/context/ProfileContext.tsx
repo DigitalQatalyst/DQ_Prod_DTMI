@@ -55,16 +55,6 @@ export const ProfileProvider = ({
   );
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
-
-
-  console.log("mytoken",token)
-
-  // Function to get contact data
-  const getAccounContact = useCallback(async (accountid?: string) => {
-    if (!accountid) return null;
-
-    try {
-      setError(null);
       const response = await axios.post<{ value: ExtendedContactData[] }>(
         "/api/getcontact",
         {
@@ -125,8 +115,6 @@ export const ProfileProvider = ({
     if (savedToken && !isTokenExpired(savedToken, savedTimestamp)) {
       setTokenState(savedToken);
     } else {
-      console.log("getting new token")
-      fetchNewToken();
     }
   }, []);
 
@@ -135,9 +123,6 @@ export const ProfileProvider = ({
     try {
       const response = await axios.post("https://kfexpressserver.vercel.app/api/v1/auth/get-token");
       const data = response.data;
-      console.log("token data",data)
-      if (data && data?.tokenresponse?.access_token) {
-        console.log("Token fetched successfully", data?.tokenresponse?.access_token);
         const tokenExpiryTimestamp = Date.now() + data?.tokenresponse?.expires_in * 1000; // Calculate the expiry time based on `expires_in`
         setTokenAndSave(data?.tokenresponse?.access_token, tokenExpiryTimestamp);
       }

@@ -774,8 +774,6 @@ const RelatedAnalyses = ({ analyses }: any) => {
   );
 };
 const AIDecisionMakingPrediction = () => {
-  console.log('AIDecisionMakingPrediction component is rendering');
-
   // Comprehensive prediction data for AI-Driven Decision Making
   const predictionData = {
     header: {
