@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Upload, User, Briefcase, FileText, Loader, Image as ImageIcon, ArrowLeft, Camera } from 'lucide-react';
+import { Upload, User, Briefcase, FileText, Loader, Image as ImageIcon, ArrowLeft, Camera, Linkedin, Twitter } from 'lucide-react';
 import AppLayout from '../../shared/components/AppLayout';
 import { authorService, Author } from '../../shared/utils/supabase';
 import { Toast, ToastType } from '../../shared/components/Toast';
@@ -13,6 +13,8 @@ export const AuthorCreate: React.FC = () => {
     title: '',
     bio: '',
     avatar: '',
+    linkedIn: '',
+    twitter: '',
   });
 
   const [avatarFile, setAvatarFile] = useState<File | null>(null);
@@ -126,6 +128,35 @@ export const AuthorCreate: React.FC = () => {
                     className="w-full px-4 py-3 bg-white border border-gray-200 rounded-lg text-xs leading-relaxed focus:ring-1 focus:ring-black outline-none transition-all"
                     placeholder="Share a short story about this author's expertise..."
                   />
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest flex items-center gap-1.5">
+                      <Linkedin size={11} /> LinkedIn URL
+                    </label>
+                    <input
+                      type="url"
+                      name="linkedIn"
+                      value={formData.linkedIn}
+                      onChange={handleInputChange}
+                      className="w-full px-4 py-2.5 bg-white border border-gray-200 rounded-lg text-sm focus:ring-1 focus:ring-black outline-none transition-all"
+                      placeholder="https://linkedin.com/in/username"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest flex items-center gap-1.5">
+                      <Twitter size={11} /> X (Twitter) URL
+                    </label>
+                    <input
+                      type="url"
+                      name="twitter"
+                      value={formData.twitter}
+                      onChange={handleInputChange}
+                      className="w-full px-4 py-2.5 bg-white border border-gray-200 rounded-lg text-sm focus:ring-1 focus:ring-black outline-none transition-all"
+                      placeholder="https://x.com/username"
+                    />
+                  </div>
                 </div>
               </div>
 

@@ -94,16 +94,6 @@ export function AuthProvider({ children }: Readonly<{ children: ReactNode }>) {
     }
   }, []);
 
-  /** Build a minimal profile from session claims — no DB call needed. */
-  const profileFromSession = useCallback((s: Session): UserProfile => ({
-    id: s.user.id,
-    supabaseUserId: s.user.id,
-    email: s.user.email ?? "",
-    name: s.user.user_metadata?.full_name ?? "",
-    role: "viewer",
-    permissions: [],
-  }), []);
-
   // Bootstrap: restore session on mount and listen for auth changes
   useEffect(() => {
     let mounted = true;
@@ -111,16 +101,25 @@ export function AuthProvider({ children }: Readonly<{ children: ReactNode }>) {
     supabase.auth.getSession().then(({ data: { session: s } }) => {
       if (!mounted) return;
       setSession(s);
-      // Unblock the UI immediately using JWT claims
-      if (s) setUser(profileFromSession(s));
-      setIsLoading(false);
-      // Hydrate role/avatar from DB in the background
       if (s) {
+        // Keep isLoading true until DB profile is ready — prevents redirect flash
         fetchUserProfile(s.user.id).then((profile) => {
-          if (mounted && profile) {
-            setUser(profile);
+          if (mounted) {
+            setUser(profile ?? {
+              id: s.user.id,
+              supabaseUserId: s.user.id,
+              email: s.user.email ?? "",
+              name: s.user.user_metadata?.full_name ?? "",
+              role: "viewer",
+              permissions: [],
+            });
+            console.log("[Auth] Logged in user:", profile);
           }
+        }).finally(() => {
+          if (mounted) setIsLoading(false);
         });
+      } else {
+        setIsLoading(false);
       }
     });
 
@@ -128,10 +127,15 @@ export function AuthProvider({ children }: Readonly<{ children: ReactNode }>) {
       if (!mounted) return;
       setSession(s);
       if (s) {
-        // Unblock immediately, then hydrate
-        setUser(profileFromSession(s));
         fetchUserProfile(s.user.id).then((profile) => {
-          if (mounted && profile) setUser(profile);
+          if (mounted) setUser(profile ?? {
+            id: s.user.id,
+            supabaseUserId: s.user.id,
+            email: s.user.email ?? "",
+            name: s.user.user_metadata?.full_name ?? "",
+            role: "viewer",
+            permissions: [],
+          });
         });
       } else {
         setUser(null);
@@ -142,7 +146,7 @@ export function AuthProvider({ children }: Readonly<{ children: ReactNode }>) {
       mounted = false;
       subscription.unsubscribe();
     };
-  }, [profileFromSession]);
+  }, []);
 
   const login = useCallback(async (email?: string, password?: string) => {
     if (!email || !password) {

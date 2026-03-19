@@ -1594,7 +1594,7 @@ export const BlogDetail: React.FC = () => {
                   />
                 </div>
               </div>
-              ) : formData.type === 'article' ? (
+            ) : formData.type === 'article' ? (
               <div className="space-y-8 animate-in fade-in duration-500">
                 {/* Excerpt/Summary */}
                 <div className="bg-white p-8 rounded-2xl border border-gray-100 shadow-sm space-y-4">
