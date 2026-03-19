@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import AppLayout from '../../shared/components/AppLayout';
 import { authorService, blogService, Author, Blog } from '../../shared/utils/supabase';
 import {
@@ -10,20 +9,68 @@ import {
   Edit,
   Loader,
   AlertCircle,
-  MoreVertical,
-  ChevronRight,
-  ExternalLink,
   Camera,
   CheckCircle2,
-  X,
   Linkedin,
   Twitter
 } from 'lucide-react';
 import { Toast, ToastType } from '../../shared/components/Toast';
 import Modal from '../../shared/components/Modal';
+import { RichTextEditor, Link as TiptapLink } from '@mantine/tiptap';
+import { useEditor } from '@tiptap/react';
+import StarterKit from '@tiptap/starter-kit';
+import Underline from '@tiptap/extension-underline';
+import Placeholder from '@tiptap/extension-placeholder';
+import '@mantine/tiptap/styles.css';
+
+// Lightweight rich text editor for author bio
+function BioEditor({ value, onChange }: { value: string; onChange: (html: string) => void }) {
+  const editor = useEditor({
+    extensions: [
+      StarterKit,
+      Underline,
+      TiptapLink,
+      Placeholder.configure({ placeholder: 'Share a short story about this author\'s expertise...' }),
+    ],
+    content: value || '',
+    onUpdate: ({ editor }) => onChange(editor.getHTML()),
+  });
+
+  // Sync external value changes (e.g. when opening modal for different author)
+  useEffect(() => {
+    if (!editor) return;
+    if (value !== editor.getHTML()) {
+      editor.commands.setContent(value || '');
+    }
+  }, [value]);
+
+  return (
+    <RichTextEditor
+      editor={editor}
+      style={{ border: '1px solid #f3f4f6', borderRadius: '12px', overflow: 'hidden' }}
+    >
+      <RichTextEditor.Toolbar style={{ borderBottom: '1px solid #f3f4f6', background: '#fafafa' }}>
+        <RichTextEditor.ControlsGroup>
+          <RichTextEditor.Bold />
+          <RichTextEditor.Italic />
+          <RichTextEditor.Underline />
+          <RichTextEditor.ClearFormatting />
+        </RichTextEditor.ControlsGroup>
+        <RichTextEditor.ControlsGroup>
+          <RichTextEditor.BulletList />
+          <RichTextEditor.OrderedList />
+        </RichTextEditor.ControlsGroup>
+        <RichTextEditor.ControlsGroup>
+          <RichTextEditor.Link />
+          <RichTextEditor.Unlink />
+        </RichTextEditor.ControlsGroup>
+      </RichTextEditor.Toolbar>
+      <RichTextEditor.Content style={{ minHeight: '160px', fontSize: '13px' }} />
+    </RichTextEditor>
+  );
+}
 
 const AuthorManagement: React.FC = () => {
-  const navigate = useNavigate();
   const [authors, setAuthors] = useState<Author[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
@@ -93,7 +140,8 @@ const AuthorManagement: React.FC = () => {
     setIsDetailsModalOpen(true);
     setLoadingPosts(true);
     try {
-      const posts = await blogService.getBlogs({ authorId: author.id });
+      const result = await blogService.getBlogs({ authorId: author.id });
+      const posts = Array.isArray(result) ? result : (result as any)?.data ?? [];
       setAuthorPosts(posts);
     } catch (error) {
       console.error('Error fetching author posts:', error);
@@ -365,6 +413,7 @@ const AuthorManagement: React.FC = () => {
         isOpen={isUpsertModalOpen}
         onClose={() => !isSubmitting && setIsUpsertModalOpen(false)}
         title={currentAuthor?.id ? 'Refine Profile' : 'New Identity'}
+        size="xl"
         footer={(
           <div className="flex items-center justify-between w-full">
             <button
@@ -433,13 +482,20 @@ const AuthorManagement: React.FC = () => {
             </div>
           </div>
           <div className="space-y-2">
-            <label className="text-xs text-gray-500">Biography</label>
-            <textarea
+            <label className="text-xs text-gray-500">Short Bio <span className="text-gray-400">(tagline / excerpt)</span></label>
+            <input
+              type="text"
               value={currentAuthor?.bio || ''}
               onChange={e => setCurrentAuthor(prev => ({ ...prev, bio: e.target.value }))}
-              rows={4}
-              className="w-full p-4 bg-gray-50 border border-gray-100 rounded-xl text-xs leading-relaxed focus:ring-1 focus:ring-gray-200 outline-none transition-all"
-              placeholder="Share a short story about this author's expertise..."
+              className="w-full px-3 py-2 bg-gray-50 border border-gray-100 rounded-lg text-xs focus:ring-1 focus:ring-gray-200 outline-none transition-all"
+              placeholder="One-line summary shown on author cards..."
+            />
+          </div>
+          <div className="space-y-2">
+            <label className="text-xs text-gray-500">Detailed Bio <span className="text-gray-400">(rich text)</span></label>
+            <BioEditor
+              value={currentAuthor?.bioHtml || currentAuthor?.bio || ''}
+              onChange={(html) => setCurrentAuthor(prev => ({ ...prev, bioHtml: html }))}
             />
           </div>
           <div className="grid grid-cols-2 gap-4">

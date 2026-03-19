@@ -56,6 +56,7 @@ export interface Author {
   title: string;
   avatar: string;
   bio: string;
+  bioHtml?: string;
   linkedIn?: string;
   twitter?: string;
   website?: string;
@@ -246,6 +247,7 @@ export const blogService = {
         title: row.author_title,
         avatar: row.author_avatar,
         bio: row.author_bio,
+        bioHtml: row.author_bio_html,
         linkedIn: row.author_linkedin,
         twitter: row.author_twitter,
         website: row.author_website,
@@ -519,6 +521,7 @@ export const authorService = {
       title: a.title,
       avatar: a.avatar_url,
       bio: a.bio,
+      bioHtml: a.bio_html,
       linkedIn: a.linkedin_url,
       twitter: a.twitter_url,
       website: a.website_url,
@@ -545,6 +548,7 @@ export const authorService = {
       title: a.title,
       avatar: a.avatar_url,
       bio: a.bio,
+      bioHtml: a.bio_html,
       linkedIn: a.linkedin_url,
       twitter: a.twitter_url,
       website: a.website_url,
@@ -562,6 +566,7 @@ export const authorService = {
       title: authorData.title,
       avatar_url: authorData.avatar,
       bio: authorData.bio,
+      bio_html: authorData.bioHtml,
       linkedin_url: authorData.linkedIn,
       twitter_url: authorData.twitter,
       website_url: authorData.website,
@@ -586,6 +591,7 @@ export const authorService = {
       title: a.title,
       avatar: a.avatar_url,
       bio: a.bio,
+      bioHtml: a.bio_html,
       linkedIn: a.linkedin_url,
       twitter: a.twitter_url,
       website: a.website_url,
@@ -617,6 +623,7 @@ export const authorService = {
     if (authorData.title !== undefined) payload.title = authorData.title;
     if (authorData.avatar !== undefined) payload.avatar_url = authorData.avatar;
     if (authorData.bio !== undefined) payload.bio = authorData.bio;
+    if (authorData.bioHtml !== undefined) payload.bio_html = authorData.bioHtml;
     if (authorData.linkedIn !== undefined) payload.linkedin_url = authorData.linkedIn;
     if (authorData.twitter !== undefined) payload.twitter_url = authorData.twitter;
     if (authorData.website !== undefined) payload.website_url = authorData.website;
@@ -640,6 +647,7 @@ export const authorService = {
       title: a.title,
       avatar: a.avatar_url,
       bio: a.bio,
+      bioHtml: a.bio_html,
       linkedIn: a.linkedin_url,
       twitter: a.twitter_url,
       website: a.website_url,
