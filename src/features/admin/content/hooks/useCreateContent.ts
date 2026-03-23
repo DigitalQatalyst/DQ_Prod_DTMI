@@ -125,6 +125,8 @@ export function useCreateContent() {
 
   const [availableDomains, setAvailableDomains] = useState<any[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
+  const [groupedCategories, setGroupedCategories] = useState<Category[]>([]);
+  const [selectedParentId, setSelectedParentId] = useState<string>("");
   const [heroFile, setHeroFile] = useState<File | null>(null);
   const [heroPreview, setHeroPreview] = useState<string>("");
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -153,8 +155,12 @@ export function useCreateContent() {
 
   const fetchCategories = async () => {
     try {
-      const cats = await categoryService.getCategories();
-      setCategories(cats);
+      // Use content-types filter group for blog categories
+      const grouped = await categoryService.getCategoriesGroupedByFilterGroup('content-types');
+      setGroupedCategories(grouped);
+      // flat list for legacy usage (e.g. quick-add selects the created category)
+      const flat = grouped.flatMap((p) => [p, ...(p.subcategories || [])]);
+      setCategories(flat);
     } catch (err) {
       console.error("Failed to load categories", err);
     }
@@ -171,6 +177,9 @@ export function useCreateContent() {
       setFormData((prev) => ({ ...prev, title: value, slug }));
     } else if (name === "readTime") {
       setFormData((prev) => ({ ...prev, [name]: parseInt(value) || 0 }));
+    } else if (name === "parentCategoryId") {
+      setSelectedParentId(value);
+      setFormData((prev) => ({ ...prev, categoryId: "" }));
     } else {
       setFormData((prev) => ({ ...prev, [name]: value }));
     }
@@ -179,6 +188,10 @@ export function useCreateContent() {
   const handleHeroChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) { setHeroFile(file); setHeroPreview(URL.createObjectURL(file)); }
+  };
+
+  const handleFilterChange = (name: string, value: string) => {
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleCreateCategory = async (e: React.FormEvent) => {
@@ -466,6 +479,8 @@ export function useCreateContent() {
     whitepaperData, setWhitepaperData,
     availableDomains,
     categories,
+    groupedCategories,
+    selectedParentId, setSelectedParentId,
     heroFile, heroPreview,
     isSubmitting,
     toast, setToast,
@@ -475,6 +490,7 @@ export function useCreateContent() {
     // Handlers
     handleChange,
     handleHeroChange,
+    handleFilterChange,
     handleCreateCategory,
     handleSubmit,
     handleWhitepaperSubmit,
