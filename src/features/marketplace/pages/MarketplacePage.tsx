@@ -3,8 +3,12 @@ import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { FilterSidebar, FilterConfig } from "../components/FilterSidebar.tsx";
 import { MarketplaceGrid } from "../components/MarketplaceGrid.tsx";
+import { BooksMarketplace } from "../components/BooksMarketplace.tsx";
 import { SearchBar } from "../../../shared/SearchBar.tsx";
-import { SubMarketplaceTabs, SubMarketplaceTab } from "../components/SubMarketplaceTabs.tsx";
+import {
+  SubMarketplaceTabs,
+  SubMarketplaceTab,
+} from "../components/SubMarketplaceTabs.tsx";
 import { IntelligenceLayersSection } from "../components/IntelligenceLayersSection.tsx";
 import {
   FilterIcon,
@@ -14,7 +18,10 @@ import {
   ChevronDownIcon,
   ChevronUpIcon,
 } from "lucide-react";
-import { ErrorDisplay, CourseCardSkeleton } from "../../../shared/SkeletonLoader.tsx";
+import {
+  ErrorDisplay,
+  CourseCardSkeleton,
+} from "../../../shared/SkeletonLoader.tsx";
 import { getMarketplaceConfig } from "../../../utils/marketplaceConfig.ts";
 import { MarketplaceComparison } from "../components/MarketplaceComparison";
 import { Header } from "../../../shared/Header/index.tsx";
@@ -298,6 +305,12 @@ export const MarketplacePage: React.FC<MarketplacePageProps> = ({
             description:
               "Strategic intellectual assets - Research & comprehensive reports",
           },
+          {
+            id: "books",
+            label: "📚 Books",
+            description:
+              "Digital transformation library - Comprehensive guides & frameworks",
+          },
         ]
       : [
           {
@@ -443,6 +456,7 @@ export const MarketplacePage: React.FC<MarketplacePageProps> = ({
         "signals",
         "insights",
         "deep-analysis",
+        "books",
         "audio",
         "videos",
       ];
@@ -481,7 +495,7 @@ export const MarketplacePage: React.FC<MarketplacePageProps> = ({
       console.log("📂 [MarketplacePage] Category filter:", category);
       // Handle comma-separated categories
       const categories = category.split(",").map((c) => c.trim());
-      
+
       // Check if these are digital perspective filter IDs
       const perspectiveMapping: Record<string, string> = {
         "d1-e40": "D1 - Digital Economy 4.0 (E4.0)",
@@ -491,9 +505,9 @@ export const MarketplacePage: React.FC<MarketplacePageProps> = ({
         "d5-worker": "D5 - Digital Worker & Digital Workspace",
         "d6-accelerators": "D6 - Digital Accelerators (Tools)",
       };
-      
+
       let hasDigitalPerspectiveFilters = false;
-      
+
       categories.forEach((cat) => {
         if (perspectiveMapping[cat]) {
           // This is a digital perspective filter ID
@@ -504,10 +518,12 @@ export const MarketplacePage: React.FC<MarketplacePageProps> = ({
           setSearchQuery(decodeURIComponent(cat));
         }
       });
-      
+
       // If digital perspective filters are applied, automatically expand category filter section
       if (hasDigitalPerspectiveFilters) {
-        console.log("🎯 [MarketplacePage] Digital perspective filters detected, expanding category filter section");
+        console.log(
+          "🎯 [MarketplacePage] Digital perspective filters detected, expanding category filter section",
+        );
         setCollapsedCategories((prev) => ({
           ...prev,
           "content-type": true, // Keep Content Type collapsed
@@ -518,12 +534,12 @@ export const MarketplacePage: React.FC<MarketplacePageProps> = ({
           "category-digital-sectors": true, // Keep Digital Sectors collapsed
           popularity: true, // Keep Popularity collapsed
         }));
-        
+
         // Also show filter sidebar on desktop when 6xD filters are applied
         setShowFilters(true);
       }
     }
-    
+
     // Handle expandCategory parameter to expand specific category sections
     if (expandCategory) {
       console.log("📂 [MarketplacePage] Expanding category:", expandCategory);
@@ -540,12 +556,17 @@ export const MarketplacePage: React.FC<MarketplacePageProps> = ({
         }));
         setShowFilters(true);
         setHasUrlCollapsedState(true); // Mark that URL has set collapsed state
-        
+
         // Scroll to Category section after a short delay to ensure DOM is ready
         setTimeout(() => {
-          const categorySection = document.querySelector('[data-filter-section="category"]');
+          const categorySection = document.querySelector(
+            '[data-filter-section="category"]',
+          );
           if (categorySection) {
-            categorySection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            categorySection.scrollIntoView({
+              behavior: "smooth",
+              block: "start",
+            });
             console.log("✅ [MarketplacePage] Scrolled to Category section");
           }
         }, 500);
@@ -562,31 +583,45 @@ export const MarketplacePage: React.FC<MarketplacePageProps> = ({
         }));
         setShowFilters(true);
         setHasUrlCollapsedState(true); // Mark that URL has set collapsed state
-        
+
         // Scroll to Digital Sectors subsection with multiple attempts to ensure DOM is ready
         const attemptScroll = (attempts = 0) => {
           if (attempts > 10) {
-            console.warn("⚠️ [MarketplacePage] Failed to find Digital Sectors subsection after 10 attempts");
+            console.warn(
+              "⚠️ [MarketplacePage] Failed to find Digital Sectors subsection after 10 attempts",
+            );
             return;
           }
-          
-          const digitalSectorsSubsection = document.querySelector('[data-filter-subsection="category-digital-sectors"]');
-          const filterContainer = document.querySelector('.custom-scrollbar');
-          
+
+          const digitalSectorsSubsection = document.querySelector(
+            '[data-filter-subsection="category-digital-sectors"]',
+          );
+          const filterContainer = document.querySelector(".custom-scrollbar");
+
           if (digitalSectorsSubsection && filterContainer) {
             // Calculate the position of the subsection relative to the filter container
-            const subsectionTop = digitalSectorsSubsection.getBoundingClientRect().top;
+            const subsectionTop =
+              digitalSectorsSubsection.getBoundingClientRect().top;
             const containerTop = filterContainer.getBoundingClientRect().top;
-            const scrollPosition = filterContainer.scrollTop + (subsectionTop - containerTop);
-            
-            filterContainer.scrollTo({ top: scrollPosition, behavior: 'smooth' });
-            console.log("✅ [MarketplacePage] Scrolled to Digital Sectors subsection", { scrollPosition });
+            const scrollPosition =
+              filterContainer.scrollTop + (subsectionTop - containerTop);
+
+            filterContainer.scrollTo({
+              top: scrollPosition,
+              behavior: "smooth",
+            });
+            console.log(
+              "✅ [MarketplacePage] Scrolled to Digital Sectors subsection",
+              { scrollPosition },
+            );
           } else {
-            console.log(`🔄 [MarketplacePage] Attempt ${attempts + 1}: Waiting for Digital Sectors subsection to render...`);
+            console.log(
+              `🔄 [MarketplacePage] Attempt ${attempts + 1}: Waiting for Digital Sectors subsection to render...`,
+            );
             setTimeout(() => attemptScroll(attempts + 1), 200);
           }
         };
-        
+
         setTimeout(() => attemptScroll(), 500);
       } else if (expandCategory === "digital-functional-streams-domains") {
         setCollapsedCategories((prev) => ({
@@ -601,12 +636,17 @@ export const MarketplacePage: React.FC<MarketplacePageProps> = ({
         }));
         setShowFilters(true);
         setHasUrlCollapsedState(true); // Mark that URL has set collapsed state
-        
+
         // Scroll to Category section after a short delay to ensure DOM is ready
         setTimeout(() => {
-          const categorySection = document.querySelector('[data-filter-section="category"]');
+          const categorySection = document.querySelector(
+            '[data-filter-section="category"]',
+          );
           if (categorySection) {
-            categorySection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            categorySection.scrollIntoView({
+              behavior: "smooth",
+              block: "start",
+            });
             console.log("✅ [MarketplacePage] Scrolled to Category section");
           }
         }, 500);
@@ -618,24 +658,24 @@ export const MarketplacePage: React.FC<MarketplacePageProps> = ({
       console.log("🏢 [MarketplacePage] Sector filter:", sector);
       // Handle comma-separated sectors
       const sectors = sector.split(",").map((s) => s.trim());
-      
+
       // Check if these are digital sector filter IDs
       const sectorMapping: Record<string, string> = {
-        "experience40": "Cross-Sector Domain (Experience4.0)",
-        "agility40": "Cross-Sector Domain (Agility4.0)",
-        "farming40": "Primary Sector (Farming4.0)",
-        "plant40": "Secondary Sector (Plant4.0)",
-        "infrastructure40": "Secondary Sector (Infrastructure4.0)",
-        "government40": "Tertiary Sector (Government4.0)",
-        "hospitality40": "Tertiary Sector (Hospitality4.0)",
-        "retail40": "Tertiary Sector (Retail4.0)",
-        "service40": "Quaternary Sector (Service4.0)",
-        "logistics40": "Quaternary Sector (Logistics4.0)",
-        "wellness40": "Quinary Sector (Wellness4.0)",
+        experience40: "Cross-Sector Domain (Experience4.0)",
+        agility40: "Cross-Sector Domain (Agility4.0)",
+        farming40: "Primary Sector (Farming4.0)",
+        plant40: "Secondary Sector (Plant4.0)",
+        infrastructure40: "Secondary Sector (Infrastructure4.0)",
+        government40: "Tertiary Sector (Government4.0)",
+        hospitality40: "Tertiary Sector (Hospitality4.0)",
+        retail40: "Tertiary Sector (Retail4.0)",
+        service40: "Quaternary Sector (Service4.0)",
+        logistics40: "Quaternary Sector (Logistics4.0)",
+        wellness40: "Quinary Sector (Wellness4.0)",
       };
-      
+
       let hasDigitalSectorFilters = false;
-      
+
       sectors.forEach((sec) => {
         if (sectorMapping[sec]) {
           // This is a digital sector filter ID
@@ -646,11 +686,13 @@ export const MarketplacePage: React.FC<MarketplacePageProps> = ({
           setSearchQuery(decodeURIComponent(sec));
         }
       });
-      
+
       // If digital sector filters are applied, automatically expand category filter section
       // and collapse other subcategories to make Digital Sectors more visible
       if (hasDigitalSectorFilters) {
-        console.log("🎯 [MarketplacePage] Digital sector filters detected, expanding category filter section");
+        console.log(
+          "🎯 [MarketplacePage] Digital sector filters detected, expanding category filter section",
+        );
         setCollapsedCategories((prev) => ({
           ...prev,
           "content-type": true, // Keep Content Type collapsed
@@ -661,7 +703,7 @@ export const MarketplacePage: React.FC<MarketplacePageProps> = ({
           "category-digital-sectors": false, // Expand Digital Sectors subcategory
           popularity: true, // Keep Popularity collapsed
         }));
-        
+
         // Also show filter sidebar on desktop when sector filters are applied
         setShowFilters(true);
       }
@@ -672,25 +714,25 @@ export const MarketplacePage: React.FC<MarketplacePageProps> = ({
       console.log("🌐 [MarketplacePage] Domain filter:", domain);
       // Handle comma-separated domains
       const domains = domain.split(",").map((d) => d.trim());
-      
+
       // Check if these are digital domain filter IDs
       const domainMapping: Record<string, string> = {
-        "channels": "Digital Channels",
-        "experience": "Digital Experience",
-        "services": "Digital Services",
-        "marketing": "Digital Marketing",
-        "workspace": "Digital Workspace",
+        channels: "Digital Channels",
+        experience: "Digital Experience",
+        services: "Digital Services",
+        marketing: "Digital Marketing",
+        workspace: "Digital Workspace",
         "core-systems": "Digital Core",
-        "gprc": "Digital GPRC",
+        gprc: "Digital GPRC",
         "back-office": "Digital Back-Office",
-        "interops": "Digital InterOps",
-        "security": "Digital Security",
-        "intelligence": "Digital Intelligence",
-        "it": "Digital IT",
+        interops: "Digital InterOps",
+        security: "Digital Security",
+        intelligence: "Digital Intelligence",
+        it: "Digital IT",
       };
-      
+
       let hasDigitalDomainFilters = false;
-      
+
       domains.forEach((dom) => {
         if (domainMapping[dom]) {
           // This is a digital domain filter ID
@@ -701,10 +743,12 @@ export const MarketplacePage: React.FC<MarketplacePageProps> = ({
           setSearchQuery(decodeURIComponent(dom));
         }
       });
-      
+
       // If digital domain filters are applied, automatically expand category filter section
       if (hasDigitalDomainFilters) {
-        console.log("🎯 [MarketplacePage] Digital domain filters detected, expanding category filter section");
+        console.log(
+          "🎯 [MarketplacePage] Digital domain filters detected, expanding category filter section",
+        );
         setCollapsedCategories((prev) => ({
           ...prev,
           "content-type": true, // Keep Content Type collapsed
@@ -715,7 +759,7 @@ export const MarketplacePage: React.FC<MarketplacePageProps> = ({
           "category-digital-sectors": true, // Keep Digital Sectors collapsed
           popularity: true, // Keep Popularity collapsed
         }));
-        
+
         // Also show filter sidebar on desktop when domain filters are applied
         setShowFilters(true);
       }
@@ -726,16 +770,16 @@ export const MarketplacePage: React.FC<MarketplacePageProps> = ({
       console.log("🌊 [MarketplacePage] Stream filter:", stream);
       // Handle comma-separated streams
       const streams = stream.split(",").map((s) => s.trim());
-      
+
       // Check if these are digital stream filter IDs
       const streamMapping: Record<string, string> = {
-        "frontend": "Digital Front-End",
-        "core": "Digital Core",
-        "enablers": "Digital Enablers",
+        frontend: "Digital Front-End",
+        core: "Digital Core",
+        enablers: "Digital Enablers",
       };
-      
+
       let hasDigitalStreamFilters = false;
-      
+
       streams.forEach((str) => {
         if (streamMapping[str]) {
           // This is a digital stream filter ID
@@ -746,10 +790,12 @@ export const MarketplacePage: React.FC<MarketplacePageProps> = ({
           setSearchQuery(decodeURIComponent(str));
         }
       });
-      
+
       // If digital stream filters are applied, automatically expand category filter section
       if (hasDigitalStreamFilters) {
-        console.log("🎯 [MarketplacePage] Digital stream filters detected, expanding category filter section");
+        console.log(
+          "🎯 [MarketplacePage] Digital stream filters detected, expanding category filter section",
+        );
         setCollapsedCategories((prev) => ({
           ...prev,
           "content-type": true, // Keep Content Type collapsed
@@ -760,7 +806,7 @@ export const MarketplacePage: React.FC<MarketplacePageProps> = ({
           "category-digital-sectors": true, // Keep Digital Sectors collapsed
           popularity: true, // Keep Popularity collapsed
         }));
-        
+
         // Also show filter sidebar on desktop when stream filters are applied
         setShowFilters(true);
       }
@@ -943,7 +989,8 @@ export const MarketplacePage: React.FC<MarketplacePageProps> = ({
 
     // Only include filters that have values (return null for empty arrays)
     return {
-      digital_perspective: digital_perspective.length > 0 ? digital_perspective[0] : null,
+      digital_perspective:
+        digital_perspective.length > 0 ? digital_perspective[0] : null,
       digital_stream: digital_stream.length > 0 ? digital_stream[0] : null,
       digital_domain: digital_domain.length > 0 ? digital_domain[0] : null,
       digital_sector: digital_sector.length > 0 ? digital_sector[0] : null,
@@ -956,6 +1003,15 @@ export const MarketplacePage: React.FC<MarketplacePageProps> = ({
   // DTMI: initial load (keyset pagination), with simple memory cache
   const loadKHInitial = useCallback(async () => {
     if (marketplaceType !== "dtmi") return;
+
+    // Skip data fetching for books tab since it has its own data source
+    if (activeSubMarketplace === "books") {
+      setItems([]);
+      setFilteredItems([]);
+      setKhFetching(false);
+      return;
+    }
+
     setKhFetching(true);
     setError(null);
     setKhCursor(null);
@@ -1373,20 +1429,22 @@ export const MarketplacePage: React.FC<MarketplacePageProps> = ({
       const initialCollapsed: Record<string, boolean> = {};
       filterConfig.forEach((category) => {
         // Collapse all sections except 'category' which should be expanded to show subcategories
-        if (category.id === 'category') {
+        if (category.id === "category") {
           initialCollapsed[category.id] = false; // Category section expanded
-          
+
           // Iterate through category options and collapse all nested subcategories
           if (category.options) {
             category.options.forEach((option) => {
               if (option.children && option.children.length > 0) {
                 // Collapse each subcategory (e.g., category-digital-perspectives)
                 initialCollapsed[`${category.id}-${option.id}`] = true;
-                
+
                 // Also collapse any third-level nested items
                 option.children.forEach((child) => {
                   if (child.children && child.children.length > 0) {
-                    initialCollapsed[`${category.id}-${option.id}-${child.id}`] = true;
+                    initialCollapsed[
+                      `${category.id}-${option.id}-${child.id}`
+                    ] = true;
                   }
                 });
               }
@@ -1969,7 +2027,9 @@ export const MarketplacePage: React.FC<MarketplacePageProps> = ({
                       ? "⚡ Signals"
                       : activeSubMarketplace === "insights"
                         ? "🔎 Insights"
-                        : "🧠 Deep Analysis"
+                        : activeSubMarketplace === "books"
+                          ? "📚 Books"
+                          : "🧠 Deep Analysis"
                     : activeSubMarketplace === "design-services"
                       ? "Design Services"
                       : activeSubMarketplace === "deploy-services-saas"
@@ -1982,7 +2042,9 @@ export const MarketplacePage: React.FC<MarketplacePageProps> = ({
                       ? "Scan emerging trends with short-form intellectual assets including blogs, commentary, and market signals."
                       : activeSubMarketplace === "insights"
                         ? "Understand concepts through structured analysis including articles, expert interviews, and case insights."
-                        : "Strategic intellectual assets including whitepapers, research reports, and prediction analysis for deep strategic thinking."
+                        : activeSubMarketplace === "books"
+                          ? "Digital transformation library with comprehensive guides and frameworks by expert authors."
+                          : "Strategic intellectual assets including whitepapers, research reports, and prediction analysis for deep strategic thinking."
                     : activeSubMarketplace === "design-services"
                       ? "Strategic design and architecture services to envision and blueprint your digital transformation."
                       : activeSubMarketplace === "deploy-services-saas"
@@ -2394,13 +2456,13 @@ export const MarketplacePage: React.FC<MarketplacePageProps> = ({
 
           {/* Main content */}
           <div className="w-full">
-            {loading ? (
+            {loading && activeSubMarketplace !== "books" ? (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
                 {[...Array(6)].map((_, idx) => (
                   <CourseCardSkeleton key={idx} />
                 ))}
               </div>
-            ) : error && !items.length ? (
+            ) : error && !items.length && activeSubMarketplace !== "books" ? (
               // Only show error if we have no items and there's an error
               <ErrorDisplay
                 message={
@@ -2411,6 +2473,11 @@ export const MarketplacePage: React.FC<MarketplacePageProps> = ({
                   `Failed to load ${marketplaceType}`
                 }
                 onRetry={retryFetch}
+              />
+            ) : activeSubMarketplace === "books" ? (
+              <BooksMarketplace
+                searchQuery={debouncedSearch}
+                activeFilters={activeFilters}
               />
             ) : filteredItems.length === 0 ? (
               <div className="text-center text-gray-600 py-8">
