@@ -2,14 +2,13 @@ import React from "react";
 import { Save, Star, Tag, Calendar, Clock, Image as ImageIcon, Upload, Plus, Loader } from "lucide-react";
 import { Category, Blog } from "../../../shared/utils/supabase";
 import { AuthorSelector } from "../AuthorSelector";
-import {
-  DIGITAL_PERSPECTIVES, DIGITAL_STREAMS, DIGITAL_SECTORS,
-  CONTENT_TYPES, FORMATS, POPULARITY_TAGS,
-} from "../../../shared/utils/filterConfig";
+import DynamicFilters from "../DynamicFilters";
 
 interface Props {
   formData: Partial<Blog>;
   categories: Category[];
+  groupedCategories: Category[];
+  selectedParentId: string;
   availableDomains: any[];
   heroPreview: string;
   isSubmitting: boolean;
@@ -17,6 +16,7 @@ interface Props {
   submitColor?: string;
   onSubmit: (e: React.FormEvent) => void;
   onChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => void;
+  onFilterChange: (name: string, value: string) => void;
   onAuthorSelect: (author: any) => void;
   onHeroChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   onOpenCategoryModal: () => void;
@@ -25,11 +25,14 @@ interface Props {
 }
 
 export function PostMetaSidebar({
-  formData, categories, availableDomains, heroPreview, isSubmitting,
+  formData, categories, groupedCategories, selectedParentId, availableDomains,
+  heroPreview, isSubmitting,
   submitLabel = "Publish", submitColor = "bg-black hover:bg-gray-800",
-  onSubmit, onChange, onAuthorSelect, onHeroChange, onOpenCategoryModal,
+  onSubmit, onChange, onFilterChange, onAuthorSelect, onHeroChange, onOpenCategoryModal,
   heroInputId = "hero-upload", showFilters = true,
 }: Props) {
+  const activeParent = groupedCategories.find((p) => p.id === selectedParentId);
+  const subcategories = activeParent?.subcategories ?? [];
   return (
     <div className="lg:col-span-4 space-y-6">
       <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm space-y-6 sticky top-[88px]">
@@ -65,11 +68,32 @@ export function PostMetaSidebar({
                 <Plus size={10} /> Quick Add
               </button>
             </div>
-            <select name="categoryId" value={formData.categoryId} onChange={onChange}
-              className="w-full px-4 py-2 bg-white border border-gray-200 rounded-lg text-sm focus:ring-1 focus:ring-black outline-none">
-              <option value="">Select Category</option>
-              {categories.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
+            {/* Step 1: parent */}
+            <select
+              name="parentCategoryId"
+              value={selectedParentId}
+              onChange={onChange}
+              className="w-full px-4 py-2 bg-white border border-gray-200 rounded-lg text-sm focus:ring-1 focus:ring-black outline-none"
+            >
+              <option value="">Select Type</option>
+              {groupedCategories.map((p) => (
+                <option key={p.id} value={p.id}>{p.name}</option>
+              ))}
             </select>
+            {/* Step 2: subcategory — only shown once a parent is picked */}
+            {selectedParentId && (
+              <select
+                name="categoryId"
+                value={formData.categoryId}
+                onChange={onChange}
+                className="w-full px-4 py-2 bg-white border border-gray-200 rounded-lg text-sm focus:ring-1 focus:ring-black outline-none"
+              >
+                <option value="">Select Subcategory</option>
+                {subcategories.map((s) => (
+                  <option key={s.id} value={s.id}>{s.name}</option>
+                ))}
+              </select>
+            )}
           </div>
 
           {/* Author */}
@@ -129,40 +153,12 @@ export function PostMetaSidebar({
             </div>
           </div>
 
-          {/* Marketplace Filters */}
+          {/* Dynamic Marketplace Filters */}
           {showFilters && (
-            <div className="border-t border-gray-100 pt-5 space-y-4">
-              <h4 className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Marketplace Filters</h4>
-
-              {[
-                { name: "content_type", label: "Content Type", options: CONTENT_TYPES },
-                { name: "digital_perspective", label: "Digital Perspective", options: DIGITAL_PERSPECTIVES },
-                { name: "digital_stream", label: "Digital Stream", options: DIGITAL_STREAMS },
-                { name: "digital_sector", label: "Digital Sector", options: DIGITAL_SECTORS },
-                { name: "format", label: "Format", options: FORMATS },
-                { name: "popularity", label: "Popularity Tag", options: POPULARITY_TAGS },
-              ].map(({ name, label, options }) => (
-                <div key={name} className="space-y-1">
-                  <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest">{label}</label>
-                  <select name={name} value={(formData as any)[name]} onChange={onChange}
-                    className="w-full px-4 py-2 bg-white border border-gray-200 rounded-lg text-sm focus:ring-1 focus:ring-black outline-none">
-                    <option value="">Select {label}</option>
-                    {options.map((o: any) => <option key={o.id} value={o.value}>{o.label}</option>)}
-                  </select>
-                </div>
-              ))}
-
-              {formData.digital_stream && availableDomains.length > 0 && (
-                <div className="space-y-1 p-3 bg-blue-50/50 rounded-lg border border-blue-100">
-                  <label className="text-[10px] font-black text-blue-600 uppercase tracking-widest">Digital Domain</label>
-                  <select name="digital_domain" value={formData.digital_domain} onChange={onChange}
-                    className="w-full px-4 py-2 bg-white border border-blue-200 rounded-lg text-sm focus:ring-1 focus:ring-blue-500 outline-none">
-                    <option value="">Select Domain</option>
-                    {availableDomains.map((d: any) => <option key={d.id} value={d.value}>{d.label}</option>)}
-                  </select>
-                </div>
-              )}
-            </div>
+            <DynamicFilters
+              formData={formData}
+              onChange={onFilterChange}
+            />
           )}
         </div>
       </div>

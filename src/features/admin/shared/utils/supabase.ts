@@ -78,6 +78,11 @@ export interface Category {
   name: string;
   slug: string;
   description?: string;
+  parent_id?: string | null;
+  filter_group?: string;
+  is_filter_enabled?: boolean;
+  filter_display_order?: number;
+  subcategories?: Category[];
 }
 
 const deleteStorageFileFromUrl = async (url: string | null | undefined) => {
@@ -740,14 +745,62 @@ export const authorService = {
 };
 
 export const categoryService = {
-  async getCategories() {
+  async getCategories(): Promise<Category[]> {
     const { data, error } = await getSupabase()
       .from("categories" as any)
       .select("*")
+      .eq("is_filter_enabled", true)
+      .order("filter_group", { ascending: true })
+      .order("filter_display_order", { ascending: true })
+      .order("name", { ascending: true });
+
+    if (error) throw error;
+    const all = data as Category[];
+    return all;
+  },
+
+  async getCategoriesGrouped(): Promise<Category[]> {
+    const all = await categoryService.getCategories();
+    const parents = all.filter((c) => !c.parent_id);
+    return parents.map((p) => ({
+      ...p,
+      subcategories: all.filter((c) => c.parent_id === p.id),
+    }));
+  },
+
+  async getCategoriesByFilterGroup(filterGroup: string): Promise<Category[]> {
+    const { data, error } = await getSupabase()
+      .from("categories" as any)
+      .select("*")
+      .eq("filter_group", filterGroup)
+      .eq("is_filter_enabled", true)
+      .order("filter_display_order", { ascending: true })
       .order("name", { ascending: true });
 
     if (error) throw error;
     return data as Category[];
+  },
+
+  async getCategoriesGroupedByFilterGroup(filterGroup: string): Promise<Category[]> {
+    const all = await categoryService.getCategoriesByFilterGroup(filterGroup);
+    const parents = all.filter((c) => !c.parent_id);
+    return parents.map((p) => ({
+      ...p,
+      subcategories: all.filter((c) => c.parent_id === p.id),
+    }));
+  },
+
+  async getFilterGroups(): Promise<string[]> {
+    const { data, error } = await getSupabase()
+      .from("categories" as any)
+      .select("filter_group")
+      .eq("is_filter_enabled", true)
+      .not("filter_group", "is", null);
+
+    if (error) throw error;
+    
+    const uniqueGroups = [...new Set(data.map((item: any) => item.filter_group))];
+    return uniqueGroups.sort();
   },
 
   async createCategory(categoryData: Partial<Category>) {

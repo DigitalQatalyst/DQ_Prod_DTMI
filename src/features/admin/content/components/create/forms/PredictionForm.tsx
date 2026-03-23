@@ -9,6 +9,8 @@ interface Props {
   predictionData: PredictionData;
   setPredictionData: React.Dispatch<React.SetStateAction<PredictionData>>;
   categories: Category[];
+  groupedCategories: Category[];
+  selectedParentId: string;
   isSubmitting: boolean;
   onChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => void;
   onSubmit: (e: React.FormEvent) => void;
@@ -28,7 +30,8 @@ const StatIcon = ({ icon }: { icon: string }) => {
 };
 
 export function PredictionForm({
-  formData, predictionData, setPredictionData, categories, isSubmitting,
+  formData, predictionData, setPredictionData, categories, groupedCategories, selectedParentId,
+  isSubmitting,
   onChange, onSubmit,
   updatePredictionVisualSummary, updatePredictionStat, updatePredictionExecutiveSummary,
   updatePredictionTimelinePhase, updatePredictionMetric, updatePredictionScenario,
@@ -283,11 +286,20 @@ export function PredictionForm({
               <div className="space-y-5 pt-4 border-t border-gray-50">
                 <div className="space-y-2">
                   <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Category</label>
-                  <select name="categoryId" value={formData.categoryId} onChange={onChange}
+                  <select name="parentCategoryId" value={selectedParentId} onChange={onChange}
                     className="w-full px-4 py-2 bg-white border border-gray-200 rounded-lg text-sm focus:ring-1 focus:ring-rose-500 outline-none">
-                    <option value="">Select Category</option>
-                    {categories.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
+                    <option value="">Select Type</option>
+                    {groupedCategories.map((p) => <option key={p.id} value={p.id}>{p.name}</option>)}
                   </select>
+                  {selectedParentId && (
+                    <select name="categoryId" value={formData.categoryId} onChange={onChange}
+                      className="w-full px-4 py-2 bg-white border border-gray-200 rounded-lg text-sm focus:ring-1 focus:ring-rose-500 outline-none">
+                      <option value="">Select Subcategory</option>
+                      {(groupedCategories.find((p) => p.id === selectedParentId)?.subcategories ?? []).map((s) => (
+                        <option key={s.id} value={s.id}>{s.name}</option>
+                      ))}
+                    </select>
+                  )}
                 </div>
                 <div className="flex items-center justify-between p-4 bg-rose-50/50 border border-rose-100 rounded-2xl">
                   <label className="text-xs font-bold text-rose-800 flex items-center gap-2">

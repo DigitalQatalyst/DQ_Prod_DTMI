@@ -22,6 +22,8 @@ export const BlogCreate: React.FC = () => {
   const sharedFormProps = {
     formData: ctx.formData,
     categories: ctx.categories,
+    groupedCategories: ctx.groupedCategories,
+    selectedParentId: ctx.selectedParentId,
     availableDomains: ctx.availableDomains,
     heroPreview: ctx.heroPreview,
     isSubmitting: ctx.isSubmitting,
@@ -30,6 +32,7 @@ export const BlogCreate: React.FC = () => {
     onHeroChange: ctx.handleHeroChange,
     onOpenCategoryModal: () => ctx.setIsCategoryModalOpen(true),
     onSubmit: ctx.handleSubmit,
+    onFilterChange: ctx.handleFilterChange,
   };
 
   return (
@@ -95,6 +98,8 @@ export const BlogCreate: React.FC = () => {
             predictionData={ctx.predictionData}
             setPredictionData={ctx.setPredictionData}
             categories={ctx.categories}
+            groupedCategories={ctx.groupedCategories}
+            selectedParentId={ctx.selectedParentId}
             isSubmitting={ctx.isSubmitting}
             onChange={ctx.handleChange}
             onSubmit={ctx.handleSubmit}

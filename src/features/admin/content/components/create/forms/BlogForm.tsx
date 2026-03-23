@@ -7,6 +7,8 @@ import { PostMetaSidebar } from "../PostMetaSidebar";
 interface Props {
   formData: Partial<Blog>;
   categories: Category[];
+  groupedCategories: Category[];
+  selectedParentId: string;
   availableDomains: any[];
   heroPreview: string;
   isSubmitting: boolean;
@@ -16,11 +18,13 @@ interface Props {
   onOpenCategoryModal: () => void;
   onSubmit: (e: React.FormEvent) => void;
   onContentChange: (html: string) => void;
+  onFilterChange: (name: string, value: string) => void;
 }
 
 export function BlogForm({
-  formData, categories, availableDomains, heroPreview, isSubmitting,
-  onChange, onAuthorSelect, onHeroChange, onOpenCategoryModal, onSubmit, onContentChange,
+  formData, categories, groupedCategories, selectedParentId, availableDomains,
+  heroPreview, isSubmitting,
+  onChange, onAuthorSelect, onHeroChange, onOpenCategoryModal, onSubmit, onContentChange, onFilterChange,
 }: Props) {
   return (
     <form id="content-form" onSubmit={onSubmit} className="grid grid-cols-1 lg:grid-cols-12 gap-10">
@@ -62,11 +66,13 @@ export function BlogForm({
       </div>
 
       <PostMetaSidebar
-        formData={formData} categories={categories} availableDomains={availableDomains}
+        formData={formData} categories={categories} groupedCategories={groupedCategories}
+        selectedParentId={selectedParentId} availableDomains={availableDomains}
         heroPreview={heroPreview} isSubmitting={isSubmitting}
         submitLabel="Publish Post"
         onSubmit={onSubmit} onChange={onChange} onAuthorSelect={onAuthorSelect}
         onHeroChange={onHeroChange} onOpenCategoryModal={onOpenCategoryModal}
+        onFilterChange={onFilterChange}
       />
     </form>
   );
