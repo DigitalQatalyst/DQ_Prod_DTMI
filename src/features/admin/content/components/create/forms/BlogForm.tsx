@@ -70,6 +70,7 @@ export function BlogForm({
         selectedParentId={selectedParentId} availableDomains={availableDomains}
         heroPreview={heroPreview} isSubmitting={isSubmitting}
         submitLabel="Publish Post"
+        showFilters={true}
         onSubmit={onSubmit} onChange={onChange} onAuthorSelect={onAuthorSelect}
         onHeroChange={onHeroChange} onOpenCategoryModal={onOpenCategoryModal}
         onFilterChange={onFilterChange}

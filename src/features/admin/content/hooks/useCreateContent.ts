@@ -155,7 +155,8 @@ export function useCreateContent() {
 
   const fetchCategories = async () => {
     try {
-      const grouped = await categoryService.getCategoriesGrouped();
+      // Use content-types filter group for blog categories
+      const grouped = await categoryService.getCategoriesGroupedByFilterGroup('content-types');
       setGroupedCategories(grouped);
       // flat list for legacy usage (e.g. quick-add selects the created category)
       const flat = grouped.flatMap((p) => [p, ...(p.subcategories || [])]);

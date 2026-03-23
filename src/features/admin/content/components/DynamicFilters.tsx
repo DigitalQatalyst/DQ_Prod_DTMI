@@ -147,14 +147,16 @@ const DynamicFilters: React.FC<DynamicFiltersProps> = ({
         'popularity-tags'
     ];
 
-    const sortedGroups = [...filterGroups].sort((a, b) => {
-        const aIndex = priorityOrder.indexOf(a.name);
-        const bIndex = priorityOrder.indexOf(b.name);
-        if (aIndex === -1 && bIndex === -1) return a.label.localeCompare(b.label);
-        if (aIndex === -1) return 1;
-        if (bIndex === -1) return -1;
-        return aIndex - bIndex;
-    });
+    const sortedGroups = [...filterGroups]
+        .filter(group => group.name !== 'content-types') // Exclude content-types since it's handled by category selection
+        .sort((a, b) => {
+            const aIndex = priorityOrder.indexOf(a.name);
+            const bIndex = priorityOrder.indexOf(b.name);
+            if (aIndex === -1 && bIndex === -1) return a.label.localeCompare(b.label);
+            if (aIndex === -1) return 1;
+            if (bIndex === -1) return -1;
+            return aIndex - bIndex;
+        });
 
     return (
         <div className={`border-t border-gray-100 pt-5 space-y-4 ${className}`}>
