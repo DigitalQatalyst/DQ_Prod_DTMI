@@ -26,13 +26,10 @@ import BlogCreate from "./features/admin/content/pages/BlogCreate";
 import BlogDetail from "./features/admin/content/pages/BlogDetail";
 import AdminSettings from "./features/admin/system/pages/Settings";
 import AuthorManagement from "./features/admin/authors/pages/AuthorManagement";
+import AuthorForm from "./features/admin/authors/pages/AuthorForm";
 import CategoryManagement from "./features/admin/categories/pages/CategoryManagement";
 import ContentSubmissions from "./features/admin/submissions/pages/ContentSubmissions";
-import JobApplications from "./features/admin/recruitment/pages/JobApplications";
-import JobPostingsManagement from "./features/admin/recruitment/pages/JobPostingsManagement";
-import JobPostingCreate from "./features/admin/recruitment/pages/JobPostingCreate";
 import Analytics from "./features/admin/overview/pages/Analytics";
-import InterviewScheduler from "./features/admin/recruitment/pages/InterviewScheduler";
 import NotificationCenter from "./features/admin/notifications/pages/NotificationCenter";
 import UserManagement from "./features/admin/system/pages/UserManagement";
 import GrowthAreasMarketplace from "./features/growth/GrowthAreasMarketplace";
@@ -70,13 +67,9 @@ import TourRequestForm from "./features/forms/TourRequestForm";
 import ExpertInterviewPage from "./features/content/ExpertInterviewPage";
 import { TermsOfServicePage } from "./features/company/TermsOfServicePage";
 import { PrivacyPolicyPage } from "./features/company/PrivacyPolicyPage";
-import CareersPage from "./features/careers/CareersPage";
-import ContactUsPage from "./features/company/ContactUsPage";
-import JobListingsPage from "./features/careers/JobListingsPage";
-import JobDetailPage from "./features/careers/JobDetailPage";
 import ProductsLandingPage from "./features/products/ProductsLandingPage";
 import PodcastDetailPage from "./features/content/PodcastDetailPage";
-import JobApplicationForm from "./features/forms/JobApplicationForm";
+import ContactUsPage from "./features/company/ContactUsPage";
 import NewsletterSignupPage from "./features/content/NewsletterSignupPage";
 import SectorLandingPage from "./features/sectors/SectorLandingPage";
 import SignalsAlertsSignupPage from "./features/content/SignalsAlertsSignupPage";
@@ -195,6 +188,14 @@ export function AppRouter() {
               element={<AuthorizedRoute allowedRoles={['admin']}><AuthorManagement /></AuthorizedRoute>}
             />
             <Route
+              path="/admin-ui/authors/new"
+              element={<AuthorizedRoute allowedRoles={['admin']}><AuthorForm /></AuthorizedRoute>}
+            />
+            <Route
+              path="/admin-ui/authors/:id/edit"
+              element={<AuthorizedRoute allowedRoles={['admin']}><AuthorForm /></AuthorizedRoute>}
+            />
+            <Route
               path="/admin-ui/categories"
               element={<AuthorizedRoute allowedRoles={['admin']}><CategoryManagement /></AuthorizedRoute>}
             />
@@ -203,24 +204,8 @@ export function AppRouter() {
               element={<AuthorizedRoute allowedRoles={['admin']}><ContentSubmissions /></AuthorizedRoute>}
             />
             <Route
-              path="/admin-ui/job-applications"
-              element={<AuthorizedRoute allowedRoles={['admin']}><JobApplications /></AuthorizedRoute>}
-            />
-            <Route
-              path="/admin-ui/job-postings"
-              element={<AuthorizedRoute allowedRoles={['admin']}><JobPostingsManagement /></AuthorizedRoute>}
-            />
-            <Route
-              path="/admin-ui/job-postings/new"
-              element={<AuthorizedRoute allowedRoles={['admin']}><JobPostingCreate /></AuthorizedRoute>}
-            />
-            <Route
               path="/admin-ui/analytics"
               element={<AuthorizedRoute allowedRoles={['admin']}><Analytics /></AuthorizedRoute>}
-            />
-            <Route
-              path="/admin-ui/interviews"
-              element={<AuthorizedRoute allowedRoles={['admin']}><InterviewScheduler /></AuthorizedRoute>}
             />
             <Route
               path="/admin-ui/notifications"
@@ -247,32 +232,20 @@ export function AppRouter() {
               path="/research-updates-signup"
               element={<ResearchUpdatesSignupPage />}
             />
-            <Route
-              path="/dtmi/signals"
-              element={<Navigate to="/signals" replace />}
-            />
-            <Route
-              path="/dtmi/insights"
-              element={<Navigate to="/insights" replace />}
-            />
-            <Route
-              path="/dtmi/deep-analysis"
-              element={<Navigate to="/research" replace />}
-            />
-            <Route path="/dtmi/6xd" element={<SixDimensionsPage />} />
-            <Route
-              path="/dtmi/contributors"
-              element={<ContributorsMarketplacePage />}
-            />
-            <Route
-              path="/dtmi/research-panel"
-              element={<ResearchPanelLandingPage />}
-            />
-            <Route
-              path="/dtmi/research-panel-application"
-              element={<ResearchPanelApplicationPage />}
-            />
-            <Route path="/dtmi/article/:slug" element={<ViewArticlePage />} />
+            <Route path="/dtmi/signals" element={<Navigate to="/signals" replace />} />
+            <Route path="/dtmi/insights" element={<Navigate to="/insights" replace />} />
+            <Route path="/dtmi/deep-analysis" element={<Navigate to="/research" replace />} />
+            <Route path="/dtmi/contributors" element={<Navigate to="/contributors" replace />} />
+            <Route path="/dtmi/6xd" element={<Navigate to="/6xd" replace />} />
+            <Route path="/dtmi/research-panel" element={<Navigate to="/research-panel" replace />} />
+            <Route path="/dtmi/research-panel-application" element={<Navigate to="/research-panel-application" replace />} />
+            <Route path="/dtmi/article/:slug" element={<Navigate to="/article/:slug" replace />} />
+            <Route path="/6xd" element={<SixDimensionsPage />} />
+            <Route path="/contributors" element={<ContributorsMarketplacePage />} />
+            <Route path="/contributors/:slug" element={<AuthorBioPage />} />
+            <Route path="/research-panel" element={<ResearchPanelLandingPage />} />
+            <Route path="/research-panel-application" element={<ResearchPanelApplicationPage />} />
+            <Route path="/article/:slug" element={<ViewArticlePage />} />
             <Route
               path="/newsletter-signup"
               element={<NewsletterSignupPage />}
@@ -292,7 +265,6 @@ export function AppRouter() {
             />
             <Route path="/blog" element={<BlogListPage />} />
             <Route path="/blog/:slug" element={<BlogPage />} />
-            <Route path="/authors/:slug" element={<AuthorBioPage />} />
             <Route path="/services" element={<ServicesPage />} />
             <Route path="/services/:slug" element={<ServiceDetailPage />} />
             <Route path="/client-testimonials" element={<ClientTestimonialsPage />} />
@@ -338,18 +310,7 @@ export function AppRouter() {
             <Route path="/podcast/:id" element={<PodcastDetailPage />} />
             <Route path="/terms-of-service" element={<TermsOfServicePage />} />
             <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
-            <Route path="/careers" element={<CareersPage />} />
             <Route path="/contact" element={<ContactUsPage />} />
-            <Route path="/jobs" element={<JobListingsPage />} />
-            <Route path="/jobs/:jobId" element={<JobDetailPage />} />
-            <Route
-              path="/jobs/:jobId/apply"
-              element={
-                <ProtectedRoute>
-                  <JobApplicationForm />
-                </ProtectedRoute>
-              }
-            />
             <Route path="/media/blog/:id" element={<BlogPage />} />
             <Route
               path="/media/:type/:id"

@@ -10,14 +10,7 @@ import {
   Edit,
   Loader,
   AlertCircle,
-  MoreVertical,
-  ChevronRight,
-  ExternalLink,
-  Camera,
   CheckCircle2,
-  X,
-  Linkedin,
-  Twitter
 } from 'lucide-react';
 import { Toast, ToastType } from '../../shared/components/Toast';
 import Modal from '../../shared/components/Modal';
@@ -29,21 +22,12 @@ const AuthorManagement: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [toast, setToast] = useState<{ message: string; type: ToastType } | null>(null);
 
-  // Selection state
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
-
-  // Modal states
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-  const [isUpsertModalOpen, setIsUpsertModalOpen] = useState(false);
   const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
-
-  // Data for modals
   const [currentAuthor, setCurrentAuthor] = useState<Partial<Author> | null>(null);
   const [authorPosts, setAuthorPosts] = useState<Blog[]>([]);
   const [loadingPosts, setLoadingPosts] = useState(false);
-  const [avatarFile, setAvatarFile] = useState<File | null>(null);
-  const [avatarPreview, setAvatarPreview] = useState<string>('');
-  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const fetchAuthors = async () => {
     setLoading(true);
@@ -63,29 +47,12 @@ const AuthorManagement: React.FC = () => {
   }, []);
 
   const handleSelectAll = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.checked) {
-      setSelectedIds(filteredAuthors.map(a => a.id));
-    } else {
-      setSelectedIds([]);
-    }
+    if (e.target.checked) setSelectedIds(filteredAuthors.map(a => a.id));
+    else setSelectedIds([]);
   };
 
   const handleSelectOne = (id: string) => {
-    setSelectedIds(prev =>
-      prev.includes(id) ? prev.filter(i => i !== id) : [...prev, id]
-    );
-  };
-
-  const openUpsertModal = (author: Author | null = null) => {
-    if (author) {
-      setCurrentAuthor(author);
-      setAvatarPreview(author.avatar || '');
-    } else {
-      setCurrentAuthor({ name: '', title: '', bio: '' });
-      setAvatarPreview('');
-    }
-    setAvatarFile(null);
-    setIsUpsertModalOpen(true);
+    setSelectedIds(prev => prev.includes(id) ? prev.filter(i => i !== id) : [...prev, id]);
   };
 
   const openDetailsModal = async (author: Author) => {
@@ -93,42 +60,13 @@ const AuthorManagement: React.FC = () => {
     setIsDetailsModalOpen(true);
     setLoadingPosts(true);
     try {
-      const posts = await blogService.getBlogs({ authorId: author.id });
+      const result = await blogService.getBlogs({ authorId: author.id });
+      const posts = Array.isArray(result) ? result : (result as any)?.data ?? [];
       setAuthorPosts(posts);
     } catch (error) {
       console.error('Error fetching author posts:', error);
     } finally {
       setLoadingPosts(false);
-    }
-  };
-
-  const handleUpsertSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!currentAuthor?.name || !currentAuthor?.title) {
-      setToast({ message: 'Name and Title are required', type: 'error' });
-      return;
-    }
-
-    setIsSubmitting(true);
-    try {
-      let avatarUrl = currentAuthor.avatar || '';
-      if (avatarFile) {
-        avatarUrl = await authorService.uploadAvatar(avatarFile);
-      }
-
-      if (currentAuthor.id) {
-        await authorService.updateAuthor(currentAuthor.id, { ...currentAuthor, avatar: avatarUrl });
-        setToast({ message: 'Author updated', type: 'success' });
-      } else {
-        await authorService.createAuthor({ ...currentAuthor, avatar: avatarUrl });
-        setToast({ message: 'Author created', type: 'success' });
-      }
-      setIsUpsertModalOpen(false);
-      fetchAuthors();
-    } catch (error: any) {
-      setToast({ message: error.message, type: 'error' });
-    } finally {
-      setIsSubmitting(false);
     }
   };
 
@@ -146,14 +84,6 @@ const AuthorManagement: React.FC = () => {
       fetchAuthors();
     } catch (error: any) {
       setToast({ message: error.message, type: 'error' });
-    }
-  };
-
-  const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      setAvatarFile(file);
-      setAvatarPreview(URL.createObjectURL(file));
     }
   };
 
@@ -188,7 +118,7 @@ const AuthorManagement: React.FC = () => {
               </button>
             )}
             <button
-              onClick={() => openUpsertModal()}
+              onClick={() => navigate('/admin-ui/authors/new')}
               className="flex items-center gap-2 px-4 py-2 bg-black text-white font-medium text-xs rounded-lg hover:bg-gray-800 transition-colors shadow-sm whitespace-nowrap"
             >
               <Plus size={16} /> Add Author
@@ -261,7 +191,7 @@ const AuthorManagement: React.FC = () => {
                         <td className="px-6 py-4 text-right">
                           <div className="flex items-center justify-end gap-1">
                             <button
-                              onClick={() => openUpsertModal(author)}
+                              onClick={() => navigate(`/admin-ui/authors/${author.id}/edit`)}
                               className="p-2 text-gray-400 hover:text-black hover:bg-white rounded-lg transition-all border border-transparent hover:border-gray-100"
                               title="Edit Profile"
                             >
@@ -358,117 +288,6 @@ const AuthorManagement: React.FC = () => {
             </div>
           </div>
         )}
-      </Modal>
-
-      {/* Upsert Modal (Create/Edit) */}
-      <Modal
-        isOpen={isUpsertModalOpen}
-        onClose={() => !isSubmitting && setIsUpsertModalOpen(false)}
-        title={currentAuthor?.id ? 'Refine Profile' : 'New Identity'}
-        footer={(
-          <div className="flex items-center justify-between w-full">
-            <button
-              onClick={() => setIsUpsertModalOpen(false)}
-              className="text-xs font-medium text-gray-400 hover:text-black"
-              disabled={isSubmitting}
-            >
-              Cancel
-            </button>
-            <button
-              onClick={handleUpsertSubmit}
-              disabled={isSubmitting}
-              className="px-6 py-2 bg-black text-white text-xs font-medium rounded-lg hover:bg-gray-800 disabled:bg-gray-200 transition-all flex items-center gap-2"
-            >
-              {isSubmitting ? <Loader className="animate-spin" size={14} /> : (currentAuthor?.id ? <CheckCircle2 size={14} /> : <Plus size={14} />)}
-              {isSubmitting ? 'Syncing...' : (currentAuthor?.id ? 'Update Profile' : 'Create Profile')}
-            </button>
-          </div>
-        )}
-      >
-        <form className="space-y-6">
-          <div className="flex items-center gap-6">
-            <div className="relative group w-20 h-20 shrink-0">
-              <div className="w-full h-full rounded-2xl bg-gray-50 border border-gray-100 overflow-hidden flex items-center justify-center">
-                {avatarPreview ? (
-                  <img src={avatarPreview} alt="Preview" className="w-full h-full object-cover" />
-                ) : (
-                  <UserIcon size={24} className="text-gray-300" />
-                )}
-              </div>
-              <input
-                type="file"
-                id="modal-avatar-upload"
-                className="hidden"
-                accept="image/*"
-                onChange={handleAvatarChange}
-              />
-              <label
-                htmlFor="modal-avatar-upload"
-                className="absolute -bottom-1 -right-1 p-1.5 bg-white border border-gray-200 rounded-full shadow-lg cursor-pointer hover:bg-gray-50 transition-all"
-              >
-                <Camera size={12} />
-              </label>
-            </div>
-            <div className="space-y-4 flex-1">
-              <div className="space-y-1">
-                <label className="text-xs text-gray-500">Full Name</label>
-                <input
-                  type="text"
-                  value={currentAuthor?.name || ''}
-                  onChange={e => setCurrentAuthor(prev => ({ ...prev, name: e.target.value }))}
-                  className="w-full px-0 py-1 bg-transparent border-b border-gray-100 focus:border-black text-sm font-semibold outline-none transition-all placeholder:text-gray-200"
-                  placeholder="e.g. Elena Vance"
-                />
-              </div>
-              <div className="space-y-1">
-                <label className="text-xs text-gray-500">Professional Title</label>
-                <input
-                  type="text"
-                  value={currentAuthor?.title || ''}
-                  onChange={e => setCurrentAuthor(prev => ({ ...prev, title: e.target.value }))}
-                  className="w-full px-0 py-1 bg-transparent border-b border-gray-100 focus:border-black text-xs font-medium outline-none transition-all placeholder:text-gray-200"
-                  placeholder="e.g. Lead Technologist"
-                />
-              </div>
-            </div>
-          </div>
-          <div className="space-y-2">
-            <label className="text-xs text-gray-500">Biography</label>
-            <textarea
-              value={currentAuthor?.bio || ''}
-              onChange={e => setCurrentAuthor(prev => ({ ...prev, bio: e.target.value }))}
-              rows={4}
-              className="w-full p-4 bg-gray-50 border border-gray-100 rounded-xl text-xs leading-relaxed focus:ring-1 focus:ring-gray-200 outline-none transition-all"
-              placeholder="Share a short story about this author's expertise..."
-            />
-          </div>
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-1">
-              <label className="text-xs text-gray-500 flex items-center gap-1.5">
-                <Linkedin size={11} /> LinkedIn URL
-              </label>
-              <input
-                type="url"
-                value={currentAuthor?.linkedIn || ''}
-                onChange={e => setCurrentAuthor(prev => ({ ...prev, linkedIn: e.target.value }))}
-                className="w-full px-3 py-2 bg-gray-50 border border-gray-100 rounded-lg text-xs focus:ring-1 focus:ring-gray-200 outline-none transition-all"
-                placeholder="https://linkedin.com/in/username"
-              />
-            </div>
-            <div className="space-y-1">
-              <label className="text-xs text-gray-500 flex items-center gap-1.5">
-                <Twitter size={11} /> X (Twitter) URL
-              </label>
-              <input
-                type="url"
-                value={currentAuthor?.twitter || ''}
-                onChange={e => setCurrentAuthor(prev => ({ ...prev, twitter: e.target.value }))}
-                className="w-full px-3 py-2 bg-gray-50 border border-gray-100 rounded-lg text-xs focus:ring-1 focus:ring-gray-200 outline-none transition-all"
-                placeholder="https://x.com/username"
-              />
-            </div>
-          </div>
-        </form>
       </Modal>
 
       {/* Delete Confirmation Modal */}

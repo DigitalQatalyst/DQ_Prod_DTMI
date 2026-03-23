@@ -21,7 +21,7 @@ export function ContributorAdvertCards() {
 
           {/* CTA Button */}
           <button
-            onClick={() => navigate("/dtmi/research-panel")}
+            onClick={() => navigate("/research-panel")}
             className="bg-white hover:bg-gray-100 text-brand-navy font-semibold py-3 px-8 rounded-lg transition-colors inline-flex items-center gap-2"
           >
             <ExternalLink size={16} />

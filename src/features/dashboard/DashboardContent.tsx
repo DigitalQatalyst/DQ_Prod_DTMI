@@ -41,7 +41,7 @@ const DashboardContent = () => {
     { label: "View Saved Items", path: "/dashboard/saved-items" },
     { label: "Manage Subscriptions", path: "/dashboard/subscriptions" },
     { label: "Edit Profile", path: "/dashboard/profile" },
-    { label: "Explore Content", path: "/dtmi" },
+    { label: "Explore Content", path: "/marketplace/dtmi" },
   ];
 
   return (
@@ -162,7 +162,7 @@ const DashboardContent = () => {
             <div
               key={item}
               className="group cursor-pointer"
-              onClick={() => navigate("/dtmi")}
+              onClick={() => navigate("/marketplace/dtmi")}
             >
               <div className="aspect-video bg-gray-200 rounded-lg mb-4 overflow-hidden">
                 <div className="w-full h-full bg-gradient-to-br from-gray-300 to-gray-400"></div>
@@ -180,7 +180,7 @@ const DashboardContent = () => {
 
         <div className="mt-6 text-center">
           <button
-            onClick={() => navigate("/dtmi")}
+            onClick={() => navigate("/marketplace/dtmi")}
             className="px-6 py-3 bg-gray-100 hover:bg-gray-200 text-gray-900 font-medium rounded-lg transition-colors"
           >
             View All Articles

@@ -1,5 +1,6 @@
-import { useNavigate } from 'react-router-dom';
-import { Linkedin } from 'lucide-react';
+import { useNavigate, Link } from 'react-router-dom';
+import { Linkedin, Clock, Calendar } from 'lucide-react';
+import { Blog } from '../../../admin/shared/utils/supabase';
 
 const XIcon = () => (
   <svg viewBox="0 0 24 24" className="w-4 h-4 fill-current" aria-hidden="true">
@@ -18,9 +19,10 @@ interface AuthorCardProps {
     website?: string;
     email?: string;
   };
+  relatedPosts?: Blog[];
 }
 
-export function AuthorCard({ author }: AuthorCardProps) {
+export function AuthorCard({ author, relatedPosts = [] }: AuthorCardProps) {
   const navigate = useNavigate();
 
   const handleAvatarClick = () => {
@@ -33,7 +35,7 @@ export function AuthorCard({ author }: AuthorCardProps) {
   };
 
   return (
-    <div className="mt-12 pt-12 border-t border-gray-200">
+    <div className="mt-6 pt-6">
       <div className="bg-gradient-to-br from-gray-50 to-white border border-gray-200 rounded-2xl p-8">
         <div className="flex flex-col md:flex-row gap-6">
           <div className="flex-shrink-0">
@@ -80,6 +82,49 @@ export function AuthorCard({ author }: AuthorCardProps) {
           </div>
         </div>
       </div>
+
+      {/* More from this author */}
+      {relatedPosts.length > 0 && (
+        <div className="mt-8">
+          <h4 className="text-lg font-semibold text-gray-900 mb-4">More from {author.name}</h4>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+            {relatedPosts.map((post) => (
+              <Link
+                key={post.id}
+                to={`/blog/${post.slug}`}
+                className="group flex flex-col bg-white border border-gray-200 rounded-xl overflow-hidden hover:shadow-md transition-shadow"
+              >
+                {post.heroImage && (
+                  <img
+                    src={post.heroImage}
+                    alt={post.title}
+                    className="w-full h-36 object-cover group-hover:opacity-90 transition-opacity"
+                  />
+                )}
+                <div className="p-4 flex flex-col flex-1">
+                  <p className="text-sm font-medium text-gray-900 line-clamp-2 mb-2 group-hover:text-primary transition-colors">
+                    {post.title}
+                  </p>
+                  <div className="mt-auto flex items-center gap-3 text-xs text-gray-500">
+                    {post.publishDate && (
+                      <span className="flex items-center gap-1">
+                        <Calendar size={11} />
+                        {new Date(post.publishDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+                      </span>
+                    )}
+                    {post.readTime && (
+                      <span className="flex items-center gap-1">
+                        <Clock size={11} />
+                        {post.readTime} min
+                      </span>
+                    )}
+                  </div>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 }

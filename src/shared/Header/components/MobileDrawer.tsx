@@ -55,7 +55,7 @@ const marketplaces = [
     description:
       "Connect with digital transformation experts, thought leaders, and industry contributors",
     icon: Users,
-    href: "/dtmi/contributors",
+    href: "/contributors",
   },
 ];
 

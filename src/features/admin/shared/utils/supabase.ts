@@ -56,11 +56,19 @@ export interface Author {
   title: string;
   avatar: string;
   bio: string;
+  bioHtml?: string;
   linkedIn?: string;
   twitter?: string;
   website?: string;
   email?: string;
   location?: string;
+  // Contributor marketplace fields
+  contributorType?: string;
+  subCategory?: string;
+  affiliation?: string;
+  expertise?: string;
+  tags?: string[];
+  worksCount?: number;
   createdAt?: string;
   updatedAt?: string;
 }
@@ -246,6 +254,7 @@ export const blogService = {
         title: row.author_title,
         avatar: row.author_avatar,
         bio: row.author_bio,
+        bioHtml: row.author_bio_html,
         linkedIn: row.author_linkedin,
         twitter: row.author_twitter,
         website: row.author_website,
@@ -519,11 +528,18 @@ export const authorService = {
       title: a.title,
       avatar: a.avatar_url,
       bio: a.bio,
+      bioHtml: a.bio_html,
       linkedIn: a.linkedin_url,
       twitter: a.twitter_url,
       website: a.website_url,
       email: a.email,
       location: a.location,
+      contributorType: a.contributor_type,
+      subCategory: a.sub_category,
+      affiliation: a.affiliation,
+      expertise: a.expertise,
+      tags: a.tags ?? [],
+      worksCount: a.works_count ?? 0,
       createdAt: a.created_at,
       updatedAt: a.updated_at,
     })) as Author[];
@@ -545,11 +561,18 @@ export const authorService = {
       title: a.title,
       avatar: a.avatar_url,
       bio: a.bio,
+      bioHtml: a.bio_html,
       linkedIn: a.linkedin_url,
       twitter: a.twitter_url,
       website: a.website_url,
       email: a.email,
       location: a.location,
+      contributorType: a.contributor_type,
+      subCategory: a.sub_category,
+      affiliation: a.affiliation,
+      expertise: a.expertise,
+      tags: a.tags ?? [],
+      worksCount: a.works_count ?? 0,
       createdAt: a.created_at,
       updatedAt: a.updated_at,
     } as Author;
@@ -562,11 +585,18 @@ export const authorService = {
       title: authorData.title,
       avatar_url: authorData.avatar,
       bio: authorData.bio,
+      bio_html: authorData.bioHtml,
       linkedin_url: authorData.linkedIn,
       twitter_url: authorData.twitter,
       website_url: authorData.website,
       email: authorData.email,
       location: authorData.location,
+      contributor_type: authorData.contributorType,
+      sub_category: authorData.subCategory,
+      affiliation: authorData.affiliation,
+      expertise: authorData.expertise,
+      tags: authorData.tags ?? [],
+      works_count: authorData.worksCount ?? 0,
       is_active: true,
     };
 
@@ -586,11 +616,18 @@ export const authorService = {
       title: a.title,
       avatar: a.avatar_url,
       bio: a.bio,
+      bioHtml: a.bio_html,
       linkedIn: a.linkedin_url,
       twitter: a.twitter_url,
       website: a.website_url,
       email: a.email,
       location: a.location,
+      contributorType: a.contributor_type,
+      subCategory: a.sub_category,
+      affiliation: a.affiliation,
+      expertise: a.expertise,
+      tags: a.tags ?? [],
+      worksCount: a.works_count ?? 0,
       createdAt: a.created_at,
       updatedAt: a.updated_at,
     } as Author;
@@ -617,11 +654,18 @@ export const authorService = {
     if (authorData.title !== undefined) payload.title = authorData.title;
     if (authorData.avatar !== undefined) payload.avatar_url = authorData.avatar;
     if (authorData.bio !== undefined) payload.bio = authorData.bio;
+    if (authorData.bioHtml !== undefined) payload.bio_html = authorData.bioHtml;
     if (authorData.linkedIn !== undefined) payload.linkedin_url = authorData.linkedIn;
     if (authorData.twitter !== undefined) payload.twitter_url = authorData.twitter;
     if (authorData.website !== undefined) payload.website_url = authorData.website;
     if (authorData.email !== undefined) payload.email = authorData.email;
     if (authorData.location !== undefined) payload.location = authorData.location;
+    if (authorData.contributorType !== undefined) payload.contributor_type = authorData.contributorType;
+    if (authorData.subCategory !== undefined) payload.sub_category = authorData.subCategory;
+    if (authorData.affiliation !== undefined) payload.affiliation = authorData.affiliation;
+    if (authorData.expertise !== undefined) payload.expertise = authorData.expertise;
+    if (authorData.tags !== undefined) payload.tags = authorData.tags;
+    if (authorData.worksCount !== undefined) payload.works_count = authorData.worksCount;
 
     const { data, error } = await (
       getSupabaseAdmin().from("authors" as any) as any
@@ -640,11 +684,18 @@ export const authorService = {
       title: a.title,
       avatar: a.avatar_url,
       bio: a.bio,
+      bioHtml: a.bio_html,
       linkedIn: a.linkedin_url,
       twitter: a.twitter_url,
       website: a.website_url,
       email: a.email,
       location: a.location,
+      contributorType: a.contributor_type,
+      subCategory: a.sub_category,
+      affiliation: a.affiliation,
+      expertise: a.expertise,
+      tags: a.tags ?? [],
+      worksCount: a.works_count ?? 0,
       createdAt: a.created_at,
       updatedAt: a.updated_at,
     } as Author;

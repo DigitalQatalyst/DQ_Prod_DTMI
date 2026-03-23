@@ -39,7 +39,7 @@ export const BlogContent: React.FC<BlogContentProps> = ({ blog }) => {
       />
 
       {/* Tags */}
-      <div className="mt-16 pt-8 border-t border-gray-200">
+      <div className="">
         <div className="flex flex-wrap gap-2">
           {blog.tags.map((tag, index) => (
             <span

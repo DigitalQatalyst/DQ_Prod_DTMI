@@ -484,7 +484,7 @@ const MediaList: React.FC = () => {
                     currentItem.type === 'expert-interview'
                       ? `/expert-interviews/${currentItem.slug}`
                       : currentItem.type === 'article'
-                        ? `/dtmi/article/${currentItem.slug}`
+                        ? `/article/${currentItem.slug}`
                         : `/blog/${currentItem.slug}`
                   }
                   target="_blank"

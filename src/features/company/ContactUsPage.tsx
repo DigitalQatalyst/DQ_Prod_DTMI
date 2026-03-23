@@ -188,13 +188,13 @@ const ContactUsPage: React.FC = () => {
                   </h3>
                   <div className="space-y-2">
                     <a
-                      href="/dtmi/research-panel"
+                      href="/research-panel"
                       className="block text-brand-navy hover:text-brand-navy/80 transition-colors"
                     >
                       Join Research Panel
                     </a>
                     <a
-                      href="/dtmi/contributors"
+                      href="/contributors"
                       className="block text-brand-navy hover:text-brand-navy/80 transition-colors"
                     >
                       Become a Contributor

@@ -17,7 +17,7 @@ interface ContentItem {
 
 const categories = [
   { name: "Latest Insights", path: "/marketplace/dtmi" },
-  { name: "6XD", path: "/dtmi/6xd" },
+  { name: "6XD", path: "/6xd" },
   { name: "Digital Streams", path: "/marketplace/dtmi?tab=streams" },
   { name: "Digital Domains", path: "/marketplace/dtmi?tab=domains" },
   { name: "Digital Sectors", path: "/marketplace/dtmi?tab=sectors" },
