@@ -44,8 +44,9 @@ export function AuthorBioPage() {
         setAuthor(found);
         setOtherAuthors(allAuthors.filter((a) => a.id !== found.id));
         try {
-          const allBlogs = await blogService.getBlogs();
-          setBlogs(Array.isArray(allBlogs) ? allBlogs.filter((b) => b.authorId === found.id) : []);
+          const result = await blogService.getBlogs({ authorId: found.id });
+          const posts = Array.isArray(result) ? result : result.data || [];
+          setBlogs(posts);
         } catch { setBlogs([]); }
       } catch (err) {
         console.error("Failed to load author", err);
