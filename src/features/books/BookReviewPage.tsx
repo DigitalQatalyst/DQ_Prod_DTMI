@@ -1,9 +1,474 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { Header } from "../../shared/Header/Header";
 import { Footer } from "../../shared/Footer/Footer";
-import { featuredBooks } from "../../utils/mockBookData";
+import { featuredBooks, frontierBooks } from "../../utils/mockBookData";
 import { ArrowLeft, Star, Calendar, User, BookOpen, Clock } from "lucide-react";
 import { useState, useEffect } from "react";
+// Removed import - using inline content instead
+
+// Review content function
+const getReviewContent = (bookId: string) => {
+  switch (bookId) {
+    case "6xd-six-digital-perspectives":
+      return {
+        title: "Book Review: 6xD: The Six Digital Perspectives",
+        content: (
+          <div>
+            <p className="text-xl text-gray-700 leading-relaxed mb-8 font-medium">
+              In <em>6xD: The Six Digital Perspectives</em>, Dr. Stephane Niango
+              presents a provocative and ambitious blueprint for the evolution
+              of traditional businesses into Digital Cognitive Organizations
+              (DCOs). His thesis challenges the conventional wisdom that
+              technology is the main barrier to successful digital
+              transformation.
+            </p>
+
+            <p className="mb-6">
+              The book is grounded in a powerful central idea: digital
+              transformation is no longer about isolated projects but should be
+              viewed as a continuous, ever-adaptive discipline. Niango proposes
+              that organizations shift from reactive to intelligent,
+              self-sensing operations, positioning AI not just as a tool but as
+              the core of an organization's decision-making engine.
+            </p>
+
+            <div className="bg-gray-50 rounded-lg p-6 my-8">
+              <h3 className="text-lg font-semibold text-gray-900 mb-4">
+                The 6xD Framework
+              </h3>
+              <ul className="space-y-3">
+                <li>
+                  <strong>From Strategy to Cognitive Architecture:</strong>{" "}
+                  Niango critiques static roadmaps and calls for a new
+                  approach—one that allows organizations to continuously sense,
+                  reason, and adapt in real-time.
+                </li>
+                <li>
+                  <strong>The Cognitive Gap:</strong> He highlights the
+                  disconnect between digital investment and the ability to
+                  leverage AI effectively, urging businesses to build systems
+                  that bridge this gap.
+                </li>
+                <li>
+                  <strong>Continuous Intelligence:</strong> The author
+                  challenges the conventional view of transformation projects as
+                  discrete phases and advocates for the establishment of a
+                  continuous intelligence framework across the enterprise.
+                </li>
+                <li>
+                  <strong>Human-AI Synergy:</strong> Niango's vision of the
+                  future is one where AI leads the way in operational
+                  decision-making, with humans providing the cognitive oversight
+                  necessary for complex tasks.
+                </li>
+              </ul>
+            </div>
+
+            <blockquote className="border-l-4 border-orange-500 pl-6 py-4 my-8 bg-orange-50 rounded-r-lg">
+              <p className="text-lg italic text-gray-800 mb-2">
+                "Rethink your business model by shifting from a linear value
+                chain to a dynamic value network."
+              </p>
+              <cite className="text-sm text-gray-600">
+                — Dr. Stephane Niango, 6xD: The Six Digital Perspectives
+              </cite>
+            </blockquote>
+
+            <p className="mb-8">
+              Ultimately, <em>6xD</em> succeeds in reframing the conversation
+              around digital transformation. It goes beyond the buzzwords and
+              offers a nuanced, thoughtful guide for organizations seeking to
+              evolve in a world that is increasingly driven by AI and continuous
+              change.
+            </p>
+          </div>
+        ),
+      };
+
+    case "transform-14-behaviours":
+      return {
+        title:
+          "Book Review: Transform! The 14 Behaviours Driving Successful Digital Transformation in the Age of Gen AI",
+        content: (
+          <div>
+            <p className="text-xl text-gray-700 leading-relaxed mb-8 font-medium">
+              In an era where artificial intelligence dominates headlines and
+              boardroom discussions,{" "}
+              <em>
+                Transform! The 14 Behaviours Driving Successful Digital
+                Transformation in the Age of Gen AI
+              </em>{" "}
+              by Ian Murrin, Rajesh Jethwam, and Mike Wright offers a
+              refreshingly human-centric perspective.
+            </p>
+
+            <p className="mb-6">
+              The book's central thesis is both simple and profound: successful
+              digital transformation requires fundamental changes in how people
+              think, act, and collaborate within organizations. Rather than
+              focusing on the latest AI tools or platforms, the authors identify
+              14 core behaviors that distinguish thriving digital organizations
+              from those that struggle with change.
+            </p>
+
+            <div className="bg-gray-50 rounded-lg p-6 my-8">
+              <h3 className="text-lg font-semibold text-gray-900 mb-4">
+                The 14 Core Behaviors
+              </h3>
+              <p className="text-gray-700 mb-4">
+                The authors organize their behavioral framework around four key
+                pillars:
+              </p>
+              <ul className="space-y-2 text-gray-700">
+                <li>
+                  <strong>Mindset Behaviors:</strong> Embracing uncertainty,
+                  continuous learning, and customer obsession
+                </li>
+                <li>
+                  <strong>Leadership Behaviors:</strong> Empowering teams,
+                  fostering psychological safety, and leading by example
+                </li>
+                <li>
+                  <strong>Collaboration Behaviors:</strong> Breaking down silos,
+                  sharing knowledge, and co-creating solutions
+                </li>
+                <li>
+                  <strong>Innovation Behaviors:</strong> Experimenting rapidly,
+                  failing fast, and scaling successes
+                </li>
+              </ul>
+            </div>
+
+            <blockquote className="border-l-4 border-orange-500 pl-6 py-4 my-8 bg-orange-50 rounded-r-lg">
+              <p className="text-lg italic text-gray-800 mb-2">
+                "In the age of Gen AI, the organizations that will thrive are
+                not those with the best technology, but those with the most
+                adaptive behaviors."
+              </p>
+              <cite className="text-sm text-gray-600">
+                — Transform! The 14 Behaviours
+              </cite>
+            </blockquote>
+
+            <p className="mb-8">
+              <em>Transform!</em> succeeds in making the complex topic of
+              organizational change accessible and actionable. For leaders
+              navigating the challenges of digital transformation in an
+              AI-driven world, this book offers a practical roadmap for creating
+              lasting organizational change.
+            </p>
+          </div>
+        ),
+      };
+
+    case "hbr-10-must-reads-digital":
+      return {
+        title:
+          "Book Review: HBR's 10 Must Reads on Leading Digital Transformation (Updated and Expanded)",
+        content: (
+          <div>
+            <p className="text-xl text-gray-700 leading-relaxed mb-8 font-medium">
+              Harvard Business Review's updated collection on digital
+              transformation arrives at a critical juncture. As organizations
+              grapple with the implications of generative AI and accelerating
+              technological change, this expanded edition provides a curated
+              selection of the most influential thinking on digital leadership
+              from the past decade.
+            </p>
+
+            <div className="bg-gray-50 rounded-lg p-6 my-8">
+              <h3 className="text-lg font-semibold text-gray-900 mb-4">
+                Key Strategic Frameworks
+              </h3>
+              <ul className="space-y-3">
+                <li>
+                  <strong>Discovery-Driven Transformation:</strong> A
+                  methodology for navigating uncertainty in digital initiatives
+                  by treating transformation as a series of strategic
+                  experiments.
+                </li>
+                <li>
+                  <strong>The Digital Matrix:</strong> A framework for
+                  understanding how digital technologies create value through
+                  network effects, data insights, and platform dynamics.
+                </li>
+                <li>
+                  <strong>AI Readiness Assessment:</strong> Tools for evaluating
+                  organizational capability to adopt and scale artificial
+                  intelligence initiatives.
+                </li>
+              </ul>
+            </div>
+
+            <blockquote className="border-l-4 border-orange-500 pl-6 py-4 my-8 bg-orange-50 rounded-r-lg">
+              <p className="text-lg italic text-gray-800 mb-2">
+                "Digital transformation is not about technology—it's about
+                strategy. And strategy in the digital age requires a
+                fundamentally different approach to creating and capturing
+                value."
+              </p>
+              <cite className="text-sm text-gray-600">
+                — HBR's 10 Must Reads on Leading Digital Transformation
+              </cite>
+            </blockquote>
+
+            <p className="mb-8">
+              For executives seeking a comprehensive foundation in digital
+              transformation strategy, this updated collection remains an
+              essential resource. The new material on AI and reskilling makes it
+              particularly relevant for leaders navigating the current wave of
+              technological disruption.
+            </p>
+          </div>
+        ),
+      };
+
+    case "governing-the-machine":
+      return {
+        title:
+          "Book Review: Governing the Machine: How to Navigate the Risks of AI and Unlock Its True Potential",
+        content: (
+          <div>
+            <p className="text-xl text-gray-700 leading-relaxed mb-8 font-medium">
+              As artificial intelligence becomes increasingly integrated into
+              business operations and societal infrastructure,{" "}
+              <em>Governing the Machine</em> by Ray Eitel-Porter, Dr. Paul
+              Dongha, and Miriam Vogel arrives as a timely and essential guide.
+            </p>
+
+            <div className="bg-gray-50 rounded-lg p-6 my-8">
+              <h3 className="text-lg font-semibold text-gray-900 mb-4">
+                The AI Governance Framework
+              </h3>
+              <ul className="space-y-3">
+                <li>
+                  <strong>Risk Assessment and Mitigation:</strong> Systematic
+                  approaches to identifying and addressing AI-related risks
+                  across different use cases and industries.
+                </li>
+                <li>
+                  <strong>Regulatory Compliance:</strong> Practical guidance for
+                  navigating emerging regulations like the EU AI Act, with
+                  frameworks adaptable to different jurisdictions.
+                </li>
+                <li>
+                  <strong>Ethical AI Implementation:</strong> Tools for
+                  embedding ethical considerations into AI development and
+                  deployment processes.
+                </li>
+              </ul>
+            </div>
+
+            <blockquote className="border-l-4 border-orange-500 pl-6 py-4 my-8 bg-orange-50 rounded-r-lg">
+              <p className="text-lg italic text-gray-800 mb-2">
+                "The question is not whether AI will transform our world, but
+                whether we will govern that transformation wisely."
+              </p>
+              <cite className="text-sm text-gray-600">
+                — Governing the Machine
+              </cite>
+            </blockquote>
+
+            <p className="mb-8">
+              <em>Governing the Machine</em> succeeds in making the complex
+              topic of AI governance accessible to business leaders,
+              policymakers, and technologists alike. For organizations serious
+              about unlocking AI's potential while managing its risks, this book
+              is an indispensable resource.
+            </p>
+          </div>
+        ),
+      };
+
+    case "digital-transformation-roadmap-rogers":
+      return {
+        title:
+          "Book Review: The Digital Transformation Roadmap: Rebuild Your Organization for Continuous Change",
+        content: (
+          <div>
+            <p className="text-xl text-gray-700 leading-relaxed mb-8 font-medium">
+              David L. Rogers returns with a follow-up to his influential{" "}
+              <em>Digital Transformation Playbook</em>, and{" "}
+              <em>The Digital Transformation Roadmap</em> represents a
+              significant evolution in his thinking about building organizations
+              capable of continuous adaptation.
+            </p>
+
+            <div className="bg-gray-50 rounded-lg p-6 my-8">
+              <h3 className="text-lg font-semibold text-gray-900 mb-4">
+                The Continuous Transformation Model
+              </h3>
+              <ul className="space-y-3">
+                <li>
+                  <strong>Sensing Systems:</strong> Organizational capabilities
+                  for detecting weak signals of change in technology, customer
+                  behavior, and competitive landscapes.
+                </li>
+                <li>
+                  <strong>Adaptive Structures:</strong> Flexible organizational
+                  designs that can rapidly reconfigure in response to new
+                  opportunities and threats.
+                </li>
+                <li>
+                  <strong>Learning Loops:</strong> Systematic approaches to
+                  experimentation, learning, and scaling that accelerate
+                  organizational adaptation.
+                </li>
+              </ul>
+            </div>
+
+            <blockquote className="border-l-4 border-orange-500 pl-6 py-4 my-8 bg-orange-50 rounded-r-lg">
+              <p className="text-lg italic text-gray-800 mb-2">
+                "The goal is not to complete your digital transformation, but to
+                build an organization that can transform continuously."
+              </p>
+              <cite className="text-sm text-gray-600">
+                — David L. Rogers, The Digital Transformation Roadmap
+              </cite>
+            </blockquote>
+
+            <p className="mb-8">
+              <em>The Digital Transformation Roadmap</em> represents a mature
+              and sophisticated approach to organizational change in the digital
+              age. For leaders who recognize that digital transformation is not
+              a destination but a journey, this book provides an essential
+              roadmap.
+            </p>
+          </div>
+        ),
+      };
+
+    case "digital-resilience-cybersecurity":
+      return {
+        title:
+          "Book Review: Digital Resilience, Cybersecurity and Supply Chains",
+        content: (
+          <div>
+            <p className="text-xl text-gray-700 leading-relaxed mb-8 font-medium">
+              In an interconnected world where supply chain disruptions can
+              cascade across global markets within hours, Tarnveer Singh's{" "}
+              <em>Digital Resilience, Cybersecurity and Supply Chains</em>{" "}
+              addresses one of the most critical challenges facing modern
+              organizations.
+            </p>
+
+            <div className="bg-gray-50 rounded-lg p-6 my-8">
+              <h3 className="text-lg font-semibold text-gray-900 mb-4">
+                The Digital Resilience Framework
+              </h3>
+              <ul className="space-y-3">
+                <li>
+                  <strong>Threat Landscape Analysis:</strong> Comprehensive
+                  assessment of cyber threats specific to digitally transformed
+                  supply chains.
+                </li>
+                <li>
+                  <strong>Resilience Architecture:</strong> Design principles
+                  for building systems that can maintain operations under attack
+                  or disruption.
+                </li>
+                <li>
+                  <strong>Supply Chain Security:</strong> Strategies for
+                  securing complex, multi-tier supply networks in digital
+                  environments.
+                </li>
+              </ul>
+            </div>
+
+            <blockquote className="border-l-4 border-orange-500 pl-6 py-4 my-8 bg-orange-50 rounded-r-lg">
+              <p className="text-lg italic text-gray-800 mb-2">
+                "In the digital age, supply chain resilience is not just about
+                having backup suppliers—it's about building adaptive systems
+                that can sense, respond, and recover from disruptions in
+                real-time."
+              </p>
+              <cite className="text-sm text-gray-600">
+                — Tarnveer Singh, Digital Resilience, Cybersecurity and Supply
+                Chains
+              </cite>
+            </blockquote>
+
+            <p className="mb-8">
+              <em>Digital Resilience, Cybersecurity and Supply Chains</em> fills
+              an important gap in the digital transformation literature by
+              addressing the critical intersection of security and operational
+              resilience.
+            </p>
+          </div>
+        ),
+      };
+
+    case "designed-for-digital":
+      return {
+        title:
+          "Book Review: Designed for Digital: How to Architect Your Business for Sustained Success",
+        content: (
+          <div>
+            <p className="text-xl text-gray-700 leading-relaxed mb-8 font-medium">
+              <em>Designed for Digital</em> by Jeanne W. Ross, Martin Mocker,
+              and Cynthia Beath stands as one of the most rigorous and
+              research-backed guides to digital transformation available today.
+            </p>
+
+            <div className="bg-gray-50 rounded-lg p-6 my-8">
+              <h3 className="text-lg font-semibold text-gray-900 mb-4">
+                The Digital Business Architecture
+              </h3>
+              <ul className="space-y-3">
+                <li>
+                  <strong>Operational Backbone:</strong> Standardized,
+                  integrated systems that enable efficient, reliable operations
+                  at scale.
+                </li>
+                <li>
+                  <strong>Digital Platform:</strong> Shared technology services
+                  and data that enable rapid development and deployment of new
+                  digital offerings.
+                </li>
+                <li>
+                  <strong>External Platform:</strong> Ecosystem connections that
+                  extend the organization's capabilities through partnerships
+                  and third-party integrations.
+                </li>
+              </ul>
+            </div>
+
+            <blockquote className="border-l-4 border-orange-500 pl-6 py-4 my-8 bg-orange-50 rounded-r-lg">
+              <p className="text-lg italic text-gray-800 mb-2">
+                "Companies that are designed for digital don't just use
+                technology better—they are architected differently."
+              </p>
+              <cite className="text-sm text-gray-600">
+                — Designed for Digital
+              </cite>
+            </blockquote>
+
+            <p className="mb-8">
+              <em>Designed for Digital</em> represents the gold standard for
+              digital transformation guidance. Its combination of rigorous
+              research, practical frameworks, and real-world case studies makes
+              it an indispensable resource for leaders serious about building
+              digitally native organizations.
+            </p>
+          </div>
+        ),
+      };
+
+    default:
+      return {
+        title: `Book Review: ${bookId}`,
+        content: (
+          <div>
+            <p className="text-xl text-gray-700 leading-relaxed mb-8 font-medium">
+              This book review is currently being developed. Please check back
+              soon for our comprehensive NYT-style analysis of this important
+              digital transformation resource.
+            </p>
+          </div>
+        ),
+      };
+  }
+};
 
 const BookReviewPage = () => {
   const { bookId } = useParams();
@@ -14,8 +479,13 @@ const BookReviewPage = () => {
     setIsLoaded(true);
   }, []);
 
-  // Find the book by ID
-  const book = featuredBooks.find((b) => b.id === bookId);
+  // Find the book by ID from both featured and frontier books
+  const book = [...featuredBooks, ...frontierBooks].find(
+    (b) => b.id === bookId,
+  );
+
+  // Get the review content for this book
+  const reviewContent = book ? getReviewContent(book.id) : null;
 
   if (!book) {
     return (
@@ -138,7 +608,7 @@ const BookReviewPage = () => {
                   {/* Review Header */}
                   <div className="not-prose mb-8">
                     <h1 className="text-4xl font-bold font-display text-gray-900 mb-4">
-                      Book Review: {book.title}
+                      {reviewContent?.title || `Book Review: ${book.title}`}
                     </h1>
                     <div className="flex items-center gap-4 text-sm text-gray-600 mb-6">
                       <div className="flex items-center gap-2">
@@ -147,122 +617,19 @@ const BookReviewPage = () => {
                       </div>
                       <div className="flex items-center gap-2">
                         <Calendar className="w-4 h-4" />
-                        <span>March 23, 2026</span>
+                        <span>March 24, 2026</span>
                       </div>
                     </div>
                   </div>
 
                   {/* Review Content */}
-                  <p className="text-xl text-gray-700 leading-relaxed mb-8 font-medium">
-                    In <em>6xD: The Six Digital Perspectives</em>, Dr. Stephane
-                    Niango presents a provocative and ambitious blueprint for
-                    the evolution of traditional businesses into Digital
-                    Cognitive Organizations (DCOs). His thesis challenges the
-                    conventional wisdom that technology is the main barrier to
-                    successful digital transformation. Instead, Niango argues
-                    that the real issue lies within an "architectural deficit"—a
-                    failure to create the right structures to scale artificial
-                    intelligence and break down data silos.
-                  </p>
-
-                  <p className="mb-6">
-                    The book is grounded in a powerful central idea: digital
-                    transformation is no longer about isolated projects but
-                    should be viewed as a continuous, ever-adaptive discipline.
-                    Niango proposes that organizations shift from reactive to
-                    intelligent, self-sensing operations, positioning AI not
-                    just as a tool but as the core of an organization's
-                    decision-making engine. This shift, he asserts, will
-                    fundamentally change how businesses interact with
-                    technology, employees, and customers.
-                  </p>
-
-                  <p className="mb-6">
-                    Niango's framework, The Six Digital Perspectives (6xD),
-                    serves as a guiding principle for achieving this
-                    transformation. While the "D" labels are proprietary to
-                    Niango's volume, the strategic pillars he outlines are clear
-                    and far-reaching:
-                  </p>
-
-                  <div className="bg-gray-50 rounded-lg p-6 my-8">
-                    <h3 className="text-lg font-semibold text-gray-900 mb-4">
-                      The 6xD Framework
-                    </h3>
-                    <ul className="space-y-3">
-                      <li>
-                        <strong>
-                          From Strategy to Cognitive Architecture:
-                        </strong>{" "}
-                        Niango critiques static roadmaps and calls for a new
-                        approach—one that allows organizations to continuously
-                        sense, reason, and adapt in real-time.
-                      </li>
-                      <li>
-                        <strong>The Cognitive Gap:</strong> He highlights the
-                        disconnect between digital investment and the ability to
-                        leverage AI effectively, urging businesses to build
-                        systems that bridge this gap.
-                      </li>
-                      <li>
-                        <strong>Continuous Intelligence:</strong> The author
-                        challenges the conventional view of transformation
-                        projects as discrete phases and advocates for the
-                        establishment of a continuous intelligence framework
-                        across the enterprise.
-                      </li>
-                      <li>
-                        <strong>Human-AI Synergy:</strong> Niango's vision of
-                        the future is one where AI leads the way in operational
-                        decision-making, with humans providing the cognitive
-                        oversight necessary for complex tasks.
-                      </li>
-                    </ul>
-                  </div>
-
-                  <p className="mb-6">
-                    Perhaps the book's most significant contribution is its
-                    examination of organizational maturity. Niango outlines four
-                    stages, from the reactive and aware phases to the adaptive
-                    and ultimately cognitive. The cognitive stage, where
-                    organizations continuously reconfigure themselves at the
-                    pace of the digital economy, is the book's ultimate goal.
-                    This ambition reflects the book's broader aim to not only
-                    provide a roadmap for businesses but also to reshape how we
-                    think about digital operations entirely.
-                  </p>
-
-                  <blockquote className="border-l-4 border-orange-500 pl-6 py-4 my-8 bg-orange-50 rounded-r-lg">
-                    <p className="text-lg italic text-gray-800 mb-2">
-                      "Rethink your business model by shifting from a linear
-                      value chain to a dynamic value network."
+                  {reviewContent?.content || (
+                    <p className="text-xl text-gray-700 leading-relaxed mb-8 font-medium">
+                      This book review is currently being developed. Please
+                      check back soon for our comprehensive NYT-style analysis
+                      of this important digital transformation resource.
                     </p>
-                    <cite className="text-sm text-gray-600">
-                      — Dr. Stephane Niango, 6xD: The Six Digital Perspectives
-                    </cite>
-                  </blockquote>
-
-                  <p className="mb-6">
-                    For all its ambition, <em>6xD</em> can at times feel dense
-                    and academic. The theoretical foundations of DCOs are
-                    well-explained, but the practical applications of these
-                    ideas may not always be immediately apparent to readers
-                    without a background in digital strategy. Nevertheless, the
-                    book presents a compelling vision for the future of business
-                    in the age of artificial intelligence.
-                  </p>
-
-                  <p className="mb-8">
-                    Ultimately, <em>6xD</em> succeeds in reframing the
-                    conversation around digital transformation. It goes beyond
-                    the buzzwords and offers a nuanced, thoughtful guide for
-                    organizations seeking to evolve in a world that is
-                    increasingly driven by AI and continuous change. For those
-                    looking to push the boundaries of what's possible in digital
-                    transformation, Niango's book offers a bold,
-                    thought-provoking vision that is sure to spark conversation
-                    in boardrooms and tech hubs alike.
-                  </p>
+                  )}
 
                   {/* Rating Section */}
                   <div className="not-prose bg-white border rounded-lg p-6 my-8">
