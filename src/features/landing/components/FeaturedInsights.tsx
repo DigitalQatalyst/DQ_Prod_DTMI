@@ -56,20 +56,8 @@ export function FeaturedInsights() {
   const fetchArticles = async () => {
     try {
       setLoading(true);
-      console.log("🔄 [Latest Perspectives] Starting to fetch articles...");
-
       // Fetch all knowledge hub items (same as admin-ui)
       const allItems = await getKnowledgeHubItems();
-
-      console.log(
-        "📊 [Latest Perspectives] Total items fetched:",
-        allItems.length,
-      );
-      console.log(
-        "🔍 [Latest Perspectives] Item types:",
-        allItems.map((item: any) => item.mediaType)
-      );
-
       // Filter for all recent content items (not just featured blogs) and sort by date (newest first)
       const articlesData = allItems
         .filter((item: any) => ["Blog", "Article", "News", "Guide", "Case Study", "Expert Interview", "Prediction Analysis", "Video", "Podcast"].includes(item.mediaType))
@@ -78,22 +66,11 @@ export function FeaturedInsights() {
           const dateB = new Date(b.date || b.publishedAt || b.publishDate || 0).getTime();
           return dateB - dateA; // Descending order (newest first)
         });
-
-      console.log(
-        "✅ [Latest Perspectives] Recent content items count:",
-        articlesData.length,
-      );
-
       if (articlesData && articlesData.length > 0) {
         // Map knowledge hub items to component format (take latest 5)
         const mappedArticles = articlesData
           .slice(0, 5)
           .map((article: any, index: number) => {
-            console.log(
-              `📰 [Latest Perspectives] Mapping article ${index + 1}:`,
-              article.title,
-            );
-            
             // Enhanced mapping logic specifically for featured blogs
             const mappedArticle = {
               id: article.id,
@@ -131,21 +108,10 @@ export function FeaturedInsights() {
                 `/images/Article 0${(index % 3) + 1}_hero image.png`,
               featured: index === 0,
             };
-            
-            console.log(
-              `✅ [Latest Perspectives] Mapped:`,
-              mappedArticle.title,
-              "→",
-              mappedArticle.image,
-            );
-            
             return mappedArticle;
           });
-
-        console.log("🎯 [Latest Perspectives] Final mapped articles:", mappedArticles.length);
         setArticles(mappedArticles);
       } else {
-        console.log("⚠️ [Latest Perspectives] No articles found, using fallback data");
         useFallbackData();
       }
     } catch (error) {
@@ -157,8 +123,6 @@ export function FeaturedInsights() {
   };
 
   const useFallbackData = () => {
-    console.log("🔄 [Latest Perspectives] Using fallback data for recent content items");
-    
     // Fallback data for recent content items with realistic dates and content
     const fallbackArticles = [
       {

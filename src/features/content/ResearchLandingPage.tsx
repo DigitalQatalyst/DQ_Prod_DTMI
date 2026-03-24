@@ -37,9 +37,6 @@ const ResearchLandingPage = () => {
     company: string;
   }) => {
     // Here you would typically send the data to your backend
-    console.log("Lead capture data:", data);
-    console.log("Content requested:", modalState.contentTitle);
-
     // Simulate API call
     await new Promise((resolve) => setTimeout(resolve, 1000));
 
@@ -86,7 +83,7 @@ const ResearchLandingPage = () => {
               {/* Additional CTA for Research Panel */}
               <div className="mt-6 text-center">
                 <button
-                  onClick={() => navigate("/dtmi/research-panel")}
+                  onClick={() => navigate("/research-panel")}
                   className="text-blue-100 hover:text-white underline font-medium transition-colors"
                 >
                   Or join our Research Panel →

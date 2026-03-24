@@ -15,6 +15,7 @@ export default function BlogPage() {
   const { slug, id } = useParams<{ slug?: string; id?: string }>();
   const [stickyStyle, setStickyStyle] = useState<React.CSSProperties>({});
   const [blog, setBlog] = useState<Blog | null>(null);
+  const [authorPosts, setAuthorPosts] = useState<Blog[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const blogContentRef = useRef<HTMLDivElement>(null);
@@ -39,7 +40,6 @@ export default function BlogPage() {
             blogData = await blogService.getBlogById(id);
           }
         } catch (dbError) {
-          console.log("Blog not found in database, checking mockBlogs...");
           // Fallback to mockBlogs if database fetch fails
           if (slug) {
             const mockBlog = mockBlogs.find(b => b.slug === slug);
@@ -59,6 +59,17 @@ export default function BlogPage() {
         }
         
         setBlog(blogData);
+
+        // Fetch other posts by the same author
+        if (blogData.authorId) {
+          try {
+            const result = await blogService.getBlogs({ authorId: blogData.authorId, limit: 4 });
+            const posts = Array.isArray(result) ? result : result.data || [];
+            setAuthorPosts(posts.filter((p: Blog) => p.id !== blogData.id).slice(0, 3));
+          } catch {
+            setAuthorPosts([]);
+          }
+        }
       } catch (err) {
         console.error("Error fetching blog:", err);
         setError("Blog post not found");
@@ -269,6 +280,7 @@ export default function BlogPage() {
                   website: blog.author?.website || undefined,
                   email: blog.author?.email || undefined,
                 }}
+                relatedPosts={authorPosts}
               />
             </div>
 

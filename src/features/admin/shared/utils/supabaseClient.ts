@@ -28,13 +28,10 @@ export function getSupabase(): SupabaseClient<Database> {
 }
 
 export function getSupabaseAdmin(): SupabaseClient<Database> {
-  console.log("checking connection....")
   if (_adminClient) return _adminClient
   
   // For development, fall back to regular client if no service key
   if (!SUPABASE_SERVICE_KEY) {
-    console.warn('No service role key found. Using regular client for admin operations. This may cause RLS issues.')
-    console.warn('To fix RLS issues, add VITE_SUPABASE_SERVICE_ROLE_KEY to your .env.local file')
     return getSupabase()
   }
   

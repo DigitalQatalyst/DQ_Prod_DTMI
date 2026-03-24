@@ -44,23 +44,11 @@ export function PredictionAnalysis() {
       const predictionData = allItems.filter(
         (item) => item.mediaType === "Prediction Analysis",
       );
-
-      console.log(
-        "Prediction Analysis - fetched items:",
-        predictionData.length,
-      );
-
       if (predictionData && predictionData.length > 0) {
         // Map knowledge hub items to component format
         const mappedPredictions = predictionData
           .slice(0, 5)
           .map((item: any) => {
-            console.log(
-              "Prediction image URL:",
-              item.title,
-              "→",
-              item.imageUrl,
-            );
             return {
               id: item.id,
               title: item.title,

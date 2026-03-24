@@ -25,7 +25,7 @@ type NavItem = {
   label: string;
   icon: React.ReactElement;
   /** Minimum role required to see this nav item. undefined = any logged-in user */
-  minRole?: "admin" | "creator" | "HR-Admin" | "HR-viewer";
+  minRole?: "admin" | "viewer";
 };
 
 type NavSection = {
@@ -46,7 +46,7 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children, title }) => {
           path: "/admin-ui/analytics",
           label: "Analytics",
           icon: <BarChart3Icon />,
-          minRole: "HR-viewer",
+          minRole: "admin",
         },
       ],
     },
@@ -86,13 +86,13 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children, title }) => {
           path: "/admin-ui/media",
           label: "Library",
           icon: <BookOpenIcon />,
-          minRole: "creator",
+          minRole: "admin",
         },
         {
           path: "/admin-ui/authors",
           label: "Authors",
           icon: <UsersIcon />,
-          minRole: "creator",
+          minRole: "admin",
         },
         {
           path: "/admin-ui/categories",
@@ -104,7 +104,7 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children, title }) => {
           path: "/admin-ui/submissions",
           label: "Submissions",
           icon: <MessageIcon />,
-          minRole: "creator",
+          minRole: "admin",
         },
       ],
     },
@@ -115,7 +115,7 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children, title }) => {
           path: "/admin-ui/notifications",
           label: "Notifications",
           icon: <BellIcon />,
-          minRole: "creator",
+          minRole: "admin",
         },
         {
           path: "/admin-ui/users",
@@ -143,7 +143,7 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children, title }) => {
       <div className="flex">
         {/* Sidebar */}
         <aside
-          className={`bg-[#fafafa] border-r border-gray-200 w-64 fixed h-[calc(100vh-64px)] overflow-y-auto z-40 transition-transform duration-300 md:translate-x-0 ${
+          className={`bg-[#fafafa] border-r border-gray-200 w-64 fixed top-[72px] h-[calc(100vh-72px)] overflow-y-auto z-40 transition-transform duration-300 md:translate-x-0 ${
             sidebarOpen ? "translate-x-0" : "-translate-x-full"
           }`}
         >

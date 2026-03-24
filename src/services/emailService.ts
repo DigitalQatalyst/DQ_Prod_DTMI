@@ -13,10 +13,7 @@ export const sendNewsletterConfirmation = async (
   data: NewsletterConfirmationData
 ): Promise<void> => {
   try {
-    console.log('🔵 Sending email via Supabase Edge Function:', { email: data.email, source: data.source });
-    
     if (!SUPABASE_URL || !SUPABASE_ANON_KEY) {
-      console.warn('⚠️ Supabase not configured, skipping confirmation email');
       return;
     }
 
@@ -42,7 +39,6 @@ export const sendNewsletterConfirmation = async (
     }
 
     const result = await response.json();
-    console.log('✅ Newsletter confirmation email sent:', result.id);
   } catch (error) {
     console.error('❌ Error sending newsletter confirmation email:', error);
     // Don't throw error - we don't want to fail the subscription if email fails

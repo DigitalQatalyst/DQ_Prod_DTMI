@@ -117,7 +117,6 @@ export const submitServiceRequest = async (data: ServiceRequestData): Promise<vo
     }
 
     const result = await response.json();
-    console.log('Service request submitted to Airtable:', result.id);
   } catch (error) {
     console.error('Error submitting to Airtable:', error);
     throw new Error('Failed to submit service request');
@@ -159,7 +158,6 @@ export const submitConsultationRequest = async (data: ConsultationRequestData): 
     }
 
     const result = await response.json();
-    console.log('Consultation request submitted to Airtable:', result.id);
   } catch (error) {
     console.error('Error submitting consultation request to Airtable:', error);
     throw new Error('Failed to submit consultation request');
@@ -201,7 +199,6 @@ export const submitWaitlistRequest = async (data: WaitlistRequestData): Promise<
     }
 
     const result = await response.json();
-    console.log('Waitlist request submitted to Airtable:', result.id);
   } catch (error) {
     console.error('Error submitting waitlist request to Airtable:', error);
     throw new Error('Failed to submit waitlist request');
@@ -241,8 +238,6 @@ export const submitNewsletterSubscription = async (data: NewsletterSubscriptionD
     }
 
     const result = await response.json();
-    console.log('Newsletter subscription submitted to Airtable:', result.id);
-    
     // Send confirmation email (non-blocking)
     // Import dynamically to avoid circular dependencies
     import('./emailService').then(({ sendNewsletterConfirmation }) => {
@@ -299,7 +294,6 @@ export const submitTourRequest = async (data: TourRequestData): Promise<void> =>
     }
 
     const result = await response.json();
-    console.log('Tour request submitted to Airtable:', result.id);
   } catch (error) {
     console.error('Error submitting tour request to Airtable:', error);
     throw new Error('Failed to submit tour request');
@@ -340,7 +334,6 @@ export const submitWhitepaperAccess = async (data: WhitepaperAccessData): Promis
     }
 
     const result = await response.json();
-    console.log('Whitepaper access submitted to Airtable:', result.id);
   } catch (error) {
     console.error('Error submitting whitepaper access to Airtable:', error);
     throw new Error('Failed to submit whitepaper access');
@@ -353,10 +346,6 @@ export const submitAssessmentLead = async (data: AssessmentLeadData): Promise<vo
     if (!AIRTABLE_API_KEY || !AIRTABLE_BASE_ID || !AIRTABLE_NEWSLETTER_TABLE_ID) {
       throw new Error('Missing Airtable configuration for assessment lead capture. Please check environment variables.');
     }
-
-    console.log('Submitting assessment lead:', data);
-    console.log('Using table ID:', AIRTABLE_NEWSLETTER_TABLE_ID);
-
     // Try to get user's IP address
     let userIP = '';
     try {
@@ -366,7 +355,6 @@ export const submitAssessmentLead = async (data: AssessmentLeadData): Promise<vo
         userIP = ipData.ip;
       }
     } catch (ipError) {
-      console.log('Could not fetch IP address:', ipError);
     }
 
     const payload = {
@@ -382,9 +370,6 @@ export const submitAssessmentLead = async (data: AssessmentLeadData): Promise<vo
         'Confirmed': true,
       },
     };
-
-    console.log('Payload being sent:', JSON.stringify(payload, null, 2));
-
     // Use fetch API instead of Airtable SDK to avoid import issues
     const response = await fetch(`https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/${AIRTABLE_NEWSLETTER_TABLE_ID}`, {
       method: 'POST',
@@ -394,9 +379,6 @@ export const submitAssessmentLead = async (data: AssessmentLeadData): Promise<vo
       },
       body: JSON.stringify(payload),
     });
-
-    console.log('Response status:', response.status);
-
     if (!response.ok) {
       const errorText = await response.text();
       console.error('Airtable API error response:', errorText);
@@ -404,7 +386,6 @@ export const submitAssessmentLead = async (data: AssessmentLeadData): Promise<vo
     }
 
     const result = await response.json();
-    console.log('Assessment lead submitted to Airtable successfully:', result.id);
   } catch (error) {
     console.error('Error submitting assessment lead to Airtable:', error);
     throw new Error('Failed to submit assessment lead');

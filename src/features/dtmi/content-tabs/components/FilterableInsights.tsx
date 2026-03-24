@@ -117,11 +117,6 @@ export const FilterableInsights: React.FC = () => {
                 // For regular blog posts without specific keywords, keep the index-based distribution
                 // This ensures all 6 types are represented
               }
-
-              console.log(
-                `Mapping item: ${item.title} | Original type: ${item.type} | Mapped insightType: ${insightType}`,
-              );
-
               return {
                 id: item.id,
                 title: item.title,
@@ -171,7 +166,6 @@ export const FilterableInsights: React.FC = () => {
 
   const availableTypes = useMemo(() => {
     const types = [...new Set(insights.map((insight) => insight.insightType))];
-    console.log("Available insight types:", types);
     return types;
   }, [insights]);
 
@@ -205,12 +199,6 @@ export const FilterableInsights: React.FC = () => {
 
       return matchesSearch && matchesYear && matchesType && matchesCategory;
     });
-
-    console.log(
-      `Filtering: ${insights.length} total insights, ${filtered.length} after filtering`,
-    );
-    console.log(`Selected types for filtering:`, selectedTypes);
-
     return filtered;
   }, [insights, searchTerm, selectedYears, selectedTypes, selectedCategories]);
 
@@ -219,12 +207,10 @@ export const FilterableInsights: React.FC = () => {
   };
 
   const handleTypeToggle = (type: string) => {
-    console.log(`Toggling filter for type: ${type}`);
     setSelectedTypes((prev) => {
       const newSelection = prev.includes(type)
         ? prev.filter((t) => t !== type)
         : [...prev, type];
-      console.log(`New selected types:`, newSelection);
       return newSelection;
     });
   };

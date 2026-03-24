@@ -136,9 +136,6 @@ const ServiceRequestForm: React.FC = () => {
         budget: formData.budget,
         requirements: formData.requirements,
       });
-      
-      console.log('✅ Service request saved to Airtable successfully');
-      
       // Also send email notification via FormSubmit (backup notification system)
       const formSubmitData = new FormData();
       
@@ -172,9 +169,7 @@ const ServiceRequestForm: React.FC = () => {
         body: formSubmitData,
         mode: 'no-cors'
       }).then(() => {
-        console.log('📧 Email notification sent via FormSubmit');
       }).catch(error => {
-        console.log('⚠️ Email notification failed (non-critical):', error);
       });
 
       setIsSubmitted(true);

@@ -344,7 +344,6 @@ export function useMediaSearch({
           // If Supabase is not configured or errors, fall back to local
           if (usedSupabase) {
             // If a real fetch failed mid-way, surface the error
-            console.warn('Supabase fetch failed, falling back to local data', e)
           }
         }
 

@@ -14,7 +14,11 @@ if (!SUPABASE_URL || !SUPABASE_ANON_KEY) {
   );
 }
 
-export const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+export const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+  auth: {
+    lock: false,
+  },
+});
 
 /**
  * Get user by auth_user_id
@@ -45,8 +49,6 @@ export async function getUserByAuthId(authUserId: string) {
  */
 export async function getUserPermissions(authUserId: string) {
   try {
-    console.log("[Supabase] Fetching permissions for user:", authUserId);
-
     const { data, error } = await supabase.rpc("get_user_permissions", {
       p_auth_user_id: authUserId,
     });
@@ -55,8 +57,6 @@ export async function getUserPermissions(authUserId: string) {
       console.error("[Supabase] Failed to fetch permissions:", error);
       return [];
     }
-
-    console.log("[Supabase] Permissions fetched:", data?.length || 0);
     return data || [];
   } catch (error) {
     console.error("[Supabase] Error fetching permissions:", error);
