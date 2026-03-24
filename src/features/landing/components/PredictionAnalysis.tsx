@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { getKnowledgeHubItems } from "../../../utils/mockMarketplaceData";
+import { blogService } from "../../admin/shared/utils/supabase";
 
 interface Prediction {
   id: number;

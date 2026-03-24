@@ -127,7 +127,7 @@ export const FilterableSignals: React.FC = () => {
                   blog.heroImage ||
                   blog.thumbnailUrl ||
                   "/images/Article 01_hero image.png",
-                link: `/blog/${blog.slug}`,
+                link: blog.slug ? `/blog/${blog.slug}` : `/media/blog/${blog.id}`,
                 tags: blog.tags || [],
                 slug: blog.slug,
               };

@@ -71,7 +71,7 @@ export const EditorsPickDeepAnalysis: React.FC = () => {
                 item.heroImage ||
                 item.thumbnailUrl ||
                 "/images/Article 01_hero image.png",
-              link: `/blog/${item.slug}`,
+              link: item.slug ? `/blog/${item.slug}` : `/media/blog/${item.id}`,
               author: item.author?.name || "Research Team",
               editorNote:
                 item.type === "whitepaper"

@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { getKnowledgeHubItems } from "../../../utils/mockMarketplaceData";
+import { blogService } from "../../admin/shared/utils/supabase";
 
 interface Article {
   id: number;
@@ -56,134 +56,57 @@ export function FeaturedInsights() {
   const fetchArticles = async () => {
     try {
       setLoading(true);
-      // Fetch all knowledge hub items (same as admin-ui)
-      const allItems = await getKnowledgeHubItems();
-      // Filter for all recent content items (not just featured blogs) and sort by date (newest first)
-      const articlesData = allItems
-        .filter((item: any) => ["Blog", "Article", "News", "Guide", "Case Study", "Expert Interview", "Prediction Analysis", "Video", "Podcast"].includes(item.mediaType))
-        .sort((a: any, b: any) => {
-          const dateA = new Date(a.date || a.publishedAt || a.publishDate || 0).getTime();
-          const dateB = new Date(b.date || b.publishedAt || b.publishDate || 0).getTime();
-          return dateB - dateA; // Descending order (newest first)
-        });
-      if (articlesData && articlesData.length > 0) {
-        // Map knowledge hub items to component format (take latest 5)
-        const mappedArticles = articlesData
+      
+      // Fetch blogs from database
+      const result = await blogService.getBlogs({ 
+        limit: 5, 
+        published: true 
+      });
+      
+      const blogs = Array.isArray(result) ? result : result.data || [];
+
+      if (blogs && blogs.length > 0) {
+        // Map database blogs to component format
+        const mappedArticles = blogs
           .slice(0, 5)
           .map((article: any, index: number) => {
-            // Enhanced mapping logic specifically for featured blogs
-            const mappedArticle = {
+            return {
               id: article.id,
               title: article.title || "Untitled Blog",
               description:
+                article.excerpt ||
                 article.summary ||
                 article.description ||
-                article.excerpt ||
-                article.blog_excerpt ||
                 article.content?.substring(0, 150) + "..." ||
                 "Explore this featured blog on digital transformation.",
               author: 
                 article.author?.name || 
-                article.author?.fullName ||
-                article.author?.displayName ||
                 article.authorName ||
-                article.blog_author_name ||
                 "DTMI Team",
               category:
-                article.domain || 
                 article.category || 
-                article.tags?.[0] || 
-                article.businessStage ||
                 "Digital Transformation",
-              date: formatDate(article.date || article.publishedAt || article.publishDate) || "Recently published",
-              link: 
-                article.blogUrl || 
-                article.url ||
-                `/blog/${article.slug || article.id}`,
+              date: formatDate(article.publishDate) || "Recently published",
+              link: article.slug ? `/blog/${article.slug}` : `/media/blog/${article.id}`,
               image:
-                article.imageUrl ||
                 article.heroImage ||
                 article.thumbnailUrl ||
                 article.image ||
                 `/images/Article 0${(index % 3) + 1}_hero image.png`,
               featured: index === 0,
             };
-            return mappedArticle;
           });
         setArticles(mappedArticles);
       } else {
-        useFallbackData();
+        // No articles found - set empty state
+        setArticles([]);
       }
     } catch (error) {
       console.error("❌ [Latest Perspectives] Error fetching articles:", error);
-      useFallbackData();
+      setArticles([]);
     } finally {
       setLoading(false);
     }
-  };
-
-  const useFallbackData = () => {
-    // Fallback data for recent content items with realistic dates and content
-    const fallbackArticles = [
-      {
-        id: 1,
-        title: "The Rise of Cognitive Enterprises",
-        description:
-          "How AI-powered organizations are transforming business operations and decision-making processes. Featured insights on the future of work.",
-        author: "Dr. Stéphane Niango",
-        category: "Digital Economy 4.0",
-        date: formatDate(new Date(Date.now() - 2 * 24 * 60 * 60 * 1000)), // 2 days ago
-        link: "/blog/the-rise-of-cognitive-enterprises",
-        image: "/images/Article 01_hero image.png",
-        featured: true,
-      },
-      {
-        id: 2,
-        title: "Digital Transformation ROI: What Really Works",
-        description:
-          "Evidence-based strategies that deliver measurable returns on digital transformation investments. Avoiding the 73% failure rate.",
-        author: "Kaylynn Océanne",
-        category: "Digital Economy 4.0",
-        date: formatDate(new Date(Date.now() - 5 * 24 * 60 * 60 * 1000)), // 5 days ago
-        link: "/blog/digital-transformation-roi-strategies",
-        image: "/images/Article 02_hero image.png",
-      },
-      {
-        id: 3,
-        title: "AI Governance Frameworks for Enterprise Success",
-        description:
-          "Comprehensive frameworks for implementing responsible AI governance in enterprise environments. Regulatory compliance and ethical considerations.",
-        author: "Mark Kerry",
-        category: "Digital Cognitive Organisation",
-        date: formatDate(new Date(Date.now() - 8 * 24 * 60 * 60 * 1000)), // 8 days ago
-        link: "/blog/ai-governance-frameworks-enterprise",
-        image: "/images/Article 03_hero image.png",
-      },
-      {
-        id: 4,
-        title: "Building the Digital-First Organization",
-        description:
-          "Practical roadmap for transitioning from traditional to digital-first organizational structures. Culture, processes, and technology alignment.",
-        author: "Sharavi Chander",
-        category: "Digital Transformation",
-        date: formatDate(new Date(Date.now() - 12 * 24 * 60 * 60 * 1000)), // 12 days ago
-        link: "/blog/building-digital-first-organization",
-        image: "/images/Article 01_hero image.png",
-      },
-      {
-        id: 5,
-        title: "Data Sovereignty in the Cloud Era",
-        description:
-          "Navigating data sovereignty challenges in hybrid and multi-cloud environments. Compliance strategies for global enterprises.",
-        author: "Dr. Stéphane Niango",
-        category: "Digital Cognitive Organisation",
-        date: formatDate(new Date(Date.now() - 15 * 24 * 60 * 60 * 1000)), // 15 days ago
-        link: "/blog/data-sovereignty-cloud-era",
-        image: "/images/Article 02_hero image.png",
-      },
-    ];
-    
-    setArticles(fallbackArticles);
   };
 
   if (loading) {
@@ -209,6 +132,21 @@ export function FeaturedInsights() {
                 <p className="text-gray-500 text-sm">Fetching the most recent articles and insights...</p>
               </div>
             </div>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  if (articles.length === 0) {
+    return (
+      <section className="py-20 bg-gray-50">
+        <div className="container mx-auto px-4 md:px-6">
+          <div className="text-center">
+            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
+              Latest Perspectives
+            </h2>
+            <p className="text-lg text-gray-600">No articles available at the moment.</p>
           </div>
         </div>
       </section>

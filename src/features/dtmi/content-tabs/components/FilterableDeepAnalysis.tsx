@@ -164,7 +164,7 @@ export const FilterableDeepAnalysis: React.FC = () => {
                   item.heroImage ||
                   item.thumbnailUrl ||
                   "/images/Article 01_hero image.png",
-                link: `/blog/${item.slug}`,
+                link: item.slug ? `/blog/${item.slug}` : `/media/blog/${item.id}`,
                 tags: item.tags || [],
                 slug: item.slug,
                 pages: item.pages || Math.ceil((item.readTime || 25) * 2.5), // Estimate pages based on read time

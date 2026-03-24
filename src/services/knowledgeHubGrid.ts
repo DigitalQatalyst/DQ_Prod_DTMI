@@ -1,7 +1,3 @@
-import {
-  getKnowledgeHubItems,
-  mockKnowledgeHubItems,
-} from "../utils/mockMarketplaceData";
 import { getSupabase } from "../features/admin/shared/utils/supabaseClient";
 
 export type GridCursor = {
@@ -73,8 +69,33 @@ export async function listPublicMedia({
   subMarketplace,
 }: ListPublicMediaParams = {}): Promise<ListPublicMediaResult> {
   try {
-    // Use our enhanced getKnowledgeHubItems function that combines real + mock data
-    const allItems = await getKnowledgeHubItems();
+    // Fetch blogs from database instead of mock data
+    const { blogService } = await import("../features/admin/shared/utils/supabase");
+    const result = await blogService.getBlogs({ published: true });
+    const blogs = Array.isArray(result) ? result : result.data || [];
+    
+    // Convert blogs to the expected format
+    const allItems = blogs.map((blog: any) => ({
+      id: blog.id,
+      title: blog.title,
+      mediaType: "Blog",
+      category: blog.category || "Digital Transformation",
+      summary: blog.excerpt || blog.summary,
+      description: blog.excerpt || blog.summary,
+      imageUrl: blog.heroImage,
+      thumbnailUrl: blog.heroImage,
+      heroImage: blog.heroImage,
+      publishedAt: blog.publishDate,
+      publishDate: blog.publishDate,
+      date: blog.publishDate,
+      slug: blog.slug,
+      blogUrl: blog.slug ? `/blog/${blog.slug}` : `/media/blog/${blog.id}`,
+      readTime: blog.readTime,
+      author: blog.author,
+      authorName: blog.author?.name,
+      tags: blog.tags || [],
+    }));
+    
     let filteredItems = allItems;
 
     // Apply sub-marketplace filter (Knowledge Depth)

@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { getKnowledgeHubItems } from "../../../utils/mockMarketplaceData";
+import { blogService, Blog } from "../../admin/shared/utils/supabase";
 
 interface HighlightItem {
   id: number;
@@ -26,80 +26,72 @@ export function WeekHighlightsHomepage() {
   const fetchHighlights = async () => {
     try {
       setLoading(true);
-      const allItems = await getKnowledgeHubItems();
-
-      // Get one blog and one article from real data
-      const blogs = allItems.filter((item) => item.mediaType === "Blog");
-      const articles = allItems.filter((item) => item.mediaType === "Article");
-
+      
+      // Fetch recent blogs from database
+      const blogsResult = await blogService.getBlogs({ 
+        limit: 4, 
+        published: true 
+      });
+      
+      const blogs = Array.isArray(blogsResult) ? blogsResult : blogsResult.data || [];
+      
       const weekHighlights: HighlightItem[] = [];
 
-      // Add one blog (featured/main item)
-      if (blogs.length > 0) {
-        const blog = blogs[0];
-        const shortDesc =
-          blog.summary?.split(".")[0] + "." ||
-          blog.description?.split(".")[0] + "." ||
-          "Key insights on digital transformation.";
+      // Convert database blogs to highlight items
+      blogs.slice(0, 2).forEach((blog: Blog, index: number) => {
+        const shortDesc = blog.excerpt || 
+          (blog.content ? blog.content.substring(0, 150) + "..." : "Key insights on digital transformation.");
+        
         weekHighlights.push({
           id: blog.id,
           title: blog.title,
           description: shortDesc,
-          image: blog.imageUrl || "/images/Article 01_hero image.png",
-          link: blog.blogUrl || `/blog/${blog.slug}`,
-          category: "Report",
+          image: blog.heroImage || `/images/Article 0${index + 1}_hero image.png`,
+          link: blog.slug ? `/blog/${blog.slug}` : `/media/blog/${blog.id}`,
+          category: blog.category || "Article",
           type: "Blog",
-          date: blog.publishedDate || "March 9, 2026",
-          readTime: blog.readTime || "5 min read",
+          date: new Date(blog.publishDate).toLocaleDateString('en-US', { 
+            year: 'numeric', 
+            month: 'long', 
+            day: 'numeric' 
+          }),
+          readTime: blog.readTime ? `${blog.readTime} min read` : "5 min read",
         });
-      }
-
-      // Add one article
-      if (articles.length > 0) {
-        const article = articles[0];
-        const shortDesc =
-          article.summary?.split(".")[0] + "." ||
-          article.description?.split(".")[0] + "." ||
-          "Strategic analysis and insights.";
-        weekHighlights.push({
-          id: article.id,
-          title: article.title,
-          description: shortDesc,
-          image: article.imageUrl || "/images/Article 02_hero image.png",
-          link: article.blogUrl || `/blog/${article.slug}`,
-          category: "Article",
-          type: "Article",
-          date: article.publishedDate || "March 4, 2026",
-          readTime: article.readTime || "8 min read",
-        });
-      }
-
-      // Always add placeholders for Frontier Watch and Trend Alert
-      weekHighlights.push({
-        id: 9001,
-        title: "Expert Interview: Dr. Sarah Chen on AI Leadership",
-        description:
-          "An in-depth conversation with AI leadership expert Dr. Sarah Chen about navigating organizational transformation.",
-        image: "/images/Article 03_hero image.png",
-        link: "#",
-        category: "Interview",
-        type: "Frontier Watch",
-        date: "March 10, 2026",
-        readTime: "6 min read",
       });
 
-      weekHighlights.push({
-        id: 9002,
-        title: "The Psychology of Digital Adoption in Enterprise",
-        description:
-          "An analytical article on understanding the human factors that drive successful digital transformation initiatives.",
-        image: "/images/Article 01_hero image.png",
-        link: "#",
-        category: "Trend Alert",
-        type: "Trends Alert",
-        date: "March 8, 2026",
-        readTime: "4 min read",
-      });
+      // If we don't have enough blogs, add fallback content
+      if (weekHighlights.length < 2) {
+        const fallbackItems = [
+          {
+            id: 9001,
+            title: "Expert Interview: Dr. Sarah Chen on AI Leadership",
+            description:
+              "An in-depth conversation with AI leadership expert Dr. Sarah Chen about navigating organizational transformation.",
+            image: "/images/Article 03_hero image.png",
+            link: "#",
+            category: "Interview",
+            type: "Frontier Watch",
+            date: "March 10, 2026",
+            readTime: "6 min read",
+          },
+          {
+            id: 9002,
+            title: "The Psychology of Digital Adoption in Enterprise",
+            description:
+              "An analytical article on understanding the human factors that drive successful digital transformation initiatives.",
+            image: "/images/Article 01_hero image.png",
+            link: "#",
+            category: "Trend Alert",
+            type: "Trends Alert",
+            date: "March 8, 2026",
+            readTime: "4 min read",
+          },
+        ];
+        
+        // Add fallback items to reach 2 items total
+        const needed = 2 - weekHighlights.length;
+        weekHighlights.push(...fallbackItems.slice(0, needed));
+      }
 
       setHighlights(weekHighlights.slice(0, 2));
       setLoading(false);

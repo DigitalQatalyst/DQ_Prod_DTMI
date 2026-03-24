@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { getKnowledgeHubItems } from "../../../utils/mockMarketplaceData";
+import { blogService } from "../../admin/shared/utils/supabase";
 
 interface Blog {
   id: number;
@@ -27,27 +27,31 @@ export function FeaturedBlogs() {
     try {
       setLoading(true);
 
-      // Fetch all knowledge hub items (same as marketplace)
-      const allItems = await getKnowledgeHubItems();
+      // Fetch blogs from database
+      const result = await blogService.getBlogs({ 
+        limit: 5, 
+        published: true 
+      });
+      
+      const blogs = Array.isArray(result) ? result : result.data || [];
 
-      // Filter for blogs only
-      const blogs = allItems.filter((item) => item.mediaType === "Blog");
       if (blogs && blogs.length > 0) {
-        // Map knowledge hub items to component format
+        // Map database blogs to component format
         const mappedBlogs = blogs.slice(0, 5).map((blog: any) => {
           return {
             id: blog.id,
             title: blog.title,
             description:
+              blog.excerpt ||
               blog.summary ||
               blog.description ||
               "Explore this blog on digital transformation.",
-            image: blog.imageUrl || "/images/Article 01_hero image.png",
-            link: blog.blogUrl || `/blog/${blog.slug}`,
+            image: blog.heroImage || "/images/Article 01_hero image.png",
+            link: blog.slug ? `/blog/${blog.slug}` : `/media/blog/${blog.id}`,
             category: blog.category || "Digital Transformation",
-            readTime: "5 min read",
-            date: blog.publishedAt
-              ? new Date(blog.publishedAt).toLocaleDateString("en-US", {
+            readTime: blog.readTime ? `${blog.readTime} min read` : "5 min read",
+            date: blog.publishDate
+              ? new Date(blog.publishDate).toLocaleDateString("en-US", {
                   day: "numeric",
                   month: "long",
                   year: "numeric",
@@ -59,69 +63,17 @@ export function FeaturedBlogs() {
         setFeaturedBlog(mappedBlogs[0]);
         setRelatedBlogs(mappedBlogs.slice(1, 5));
       } else {
-        useFallbackData();
+        // No blogs found - set empty state
+        setFeaturedBlog(null);
+        setRelatedBlogs([]);
       }
     } catch (error) {
       console.error("Error fetching blogs:", error);
-      useFallbackData();
+      setFeaturedBlog(null);
+      setRelatedBlogs([]);
     } finally {
       setLoading(false);
     }
-  };
-
-  const useFallbackData = () => {
-    setFeaturedBlog({
-      id: 1,
-      title: "Are We Watching the Rise of Compute Nationalism?",
-      description:
-        "As nations race to control AI infrastructure and computing resources, we explore how geopolitical tensions are reshaping the global technology landscape and what it means for businesses.",
-      image: "/images/Article 01_hero image.png",
-      link: "/blog",
-      category: "Geopolitics & Technology",
-      readTime: "12 min read",
-      date: "December 15, 2025",
-    });
-
-    setRelatedBlogs([
-      {
-        id: 2,
-        title: "Is Beijing Building the World's First AI Superstate?",
-        date: "December 12, 2025",
-        image: "/images/Article 02_hero image.png",
-        link: "/blog",
-        description: "",
-        category: "",
-      },
-      {
-        id: 3,
-        title: "Europe Wants Ethical AI. But Without Compute, Can It Compete?",
-        date: "December 10, 2025",
-        image: "/images/Article 03_hero image.png",
-        link: "/blog",
-        description: "",
-        category: "",
-      },
-      {
-        id: 4,
-        title:
-          "AI Without Compute: Is the Global South Being Left Out of the New Digital Economy?",
-        date: "December 8, 2025",
-        image: "/images/Article 01_hero image.png",
-        link: "/blog",
-        description: "",
-        category: "",
-      },
-      {
-        id: 5,
-        title:
-          "The Race for Computing Power: Who Will Control the Digital Future?",
-        date: "December 5, 2025",
-        image: "/images/Article 02_hero image.png",
-        link: "/blog",
-        description: "",
-        category: "",
-      },
-    ]);
   };
 
   if (loading) {
@@ -135,7 +87,13 @@ export function FeaturedBlogs() {
   }
 
   if (!featuredBlog) {
-    return null;
+    return (
+      <section className="py-20 bg-white">
+        <div className="container mx-auto px-4 md:px-6">
+          <div className="text-center text-gray-600">No blogs available at the moment.</div>
+        </div>
+      </section>
+    );
   }
 
   return (

@@ -1299,10 +1299,11 @@ export const MarketplacePage: React.FC<MarketplacePageProps> = ({
       } catch (err) {
         console.error("Error fetching filter options:", err);
         // Use fallback filter config from marketplace config
-        setFilterConfig(config.filterCategories);
+        const fallbackCategories = config.filterCategories || [];
+        setFilterConfig(fallbackCategories);
         // Initialize empty filters based on the configuration
         const initialFilters: Record<string, string[]> = {};
-        config.filterCategories.forEach((config) => {
+        fallbackCategories.forEach((config) => {
           initialFilters[config.id] = [];
         });
         setFilters(initialFilters);

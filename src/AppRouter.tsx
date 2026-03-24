@@ -41,7 +41,6 @@ import InsightsLandingPage from "./features/content/InsightsLandingPage";
 import ResearchLandingPage from "./features/content/ResearchLandingPage";
 import ContributorsMarketplacePage from "./features/dtmi/contributors/ContributorsMarketplacePage";
 import ViewArticlePage from "./features/dtmi/articles/ViewArticlePage";
-import { SixDimensionsPage } from "./features/dtmi/six-dimensions/SixDimensionsPage";
 import ResearchReportPage from "./features/content/ResearchReportPage";
 import ResearchReportDetailPage from "./features/content/ResearchReportDetailPage";
 import WhitepaperDetailPage from "./features/content/WhitepaperDetailPage";
@@ -236,11 +235,9 @@ export function AppRouter() {
             <Route path="/dtmi/insights" element={<Navigate to="/insights" replace />} />
             <Route path="/dtmi/deep-analysis" element={<Navigate to="/research" replace />} />
             <Route path="/dtmi/contributors" element={<Navigate to="/contributors" replace />} />
-            <Route path="/dtmi/6xd" element={<Navigate to="/6xd" replace />} />
             <Route path="/dtmi/research-panel" element={<Navigate to="/research-panel" replace />} />
             <Route path="/dtmi/research-panel-application" element={<Navigate to="/research-panel-application" replace />} />
             <Route path="/dtmi/article/:slug" element={<Navigate to="/article/:slug" replace />} />
-            <Route path="/6xd" element={<SixDimensionsPage />} />
             <Route path="/contributors" element={<ContributorsMarketplacePage />} />
             <Route path="/contributors/:slug" element={<AuthorBioPage />} />
             <Route path="/research-panel" element={<ResearchPanelLandingPage />} />

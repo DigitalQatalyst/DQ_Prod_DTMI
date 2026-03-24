@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react'
-import { getFallbackKnowledgeHubItems } from '../utils/fallbackData'
 import { mapApiItemToDetailProps } from '../utils/mediaMappers'
 export interface MediaItemResult {
   item: any | null
@@ -20,18 +19,8 @@ export function useMediaItem({ slug }: { slug: string }): MediaItemResult {
       setError(null)
       // Simulate API delay
       await new Promise((resolve) => setTimeout(resolve, 500))
-      // Get all items from fallback data
-      const allItems = getFallbackKnowledgeHubItems()
-      // Find the item by slug (in a real app, you'd make an API call with the slug)
-      // For this mock implementation, we'll use the ID as the slug
-      const foundItem = allItems.find((item) => item.id === slug)
-      if (foundItem) {
-        // Map the API item to the detail props format
-        setItem(mapApiItemToDetailProps(foundItem))
-      } else {
-        throw new Error(`Item with slug "${slug}" not found`)
-      }
-      setIsLoading(false)
+      // No fallback data - item not found
+      throw new Error(`Item with slug "${slug}" not found`)
     } catch (err) {
       setError(
         err instanceof Error

@@ -5,6 +5,7 @@ import { createRoot } from "react-dom/client";
 import { ApolloClient, HttpLink, InMemoryCache } from "@apollo/client";
 import { ApolloProvider } from "@apollo/client/react";
 import { MantineProvider } from "@mantine/core";
+import { mantineTheme } from "./theme/mantineTheme";
 
 const client = new ApolloClient({
   link: new HttpLink({
@@ -21,8 +22,8 @@ const container = document.getElementById("root");
 if (container) {
   const root = createRoot(container);
   root.render(
-    <ApolloProvider client={client}>
-      <MantineProvider>
+    <ApolloProvider client={client}>  
+      <MantineProvider theme={mantineTheme}>
         <AppRouter />
       </MantineProvider>
     </ApolloProvider>,
