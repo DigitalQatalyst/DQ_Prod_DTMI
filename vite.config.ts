@@ -38,5 +38,25 @@ export default defineConfig(({ mode }) => {
     build: {
       chunkSizeWarningLimit: 4000,
     },
+    optimizeDeps: {
+      force: true,
+      include: [
+        "@mantine/tiptap",
+        "@tiptap/react",
+        "@tiptap/starter-kit",
+        "@tiptap/extension-highlight",
+        "@tiptap/extension-text-style",
+        "@tiptap/extension-image",
+        "@tiptap/extension-subscript",
+        "@tiptap/extension-superscript",
+        "@tiptap/extension-task-list",
+        "@tiptap/extension-task-item",
+        "@tiptap/extension-youtube",
+        "@tiptap/extension-table",
+        "@tiptap/extension-table-row",
+        "@tiptap/extension-table-cell",
+        "@tiptap/extension-table-header",
+      ],
+    },
   };
 });
