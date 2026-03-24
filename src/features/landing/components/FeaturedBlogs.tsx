@@ -1,202 +1,180 @@
-import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { blogService } from "../../admin/shared/utils/supabase";
-
-interface Blog {
-  id: number;
-  title: string;
-  description: string;
-  image: string;
-  link: string;
-  category: string;
-  readTime?: string;
-  date: string;
-}
+import { Container, Title, Text, Grid, Card, Image, Group, Button, Loader, Center, Stack, Badge } from "@mantine/core";
+import { IconArrowRight, IconClock } from "@tabler/icons-react";
+import { useFeaturedBlogs } from "../hooks/useFeaturedBlogs";
+import { FeaturedBlog } from "../api/featuredBlogs";
 
 export function FeaturedBlogs() {
   const navigate = useNavigate();
-  const [featuredBlog, setFeaturedBlog] = useState<Blog | null>(null);
-  const [relatedBlogs, setRelatedBlogs] = useState<Blog[]>([]);
-  const [loading, setLoading] = useState(true);
+  const { data, isLoading, error } = useFeaturedBlogs();
 
-  useEffect(() => {
-    fetchBlogs();
-  }, []);
+  const featuredBlog = data?.featuredBlog;
+  const relatedBlogs = data?.relatedBlogs || [];
 
-  const fetchBlogs = async () => {
-    try {
-      setLoading(true);
-
-      // Fetch blogs from database
-      const result = await blogService.getBlogs({ 
-        limit: 5, 
-        published: true 
-      });
-      
-      const blogs = Array.isArray(result) ? result : result.data || [];
-
-      if (blogs && blogs.length > 0) {
-        // Map database blogs to component format
-        const mappedBlogs = blogs.slice(0, 5).map((blog: any) => {
-          return {
-            id: blog.id,
-            title: blog.title,
-            description:
-              blog.excerpt ||
-              blog.summary ||
-              blog.description ||
-              "Explore this blog on digital transformation.",
-            image: blog.heroImage || "/images/Article 01_hero image.png",
-            link: blog.slug ? `/blog/${blog.slug}` : `/media/blog/${blog.id}`,
-            category: blog.category || "Digital Transformation",
-            readTime: blog.readTime ? `${blog.readTime} min read` : "5 min read",
-            date: blog.publishDate
-              ? new Date(blog.publishDate).toLocaleDateString("en-US", {
-                  day: "numeric",
-                  month: "long",
-                  year: "numeric",
-                })
-              : "Recently published",
-          };
-        });
-
-        setFeaturedBlog(mappedBlogs[0]);
-        setRelatedBlogs(mappedBlogs.slice(1, 5));
-      } else {
-        // No blogs found - set empty state
-        setFeaturedBlog(null);
-        setRelatedBlogs([]);
-      }
-    } catch (error) {
-      console.error("Error fetching blogs:", error);
-      setFeaturedBlog(null);
-      setRelatedBlogs([]);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  if (loading) {
+  if (isLoading) {
     return (
       <section className="py-20 bg-white">
-        <div className="container mx-auto px-4 md:px-6">
-          <div className="text-center text-gray-600">Loading blogs...</div>
-        </div>
+        <Container size="xl">
+          <Center>
+            <Stack align="center" gap="md">
+              <Loader size="lg" />
+              <Text c="dimmed">Loading blogs...</Text>
+            </Stack>
+          </Center>
+        </Container>
       </section>
     );
   }
 
-  if (!featuredBlog) {
+  if (error || !featuredBlog) {
     return (
       <section className="py-20 bg-white">
-        <div className="container mx-auto px-4 md:px-6">
-          <div className="text-center text-gray-600">No blogs available at the moment.</div>
-        </div>
+        <Container size="xl">
+          <Center>
+            <Text c="dimmed">
+              {error ? "Failed to load blogs" : "No blogs available at the moment."}
+            </Text>
+          </Center>
+        </Container>
       </section>
     );
   }
 
   return (
     <section className="py-20 bg-white">
-      <div className="container mx-auto px-4 md:px-6">
+      <Container size="xl">
         {/* Section Header */}
-        <div className="flex items-center justify-between mb-12">
-          <h2 className="text-4xl md:text-5xl font-bold text-gray-900">
+        <Group justify="space-between" className="mb-12">
+          <Title order={2} size="h1" className="text-4xl md:text-5xl font-bold text-gray-900">
             Latest Signals
-          </h2>
-          <button
+          </Title>
+          <Button
+            variant="subtle"
+            rightSection={<IconArrowRight size={20} />}
             onClick={() => navigate("/marketplace/dtmi?tab=signals")}
-            className="text-brand-coral hover:text-orange-700 font-semibold flex items-center gap-2 transition-colors"
+            className="text-brand-coral hover:text-orange-700 font-semibold"
           >
             Browse All Signals
-            <svg
-              className="w-5 h-5"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M9 5l7 7-7 7"
-              />
-            </svg>
-          </button>
-        </div>
+          </Button>
+        </Group>
 
         {/* Two-Column Layout */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+        <Grid>
           {/* Left Column - Featured Blog */}
-          <div
-            className="group cursor-pointer"
-            onClick={() => navigate(featuredBlog.link)}
-          >
-            {/* Image */}
-            <div className="relative h-64 rounded-lg overflow-hidden mb-4">
-              <img
-                src={featuredBlog.image}
-                alt={featuredBlog.title}
-                className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-              />
-            </div>
-
-            {/* Category Badge */}
-            <span className="inline-block text-sm text-gray-600 mb-3">
-              {featuredBlog.category}
-            </span>
-
-            {/* Title */}
-            <h3 className="text-2xl md:text-3xl font-bold text-gray-900 mb-3 group-hover:text-brand-coral transition-colors leading-tight">
-              {featuredBlog.title}
-            </h3>
-
-            {/* Description */}
-            <p className="text-gray-600 mb-4 leading-relaxed text-sm">
-              {featuredBlog.description}
-            </p>
-
-            {/* Meta Info */}
-            <div className="flex items-center gap-3 text-sm text-gray-500">
-              {featuredBlog.readTime && <span>• {featuredBlog.readTime}</span>}
-              <span>• {featuredBlog.date}</span>
-            </div>
-          </div>
+          <Grid.Col span={{ base: 12, lg: 6 }}>
+            <FeaturedBlogCard blog={featuredBlog} onClick={() => navigate(featuredBlog.link)} />
+          </Grid.Col>
 
           {/* Right Column - Related Blogs */}
-          <div>
-            <h3 className="text-xl font-bold text-gray-900 mb-6">
-              Related Blogs
-            </h3>
-            <div className="space-y-5">
-              {relatedBlogs.map((blog) => (
-                <div
-                  key={blog.id}
-                  className="group flex gap-4 cursor-pointer pb-5 border-b border-gray-200 last:border-b-0"
-                  onClick={() => navigate(blog.link)}
-                >
-                  {/* Thumbnail */}
-                  <div className="relative w-20 h-20 flex-shrink-0 rounded overflow-hidden">
-                    <img
-                      src={blog.image}
-                      alt={blog.title}
-                      className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-                    />
-                  </div>
-
-                  {/* Content */}
-                  <div className="flex-1">
-                    <h4 className="text-sm font-bold text-gray-900 mb-2 group-hover:text-brand-coral transition-colors line-clamp-2 leading-snug">
-                      {blog.title}
-                    </h4>
-                    <p className="text-xs text-gray-500">{blog.date}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </div>
+          <Grid.Col span={{ base: 12, lg: 6 }}>
+            <Stack gap="md">
+              <Title order={3} size="h4" className="text-xl font-bold text-gray-900">
+                Related Blogs
+              </Title>
+              <Stack gap="md">
+                {relatedBlogs.map((blog) => (
+                  <RelatedBlogCard 
+                    key={blog.id} 
+                    blog={blog} 
+                    onClick={() => navigate(blog.link)} 
+                  />
+                ))}
+              </Stack>
+            </Stack>
+          </Grid.Col>
+        </Grid>
+      </Container>
     </section>
+  );
+}
+
+interface FeaturedBlogCardProps {
+  blog: FeaturedBlog;
+  onClick: () => void;
+}
+
+function FeaturedBlogCard({ blog, onClick }: FeaturedBlogCardProps) {
+  return (
+    <div className="group cursor-pointer" onClick={onClick}>
+      {/* Image */}
+      <div className="relative h-64 rounded-lg overflow-hidden mb-4">
+        <Image
+          src={blog.image}
+          alt={blog.title}
+          className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+        />
+      </div>
+
+      <Stack gap="sm">
+        {/* Category Badge */}
+        <Badge variant="light" size="sm" className="w-fit">
+          {blog.category}
+        </Badge>
+
+        {/* Title */}
+        <Title 
+          order={3} 
+          size="h3" 
+          className="text-2xl md:text-3xl font-bold text-gray-900 group-hover:text-brand-coral transition-colors leading-tight"
+        >
+          {blog.title}
+        </Title>
+
+        {/* Description */}
+        <Text c="dimmed" size="sm" className="leading-relaxed">
+          {blog.description}
+        </Text>
+
+        {/* Meta Info */}
+        <Group gap="xs">
+          {blog.readTime && (
+            <>
+              <IconClock size={16} className="text-gray-500" />
+              <Text size="sm" c="dimmed">{blog.readTime}</Text>
+              <Text size="sm" c="dimmed">•</Text>
+            </>
+          )}
+          <Text size="sm" c="dimmed">{blog.date}</Text>
+        </Group>
+      </Stack>
+    </div>
+  );
+}
+
+interface RelatedBlogCardProps {
+  blog: FeaturedBlog;
+  onClick: () => void;
+}
+
+function RelatedBlogCard({ blog, onClick }: RelatedBlogCardProps) {
+  return (
+    <Group 
+      gap="md" 
+      className="group cursor-pointer pb-5 border-b border-gray-200 last:border-b-0" 
+      onClick={onClick}
+      align="flex-start"
+    >
+      {/* Thumbnail */}
+      <div className="relative w-20 h-20 flex-shrink-0 rounded overflow-hidden">
+        <Image
+          src={blog.image}
+          alt={blog.title}
+          className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+        />
+      </div>
+
+      {/* Content */}
+      <Stack gap="xs" className="flex-1">
+        <Title 
+          order={4} 
+          size="sm" 
+          fw={700}
+          className="text-gray-900 group-hover:text-brand-coral transition-colors line-clamp-2 leading-snug"
+        >
+          {blog.title}
+        </Title>
+        <Text size="xs" c="dimmed">{blog.date}</Text>
+      </Stack>
+    </Group>
   );
 }

@@ -1,138 +1,40 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { useNavigate } from "react-router-dom";
-import { Clock, Loader2 } from "lucide-react";
-import { mediaService } from "../../../admin/shared/utils/supabase";
-
-interface HighlightAnalysis {
-  id: string;
-  title: string;
-  excerpt: string;
-  category: string;
-  publishDate: string;
-  readTime: number;
-  heroImage: string;
-  link: string;
-  featured?: boolean;
-  analysisType: string;
-  slug: string;
-}
+import { Container, Title, Text, Grid, Card, Image, Group, Loader, Center, Stack, Badge } from "@mantine/core";
+import { IconClock } from "@tabler/icons-react";
+import { useDeepAnalysisHighlights } from "../../../landing/hooks/useDeepAnalysisHighlights";
+import { DeepAnalysisHighlight } from "../../../landing/api/deepAnalysisHighlights";
 
 export const WeekHighlightsDeepAnalysis: React.FC = () => {
   const navigate = useNavigate();
-  const [highlightAnalysis, setHighlightAnalysis] = useState<
-    HighlightAnalysis[]
-  >([]);
-  const [loading, setLoading] = useState(true);
+  const { data, isLoading, error } = useDeepAnalysisHighlights();
 
-  useEffect(() => {
-    const fetchDeepAnalysis = async () => {
-      try {
-        setLoading(true);
-        // Fetch whitepapers, research reports, and prediction analysis
-        const [whitepaperResponse, researchResponse, blogResponse] =
-          await Promise.all([
-            mediaService.getMediaItems({
-              type: "whitepaper",
-              limit: 2,
-            }),
-            mediaService.getMediaItems({
-              type: "research",
-              limit: 2,
-            }),
-            mediaService.getMediaItems({
-              type: "blog",
-              limit: 1,
-              // Look for prediction analysis in categories or tags
-            }),
-          ]);
+  const highlightAnalysis = data?.highlights || [];
 
-        const allAnalysis = [
-          ...(whitepaperResponse.data || []),
-          ...(researchResponse.data || []),
-          ...(blogResponse.data || []),
-        ];
-
-        if (allAnalysis.length > 0) {
-          const mappedAnalysis: HighlightAnalysis[] = allAnalysis
-            .slice(0, 5)
-            .map((item: any, index: number) => ({
-              id: item.id,
-              title: item.title,
-              excerpt:
-                item.excerpt ||
-                item.summary ||
-                item.body?.substring(0, 200) + "...",
-              category:
-                item.category || item.categoryName || "Strategic Analysis",
-              publishDate: new Date(
-                item.publishDate || item.publishedAt,
-              ).toLocaleDateString("en-US", {
-                year: "numeric",
-                month: "long",
-                day: "numeric",
-              }),
-              readTime:
-                item.readTime ||
-                (item.type === "whitepaper"
-                  ? 45
-                  : item.type === "research"
-                    ? 35
-                    : 40),
-              heroImage:
-                item.heroImage ||
-                item.thumbnailUrl ||
-                "/images/Article 01_hero image.png",
-              link: item.slug ? `/blog/${item.slug}` : `/media/blog/${item.id}`,
-              featured: index === 0,
-              analysisType:
-                item.type === "whitepaper"
-                  ? "Whitepaper"
-                  : item.type === "research"
-                    ? "Research Report"
-                    : "Prediction Analysis",
-              slug: item.slug,
-            }));
-          setHighlightAnalysis(mappedAnalysis);
-        }
-      } catch (error) {
-        console.error("Error fetching deep analysis:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchDeepAnalysis();
-  }, []);
-
-  const featuredAnalysis =
-    highlightAnalysis.find((analysis) => analysis.featured) ||
-    highlightAnalysis[0];
+  const featuredAnalysis = highlightAnalysis.find((analysis) => analysis.featured) || highlightAnalysis[0];
   const leftAnalysis = highlightAnalysis.slice(1, 3); // 2 items on the left
   const rightAnalysis = highlightAnalysis.slice(3, 5); // 2 items on the right
 
-  const handleAnalysisClick = (analysis: HighlightAnalysis) => {
+  const handleAnalysisClick = (analysis: DeepAnalysisHighlight) => {
     navigate(analysis.link);
   };
 
-  if (loading) {
+  if (isLoading) {
     return (
       <section className="bg-white py-16">
-        <div className="container mx-auto px-4">
-          <div className="flex items-center justify-center py-20">
-            <div className="text-center">
-              <Loader2
-                className="animate-spin text-purple-600 mx-auto mb-4"
-                size={48}
-              />
-              <p className="text-gray-600">Loading deep analysis...</p>
-            </div>
-          </div>
-        </div>
+        <Container size="xl">
+          <Center className="py-20">
+            <Stack align="center" gap="md">
+              <Loader size="lg" color="violet" />
+              <Text c="dimmed">Loading deep analysis...</Text>
+            </Stack>
+          </Center>
+        </Container>
       </section>
     );
   }
 
-  if (highlightAnalysis.length === 0) {
+  if (error || highlightAnalysis.length === 0) {
     return null;
   }
 
@@ -142,141 +44,168 @@ export const WeekHighlightsDeepAnalysis: React.FC = () => {
 
   return (
     <section className="bg-white py-16">
-      <div className="container mx-auto px-4">
+      <Container size="xl">
         {/* Section Header */}
         <div className="mb-12">
-          <div className="flex items-center gap-3 mb-4">
+          <Group gap="sm" className="mb-4">
             <div className="w-1 h-8 bg-purple-600"></div>
-            <h2 className="text-3xl font-bold text-gray-900">
+            <Title order={2} size="h2" className="text-3xl font-bold text-gray-900">
               The Week's Highlights
-            </h2>
-          </div>
+            </Title>
+          </Group>
         </div>
 
         {/* 5-Card Layout: 2 Left + 1 Center + 2 Right */}
-        <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
+        <Grid>
           {/* Left Side - 2 Items */}
-          <div className="lg:col-span-1 space-y-6 flex flex-col">
-            {leftAnalysis.map((analysis) => (
-              <div
-                key={analysis.id}
-                className="group cursor-pointer flex-1"
-                onClick={() => handleAnalysisClick(analysis)}
-              >
-                <div className="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow overflow-hidden h-full">
-                  <img
-                    src={analysis.heroImage}
-                    alt={analysis.title}
-                    className="w-full h-32 object-cover group-hover:scale-105 transition-transform duration-300"
-                  />
-                  <div className="p-4 flex flex-col justify-between h-32">
-                    <div>
-                      <div className="flex items-center gap-2 text-purple-600 text-xs mb-2">
-                        <span className="uppercase font-semibold">
-                          {analysis.analysisType}
-                        </span>
-                      </div>
-                      <h4 className="text-sm font-bold text-gray-900 mb-2 group-hover:text-purple-600 transition-colors line-clamp-2 leading-tight">
-                        {analysis.title}
-                      </h4>
-                    </div>
-                    <div className="flex items-center gap-2 text-gray-500 text-xs">
-                      <Clock size={12} />
-                      <span>{analysis.readTime} min</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
+          <Grid.Col span={{ base: 12, lg: 2 }}>
+            <Stack gap="md" className="h-full">
+              {leftAnalysis.map((analysis) => (
+                <AnalysisCard 
+                  key={analysis.id} 
+                  analysis={analysis} 
+                  size="small"
+                  onClick={() => handleAnalysisClick(analysis)} 
+                />
+              ))}
+            </Stack>
+          </Grid.Col>
 
           {/* Center - Featured Analysis */}
-          <div className="lg:col-span-3 flex">
-            <div
-              className="group cursor-pointer w-full"
-              onClick={() => handleAnalysisClick(featuredAnalysis)}
-            >
-              <div className="relative overflow-hidden rounded-lg h-full">
-                <img
-                  src={featuredAnalysis.heroImage}
-                  alt={featuredAnalysis.title}
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                />
-                <div className="absolute top-4 left-4">
-                  <span className="bg-purple-600 text-white px-3 py-1 rounded-full text-sm font-semibold">
-                    FEATURED ANALYSIS
-                  </span>
-                </div>
-                <div className="absolute bottom-4 left-4 right-4">
-                  <div className="bg-black bg-opacity-60 backdrop-blur-sm rounded-lg p-4">
-                    <div className="flex items-center gap-2 text-purple-400 text-sm mb-2">
-                      <span className="uppercase font-semibold">
-                        {featuredAnalysis.analysisType}
-                      </span>
-                      <span>•</span>
-                      <div className="flex items-center gap-1">
-                        <Clock size={14} />
-                        <span>{featuredAnalysis.readTime} min read</span>
-                      </div>
-                    </div>
-                    <h3 className="text-white text-xl font-bold mb-2 group-hover:text-purple-300 transition-colors">
-                      {featuredAnalysis.title}
-                    </h3>
-                    <p className="text-gray-200 text-sm line-clamp-2">
-                      {featuredAnalysis.excerpt}
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+          <Grid.Col span={{ base: 12, lg: 8 }}>
+            <FeaturedAnalysisCard 
+              analysis={featuredAnalysis} 
+              onClick={() => handleAnalysisClick(featuredAnalysis)} 
+            />
+          </Grid.Col>
 
           {/* Right Side - 2 Items */}
-          <div className="lg:col-span-1 space-y-6 flex flex-col">
-            {rightAnalysis.map((analysis) => (
-              <div
-                key={analysis.id}
-                className="group cursor-pointer flex-1"
-                onClick={() => handleAnalysisClick(analysis)}
-              >
-                <div className="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow overflow-hidden h-full">
-                  <img
-                    src={analysis.heroImage}
-                    alt={analysis.title}
-                    className="w-full h-32 object-cover group-hover:scale-105 transition-transform duration-300"
-                  />
-                  <div className="p-4 flex flex-col justify-between h-32">
-                    <div>
-                      <div className="flex items-center gap-2 text-purple-600 text-xs mb-2">
-                        <span className="uppercase font-semibold">
-                          {analysis.analysisType}
-                        </span>
-                      </div>
-                      <h4 className="text-sm font-bold text-gray-900 mb-2 group-hover:text-purple-600 transition-colors line-clamp-2 leading-tight">
-                        {analysis.title}
-                      </h4>
-                    </div>
-                    <div className="flex items-center gap-2 text-gray-500 text-xs">
-                      <Clock size={12} />
-                      <span>{analysis.readTime} min</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-
-      <style jsx>{`
-        .line-clamp-2 {
-          display: -webkit-box;
-          -webkit-line-clamp: 2;
-          -webkit-box-orient: vertical;
-          overflow: hidden;
-        }
-      `}</style>
+          <Grid.Col span={{ base: 12, lg: 2 }}>
+            <Stack gap="md" className="h-full">
+              {rightAnalysis.map((analysis) => (
+                <AnalysisCard 
+                  key={analysis.id} 
+                  analysis={analysis} 
+                  size="small"
+                  onClick={() => handleAnalysisClick(analysis)} 
+                />
+              ))}
+            </Stack>
+          </Grid.Col>
+        </Grid>
+      </Container>
     </section>
   );
 };
+
+interface AnalysisCardProps {
+  analysis: DeepAnalysisHighlight;
+  size: 'small' | 'large';
+  onClick: () => void;
+}
+
+function AnalysisCard({ analysis, size, onClick }: AnalysisCardProps) {
+  const isSmall = size === 'small';
+  
+  return (
+    <Card
+      className="group cursor-pointer bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow overflow-hidden h-full"
+      onClick={onClick}
+    >
+      <div className="relative">
+        <Image
+          src={analysis.heroImage}
+          alt={analysis.title}
+          className={`w-full object-cover group-hover:scale-105 transition-transform duration-300 ${isSmall ? 'h-32' : 'h-48'}`}
+        />
+      </div>
+      
+      <div className={`p-4 flex flex-col justify-between ${isSmall ? 'h-32' : 'h-40'}`}>
+        <div>
+          <Badge 
+            variant="light" 
+            color="violet" 
+            size="xs" 
+            className="mb-2"
+          >
+            {analysis.analysisType}
+          </Badge>
+          
+          <Title 
+            order={4} 
+            size={isSmall ? "sm" : "md"}
+            fw={700}
+            className="text-gray-900 mb-2 group-hover:text-purple-600 transition-colors line-clamp-2 leading-tight"
+          >
+            {analysis.title}
+          </Title>
+        </div>
+        
+        <Group gap="xs" className="text-gray-500">
+          <IconClock size={12} />
+          <Text size="xs">{analysis.readTime} min</Text>
+        </Group>
+      </div>
+    </Card>
+  );
+}
+
+interface FeaturedAnalysisCardProps {
+  analysis: DeepAnalysisHighlight;
+  onClick: () => void;
+}
+
+function FeaturedAnalysisCard({ analysis, onClick }: FeaturedAnalysisCardProps) {
+  return (
+    <div
+      className="group cursor-pointer w-full h-full"
+      onClick={onClick}
+    >
+      <div className="relative overflow-hidden rounded-lg h-full min-h-[400px]">
+        <Image
+          src={analysis.heroImage}
+          alt={analysis.title}
+          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+        />
+        
+        <div className="absolute top-4 left-4">
+          <Badge 
+            color="violet" 
+            size="sm" 
+            className="font-semibold"
+          >
+            FEATURED ANALYSIS
+          </Badge>
+        </div>
+        
+        <div className="absolute bottom-4 left-4 right-4">
+          <div className="bg-black bg-opacity-60 backdrop-blur-sm rounded-lg p-4">
+            <Group gap="xs" className="text-purple-400 text-sm mb-2">
+              <Text size="sm" fw={600} className="uppercase">
+                {analysis.analysisType}
+              </Text>
+              <Text size="sm">•</Text>
+              <Group gap="xs">
+                <IconClock size={14} />
+                <Text size="sm">{analysis.readTime} min read</Text>
+              </Group>
+            </Group>
+            
+            <Title 
+              order={3} 
+              size="h4" 
+              className="text-white mb-2 group-hover:text-purple-300 transition-colors"
+            >
+              {analysis.title}
+            </Title>
+            
+            <Text size="sm" className="text-gray-200 line-clamp-2">
+              {analysis.excerpt}
+            </Text>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
 
