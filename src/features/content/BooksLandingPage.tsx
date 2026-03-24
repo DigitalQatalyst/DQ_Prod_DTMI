@@ -135,20 +135,130 @@ const BooksLandingPage = () => {
       <Header />
 
       <main className="flex-1">
-        {/* 1. Hero Section - Simple */}
+        {/* 1. Hero Section - Book-focused with animated background */}
         <section
-          className="relative w-full bg-gradient-to-br from-gray-900 via-black to-gray-800 overflow-hidden"
+          className="relative w-full bg-gradient-to-br from-[#0A1628] via-[#1a2942] to-[#0f1f3d] overflow-hidden"
           style={{ height: "100vh" }}
         >
+          {/* Animated background image with zoom effect - Pile of books */}
+          <div
+            className="absolute inset-0 transition-transform duration-[3000ms] ease-out"
+            style={{
+              backgroundImage:
+                "linear-gradient(rgba(10, 22, 40, 0.75), rgba(10, 22, 40, 0.75)), url('https://images.unsplash.com/photo-1481627834876-b7833e8f5570?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80')",
+              backgroundSize: "cover",
+              backgroundPosition: "center",
+              transform: isLoaded ? "scale(1)" : "scale(1.1)",
+            }}
+          ></div>
+
+          {/* Animated gradient overlay */}
+          <div
+            className="absolute inset-0 bg-gradient-to-r from-orange-500/20 to-red-500/20 mix-blend-multiply"
+            style={{
+              animation: "pulse-gradient 8s ease-in-out infinite alternate",
+            }}
+          ></div>
+
+          {/* Animated Book Network Lines */}
+          <div className="absolute inset-0 opacity-20">
+            <svg className="w-full h-full" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <linearGradient
+                  id="bookLineGradient"
+                  x1="0%"
+                  y1="0%"
+                  x2="100%"
+                  y2="100%"
+                >
+                  <stop offset="0%" stopColor="#FF6B4D" stopOpacity="0.6" />
+                  <stop offset="100%" stopColor="#F97316" stopOpacity="0.6" />
+                </linearGradient>
+              </defs>
+              <g className="animate-pulse">
+                <line
+                  x1="15%"
+                  y1="25%"
+                  x2="35%"
+                  y2="45%"
+                  stroke="url(#bookLineGradient)"
+                  strokeWidth="1"
+                />
+                <line
+                  x1="35%"
+                  y1="45%"
+                  x2="55%"
+                  y2="35%"
+                  stroke="url(#bookLineGradient)"
+                  strokeWidth="1"
+                />
+                <line
+                  x1="55%"
+                  y1="35%"
+                  x2="75%"
+                  y2="55%"
+                  stroke="url(#bookLineGradient)"
+                  strokeWidth="1"
+                />
+                <line
+                  x1="75%"
+                  y1="55%"
+                  x2="85%"
+                  y2="40%"
+                  stroke="url(#bookLineGradient)"
+                  strokeWidth="1"
+                />
+              </g>
+              {/* Book-themed connection nodes */}
+              <circle cx="15%" cy="25%" r="4" fill="#FF6B4D" opacity="0.8">
+                <animate
+                  attributeName="opacity"
+                  values="0.8;1;0.8"
+                  dur="3s"
+                  repeatCount="indefinite"
+                />
+              </circle>
+              <circle cx="55%" cy="35%" r="4" fill="#F97316" opacity="0.8">
+                <animate
+                  attributeName="opacity"
+                  values="0.8;1;0.8"
+                  dur="3.5s"
+                  repeatCount="indefinite"
+                />
+              </circle>
+              <circle cx="85%" cy="40%" r="4" fill="#FF6B4D" opacity="0.8">
+                <animate
+                  attributeName="opacity"
+                  values="0.8;1;0.8"
+                  dur="4s"
+                  repeatCount="indefinite"
+                />
+              </circle>
+            </svg>
+          </div>
+
           <div className="container mx-auto px-4 h-full flex items-center relative z-10">
             <div className="max-w-4xl mx-auto text-center text-white">
+              {/* Badge */}
+              <div
+                className="inline-block px-4 py-2 text-sm font-medium bg-white/10 backdrop-blur-sm text-white rounded-full mb-6 border border-white/20"
+                style={{
+                  opacity: isLoaded ? 1 : 0,
+                  transform: isLoaded ? "translateY(0)" : "translateY(20px)",
+                  transition: "opacity 0.6s ease-out, transform 0.6s ease-out",
+                }}
+              >
+                📚 Digital Transformation Literature Hub
+              </div>
+
               {/* Headline */}
               <h1
                 className="text-5xl md:text-7xl font-bold font-display mb-6 bg-gradient-to-r from-orange-400 via-red-500 to-orange-600 bg-clip-text text-transparent"
                 style={{
                   opacity: isLoaded ? 1 : 0,
                   transform: isLoaded ? "translateY(0)" : "translateY(30px)",
-                  transition: "opacity 0.8s ease-out, transform 0.8s ease-out",
+                  transition:
+                    "opacity 0.8s ease-out 0.2s, transform 0.8s ease-out 0.2s",
                 }}
               >
                 Digital Transformation Book Reviews
@@ -156,12 +266,12 @@ const BooksLandingPage = () => {
 
               {/* Subheadline */}
               <p
-                className="text-xl md:text-2xl font-body text-gray-300 leading-relaxed max-w-3xl mx-auto mb-12"
+                className="text-xl md:text-2xl font-body text-white/90 leading-relaxed max-w-3xl mx-auto mb-12"
                 style={{
                   opacity: isLoaded ? 1 : 0,
                   transform: isLoaded ? "translateY(0)" : "translateY(30px)",
                   transition:
-                    "opacity 1s ease-out 0.3s, transform 1s ease-out 0.3s",
+                    "opacity 1s ease-out 0.4s, transform 1s ease-out 0.4s",
                 }}
               >
                 Expert-curated reviews, strategic frameworks, and actionable
@@ -171,7 +281,7 @@ const BooksLandingPage = () => {
               {/* CTA */}
               <button
                 onClick={handleScrollDown}
-                className="bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-600 hover:to-red-700 text-white px-8 py-4 rounded-lg font-bold font-body text-lg transition-all duration-300 transform hover:scale-105 shadow-lg"
+                className="px-8 py-4 bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-600 hover:to-red-700 text-white font-bold rounded-lg shadow-lg transform transition-all duration-300 hover:-translate-y-1 hover:shadow-xl text-center flex items-center justify-center mx-auto overflow-hidden group"
                 style={{
                   opacity: isLoaded ? 1 : 0,
                   transform: isLoaded ? "translateY(0)" : "translateY(30px)",
@@ -179,7 +289,10 @@ const BooksLandingPage = () => {
                     "opacity 1.2s ease-out 0.6s, transform 1.2s ease-out 0.6s",
                 }}
               >
-                Explore Featured Reviews
+                <span className="relative z-10">Explore Featured Reviews</span>
+                <span className="absolute inset-0 overflow-hidden rounded-lg">
+                  <span className="absolute inset-0 bg-white/20 transform scale-0 opacity-0 group-hover:scale-[2.5] group-hover:opacity-100 rounded-full transition-all duration-700 origin-center"></span>
+                </span>
               </button>
             </div>
           </div>
@@ -191,6 +304,21 @@ const BooksLandingPage = () => {
           >
             <ChevronDown size={32} className="text-orange-500" />
           </div>
+
+          {/* Keyframes for animations */}
+          <style>{`
+            @keyframes pulse-gradient {
+              0% {
+                opacity: 0.4;
+              }
+              50% {
+                opacity: 0.6;
+              }
+              100% {
+                opacity: 0.4;
+              }
+            }
+          `}</style>
         </section>
         {/* 2. Featured Section - "The Essential Read" */}
         <section
