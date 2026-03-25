@@ -7,88 +7,73 @@ import {
   featuredBooks,
   frontierBooks,
   topBooksThisWeek,
-  expertReviews,
 } from "../../utils/mockBookData";
 import { Book } from "../../types/book";
-import {
-  ArrowRight,
-  Star,
-  ChevronDown,
-  ChevronLeft,
-  ChevronRight,
-} from "lucide-react";
+import { Star, ChevronDown } from "lucide-react";
 
 const BooksLandingPage = () => {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isLoaded, setIsLoaded] = useState(false);
-  const [activeFilter, setActiveFilter] = useState("Trending");
+  const [activeFilter, setActiveFilter] = useState("Digital Economy");
 
   useEffect(() => {
     setIsLoaded(true);
   }, []);
 
-  // Filter books based on active filter
+  // Filter books based on active filter for Frontier Watch - exactly 4 books per topic
   const getFilteredBooks = () => {
     switch (activeFilter) {
-      case "Trending":
-        // Show only the top 2 most trending books
-        return frontierBooks.slice(0, 2);
-      case "Agentic AI":
-        // Books that speak about Agentic AI, Gen AI, AI governance
-        return frontierBooks.filter((book) =>
-          book.tags.some(
-            (tag) =>
-              tag.toLowerCase().includes("gen ai") ||
-              tag.toLowerCase().includes("ai governance") ||
-              tag.toLowerCase().includes("agentic ai") ||
-              book.title.toLowerCase().includes("ai") ||
-              book.description
-                .toLowerCase()
-                .includes("artificial intelligence"),
-          ),
-        );
-      case "Quantum Computing":
-        // Books about quantum computing and emerging tech
-        return frontierBooks.filter(
-          (book) =>
-            book.tags.some(
-              (tag) =>
-                tag.toLowerCase().includes("quantum") ||
-                tag.toLowerCase().includes("emerging tech"),
-            ) ||
-            book.title.toLowerCase().includes("quantum") ||
-            book.description.toLowerCase().includes("quantum"),
-        );
-      case "Spatial Commerce":
-        // Books about spatial commerce, AR/VR, digital architecture
-        return frontierBooks.filter(
-          (book) =>
-            book.tags.some(
-              (tag) =>
-                tag.toLowerCase().includes("spatial") ||
-                tag.toLowerCase().includes("ar/vr") ||
-                tag.toLowerCase().includes("digital architecture") ||
-                tag.toLowerCase().includes("commerce"),
-            ) ||
-            book.title.toLowerCase().includes("spatial") ||
-            book.description.toLowerCase().includes("architect"),
-        );
-      case "D3: Tech & AI":
-        // Books tagged with D3: Digital & AI dimension
-        return frontierBooks.filter(
-          (book) =>
-            book.sixDDimensions?.includes("D3: Digital & AI") ||
-            book.tags.some(
-              (tag) =>
-                tag.toLowerCase().includes("ai") ||
-                tag.toLowerCase().includes("digital") ||
-                tag.toLowerCase().includes("technology"),
-            ),
-        );
+      case "Digital Economy":
+        // Return exactly 4 books for Digital Economy
+        return frontierBooks
+          .filter((book) =>
+            book.sixDDimensions?.includes("D1: Digital Economy"),
+          )
+          .slice(0, 4);
+      case "Digital Cognitive Organization":
+        // Return exactly 4 books for Digital Cognitive Organization
+        return frontierBooks
+          .filter((book) =>
+            book.sixDDimensions?.includes("D2: Digital Cognitive Organization"),
+          )
+          .slice(0, 4);
+      case "Digital Business Platforms":
+        // Return exactly 4 books for Digital Business Platforms
+        return frontierBooks
+          .filter((book) =>
+            book.sixDDimensions?.includes("D3: Digital Business Platforms"),
+          )
+          .slice(0, 4);
+      case "Digital Transformation":
+        // Return exactly 4 books for Digital Transformation
+        return frontierBooks
+          .filter((book) =>
+            book.sixDDimensions?.includes("D4: Digital Transformation"),
+          )
+          .slice(0, 4);
+      case "Digital Workers and Workspace":
+        // Return exactly 4 books for Digital Workers and Workspace
+        return frontierBooks
+          .filter((book) =>
+            book.sixDDimensions?.includes("D5: Digital Workers and Workspace"),
+          )
+          .slice(0, 4);
+      case "Digital Accelerators":
+        // Return exactly 4 books for Digital Accelerators
+        return frontierBooks
+          .filter((book) =>
+            book.sixDDimensions?.includes("D6: Digital Accelerators"),
+          )
+          .slice(0, 4);
       default:
-        return frontierBooks;
+        // Show first 4 books from Digital Economy by default
+        return frontierBooks
+          .filter((book) =>
+            book.sixDDimensions?.includes("D1: Digital Economy"),
+          )
+          .slice(0, 4);
     }
   };
 
@@ -121,14 +106,6 @@ const BooksLandingPage = () => {
   };
 
   const featuredBook = featuredBooks[0]; // Main featured book for hero section
-
-  const nextCarousel = () => {
-    // Carousel functionality can be implemented here
-  };
-
-  const prevCarousel = () => {
-    // Carousel functionality can be implemented here
-  };
 
   return (
     <div className="flex flex-col w-full min-h-screen bg-white">
@@ -253,7 +230,7 @@ const BooksLandingPage = () => {
 
               {/* Headline */}
               <h1
-                className="text-5xl md:text-7xl font-bold font-display mb-6 bg-gradient-to-r from-orange-400 via-red-500 to-orange-600 bg-clip-text text-transparent"
+                className="text-5xl md:text-7xl font-bold font-display mb-6 text-white"
                 style={{
                   opacity: isLoaded ? 1 : 0,
                   transform: isLoaded ? "translateY(0)" : "translateY(30px)",
@@ -261,7 +238,7 @@ const BooksLandingPage = () => {
                     "opacity 0.8s ease-out 0.2s, transform 0.8s ease-out 0.2s",
                 }}
               >
-                Digital Transformation Book Reviews
+                Seminal Books on Digital Transformation
               </h1>
 
               {/* Subheadline */}
@@ -371,15 +348,6 @@ const BooksLandingPage = () => {
                       "opacity 1s ease-out 0.4s, transform 1s ease-out 0.4s",
                   }}
                 >
-                  <div className="flex flex-wrap gap-2 mb-6">
-                    <span className="bg-orange-600 text-white px-3 py-1 rounded-full text-sm">
-                      Transformation Impact
-                    </span>
-                    <span className="bg-orange-700 text-white px-3 py-1 rounded-full text-sm">
-                      Evolutionary & Macro Trends
-                    </span>
-                  </div>
-
                   <div>
                     <button
                       onClick={() => handleBookReview(featuredBook)}
@@ -434,27 +402,108 @@ const BooksLandingPage = () => {
             <ChevronDown size={24} className="text-orange-500" />
           </div>
         </section>
-        {/* 3. Frontier Watch Carousel */}
-        <section id="frontier-watch" className="py-16 bg-gray-900 text-white">
+        {/* 3. Trending Books Section */}
+        <section className="py-16 bg-gray-900 text-white">
+          <div className="container mx-auto px-4 md:px-6 max-w-7xl">
+            <div className="mb-12">
+              <h2 className="text-4xl font-bold font-display mb-4">
+                Trending Books
+              </h2>
+            </div>
+
+            {/* Trending Books Grid */}
+            <div className="grid md:grid-cols-3 gap-8">
+              {frontierBooks.slice(0, 3).map((book) => (
+                <div
+                  key={book.id}
+                  className="bg-gray-800 rounded-lg overflow-hidden hover:bg-gray-750 transition-colors cursor-pointer group"
+                  onClick={() => handleBookReview(book)}
+                >
+                  <div className="aspect-video bg-gradient-to-br from-gray-700 to-gray-800 flex items-center justify-center relative">
+                    <div className="w-32 h-40 bg-gradient-to-br from-gray-100 to-gray-200 rounded overflow-hidden shadow-xl">
+                      <img
+                        src={book.coverImage}
+                        alt={book.title}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                        onError={(e) => {
+                          const target = e.target as HTMLImageElement;
+                          const parent = target.parentElement!;
+                          parent.innerHTML = `
+                            <div class="w-full h-full flex items-center justify-center bg-gradient-to-br from-blue-100 to-indigo-100">
+                              <div class="text-center text-gray-600">
+                                <div class="w-12 h-12 mx-auto mb-2 bg-orange-500 rounded flex items-center justify-center text-white text-xl">
+                                  📚
+                                </div>
+                                <p class="text-sm font-medium">Trending Book</p>
+                              </div>
+                            </div>
+                          `;
+                        }}
+                      />
+                    </div>
+                  </div>
+
+                  <div className="p-6">
+                    <h3 className="text-lg font-bold text-white mb-2 line-clamp-2 group-hover:text-orange-400 transition-colors">
+                      {book.title}
+                    </h3>
+                    <p className="text-gray-400 text-sm mb-3">{book.author}</p>
+                    <p className="text-gray-300 text-sm mb-4 line-clamp-3">
+                      {book.shortDescription}
+                    </p>
+
+                    {/* Rating and Tags */}
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <div className="flex items-center gap-1">
+                          {[...Array(5)].map((_, i) => (
+                            <Star
+                              key={i}
+                              className={`w-3 h-3 ${
+                                i < Math.floor(book.rating)
+                                  ? "fill-yellow-400 text-yellow-400"
+                                  : "text-gray-600"
+                              }`}
+                            />
+                          ))}
+                        </div>
+                        <span className="text-xs text-gray-400">
+                          {book.rating}
+                        </span>
+                      </div>
+                      <span className="text-xs text-orange-400 font-semibold">
+                        Trending
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* 4. Frontier Watch - 6xD Books Grid */}
+        <section id="frontier-watch" className="py-16 bg-white text-black">
           <div className="container mx-auto px-4 md:px-6 max-w-7xl">
             <div className="mb-12">
               <h2 className="text-4xl font-bold font-display mb-4">
                 Frontier Watch
               </h2>
-              <p className="text-xl font-body text-gray-300 mb-8">
-                The most trending books in digital transformation as of March
-                2026, focusing on Generative AI integration, human-centric
-                leadership, and strategic resilience
+              <p className="text-xl font-body text-gray-600 mb-8">
+                For business leaders navigating modern digital shifts, these
+                trending and foundational books provide strategic frameworks for
+                the six pillars of transformation.
               </p>
 
               {/* Filter Tabs */}
               <div className="flex flex-wrap gap-4 mb-8">
                 {[
-                  "Trending",
-                  "Agentic AI",
-                  "Quantum Computing",
-                  "Spatial Commerce",
-                  "D3: Tech & AI",
+                  "Digital Economy",
+                  "Digital Cognitive Organization",
+                  "Digital Business Platforms",
+                  "Digital Transformation",
+                  "Digital Workers and Workspace",
+                  "Digital Accelerators",
                 ].map((filter) => (
                   <button
                     key={filter}
@@ -462,7 +511,7 @@ const BooksLandingPage = () => {
                     className={`px-6 py-2 rounded-full font-medium transition-colors ${
                       activeFilter === filter
                         ? "bg-orange-500 text-white"
-                        : "bg-gray-800 text-gray-300 hover:bg-gray-700"
+                        : "bg-gray-100 text-gray-700 hover:bg-gray-200"
                     }`}
                   >
                     {filter}
@@ -471,114 +520,89 @@ const BooksLandingPage = () => {
               </div>
             </div>
 
-            {/* Carousel */}
-            <div className="relative">
-              <div className="flex items-center gap-6 overflow-x-auto pb-4">
-                {filteredBooks.map((book) => (
-                  <div
-                    key={book.id}
-                    className="flex-shrink-0 w-80 bg-gray-800 rounded-lg overflow-hidden hover:bg-gray-750 transition-colors cursor-pointer group"
-                    onClick={() => handleBookReview(book)}
-                  >
-                    <div className="aspect-video bg-gradient-to-br from-gray-700 to-gray-800 flex items-center justify-center relative">
-                      <div className="w-32 h-40 bg-gradient-to-br from-gray-100 to-gray-200 rounded overflow-hidden shadow-xl">
-                        <img
-                          src={book.coverImage}
-                          alt={book.title}
-                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                          onError={(e) => {
-                            const target = e.target as HTMLImageElement;
-                            const parent = target.parentElement!;
-                            parent.innerHTML = `
-                              <div class="w-full h-full flex items-center justify-center bg-gradient-to-br from-blue-100 to-indigo-100">
-                                <div class="text-center text-gray-600">
-                                  <div class="w-12 h-12 mx-auto mb-2 bg-orange-500 rounded flex items-center justify-center text-white text-xl">
-                                    📚
-                                  </div>
-                                  <p class="text-sm font-medium">Frontier Book</p>
+            {/* 4 Cards Grid Layout */}
+            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+              {filteredBooks.map((book) => (
+                <div
+                  key={book.id}
+                  className="bg-white border border-gray-200 rounded-lg overflow-hidden hover:shadow-lg transition-shadow cursor-pointer group"
+                  onClick={() => handleBookReview(book)}
+                >
+                  <div className="aspect-video bg-gradient-to-br from-gray-50 to-gray-100 flex items-center justify-center relative">
+                    <div className="w-24 h-32 bg-gradient-to-br from-gray-100 to-gray-200 rounded overflow-hidden shadow-xl">
+                      <img
+                        src={book.coverImage}
+                        alt={book.title}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                        onError={(e) => {
+                          const target = e.target as HTMLImageElement;
+                          const parent = target.parentElement!;
+                          parent.innerHTML = `
+                            <div class="w-full h-full flex items-center justify-center bg-gradient-to-br from-blue-100 to-indigo-100">
+                              <div class="text-center text-gray-600">
+                                <div class="w-8 h-8 mx-auto mb-2 bg-orange-500 rounded flex items-center justify-center text-white text-sm">
+                                  📚
                                 </div>
+                                <p class="text-xs font-medium">6xD Book</p>
                               </div>
-                            `;
-                          }}
-                        />
-                      </div>
-
-                      {/* 6xD Dimension Tag */}
-                      <div className="absolute top-3 left-3 bg-orange-500 text-white px-2 py-1 rounded text-xs font-semibold">
-                        {book.sixDDimensions?.[0] || "D3: Digital & AI"}
-                      </div>
-                    </div>
-
-                    <div className="p-6">
-                      <h3 className="text-lg font-bold text-white mb-2 line-clamp-2 group-hover:text-orange-400 transition-colors">
-                        {book.title}
-                      </h3>
-                      <p className="text-gray-400 text-sm mb-3">
-                        {book.author}
-                      </p>
-                      <p className="text-gray-300 text-sm mb-4 line-clamp-3">
-                        {book.shortDescription}
-                      </p>
-
-                      {/* Rating and Tags */}
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-2">
-                          <div className="flex items-center gap-1">
-                            {[...Array(5)].map((_, i) => (
-                              <Star
-                                key={i}
-                                className={`w-3 h-3 ${
-                                  i < Math.floor(book.rating)
-                                    ? "fill-yellow-400 text-yellow-400"
-                                    : "text-gray-600"
-                                }`}
-                              />
-                            ))}
-                          </div>
-                          <span className="text-xs text-gray-400">
-                            {book.rating}
-                          </span>
-                        </div>
-                        <span className="text-xs text-orange-400 font-semibold">
-                          Frontier Tech
-                        </span>
-                      </div>
+                            </div>
+                          `;
+                        }}
+                      />
                     </div>
                   </div>
-                ))}
-              </div>
 
-              {/* Carousel Controls */}
-              <button
-                onClick={prevCarousel}
-                className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 w-12 h-12 bg-gray-800 hover:bg-gray-700 rounded-full flex items-center justify-center text-white transition-colors"
-              >
-                <ChevronLeft className="w-6 h-6" />
-              </button>
-              <button
-                onClick={nextCarousel}
-                className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 w-12 h-12 bg-gray-800 hover:bg-gray-700 rounded-full flex items-center justify-center text-white transition-colors"
-              >
-                <ChevronRight className="w-6 h-6" />
-              </button>
+                  <div className="p-4">
+                    <h3 className="text-base font-bold text-black mb-2 line-clamp-2 group-hover:text-orange-600 transition-colors">
+                      {book.title}
+                    </h3>
+                    <p className="text-gray-600 text-sm mb-2">{book.author}</p>
+                    <p className="text-gray-700 text-sm mb-3 line-clamp-2">
+                      {book.shortDescription}
+                    </p>
+
+                    {/* Rating and Tags */}
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-1">
+                        <div className="flex items-center gap-1">
+                          {[...Array(5)].map((_, i) => (
+                            <Star
+                              key={i}
+                              className={`w-3 h-3 ${
+                                i < Math.floor(book.rating)
+                                  ? "fill-yellow-400 text-yellow-400"
+                                  : "text-gray-300"
+                              }`}
+                            />
+                          ))}
+                        </div>
+                        <span className="text-xs text-gray-500 ml-1">
+                          {book.rating}
+                        </span>
+                      </div>
+                      <span className="text-xs text-orange-600 font-semibold">
+                        6xD
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
         </section>
 
-        {/* 4. Top 10 Books This Week */}
+        {/* 5. Top 10 Books This Week */}
         <section className="py-16 bg-black text-white">
           <div className="container mx-auto px-4 md:px-6 max-w-7xl">
             <div className="mb-12">
               <h2 className="text-4xl font-bold font-display mb-4">
                 Top 10 Books This Week
               </h2>
-              <p className="text-xl font-body text-gray-300">
-                Highest-rated and trending books in digital transformation
-              </p>
             </div>
 
             <div className="grid lg:grid-cols-2 gap-8">
-              {topBooksThisWeek.slice(0, 10).map((book, index) => (
+              {/* First show the original top books */}
+              {topBooksThisWeek.slice(0, 6).map((book, index) => (
                 <div
                   key={book.id}
                   className="flex gap-6 p-6 bg-gray-900 rounded-lg hover:bg-gray-800 transition-colors cursor-pointer group"
@@ -680,147 +704,110 @@ const BooksLandingPage = () => {
                   </div>
                 </div>
               ))}
-            </div>
 
-            <div className="text-center mt-12">
-              <button
-                onClick={() => navigate("/books/top-books")}
-                className="bg-orange-500 hover:bg-orange-600 text-white px-8 py-3 rounded-lg font-semibold font-body transition-colors flex items-center gap-2 mx-auto"
-              >
-                View Complete Rankings
-                <ArrowRight className="w-5 h-5" />
-              </button>
-            </div>
-          </div>
-        </section>
-        {/* 5. Expert Reviews - Curated Bundles */}
-        <section className="py-16 bg-gray-50">
-          <div className="container mx-auto px-4 md:px-6 max-w-7xl">
-            <div className="text-center mb-12">
-              <h2 className="text-4xl font-bold font-display text-black mb-4">
-                Expert Reviews
-              </h2>
-              <p className="text-xl font-body text-gray-600">
-                Curated book bundles for specific transformation needs
-              </p>
-            </div>
-
-            <div className="grid lg:grid-cols-3 gap-8">
-              {expertReviews.map((bundle) => (
+              {/* Then show books from frontier that were in expert reviews */}
+              {frontierBooks.slice(3, 7).map((book, index) => (
                 <div
-                  key={bundle.id}
-                  className="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow cursor-pointer group"
-                  onClick={() => navigate(`/books/bundles/${bundle.id}`)}
+                  key={book.id}
+                  className="flex gap-6 p-6 bg-gray-900 rounded-lg hover:bg-gray-800 transition-colors cursor-pointer group"
+                  onClick={() => handleBookReview(book)}
                 >
-                  {/* Bundle Header */}
-                  <div className="bg-gradient-to-r from-orange-500 to-red-500 p-6 text-white">
-                    <h3 className="text-xl font-bold mb-2">{bundle.title}</h3>
-                    <p className="text-orange-100 text-sm">
-                      {bundle.description}
-                    </p>
-
-                    {/* 6xD Dimensions */}
-                    <div className="flex flex-wrap gap-2 mt-4">
-                      {bundle.dimensions.map((dimension) => (
-                        <span
-                          key={dimension}
-                          className="bg-white/20 text-white px-2 py-1 rounded text-xs font-medium"
-                        >
-                          {dimension}
-                        </span>
-                      ))}
+                  {/* Rank */}
+                  <div className="flex-shrink-0">
+                    <div className="w-12 h-12 bg-orange-500 text-white rounded-full flex items-center justify-center font-bold text-lg">
+                      #{index + 7}
                     </div>
                   </div>
 
-                  {/* Books Preview */}
-                  <div className="p-6">
-                    <div className="space-y-4">
-                      {bundle.books.slice(0, 3).map((book) => (
-                        <div key={book.id} className="flex gap-3 items-center">
-                          <div className="w-12 h-16 bg-gradient-to-br from-gray-100 to-gray-200 rounded overflow-hidden shadow-sm flex-shrink-0">
-                            <img
-                              src={book.coverImage}
-                              alt={book.title}
-                              className="w-full h-full object-cover"
-                              onError={(e) => {
-                                const target = e.target as HTMLImageElement;
-                                const parent = target.parentElement!;
-                                parent.innerHTML = `
-                                  <div class="w-full h-full flex items-center justify-center bg-gradient-to-br from-blue-100 to-indigo-100">
-                                    <div class="text-center text-gray-600">
-                                      <div class="w-4 h-4 mx-auto bg-orange-500 rounded flex items-center justify-center text-white text-xs">
-                                        📚
-                                      </div>
-                                    </div>
-                                  </div>
-                                `;
-                              }}
-                            />
-                          </div>
-                          <div className="flex-1 min-w-0">
-                            <h4 className="text-sm font-semibold text-black line-clamp-1">
-                              {book.title}
-                            </h4>
-                            <p className="text-xs text-gray-600">
-                              {book.author}
-                            </p>
-                            <div className="flex items-center gap-1 mt-1">
-                              {[...Array(5)].map((_, i) => (
-                                <Star
-                                  key={i}
-                                  className={`w-2 h-2 ${
-                                    i < Math.floor(book.rating)
-                                      ? "fill-yellow-400 text-yellow-400"
-                                      : "text-gray-300"
-                                  }`}
-                                />
-                              ))}
-                              <span className="text-xs text-gray-500 ml-1">
-                                {book.rating}
-                              </span>
+                  {/* Book Cover */}
+                  <div className="flex-shrink-0">
+                    <div className="w-20 h-28 bg-gradient-to-br from-gray-100 to-gray-200 rounded overflow-hidden shadow-lg">
+                      <img
+                        src={book.coverImage}
+                        alt={book.title}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                        onError={(e) => {
+                          const target = e.target as HTMLImageElement;
+                          const parent = target.parentElement!;
+                          parent.innerHTML = `
+                            <div class="w-full h-full flex items-center justify-center bg-gradient-to-br from-blue-100 to-indigo-100">
+                              <div class="text-center text-gray-600">
+                                <div class="w-8 h-8 mx-auto bg-orange-500 rounded flex items-center justify-center text-white text-sm">
+                                  📚
+                                </div>
+                              </div>
                             </div>
-                          </div>
-                        </div>
-                      ))}
+                          `;
+                        }}
+                      />
                     </div>
+                  </div>
 
-                    {/* Bundle Stats */}
-                    <div className="mt-6 pt-4 border-t border-gray-200">
-                      <div className="flex items-center justify-between text-sm">
-                        <span className="text-gray-600">
-                          {bundle.books.length} books • Expert curated
+                  {/* Content */}
+                  <div className="flex-1 min-w-0">
+                    <h3 className="text-lg font-bold text-white mb-2 line-clamp-2 group-hover:text-orange-400 transition-colors">
+                      {book.title}
+                    </h3>
+                    <p className="text-gray-400 text-sm mb-3">{book.author}</p>
+                    <p className="text-gray-300 text-sm mb-4 line-clamp-2">
+                      {book.shortDescription}
+                    </p>
+
+                    {/* Ratings */}
+                    <div className="flex items-center gap-6 text-sm">
+                      <div className="flex items-center gap-2">
+                        <span className="text-gray-400">
+                          Transformation Impact:
                         </span>
                         <div className="flex items-center gap-1">
-                          <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
-                          <span className="font-semibold text-black">
-                            {(
-                              bundle.books.reduce(
-                                (acc, book) => acc + book.rating,
-                                0,
-                              ) / bundle.books.length
-                            ).toFixed(1)}
-                          </span>
+                          {[...Array(5)].map((_, i) => (
+                            <Star
+                              key={i}
+                              className={`w-3 h-3 ${
+                                i < Math.floor(book.rating)
+                                  ? "fill-orange-400 text-orange-400"
+                                  : "text-gray-600"
+                              }`}
+                            />
+                          ))}
                         </div>
+                        <span className="text-orange-400 font-semibold">
+                          {book.rating}
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <span className="text-gray-400">Actionability:</span>
+                        <span className="text-green-400 font-semibold">
+                          {book.actionabilityScore ||
+                            (Math.random() * 2 + 3).toFixed(1)}
+                          /5
+                        </span>
                       </div>
                     </div>
 
-                    {/* CTA */}
-                    <button className="w-full mt-4 bg-orange-500 hover:bg-orange-600 text-white py-2 px-4 rounded font-semibold transition-colors group-hover:bg-orange-600">
-                      Explore Bundle
-                    </button>
+                    {/* 6xD Dimensions */}
+                    <div className="flex flex-wrap gap-2 mt-3">
+                      {book.sixDDimensions?.slice(0, 2).map((dimension) => (
+                        <span
+                          key={dimension}
+                          className="bg-orange-500/20 text-orange-400 px-2 py-1 rounded text-xs font-medium"
+                        >
+                          {dimension}
+                        </span>
+                      )) || (
+                        <>
+                          <span className="bg-orange-500/20 text-orange-400 px-2 py-1 rounded text-xs font-medium">
+                            D3: Digital & AI
+                          </span>
+                          <span className="bg-blue-500/20 text-blue-400 px-2 py-1 rounded text-xs font-medium">
+                            D4: Operations
+                          </span>
+                        </>
+                      )}
+                    </div>
                   </div>
                 </div>
               ))}
-            </div>
-
-            <div className="text-center mt-12">
-              <button
-                onClick={() => navigate("/books/bundles")}
-                className="bg-black hover:bg-gray-800 text-white px-8 py-3 rounded-lg font-semibold font-body transition-colors flex items-center gap-2 mx-auto"
-              >
-                View All Bundles
-                <ArrowRight className="w-5 h-5" />
-              </button>
             </div>
           </div>
         </section>
@@ -833,8 +820,8 @@ const BooksLandingPage = () => {
                 Join the Digital Transformation Reading Community
               </h2>
               <p className="text-xl font-body mb-12 leading-relaxed text-gray-300">
-                Get expert reviews, curated bundles, and insights from digital
-                transformation leaders.
+                Get expert reviews and insights from digital transformation
+                leaders.
               </p>
 
               <form
