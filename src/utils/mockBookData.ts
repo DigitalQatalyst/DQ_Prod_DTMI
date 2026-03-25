@@ -348,7 +348,7 @@ const frontierBooks: Book[] = [
     shortDescription: "Strategic frameworks for digital business models",
     perspectiveOn: "Digital Strategy",
     coverImage:
-      "/10 book covers/9 Must-Read Digital Transformation Books in 2025 _ Informa TechTarget/imgi_10_the_digital_transformation_roadmap.jpg",
+      "/Digital E/The Digital Transformation Playbook - Google Books/imgi_3_default.jpg",
     rating: 4.8,
     reviewCount: 342,
     category: bookCategories[3], // Strategy
@@ -380,7 +380,7 @@ const frontierBooks: Book[] = [
     shortDescription: "Data as economic asset for business value",
     perspectiveOn: "Data Economics",
     coverImage:
-      "/10 book covers/The Economics of Data, Analytics, and Digital Transformation - Google Search/imgi_26_images.webp",
+      "/Digital E/The Economics of Data, Analytics, and Digital Transformation_ The theorems ... - Bill Schmarzo, Dr. Kirk Borne - Google Books/imgi_4_content.jpg",
     rating: 4.6,
     reviewCount: 234,
     category: bookCategories[5], // Data & Analytics
@@ -438,7 +438,8 @@ const frontierBooks: Book[] = [
       "Aligning digital transformation with innovative business models to meet evolving market demands and customer expectations.",
     shortDescription: "Demand-driven digital business innovation",
     perspectiveOn: "Market-Driven Strategy",
-    coverImage: "/book cover/strategic-digital-leadership.svg",
+    coverImage:
+      "/Digital E/Amazon.com_ Demand-Driven Business Strategy (Business and Digital Transformation)_ 9781032127668_ Molenaar, Cor_ Books/imgi_58_819sO9B8LxL._SL1500_.jpg",
     rating: 4.5,
     reviewCount: 156,
     category: bookCategories[3], // Strategy
@@ -471,7 +472,8 @@ const frontierBooks: Book[] = [
       "How AI, robotics, and sensors create 'hybrid intelligences' that improve organizational decision-making and cognitive capabilities.",
     shortDescription: "AI-driven organizational cognitive transformation",
     perspectiveOn: "Cognitive AI",
-    coverImage: "/book cover/ai-leadership-digital-age.svg",
+    coverImage:
+      "/DCO/Digital Transformation Shaping the Subconscious Minds of Organizations - Google Books/imgi_3_default.jpg",
     rating: 4.6,
     reviewCount: 178,
     category: bookCategories[0], // AI & Machine Learning
@@ -502,7 +504,8 @@ const frontierBooks: Book[] = [
       "A practical guide for leaders on the lifecycle of AI implementation within a corporate structure, from development to deployment.",
     shortDescription: "Practical AI implementation lifecycle guide",
     perspectiveOn: "AI Implementation",
-    coverImage: "/book cover/data-driven-decision-making.svg",
+    coverImage:
+      "/DCO/Cognitive Organizations_ Leveraging the Full Power of Generative AI and Intelligent Agents eBook _ Corrêa, Kenneth_ Amazon.com.au_ Kindle Store/imgi_34_91fGGWBMzSL._SL1500_.jpg",
     rating: 4.4,
     reviewCount: 203,
     category: bookCategories[0], // AI & Machine Learning
@@ -533,7 +536,8 @@ const frontierBooks: Book[] = [
       "Managing the shift toward cognitive intelligence and redefining the human role in a digital labor market.",
     shortDescription: "HR transformation in cognitive organizations",
     perspectiveOn: "Digital HR",
-    coverImage: "/book cover/future-of-work.svg",
+    coverImage:
+      "/DCO/Cognitive Kin_ How to Work, Win, and Make Meaning with Agentic AI_ Kolb, Christophe, Rosen, Jan_ 9781646872121_ Amazon.com_ Books/imgi_91_81Uijf9x14L._SL1500_.jpg",
     rating: 4.5,
     reviewCount: 167,
     category: bookCategories[1], // Leadership
@@ -563,7 +567,8 @@ const frontierBooks: Book[] = [
       "Analyzing the large-scale economic shifts driven by AI automation and smart decision-making systems across industries.",
     shortDescription: "Economic impact analysis of AI transformation",
     perspectiveOn: "AI Economics",
-    coverImage: "/book cover/innovation-frameworks.svg",
+    coverImage:
+      "/DCO/The Psychology of Emerging Technology_ How Big Data, AI, and Cognitive ... - Dr Mehmet Yildiz - Google Books/imgi_13_content.jpg",
     rating: 4.7,
     reviewCount: 245,
     category: bookCategories[0], // AI & Machine Learning
@@ -627,7 +632,7 @@ const frontierBooks: Book[] = [
       "Exploring how platform-based models and the 'crowd' disrupt traditional business hierarchies and create new value networks.",
     shortDescription: "Platform economics and crowd-powered business models",
     perspectiveOn: "Platform Economics",
-    coverImage: "/book cover/strategic-digital-leadership.svg",
+    coverImage: "/DBP/imgi_106_61DnUeDO1aL._SL1057_.jpg",
     rating: 4.8,
     reviewCount: 289,
     category: bookCategories[4], // Innovation
@@ -657,7 +662,7 @@ const frontierBooks: Book[] = [
       "Understanding the technical and strategic infrastructure required to support modern business ecosystems and platform strategies.",
     shortDescription: "Infrastructure foundations for digital ecosystems",
     perspectiveOn: "Digital Infrastructure",
-    coverImage: "/book cover/data-driven-decision-making.svg",
+    coverImage: "/DBP/imgi_25_images.jpg",
     rating: 4.5,
     reviewCount: 198,
     category: bookCategories[2], // Business Transformation
@@ -688,7 +693,7 @@ const frontierBooks: Book[] = [
       "A fundamental guide on how networked markets are changing the economy and how to build a successful platform business.",
     shortDescription: "Comprehensive guide to platform business models",
     perspectiveOn: "Platform Strategy",
-    coverImage: "/book cover/innovation-frameworks.svg",
+    coverImage: "/DBP/imgi_41_default.jpg",
     rating: 4.7,
     reviewCount: 267,
     category: bookCategories[3], // Strategy
