@@ -166,7 +166,11 @@ const BookReviewPage = () => {
                 <div className="flex items-center gap-4 text-gray-600">
                   <div className="flex items-center gap-2">
                     <User className="w-4 h-4" />
-                    <span>Digital Transformation Review</span>
+                    <span>
+                      {bookId === "6xd-six-digital-perspectives"
+                        ? "Carimi Medah"
+                        : "Digital Transformation Review"}
+                    </span>
                   </div>
                   <div className="flex items-center gap-2">
                     <Calendar className="w-4 h-4" />
