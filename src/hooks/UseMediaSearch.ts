@@ -1,5 +1,4 @@
 import { useState, useEffect, useCallback } from 'react'
-import { getFallbackKnowledgeHubItems } from '../utils/fallbackData'
 import { mapApiItemToCardProps } from '../utils/mediaMappers'
 import { getSupabase } from '../features/admin/shared/utils/supabaseClient'
 
@@ -294,47 +293,12 @@ export function useMediaSearch({
             return
           }
 
-          // Supabase exhausted � append filtered fallback items at the end
-          let allItems = getFallbackKnowledgeHubItems()
-          if (q) {
-            const searchQuery = q.toLowerCase()
-            allItems = allItems.filter(
-              (item) =>
-                item.title.toLowerCase().includes(searchQuery) ||
-                item.description.toLowerCase().includes(searchQuery) ||
-                (item.provider?.name && item.provider.name.toLowerCase().includes(searchQuery)) ||
-                (item.tags && item.tags.some((tag: string) => tag.toLowerCase().includes(searchQuery))),
-            )
-          }
-          if (filters && filters.length > 0) {
-            allItems = allItems.filter((item) => {
-              // Collect all filterable values from the item
-              const itemValues = [
-                item.filterType,
-                item.mediaType,
-                item.businessStage,
-                item.domain,
-                item.format,
-                item.popularity,
-                ...(item.tags || [])
-              ].filter(Boolean)
-
-              // Check if any of the active filters match any of the item's values
-              return filters.some((filter) => itemValues.includes(filter))
-            })
-          }
-          const toDate = (it: any) => new Date(it.date || it.lastUpdated || 0).getTime()
-          allItems.sort((a, b) => toDate(b) - toDate(a))
-          const mappedFallback = allItems.map(mapApiItemToCardProps)
-          setTotal(allItems.length)
-          // Avoid obvious duplicates by id
-          const supabaseIds = new Set(mapped.map((m: any) => m.id))
-          const dedupedFallback = mappedFallback.filter((it: any) => !supabaseIds.has(it.id))
-
+          // No fallback items - just return what we have from Supabase
+          setTotal(mapped.length)
           if (reset) {
-            setItems([...mapped, ...dedupedFallback])
+            setItems(mapped)
           } else {
-            setItems((prev) => [...prev, ...mapped, ...dedupedFallback])
+            setItems((prev) => [...prev, ...mapped])
           }
           setHasMore(false)
           setNextCursor(null)
@@ -347,53 +311,11 @@ export function useMediaSearch({
           }
         }
 
-        // Fallback: local mock dataset
-        let allItems = getFallbackKnowledgeHubItems()
-        // Apply search filter
-        if (q) {
-          const searchQuery = q.toLowerCase()
-          allItems = allItems.filter(
-            (item) =>
-              item.title.toLowerCase().includes(searchQuery) ||
-              item.description.toLowerCase().includes(searchQuery) ||
-              (item.provider?.name && item.provider.name.toLowerCase().includes(searchQuery)) ||
-              (item.tags && item.tags.some((tag: string) => tag.toLowerCase().includes(searchQuery))),
-          )
-        }
-        // Apply filters (by mediaType, businessStage, domain, format, popularity, and tags)
-        if (filters && filters.length > 0) {
-          allItems = allItems.filter((item) => {
-            // Collect all filterable values from the item
-            const itemValues = [
-              item.filterType,
-              item.mediaType,
-              item.businessStage,
-              item.domain,
-              item.format,
-              item.popularity,
-              ...(item.tags || [])
-            ].filter(Boolean)
-
-            // Check if any of the active filters match any of the item's values
-            return filters.some((filter) => itemValues.includes(filter))
-          })
-        }
-        // Sort newest first (by date/lastUpdated)
-        const toDate = (it: any) => new Date(it.date || it.lastUpdated || 0).getTime()
-        allItems.sort((a, b) => toDate(b) - toDate(a))
-        // Paginate
-        const startIndex = reset ? 0 : (currentPage - 1) * pageSize
-        const endIndex = reset ? pageSize : currentPage * pageSize
-        const paginatedItems = allItems.slice(startIndex, endIndex)
-        const moreItems = endIndex < allItems.length
-        const cursor = moreItems ? `page_${currentPage + 1}` : null
-        if (reset) {
-          setItems(paginatedItems.map(mapApiItemToCardProps))
-        } else {
-          setItems((prev) => [...prev, ...paginatedItems.map(mapApiItemToCardProps)])
-        }
-        setHasMore(moreItems)
-        setNextCursor(cursor)
+        // No fallback data - return empty results
+        setItems([])
+        setTotal(0)
+        setHasMore(false)
+        setNextCursor(null)
         setIsLoading(false)
       } catch (err) {
         setError(

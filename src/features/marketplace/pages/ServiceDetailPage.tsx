@@ -2,7 +2,24 @@ import { useParams, useNavigate, Link } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { Header } from '../../../shared/Header';
 import { Footer } from '../../../shared/Footer';
-import { mockServiceData, ServiceItem } from '../../../data/mockServiceData';
+
+// Define ServiceItem interface locally since we removed mock data
+interface ServiceItem {
+  id: string;
+  title: string;
+  description: string;
+  category: string;
+  provider: {
+    name: string;
+    logo: string;
+  };
+  pricing: {
+    model: string;
+    amount: number;
+    currency: string;
+  };
+  features: string[];
+}
 import {
   CheckCircle,
   ChevronRight,
@@ -142,9 +159,8 @@ const ServiceDetailPage = () => {
   };
 
   useEffect(() => {
-    // Find the service by ID
-    const foundService = mockServiceData.find(s => s.id === serviceId);
-    setService(foundService || null);
+    // No mock data - service will be null
+    setService(null);
   }, [serviceId]);
 
   if (!service) {

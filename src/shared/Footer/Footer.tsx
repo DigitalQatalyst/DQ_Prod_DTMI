@@ -103,7 +103,6 @@ export function Footer({ 'data-id': dataId }: FooterProps) {
                 <li><Link to="/signals" className="text-gray-300 hover:text-primary text-sm block">Signals</Link></li>
                 <li><Link to="/insights" className="text-gray-300 hover:text-primary text-sm block">Insights</Link></li>
                 <li><Link to="/research" className="text-gray-300 hover:text-primary text-sm block">Deep Analysis</Link></li>
-                <li><Link to="/6xd" className="text-gray-300 hover:text-primary text-sm block">6xD Framework</Link></li>
                 <li><Link to="/marketplace/dtmi" className="text-gray-300 hover:text-primary text-sm block">DTMI Marketplace</Link></li>
               </ul>
             </AccordionSection>
@@ -194,7 +193,6 @@ export function Footer({ 'data-id': dataId }: FooterProps) {
                 <li><Link to="/signals" className="text-gray-300 hover:text-primary text-sm">Signals</Link></li>
                 <li><Link to="/insights" className="text-gray-300 hover:text-primary text-sm">Insights</Link></li>
                 <li><Link to="/research" className="text-gray-300 hover:text-primary text-sm">Deep Analysis</Link></li>
-                <li><Link to="/6xd" className="text-gray-300 hover:text-primary text-sm">6xD Framework</Link></li>
                 <li><Link to="/marketplace/dtmi" className="text-gray-300 hover:text-primary text-sm">DTMI Marketplace</Link></li>
               </ul>
             </div>

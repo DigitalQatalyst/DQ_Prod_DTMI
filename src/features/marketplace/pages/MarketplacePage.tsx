@@ -1,10 +1,19 @@
-import React, { useCallback, useEffect, useState, useRef } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+  useRef,
+} from "react";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { FilterSidebar, FilterConfig } from "../components/FilterSidebar.tsx";
 import { MarketplaceGrid } from "../components/MarketplaceGrid.tsx";
 import { SearchBar } from "../../../shared/SearchBar.tsx";
-import { SubMarketplaceTabs, SubMarketplaceTab } from "../components/SubMarketplaceTabs.tsx";
+import {
+  SubMarketplaceTabs,
+  SubMarketplaceTab,
+} from "../components/SubMarketplaceTabs.tsx";
 import { IntelligenceLayersSection } from "../components/IntelligenceLayersSection.tsx";
 import {
   FilterIcon,
@@ -14,7 +23,10 @@ import {
   ChevronDownIcon,
   ChevronUpIcon,
 } from "lucide-react";
-import { ErrorDisplay, CourseCardSkeleton } from "../../../shared/SkeletonLoader.tsx";
+import {
+  ErrorDisplay,
+  CourseCardSkeleton,
+} from "../../../shared/SkeletonLoader.tsx";
 import { getMarketplaceConfig } from "../../../utils/marketplaceConfig.ts";
 import { MarketplaceComparison } from "../components/MarketplaceComparison";
 import { Header } from "../../../shared/Header/index.tsx";
@@ -75,6 +87,133 @@ import {
   listPublicMedia,
   mapGridToCard,
 } from "../../../services/knowledgeHubGrid.ts";
+import { categoryService } from "../../admin/shared/utils/supabase";
+
+const normalizeFilterOptionId = (value: string): string =>
+  String(value || "")
+    .trim()
+    .toLowerCase()
+    .replace(/&/g, "and")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+
+const buildDTMIFilterConfigFromCategories = (
+  categories: Array<any>,
+): FilterConfig[] => {
+  if (!Array.isArray(categories) || categories.length === 0) return [];
+
+  const enabled = categories.filter((c) => c?.is_filter_enabled);
+  const byGroup = (group: string) =>
+    enabled.filter((c) => c.filter_group === group);
+
+  const contentTypes = byGroup("content-types");
+  const contentTypeParents = contentTypes.filter((c) => !c.parent_id);
+  const contentTypeOptions = contentTypeParents
+    .map((parent) => {
+      const children = contentTypes
+        .filter((c) => c.parent_id === parent.id)
+        .sort(
+          (a, b) =>
+            (a.filter_display_order ?? 999) - (b.filter_display_order ?? 999),
+        )
+        .map((child) => ({
+          id: child.slug || normalizeFilterOptionId(child.name),
+          name: child.name,
+        }));
+
+      return {
+        id: parent.slug || normalizeFilterOptionId(parent.name),
+        name: parent.name,
+        children,
+      };
+    })
+    .filter((item) => item.children.length > 0);
+
+  const formatOptions = byGroup("content-format")
+    .filter((c) => !c.parent_id)
+    .sort(
+      (a, b) =>
+        (a.filter_display_order ?? 999) - (b.filter_display_order ?? 999),
+    )
+    .map((c) => ({
+      id: c.slug || normalizeFilterOptionId(c.name),
+      name: c.name,
+    }));
+
+  const perspectiveOptions = byGroup("digital-perspectives")
+    .filter(
+      (c) =>
+        !c.parent_id &&
+        (String(c.slug || "").match(/^d[1-6]-/i) ||
+          String(c.name || "").startsWith("D")),
+    )
+    .sort(
+      (a, b) =>
+        (a.filter_display_order ?? 999) - (b.filter_display_order ?? 999),
+    )
+    .map((c) => ({
+      id: c.slug || normalizeFilterOptionId(c.name),
+      name: c.name,
+    }));
+
+  const sectorOptions = byGroup("digital-sectors")
+    .filter((c) => !c.parent_id)
+    .sort(
+      (a, b) =>
+        (a.filter_display_order ?? 999) - (b.filter_display_order ?? 999),
+    )
+    .map((c) => ({
+      id: c.slug || normalizeFilterOptionId(c.name),
+      name: c.name,
+    }));
+
+  const dbpDomains = byGroup("dbp-domains");
+  const dbpParents = dbpDomains.filter((c) => !c.parent_id);
+  const platformDomainOptions = dbpParents
+    .map((parent) => ({
+      id: parent.slug || normalizeFilterOptionId(parent.name),
+      name: parent.name,
+      children: dbpDomains
+        .filter((c) => c.parent_id === parent.id)
+        .sort(
+          (a, b) =>
+            (a.filter_display_order ?? 999) - (b.filter_display_order ?? 999),
+        )
+        .map((child) => ({
+          id: child.slug || normalizeFilterOptionId(child.name),
+          name: child.name,
+        })),
+    }))
+    .filter((item) => item.children.length > 0);
+
+  return [
+    {
+      id: "contentType",
+      title: "Content Types",
+      options: contentTypeOptions,
+    },
+    {
+      id: "contentFormat",
+      title: "Content Format",
+      options: formatOptions,
+    },
+    {
+      id: "perspective6xd",
+      title: "Perspective (6xD)",
+      options: perspectiveOptions,
+    },
+    {
+      id: "sector",
+      title: "Sectors",
+      options: sectorOptions,
+    },
+    {
+      id: "platformDomain",
+      title: "Platform Domain (DBP)",
+      options: platformDomainOptions,
+    },
+  ].filter((group) => Array.isArray(group.options) && group.options.length > 0);
+};
 
 // Type for comparison items
 interface ComparisonItem {
@@ -463,7 +602,7 @@ export const MarketplacePage: React.FC<MarketplacePageProps> = ({
     if (category) {
       // Handle comma-separated categories
       const categories = category.split(",").map((c) => c.trim());
-      
+
       // Check if these are digital perspective filter IDs
       const perspectiveMapping: Record<string, string> = {
         "d1-e40": "D1 - Digital Economy 4.0 (E4.0)",
@@ -473,9 +612,9 @@ export const MarketplacePage: React.FC<MarketplacePageProps> = ({
         "d5-worker": "D5 - Digital Worker & Digital Workspace",
         "d6-accelerators": "D6 - Digital Accelerators (Tools)",
       };
-      
+
       let hasDigitalPerspectiveFilters = false;
-      
+
       categories.forEach((cat) => {
         if (perspectiveMapping[cat]) {
           // This is a digital perspective filter ID
@@ -486,7 +625,7 @@ export const MarketplacePage: React.FC<MarketplacePageProps> = ({
           setSearchQuery(decodeURIComponent(cat));
         }
       });
-      
+
       // If digital perspective filters are applied, automatically expand category filter section
       if (hasDigitalPerspectiveFilters) {
         setCollapsedCategories((prev) => ({
@@ -499,12 +638,12 @@ export const MarketplacePage: React.FC<MarketplacePageProps> = ({
           "category-digital-sectors": true, // Keep Digital Sectors collapsed
           popularity: true, // Keep Popularity collapsed
         }));
-        
+
         // Also show filter sidebar on desktop when 6xD filters are applied
         setShowFilters(true);
       }
     }
-    
+
     // Handle expandCategory parameter to expand specific category sections
     if (expandCategory) {
       if (expandCategory === "digital-perspectives") {
@@ -520,12 +659,17 @@ export const MarketplacePage: React.FC<MarketplacePageProps> = ({
         }));
         setShowFilters(true);
         setHasUrlCollapsedState(true); // Mark that URL has set collapsed state
-        
+
         // Scroll to Category section after a short delay to ensure DOM is ready
         setTimeout(() => {
-          const categorySection = document.querySelector('[data-filter-section="category"]');
+          const categorySection = document.querySelector(
+            '[data-filter-section="category"]',
+          );
           if (categorySection) {
-            categorySection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            categorySection.scrollIntoView({
+              behavior: "smooth",
+              block: "start",
+            });
           }
         }, 500);
       } else if (expandCategory === "digital-sectors") {
@@ -541,28 +685,35 @@ export const MarketplacePage: React.FC<MarketplacePageProps> = ({
         }));
         setShowFilters(true);
         setHasUrlCollapsedState(true); // Mark that URL has set collapsed state
-        
+
         // Scroll to Digital Sectors subsection with multiple attempts to ensure DOM is ready
         const attemptScroll = (attempts = 0) => {
           if (attempts > 10) {
             return;
           }
-          
-          const digitalSectorsSubsection = document.querySelector('[data-filter-subsection="category-digital-sectors"]');
-          const filterContainer = document.querySelector('.custom-scrollbar');
-          
+
+          const digitalSectorsSubsection = document.querySelector(
+            '[data-filter-subsection="category-digital-sectors"]',
+          );
+          const filterContainer = document.querySelector(".custom-scrollbar");
+
           if (digitalSectorsSubsection && filterContainer) {
             // Calculate the position of the subsection relative to the filter container
-            const subsectionTop = digitalSectorsSubsection.getBoundingClientRect().top;
+            const subsectionTop =
+              digitalSectorsSubsection.getBoundingClientRect().top;
             const containerTop = filterContainer.getBoundingClientRect().top;
-            const scrollPosition = filterContainer.scrollTop + (subsectionTop - containerTop);
-            
-            filterContainer.scrollTo({ top: scrollPosition, behavior: 'smooth' });
+            const scrollPosition =
+              filterContainer.scrollTop + (subsectionTop - containerTop);
+
+            filterContainer.scrollTo({
+              top: scrollPosition,
+              behavior: "smooth",
+            });
           } else {
             setTimeout(() => attemptScroll(attempts + 1), 200);
           }
         };
-        
+
         setTimeout(() => attemptScroll(), 500);
       } else if (expandCategory === "digital-functional-streams-domains") {
         setCollapsedCategories((prev) => ({
@@ -577,12 +728,17 @@ export const MarketplacePage: React.FC<MarketplacePageProps> = ({
         }));
         setShowFilters(true);
         setHasUrlCollapsedState(true); // Mark that URL has set collapsed state
-        
+
         // Scroll to Category section after a short delay to ensure DOM is ready
         setTimeout(() => {
-          const categorySection = document.querySelector('[data-filter-section="category"]');
+          const categorySection = document.querySelector(
+            '[data-filter-section="category"]',
+          );
           if (categorySection) {
-            categorySection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            categorySection.scrollIntoView({
+              behavior: "smooth",
+              block: "start",
+            });
           }
         }, 500);
       }
@@ -592,24 +748,24 @@ export const MarketplacePage: React.FC<MarketplacePageProps> = ({
     if (sector) {
       // Handle comma-separated sectors
       const sectors = sector.split(",").map((s) => s.trim());
-      
+
       // Check if these are digital sector filter IDs
       const sectorMapping: Record<string, string> = {
-        "experience40": "Cross-Sector Domain (Experience4.0)",
-        "agility40": "Cross-Sector Domain (Agility4.0)",
-        "farming40": "Primary Sector (Farming4.0)",
-        "plant40": "Secondary Sector (Plant4.0)",
-        "infrastructure40": "Secondary Sector (Infrastructure4.0)",
-        "government40": "Tertiary Sector (Government4.0)",
-        "hospitality40": "Tertiary Sector (Hospitality4.0)",
-        "retail40": "Tertiary Sector (Retail4.0)",
-        "service40": "Quaternary Sector (Service4.0)",
-        "logistics40": "Quaternary Sector (Logistics4.0)",
-        "wellness40": "Quinary Sector (Wellness4.0)",
+        experience40: "Cross-Sector Domain (Experience4.0)",
+        agility40: "Cross-Sector Domain (Agility4.0)",
+        farming40: "Primary Sector (Farming4.0)",
+        plant40: "Secondary Sector (Plant4.0)",
+        infrastructure40: "Secondary Sector (Infrastructure4.0)",
+        government40: "Tertiary Sector (Government4.0)",
+        hospitality40: "Tertiary Sector (Hospitality4.0)",
+        retail40: "Tertiary Sector (Retail4.0)",
+        service40: "Quaternary Sector (Service4.0)",
+        logistics40: "Quaternary Sector (Logistics4.0)",
+        wellness40: "Quinary Sector (Wellness4.0)",
       };
-      
+
       let hasDigitalSectorFilters = false;
-      
+
       sectors.forEach((sec) => {
         if (sectorMapping[sec]) {
           // This is a digital sector filter ID
@@ -620,7 +776,7 @@ export const MarketplacePage: React.FC<MarketplacePageProps> = ({
           setSearchQuery(decodeURIComponent(sec));
         }
       });
-      
+
       // If digital sector filters are applied, automatically expand category filter section
       // and collapse other subcategories to make Digital Sectors more visible
       if (hasDigitalSectorFilters) {
@@ -634,7 +790,7 @@ export const MarketplacePage: React.FC<MarketplacePageProps> = ({
           "category-digital-sectors": false, // Expand Digital Sectors subcategory
           popularity: true, // Keep Popularity collapsed
         }));
-        
+
         // Also show filter sidebar on desktop when sector filters are applied
         setShowFilters(true);
       }
@@ -644,25 +800,25 @@ export const MarketplacePage: React.FC<MarketplacePageProps> = ({
     if (domain) {
       // Handle comma-separated domains
       const domains = domain.split(",").map((d) => d.trim());
-      
+
       // Check if these are digital domain filter IDs
       const domainMapping: Record<string, string> = {
-        "channels": "Digital Channels",
-        "experience": "Digital Experience",
-        "services": "Digital Services",
-        "marketing": "Digital Marketing",
-        "workspace": "Digital Workspace",
+        channels: "Digital Channels",
+        experience: "Digital Experience",
+        services: "Digital Services",
+        marketing: "Digital Marketing",
+        workspace: "Digital Workspace",
         "core-systems": "Digital Core",
-        "gprc": "Digital GPRC",
+        gprc: "Digital GPRC",
         "back-office": "Digital Back-Office",
-        "interops": "Digital InterOps",
-        "security": "Digital Security",
-        "intelligence": "Digital Intelligence",
-        "it": "Digital IT",
+        interops: "Digital InterOps",
+        security: "Digital Security",
+        intelligence: "Digital Intelligence",
+        it: "Digital IT",
       };
-      
+
       let hasDigitalDomainFilters = false;
-      
+
       domains.forEach((dom) => {
         if (domainMapping[dom]) {
           // This is a digital domain filter ID
@@ -673,7 +829,7 @@ export const MarketplacePage: React.FC<MarketplacePageProps> = ({
           setSearchQuery(decodeURIComponent(dom));
         }
       });
-      
+
       // If digital domain filters are applied, automatically expand category filter section
       if (hasDigitalDomainFilters) {
         setCollapsedCategories((prev) => ({
@@ -686,7 +842,7 @@ export const MarketplacePage: React.FC<MarketplacePageProps> = ({
           "category-digital-sectors": true, // Keep Digital Sectors collapsed
           popularity: true, // Keep Popularity collapsed
         }));
-        
+
         // Also show filter sidebar on desktop when domain filters are applied
         setShowFilters(true);
       }
@@ -696,16 +852,16 @@ export const MarketplacePage: React.FC<MarketplacePageProps> = ({
     if (stream) {
       // Handle comma-separated streams
       const streams = stream.split(",").map((s) => s.trim());
-      
+
       // Check if these are digital stream filter IDs
       const streamMapping: Record<string, string> = {
-        "frontend": "Digital Front-End",
-        "core": "Digital Core",
-        "enablers": "Digital Enablers",
+        frontend: "Digital Front-End",
+        core: "Digital Core",
+        enablers: "Digital Enablers",
       };
-      
+
       let hasDigitalStreamFilters = false;
-      
+
       streams.forEach((str) => {
         if (streamMapping[str]) {
           // This is a digital stream filter ID
@@ -716,7 +872,7 @@ export const MarketplacePage: React.FC<MarketplacePageProps> = ({
           setSearchQuery(decodeURIComponent(str));
         }
       });
-      
+
       // If digital stream filters are applied, automatically expand category filter section
       if (hasDigitalStreamFilters) {
         setCollapsedCategories((prev) => ({
@@ -729,7 +885,7 @@ export const MarketplacePage: React.FC<MarketplacePageProps> = ({
           "category-digital-sectors": true, // Keep Digital Sectors collapsed
           popularity: true, // Keep Popularity collapsed
         }));
-        
+
         // Also show filter sidebar on desktop when stream filters are applied
         setShowFilters(true);
       }
@@ -847,6 +1003,7 @@ export const MarketplacePage: React.FC<MarketplacePageProps> = ({
     ];
 
     const contentTypesList = [
+      "Blog",
       "Articles",
       "Blogs",
       "Whitepapers",
@@ -857,6 +1014,19 @@ export const MarketplacePage: React.FC<MarketplacePageProps> = ({
       "Videos",
       "Podcasts",
     ];
+
+    const contentTypeValueMap: Record<string, string> = {
+      Blog: "Blogs",
+      Blogs: "Blogs",
+      Article: "Articles",
+      Articles: "Articles",
+      Whitepaper: "Whitepapers",
+      Whitepapers: "Whitepapers",
+      "Expert Interview": "Expert Interviews",
+      "Expert Interviews": "Expert Interviews",
+      Podcast: "Podcasts",
+      Podcasts: "Podcasts",
+    };
 
     const formatsMap: Record<string, string> = {
       "Quick Reads": "Quick Reads",
@@ -897,7 +1067,7 @@ export const MarketplacePage: React.FC<MarketplacePageProps> = ({
       } else if (sectorsList.includes(filter)) {
         addUnique(digital_sector, filter);
       } else if (contentTypesList.includes(filter)) {
-        addUnique(content_type, filter);
+        addUnique(content_type, contentTypeValueMap[filter] || filter);
       } else if (formatsMap[filter]) {
         addUnique(format, formatsMap[filter]);
       } else if (popularityMap[filter]) {
@@ -907,7 +1077,8 @@ export const MarketplacePage: React.FC<MarketplacePageProps> = ({
 
     // Only include filters that have values (return null for empty arrays)
     return {
-      digital_perspective: digital_perspective.length > 0 ? digital_perspective[0] : null,
+      digital_perspective:
+        digital_perspective.length > 0 ? digital_perspective[0] : null,
       digital_stream: digital_stream.length > 0 ? digital_stream[0] : null,
       digital_domain: digital_domain.length > 0 ? digital_domain[0] : null,
       digital_sector: digital_sector.length > 0 ? digital_sector[0] : null,
@@ -916,6 +1087,11 @@ export const MarketplacePage: React.FC<MarketplacePageProps> = ({
       content_type: content_type.length > 0 ? content_type[0] : null,
     };
   };
+
+  const marketplaceFilters = useMemo(
+    () => extractMarketplaceFilters(activeFilters),
+    [activeFilters],
+  );
 
   // DTMI: initial load (keyset pagination), with simple memory cache
   const loadKHInitial = useCallback(async () => {
@@ -1017,6 +1193,7 @@ export const MarketplacePage: React.FC<MarketplacePageProps> = ({
                 | "insights"
                 | "deep-analysis"
                 | null),
+        marketplaceFilters,
       });
       const mapped = gridItems.map(mapGridToCard);
       setKhPages([{ items: mapped, after: null, nextCursor }]);
@@ -1043,6 +1220,7 @@ export const MarketplacePage: React.FC<MarketplacePageProps> = ({
     computedPageSize,
     activeFilters,
     activeSubMarketplace,
+    marketplaceFilters,
   ]);
 
   // Removed auto-prefetch sentinel to avoid flicker and dupe fetches
@@ -1159,6 +1337,7 @@ export const MarketplacePage: React.FC<MarketplacePageProps> = ({
                   | "insights"
                   | "deep-analysis"
                   | null),
+          marketplaceFilters,
         });
         const mapped = gridItems.map(mapGridToCard);
         setKhPages((prev) => [
@@ -1185,6 +1364,7 @@ export const MarketplacePage: React.FC<MarketplacePageProps> = ({
       debouncedSearch,
       activeFilters,
       activeSubMarketplace,
+      marketplaceFilters,
     ],
   );
 
@@ -1193,9 +1373,15 @@ export const MarketplacePage: React.FC<MarketplacePageProps> = ({
     const loadFilterOptions = async () => {
       try {
         if (marketplaceType === "dtmi") {
-          // Use static config for DTMI filters - same for all Knowledge Depth tabs
+          // Load DTMI filter taxonomy from database categories.
+          const categories = await categoryService.getCategories();
           const filterOptions: FilterConfig[] =
-            config.writtenFilterCategories || config.filterCategories;
+            buildDTMIFilterConfigFromCategories(categories);
+
+          if (!filterOptions.length) {
+            throw new Error("No DTMI filter categories found in database");
+          }
+
           setFilterConfig(filterOptions);
 
           // Initialize empty filters based on the configuration
@@ -1299,10 +1485,11 @@ export const MarketplacePage: React.FC<MarketplacePageProps> = ({
       } catch (err) {
         console.error("Error fetching filter options:", err);
         // Use fallback filter config from marketplace config
-        setFilterConfig(config.filterCategories);
+        const fallbackCategories = config.filterCategories || [];
+        setFilterConfig(fallbackCategories);
         // Initialize empty filters based on the configuration
         const initialFilters: Record<string, string[]> = {};
-        config.filterCategories.forEach((config) => {
+        fallbackCategories.forEach((config) => {
           initialFilters[config.id] = [];
         });
         setFilters(initialFilters);
@@ -1318,20 +1505,22 @@ export const MarketplacePage: React.FC<MarketplacePageProps> = ({
       const initialCollapsed: Record<string, boolean> = {};
       filterConfig.forEach((category) => {
         // Collapse all sections except 'category' which should be expanded to show subcategories
-        if (category.id === 'category') {
+        if (category.id === "category") {
           initialCollapsed[category.id] = false; // Category section expanded
-          
+
           // Iterate through category options and collapse all nested subcategories
           if (category.options) {
             category.options.forEach((option) => {
               if (option.children && option.children.length > 0) {
                 // Collapse each subcategory (e.g., category-digital-perspectives)
                 initialCollapsed[`${category.id}-${option.id}`] = true;
-                
+
                 // Also collapse any third-level nested items
                 option.children.forEach((child) => {
                   if (child.children && child.children.length > 0) {
-                    initialCollapsed[`${category.id}-${option.id}-${child.id}`] = true;
+                    initialCollapsed[
+                      `${category.id}-${option.id}-${child.id}`
+                    ] = true;
                   }
                 });
               }

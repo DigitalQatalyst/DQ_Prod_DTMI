@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { CheckIcon, ArrowRightIcon } from 'lucide-react';
 import { NotificationItem } from './NotificationItem';
-import { mockNotifications, Notification } from '../utils/mockNotifications';
+import { getNotifications, Notification } from '../utils/notifications';
 interface NotificationsMenuProps {
   onViewAll: () => void;
   onClose: () => void;
@@ -17,7 +17,7 @@ export function NotificationsMenu({
   useEffect(() => {
     setLoading(true);
     setTimeout(() => {
-      setNotifications(mockNotifications);
+      setNotifications(getNotifications());
       setLoading(false);
     }, 300);
   }, []);

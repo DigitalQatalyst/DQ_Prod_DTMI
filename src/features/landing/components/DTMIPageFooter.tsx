@@ -120,10 +120,10 @@ export function DTMIPageFooter() {
               </li>
               <li>
                 <Link
-                  to="/dtmi/6xd"
+                  to="/research"
                   className="text-gray-300 hover:text-white transition-colors"
                 >
-                  6xD Framework
+                  Research
                 </Link>
               </li>
             </ul>

@@ -1,10 +1,6 @@
 import { useEffect, useState } from "react";
 import { useQuery } from "@apollo/client/react";
 import { GET_PRODUCT, GET_COURSE, GET_PARTNER } from "../services/marketplaceQueries";
-import {
-  getFallbackItemDetails,
-  getFallbackItems,
-} from "../utils/fallbackData";
 
 // Normalize eligibility display to the first non-empty segment before a semicolon
 const normalizeEligibility = (val: any): string | undefined => {
@@ -319,44 +315,17 @@ export function useProductDetails({
     const raw = marketplaceType === "courses" ? course : product;
 
     if (!raw) {
-      // fallback path if no item in response
-      const fallback = getFallbackItemDetails(
-        marketplaceType,
-        itemId || "fallback-1"
-      );
-      if (fallback) {
-        setItem(fallback);
-        setRelatedItems(getFallbackItems(marketplaceType));
-      }
+      // No fallback - just return empty
+      setItem(null);
+      setRelatedItems([]);
       return;
     }
 
     const mapped = marketplaceType === "courses" ? mapCourseToItem(raw) : mapProductToItem(raw);
     if (!mapped) return;
 
-    // merge with fallback to fill gaps
-    const fallbackForItem = getFallbackItemDetails(
-      marketplaceType,
-      itemId || "fallback-1"
-    );
-    // Start with mapped data, only fill gaps with fallback
+    // No fallback merging - use mapped data as is
     const merged: any = { ...mapped };
-    if (fallbackForItem) {
-      for (const key of Object.keys(fallbackForItem)) {
-        // Never override provider with fallback data
-        if (key === 'provider') continue;
-        
-        const val = merged[key];
-        const shouldUseFallback =
-          val === undefined ||
-          val === null ||
-          (Array.isArray(val) && val.length === 0) ||
-          (typeof val === "string" && val.trim() === "");
-        if (shouldUseFallback) {
-          merged[key] = (fallbackForItem as any)[key];
-        }
-      }
-    }
     // Enrich provider with partner fields (non-courses) when available
     if (marketplaceType !== "courses") {
       const currentProvider = (mapped as any).provider || {};
@@ -429,8 +398,7 @@ export function useProductDetails({
         : [];
       limitedRelated = relatedFromGql.slice(0, 3);
     }
-    const fallbackLimited = getFallbackItems(marketplaceType).slice(0, 3);
-    const chosen = limitedRelated.length > 0 ? limitedRelated : fallbackLimited;
+    const chosen = limitedRelated.length > 0 ? limitedRelated : []; // No fallback items
     const normalized = chosen
       .filter((x: any) => x?.id !== merged.id) // avoid showing the same item as related
       .slice(0, 3)

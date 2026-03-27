@@ -1,5 +1,5 @@
-import React, { useState, useMemo, useEffect } from 'react';
-import { ChevronDown, ChevronUp } from 'lucide-react';
+import React, { useState, useMemo, useEffect } from "react";
+import { Accordion, Checkbox, Stack, Button } from "@mantine/core";
 
 export interface FilterOption {
   id: string;
@@ -14,13 +14,6 @@ export interface FilterConfig {
   isNested?: boolean; // Flag to indicate if this category has nested structure
 }
 
-interface AccordionSectionProps {
-  title: string;
-  isOpen: boolean;
-  onToggle: () => void;
-  children: React.ReactNode;
-}
-
 export interface FilterSidebarProps {
   filters: Record<string, string[]>;
   filterConfig: FilterConfig[];
@@ -33,44 +26,13 @@ export interface FilterSidebarProps {
 
 // Mapping of Media Types to their relevant Format options (uses filter labels)
 const MEDIA_TYPE_FORMAT_MAPPING: Record<string, string[]> = {
-  'News': ['Quick Reads'],
-  'Reports': ['In-Depth Reports', 'Downloadable Templates'],
-  'Toolkits & Templates': ['Interactive Tools', 'Downloadable Templates'],
-  'Guides': ['Quick Reads', 'In-Depth Reports'],
-  'Events': ['Live Events'],
-  'Videos': ['Recorded Media'],
-  'Podcasts': ['Recorded Media']
-};
-
-const AccordionSection: React.FC<AccordionSectionProps> = ({
-  title,
-  isOpen,
-  onToggle,
-  children,
-}) => {
-  return (
-    <div className="border-b border-gray-100 py-3">
-      <button
-        className="flex w-full justify-between items-center text-left font-medium text-gray-900 mb-2"
-        onClick={onToggle}
-        aria-expanded={isOpen}
-      >
-        {title}
-        {isOpen ? (
-          <ChevronUp size={16} className="text-gray-500" />
-        ) : (
-          <ChevronDown size={16} className="text-gray-500" />
-        )}
-      </button>
-      <div
-        className={`overflow-hidden transition-all duration-300 ease-in-out ${
-          isOpen ? "max-h-96" : "max-h-0"
-        }`}
-      >
-        {children}
-      </div>
-    </div>
-  );
+  News: ["Quick Reads"],
+  Reports: ["In-Depth Reports", "Downloadable Templates"],
+  "Toolkits & Templates": ["Interactive Tools", "Downloadable Templates"],
+  Guides: ["Quick Reads", "In-Depth Reports"],
+  Events: ["Live Events"],
+  Videos: ["Recorded Media"],
+  Podcasts: ["Recorded Media"],
 };
 
 export const FilterSidebar: React.FC<FilterSidebarProps> = ({
@@ -82,93 +44,166 @@ export const FilterSidebar: React.FC<FilterSidebarProps> = ({
   openSections: externalOpenSections,
   onToggleSection: externalToggleSection,
 }) => {
-  const [internalOpenSections, setInternalOpenSections] = useState<Record<string, boolean>>(
-    Object.fromEntries(filterConfig.map((config) => [config.id, config.id !== 'economicSector']))
-  );
-
-  // Use external sections if provided, otherwise use internal state
-  const openSections = externalOpenSections || internalOpenSections;
-
-  const toggleSection = (section: string) => {
-    if (externalToggleSection) {
-      externalToggleSection(section);
-    } else {
-      setInternalOpenSections((prev) => ({
-        ...prev,
-        [section]: !prev[section],
-      }));
-    }
+  // Determine which sections should be open by default
+  const getDefaultOpenSections = () => {
+    const defaults = filterConfig
+      .filter((config) => config.id !== "economicSector")
+      .map((config) => config.id);
+    return defaults;
   };
 
-  // Auto-open sections that have active filters (only for internal state)
+  const [internalOpenSections, setInternalOpenSections] = useState<string[]>(
+    getDefaultOpenSections(),
+  );
+
+  // Auto-open sections that have active filters
   useEffect(() => {
-    if (externalOpenSections) return; // Don't auto-open if externally controlled
-    
-    const sectionsWithActiveFilters: Record<string, boolean> = {};
-    
-    filterConfig.forEach(config => {
-      const hasActiveFilter = filters[config.id] && filters[config.id].length > 0;
-      // Open section if it has active filters, otherwise keep default state
-      sectionsWithActiveFilters[config.id] = hasActiveFilter ? true : internalOpenSections[config.id];
-    });
-    
-    setInternalOpenSections(sectionsWithActiveFilters);
-  }, [filters, filterConfig]);
-  const textSizeClass = isResponsive ? 'text-xs' : 'text-sm';
-  const spacingClass = isResponsive ? 'space-y-1' : 'space-y-2';
+    if (externalOpenSections) return;
+
+    const sectionsWithFilters = filterConfig
+      .filter((config) => filters[config.id] && filters[config.id].length > 0)
+      .map((config) => config.id);
+
+    if (sectionsWithFilters.length > 0) {
+      setInternalOpenSections((prev) => {
+        const combined = [...new Set([...prev, ...sectionsWithFilters])];
+        return combined;
+      });
+    }
+  }, [filters, filterConfig, externalOpenSections]);
 
   // Filter the format options based on selected media types
   const filteredFilterConfig = useMemo(() => {
-    const selectedMediaTypes = filters['mediaType'] || [];
+    const selectedMediaTypes = filters["mediaType"] || [];
 
-    return filterConfig.map(config => {
-      // Only filter the Format category if any Media Type is selected
-      if (config.id === 'format' && selectedMediaTypes.length > 0) {
+    return filterConfig.map((config) => {
+      if (config.id === "format" && selectedMediaTypes.length > 0) {
         const allowedFormats = selectedMediaTypes
-          .flatMap(mediaType => MEDIA_TYPE_FORMAT_MAPPING[mediaType] || [])
-          .filter((value, index, self) => self.indexOf(value) === index); // Remove duplicates
+          .flatMap((mediaType) => MEDIA_TYPE_FORMAT_MAPPING[mediaType] || [])
+          .filter((value, index, self) => self.indexOf(value) === index);
         return {
           ...config,
-          options: config.options.filter(option => allowedFormats.includes(option.name))
+          options: config.options.filter((option) =>
+            allowedFormats.includes(option.name),
+          ),
         };
       }
       return config;
     });
   }, [filterConfig, filters]);
 
+  const handleAccordionChange = (value: string[]) => {
+    if (externalToggleSection) {
+      const changedSection =
+        value.find((v) => !internalOpenSections.includes(v)) ||
+        internalOpenSections.find((v) => !value.includes(v));
+      if (changedSection) externalToggleSection(changedSection);
+    } else {
+      setInternalOpenSections(value);
+    }
+  };
+
+  const activeValue = externalOpenSections
+    ? Object.keys(externalOpenSections).filter(
+        (key) => externalOpenSections[key],
+      )
+    : internalOpenSections;
+
+  const fontSize = isResponsive ? "0.75rem" : "0.875rem";
+
   return (
-    <div className="space-y-2">
-      {filteredFilterConfig.map(config => (
-        <AccordionSection key={config.id} title={config.title} isOpen={openSections[config.id] || false} onToggle={() => toggleSection(config.id)}>
-          <div className={spacingClass}>
-            {config.options.map((option) => (
-              <div key={option.id} className="flex items-center">
-                <input
-                  type="checkbox"
-                  id={`${config.id}-${option.id}`}
-                  checked={(filters[config.id] || []).includes(option.id)}
-                  onChange={() => onFilterChange(config.id, option.id)}
-                  className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-                />
-                <label
-                  htmlFor={`${config.id}-${option.id}`}
-                  className={`ml-2 ${textSizeClass} text-gray-700`}
-                >
-                  {option.name}
-                </label>
-              </div>
-            ))}
-          </div>
-        </AccordionSection>
-      ))}
-      
+    <Stack gap="xs">
+      <Accordion
+        multiple
+        value={activeValue}
+        onChange={handleAccordionChange}
+        styles={{
+          item: {
+            borderBottom: "1px solid #E5E7EB",
+            "&[data-active]": {
+              borderBottom: "1px solid #E5E7EB",
+            },
+          },
+          control: {
+            padding: "12px 0",
+            "&:hover": {
+              backgroundColor: "transparent",
+            },
+          },
+          label: {
+            fontSize: "0.875rem",
+            fontWeight: 500,
+            color: "#111827",
+          },
+          chevron: {
+            color: "#6B7280",
+          },
+          content: {
+            padding: "0 0 12px 0",
+          },
+        }}
+      >
+        {filteredFilterConfig.map((config) => (
+          <Accordion.Item key={config.id} value={config.id}>
+            <Accordion.Control>{config.title}</Accordion.Control>
+            <Accordion.Panel>
+              <Stack gap={isResponsive ? "0.5rem" : "0.625rem"}>
+                {config.options.map((option) => (
+                  <Checkbox
+                    key={option.id}
+                    label={option.name}
+                    checked={(filters[config.id] || []).includes(option.id)}
+                    onChange={() => onFilterChange(config.id, option.id)}
+                    styles={{
+                      root: {
+                        "&:hover": {
+                          backgroundColor: "#F9FAFB",
+                        },
+                      },
+                      label: {
+                        fontSize: fontSize,
+                        color: "#374151",
+                        cursor: "pointer",
+                        paddingLeft: "0.5rem",
+                      },
+                      input: {
+                        cursor: "pointer",
+                        "&:checked": {
+                          backgroundColor: "#2563EB",
+                          borderColor: "#2563EB",
+                        },
+                        "&:focus": {
+                          outline: "none",
+                          borderColor: "#3B82F6",
+                        },
+                      },
+                    }}
+                  />
+                ))}
+              </Stack>
+            </Accordion.Panel>
+          </Accordion.Item>
+        ))}
+      </Accordion>
+
       {/* Reset filters button */}
-      <button
+      <Button
         onClick={onResetFilters}
-        className="w-full mt-4 px-4 py-2 text-sm text-red-600 hover:text-red-800 hover:bg-red-50 rounded-lg transition-colors"
+        variant="subtle"
+        color="red"
+        fullWidth
+        mt="md"
+        styles={{
+          root: {
+            fontSize: "0.875rem",
+            "&:hover": {
+              backgroundColor: "#FEF2F2",
+            },
+          },
+        }}
       >
         Reset All Filters
-      </button>
-    </div>
+      </Button>
+    </Stack>
   );
 };

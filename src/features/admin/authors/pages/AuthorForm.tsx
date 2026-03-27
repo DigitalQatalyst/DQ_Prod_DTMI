@@ -8,6 +8,7 @@ import { useEditor } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import Underline from '@tiptap/extension-underline';
 import Placeholder from '@tiptap/extension-placeholder';
+import { Heading } from '@tiptap/extension-heading';
 import '@mantine/tiptap/styles.css';
 import {
   ArrowLeft,
@@ -26,6 +27,9 @@ function BioEditor({ value, onChange }: { value: string; onChange: (html: string
       StarterKit,
       Underline,
       TiptapLink,
+      Heading.configure({
+        levels: [1, 2, 3, 4],
+      }),
       Placeholder.configure({ placeholder: 'Write a detailed bio for this author...' }),
     ],
     content: value || '',
@@ -40,6 +44,12 @@ function BioEditor({ value, onChange }: { value: string; onChange: (html: string
   return (
     <RichTextEditor editor={editor} style={{ border: '1px solid #f3f4f6', borderRadius: '12px', overflow: 'hidden' }}>
       <RichTextEditor.Toolbar style={{ borderBottom: '1px solid #f3f4f6', background: '#fafafa' }}>
+        <RichTextEditor.ControlsGroup>
+          <RichTextEditor.H1 />
+          <RichTextEditor.H2 />
+          <RichTextEditor.H3 />
+          <RichTextEditor.H4 />
+        </RichTextEditor.ControlsGroup>
         <RichTextEditor.ControlsGroup>
           <RichTextEditor.Bold />
           <RichTextEditor.Italic />

@@ -110,8 +110,10 @@ html, body, #root {
 
 /* TipTap content gets readable defaults similar to public page */
 .tiptap :where(p)       { @apply font-body my-3; }
+.tiptap :where(h1)      { @apply font-display text-3xl font-bold mt-8 mb-4; }
 .tiptap :where(h2)      { @apply font-display text-2xl font-bold mt-6 mb-3; }
 .tiptap :where(h3)      { @apply font-display text-xl font-semibold mt-5 mb-2; }
+.tiptap :where(h4)      { @apply font-display text-lg font-semibold mt-4 mb-2; }
 .tiptap :where(ul)      { @apply list-disc pl-6 my-3; }
 .tiptap :where(ol)      { @apply list-decimal pl-6 my-3; }
 .tiptap :where(blockquote) { @apply border-l-4 pl-4 italic text-slate-600 my-4; }

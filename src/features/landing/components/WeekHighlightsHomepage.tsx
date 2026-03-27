@@ -1,211 +1,115 @@
-import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { getKnowledgeHubItems } from "../../../utils/mockMarketplaceData";
-
-interface HighlightItem {
-  id: number;
-  title: string;
-  description: string;
-  image: string;
-  link: string;
-  category: string;
-  type: string;
-  date: string;
-  readTime?: string;
-}
+import { Container, Title, Text, Grid, Card, Image, Group, Loader, Center, Stack, Badge } from "@mantine/core";
+import { IconArrowRight, IconClock } from "@tabler/icons-react";
+import { useWeekHighlights } from "../hooks/useWeekHighlights";
+import { WeekHighlightItem } from "../api/weekHighlights";
 
 export function WeekHighlightsHomepage() {
   const navigate = useNavigate();
-  const [highlights, setHighlights] = useState<HighlightItem[]>([]);
-  const [loading, setLoading] = useState(true);
+  const { data, isLoading, error } = useWeekHighlights();
 
-  useEffect(() => {
-    fetchHighlights();
-  }, []);
+  const highlights = data?.highlights || [];
 
-  const fetchHighlights = async () => {
-    try {
-      setLoading(true);
-      const allItems = await getKnowledgeHubItems();
-
-      // Get one blog and one article from real data
-      const blogs = allItems.filter((item) => item.mediaType === "Blog");
-      const articles = allItems.filter((item) => item.mediaType === "Article");
-
-      const weekHighlights: HighlightItem[] = [];
-
-      // Add one blog (featured/main item)
-      if (blogs.length > 0) {
-        const blog = blogs[0];
-        const shortDesc =
-          blog.summary?.split(".")[0] + "." ||
-          blog.description?.split(".")[0] + "." ||
-          "Key insights on digital transformation.";
-        weekHighlights.push({
-          id: blog.id,
-          title: blog.title,
-          description: shortDesc,
-          image: blog.imageUrl || "/images/Article 01_hero image.png",
-          link: blog.blogUrl || `/blog/${blog.slug}`,
-          category: "Report",
-          type: "Blog",
-          date: blog.publishedDate || "March 9, 2026",
-          readTime: blog.readTime || "5 min read",
-        });
-      }
-
-      // Add one article
-      if (articles.length > 0) {
-        const article = articles[0];
-        const shortDesc =
-          article.summary?.split(".")[0] + "." ||
-          article.description?.split(".")[0] + "." ||
-          "Strategic analysis and insights.";
-        weekHighlights.push({
-          id: article.id,
-          title: article.title,
-          description: shortDesc,
-          image: article.imageUrl || "/images/Article 02_hero image.png",
-          link: article.blogUrl || `/blog/${article.slug}`,
-          category: "Article",
-          type: "Article",
-          date: article.publishedDate || "March 4, 2026",
-          readTime: article.readTime || "8 min read",
-        });
-      }
-
-      // Always add placeholders for Frontier Watch and Trend Alert
-      weekHighlights.push({
-        id: 9001,
-        title: "Expert Interview: Dr. Sarah Chen on AI Leadership",
-        description:
-          "An in-depth conversation with AI leadership expert Dr. Sarah Chen about navigating organizational transformation.",
-        image: "/images/Article 03_hero image.png",
-        link: "#",
-        category: "Interview",
-        type: "Frontier Watch",
-        date: "March 10, 2026",
-        readTime: "6 min read",
-      });
-
-      weekHighlights.push({
-        id: 9002,
-        title: "The Psychology of Digital Adoption in Enterprise",
-        description:
-          "An analytical article on understanding the human factors that drive successful digital transformation initiatives.",
-        image: "/images/Article 01_hero image.png",
-        link: "#",
-        category: "Trend Alert",
-        type: "Trends Alert",
-        date: "March 8, 2026",
-        readTime: "4 min read",
-      });
-
-      setHighlights(weekHighlights.slice(0, 2));
-      setLoading(false);
-    } catch (error) {
-      console.error("Error fetching week highlights:", error);
-      // Fallback data
-      setHighlights([
-        {
-          id: 1,
-          title: "At 250, sustaining America's competitive edge",
-          description:
-            "America's history of reinvention holds compelling lessons for the future.",
-          image: "/images/Article 01_hero image.png",
-          link: "/blog/americas-competitive-edge",
-          category: "Report",
-          type: "Blog",
-          date: "March 9, 2026",
-          readTime: "5 min read",
-        },
-        {
-          id: 2,
-          title:
-            "Why Traditional Business Models Are Doomed in the Age of Cognitive Organizations",
-          description:
-            "For decades, traditional business models have served as the foundation for organizations.",
-          image: "/images/Article 02_hero image.png",
-          link: "/blog/traditional-business-models",
-          category: "Article",
-          type: "Article",
-          date: "March 4, 2026",
-          readTime: "8 min read",
-        },
-      ]);
-      setLoading(false);
-    }
-  };
-
-  if (loading) {
+  if (isLoading) {
     return (
       <section className="py-16 bg-white">
-        <div className="container mx-auto px-4 md:px-6">
-          <div className="text-center text-gray-600">Loading highlights...</div>
-        </div>
+        <Container size="xl">
+          <Center>
+            <Stack align="center" gap="md">
+              <Loader size="lg" />
+              <Text c="dimmed">Loading highlights...</Text>
+            </Stack>
+          </Center>
+        </Container>
+      </section>
+    );
+  }
+
+  if (error || highlights.length === 0) {
+    return (
+      <section className="py-16 bg-white">
+        <Container size="xl">
+          <Center>
+            <Text c="dimmed">
+              {error ? "Failed to load highlights" : "No highlights available"}
+            </Text>
+          </Center>
+        </Container>
       </section>
     );
   }
 
   return (
     <section className="py-16 bg-white">
-      <div className="container mx-auto px-4 md:px-6">
+      <Container size="xl">
         {/* Section Header */}
         <div className="mb-12">
-          <h2 className="text-4xl md:text-5xl font-bold text-gray-900">
+          <Title order={2} size="h1" className="text-4xl md:text-5xl font-bold text-gray-900">
             EDITOR'S PICK
-          </h2>
+          </Title>
         </div>
 
         {/* Two Big Cards Side by Side */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <Grid>
           {highlights.slice(0, 2).map((item) => (
-            <div
-              key={item.id}
-              className="cursor-pointer group"
-              onClick={() => navigate(item.link)}
-            >
-              {/* Image */}
-              <div className="relative h-64 lg:h-80 rounded-lg overflow-hidden mb-6">
-                <img
-                  src={item.image}
-                  alt={item.title}
-                  className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-                />
-              </div>
-
-              {/* Content */}
-              <div>
-                <span className="text-sm text-gray-600 mb-3 block">
-                  {item.category}
-                </span>
-                <h3 className="text-2xl font-bold text-gray-900 mb-4 group-hover:text-blue-600 transition-colors leading-tight">
-                  {item.title}
-                  <svg
-                    className="inline-block ml-2 w-5 h-5 text-blue-600"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M9 5l7 7-7 7"
-                    />
-                  </svg>
-                </h3>
-                <p className="text-gray-600 mb-4 leading-relaxed">
-                  <em>{item.date}</em> - {item.description}
-                </p>
-                {item.readTime && (
-                  <span className="text-sm text-gray-500">{item.readTime}</span>
-                )}
-              </div>
-            </div>
+            <Grid.Col key={item.id} span={{ base: 12, lg: 6 }}>
+              <HighlightCard item={item} onClick={() => navigate(item.link)} />
+            </Grid.Col>
           ))}
-        </div>
-      </div>
+        </Grid>
+      </Container>
     </section>
+  );
+}
+
+interface HighlightCardProps {
+  item: WeekHighlightItem;
+  onClick: () => void;
+}
+
+function HighlightCard({ item, onClick }: HighlightCardProps) {
+  return (
+    <div className="cursor-pointer group" onClick={onClick}>
+      {/* Image */}
+      <div className="relative h-64 lg:h-80 rounded-lg overflow-hidden mb-6">
+        <Image
+          src={item.image}
+          alt={item.title}
+          className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+        />
+      </div>
+
+      {/* Content */}
+      <Stack gap="sm">
+        <Badge variant="light" size="sm" className="w-fit">
+          {item.category}
+        </Badge>
+        
+        <Group gap="xs" align="flex-start">
+          <Title 
+            order={3} 
+            size="h3" 
+            className="text-2xl font-bold text-gray-900 group-hover:text-blue-600 transition-colors leading-tight flex-1"
+          >
+            {item.title}
+          </Title>
+          <IconArrowRight 
+            size={20} 
+            className="text-blue-600 mt-1 transition-transform group-hover:translate-x-1" 
+          />
+        </Group>
+        
+        <Text c="dimmed" className="leading-relaxed">
+          <Text component="em" size="sm">{item.date}</Text> - {item.description}
+        </Text>
+        
+        {item.readTime && (
+          <Group gap="xs">
+            <IconClock size={16} className="text-gray-500" />
+            <Text size="sm" c="dimmed">{item.readTime}</Text>
+          </Group>
+        )}
+      </Stack>
+    </div>
   );
 }

@@ -210,7 +210,7 @@ export function AuthorBioPage() {
               <p className="text-sm text-gray-400 italic">No articles available yet.</p>
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-                {blogs.slice(0, 6).map((blog) => (
+                {blogs.slice(0, 3).map((blog) => (
                   <Link
                     key={blog.id}
                     to={`/blog/${blog.slug}`}

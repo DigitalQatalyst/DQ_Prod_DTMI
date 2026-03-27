@@ -1,5 +1,17 @@
 import React from 'react';
-import { BlogPost } from '../../data/mockBlogs';
+
+// Define BlogPost interface locally since we removed mock data
+interface BlogPost {
+  id: string | number;
+  title: string;
+  content: string;
+  excerpt?: string;
+  publishDate: string;
+  author?: {
+    name: string;
+    avatar?: string;
+  };
+}
 
 interface BlogContentProps {
   blog: BlogPost;

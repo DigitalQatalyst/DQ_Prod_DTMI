@@ -3,7 +3,6 @@ import { useNavigate, useParams, Navigate } from 'react-router-dom';
 import { Header } from '../../shared/Header/Header';
 import { Footer } from '../../shared/Footer/Footer';
 import { mediaService, blogService } from '../admin/shared/utils/supabase';
-import { getExpertInterviewBySlug, getRelatedContentForInterview } from '../../utils/mockMarketplaceData';
 import { Trash2, AlertCircle, Loader } from 'lucide-react';
 import Modal from '../admin/shared/components/Modal';
 
@@ -75,16 +74,12 @@ const ExpertInterviewPage: React.FC<ExpertInterviewPageProps> = () => {
           return;
         }
 
-        // Fallback to mock data for backwards compatibility
-        const mock = getExpertInterviewBySlug(slug);
-        if (mock) {
-          setInterview(mock);
-          setLoading(false);
-          return;
-        }
+        // No fallback to mock data
+        setError('Expert interview not found');
       }
       catch (err) {
         console.error('Error loading interview:', err);
+        setError('Error loading interview');
       } finally {
         setLoading(false);
       }
