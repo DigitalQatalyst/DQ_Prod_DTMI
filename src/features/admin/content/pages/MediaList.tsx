@@ -1,9 +1,16 @@
-import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import AppLayout from '../../shared/components/AppLayout';
-import { blogService, Blog, categoryService, Category, authorService, Author } from '../../shared/utils/supabase';
-import { Toast, ToastType } from '../../shared/components/Toast';
-import Modal from '../../shared/components/Modal';
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import AppLayout from "../../shared/components/AppLayout";
+import {
+  blogService,
+  Blog,
+  categoryService,
+  Category,
+  authorService,
+  Author,
+} from "../../shared/utils/supabase";
+import { Toast, ToastType } from "../../shared/components/Toast";
+import Modal from "../../shared/components/Modal";
 import {
   Plus,
   Search,
@@ -31,18 +38,21 @@ import {
   Briefcase,
   Clock,
   ImageIcon,
-  FileText
-} from 'lucide-react';
+  FileText,
+} from "lucide-react";
 
 const MediaList: React.FC = () => {
   const navigate = useNavigate();
   const [blogs, setBlogs] = useState<Blog[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [categoryFilter, setCategoryFilter] = useState('');
-  const [typeFilter, setTypeFilter] = useState<string>('');
-  const [toast, setToast] = useState<{ message: string; type: ToastType } | null>(null);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [categoryFilter, setCategoryFilter] = useState("");
+  const [typeFilter, setTypeFilter] = useState<string>("");
+  const [toast, setToast] = useState<{
+    message: string;
+    type: ToastType;
+  } | null>(null);
 
   // Selection & Modal state
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
@@ -61,6 +71,17 @@ const MediaList: React.FC = () => {
   const [totalItems, setTotalItems] = useState(0);
   const itemsPerPage = 8;
 
+  // Helper function to get the correct edit route based on content type
+  const getEditRoute = (blog: Blog): string => {
+    if (blog.type === "article") {
+      return `/admin-ui/articles/${blog.id}`;
+    } else if (blog.type === "blog") {
+      return `/admin-ui/blogs/${blog.id}`;
+    }
+    // Fallback to universal editor for other types
+    return `/admin-ui/media/${blog.id}`;
+  };
+
   const loadData = async () => {
     setLoading(true);
     try {
@@ -71,16 +92,16 @@ const MediaList: React.FC = () => {
           category: categoryFilter,
           type: typeFilter,
           limit: itemsPerPage,
-          offset
+          offset,
         }),
-        categoryService.getCategories()
+        categoryService.getCategories(),
       ]);
 
       setBlogs(result.data);
       setTotalItems(result.count);
       setCategories(catsData);
     } catch (err) {
-      console.error('Failed to load media data', err);
+      console.error("Failed to load media data", err);
     } finally {
       setLoading(false);
     }
@@ -95,8 +116,8 @@ const MediaList: React.FC = () => {
   }, [searchTerm, categoryFilter, typeFilter, currentPage]);
 
   const toggleSelect = (id: string) => {
-    setSelectedIds(prev =>
-      prev.includes(id) ? prev.filter(i => i !== id) : [...prev, id]
+    setSelectedIds((prev) =>
+      prev.includes(id) ? prev.filter((i) => i !== id) : [...prev, id],
     );
   };
 
@@ -104,7 +125,7 @@ const MediaList: React.FC = () => {
     if (selectedIds.length === blogs.length && blogs.length > 0) {
       setSelectedIds([]);
     } else {
-      setSelectedIds(blogs.map(b => b.id));
+      setSelectedIds(blogs.map((b) => b.id));
     }
   };
 
@@ -113,16 +134,19 @@ const MediaList: React.FC = () => {
     try {
       if (selectedIds.length > 0) {
         await blogService.deleteBlogs(selectedIds);
-        setToast({ message: `${selectedIds.length} items removed`, type: 'success' });
+        setToast({
+          message: `${selectedIds.length} items removed`,
+          type: "success",
+        });
       } else if (currentItem) {
         await blogService.deleteBlog(currentItem.id);
-        setToast({ message: 'Item removed', type: 'success' });
+        setToast({ message: "Item removed", type: "success" });
       }
       setIsDeleteModalOpen(false);
       setSelectedIds([]);
       loadData();
     } catch (err: any) {
-      setToast({ message: err.message, type: 'error' });
+      setToast({ message: err.message, type: "error" });
     } finally {
       setIsDeleting(false);
     }
@@ -142,7 +166,7 @@ const MediaList: React.FC = () => {
       const posts = await blogService.getBlogs({ authorId: author.id });
       setAuthorPosts(posts.data);
     } catch (err) {
-      console.error('Failed to load author insight', err);
+      console.error("Failed to load author insight", err);
     } finally {
       setLoadingAuthorData(false);
     }
@@ -150,12 +174,18 @@ const MediaList: React.FC = () => {
 
   const getIconForType = (type?: string) => {
     switch (type) {
-      case 'article': return <Newspaper size={12} />;
-      case 'research': return <FileSearch size={12} />;
-      case 'whitepaper': return <Book size={12} />;
-      case 'case-study': return <Briefcase size={12} />;
-      case 'expert-interview': return <UserIcon size={12} />;
-      default: return <BookOpen size={12} />;
+      case "article":
+        return <Newspaper size={12} />;
+      case "research":
+        return <FileSearch size={12} />;
+      case "whitepaper":
+        return <Book size={12} />;
+      case "case-study":
+        return <Briefcase size={12} />;
+      case "expert-interview":
+        return <UserIcon size={12} />;
+      default:
+        return <BookOpen size={12} />;
     }
   };
 
@@ -166,7 +196,10 @@ const MediaList: React.FC = () => {
         <div className="flex flex-col lg:flex-row gap-4 items-center justify-between bg-white p-4 rounded-2xl border border-gray-100 shadow-sm">
           <div className="flex flex-wrap items-center gap-3 flex-1 w-full">
             <div className="relative flex-1 min-w-[240px]">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={14} />
+              <Search
+                className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+                size={14}
+              />
               <input
                 type="text"
                 placeholder="Search repository..."
@@ -198,8 +231,10 @@ const MediaList: React.FC = () => {
                 onChange={(e) => setCategoryFilter(e.target.value)}
               >
                 <option value="">All Categories</option>
-                {categories.map(cat => (
-                  <option key={cat.id} value={cat.name}>{cat.name}</option>
+                {categories.map((cat) => (
+                  <option key={cat.id} value={cat.name}>
+                    {cat.name}
+                  </option>
                 ))}
               </select>
             </div>
@@ -214,16 +249,36 @@ const MediaList: React.FC = () => {
                 <Trash2 size={12} /> Delete ({selectedIds.length})
               </button>
             )}
+
+            {/* Dedicated CMS Quick Actions */}
             <button
-              onClick={() => navigate('/admin-ui/media/new')}
-              className="flex items-center gap-2 px-4 py-2 bg-black text-white font-medium text-xs rounded-xl hover:bg-gray-800 transition-colors shadow-lg shadow-gray-100 whitespace-nowrap"
+              onClick={() => navigate("/admin-ui/articles/new")}
+              className="flex items-center gap-2 px-3 py-2 bg-blue-600 text-white font-medium text-xs rounded-xl hover:bg-blue-700 transition-colors shadow-sm whitespace-nowrap"
             >
-              <Plus size={14} /> Add Content
+              <Plus size={14} /> Article
+            </button>
+            <button
+              onClick={() => navigate("/admin-ui/blogs/new")}
+              className="flex items-center gap-2 px-3 py-2 bg-purple-600 text-white font-medium text-xs rounded-xl hover:bg-purple-700 transition-colors shadow-sm whitespace-nowrap"
+            >
+              <Plus size={14} /> Blog
+            </button>
+            <button
+              onClick={() => navigate("/admin-ui/media/new")}
+              className="flex items-center gap-2 px-3 py-2 bg-black text-white font-medium text-xs rounded-xl hover:bg-gray-800 transition-colors shadow-sm whitespace-nowrap"
+            >
+              <Plus size={14} /> Other
             </button>
           </div>
         </div>
 
-        {toast && <Toast message={toast.message} type={toast.type} onClose={() => setToast(null)} />}
+        {toast && (
+          <Toast
+            message={toast.message}
+            type={toast.type}
+            onClose={() => setToast(null)}
+          />
+        )}
 
         {/* Premium Table */}
         <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
@@ -238,7 +293,10 @@ const MediaList: React.FC = () => {
                 <Search className="text-gray-200" size={32} />
               </div>
               <h3 className="text-xl font-black text-gray-900">Vacuum State</h3>
-              <p className="text-gray-400 text-xs mt-2 max-w-xs mx-auto">No contributions match your current trajectory. Try recalibrating your filters.</p>
+              <p className="text-gray-400 text-xs mt-2 max-w-xs mx-auto">
+                No contributions match your current trajectory. Try
+                recalibrating your filters.
+              </p>
             </div>
           ) : (
             <div className="overflow-x-auto">
@@ -246,36 +304,73 @@ const MediaList: React.FC = () => {
                 <thead>
                   <tr className="bg-gray-50/30 border-b border-gray-100">
                     <th className="p-5 w-10">
-                      <button onClick={toggleSelectAll} className="text-gray-300 hover:text-black transition-colors">
-                        {selectedIds.length === blogs.length && blogs.length > 0 ? <CheckSquare size={16} className="text-black" /> : <Square size={16} />}
+                      <button
+                        onClick={toggleSelectAll}
+                        className="text-gray-300 hover:text-black transition-colors"
+                      >
+                        {selectedIds.length === blogs.length &&
+                        blogs.length > 0 ? (
+                          <CheckSquare size={16} className="text-black" />
+                        ) : (
+                          <Square size={16} />
+                        )}
                       </button>
                     </th>
-                    <th className="p-5 text-xs font-medium text-gray-500 italic">Contribution Entity</th>
-                    <th className="p-5 text-xs font-medium text-gray-500 italic hidden md:table-cell">Metadata</th>
-                    <th className="p-5 text-xs font-medium text-gray-500 italic text-right">Operations</th>
+                    <th className="p-5 text-xs font-medium text-gray-500 italic">
+                      Contribution Entity
+                    </th>
+                    <th className="p-5 text-xs font-medium text-gray-500 italic hidden md:table-cell">
+                      Metadata
+                    </th>
+                    <th className="p-5 text-xs font-medium text-gray-500 italic text-right">
+                      Operations
+                    </th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-50">
                   {blogs.map((blog) => (
-                    <tr key={blog.id} className={`group hover:bg-gray-50/30 transition-all ${selectedIds.includes(blog.id) ? 'bg-black/[0.02]' : ''}`}>
+                    <tr
+                      key={blog.id}
+                      className={`group hover:bg-gray-50/30 transition-all ${selectedIds.includes(blog.id) ? "bg-black/[0.02]" : ""}`}
+                    >
                       <td className="p-5">
-                        <button onClick={() => toggleSelect(blog.id)} className="text-gray-200 group-hover:text-gray-400 transition-colors">
-                          {selectedIds.includes(blog.id) ? <CheckSquare size={16} className="text-black" /> : <Square size={16} />}
+                        <button
+                          onClick={() => toggleSelect(blog.id)}
+                          className="text-gray-200 group-hover:text-gray-400 transition-colors"
+                        >
+                          {selectedIds.includes(blog.id) ? (
+                            <CheckSquare size={16} className="text-black" />
+                          ) : (
+                            <Square size={16} />
+                          )}
                         </button>
                       </td>
                       <td className="p-5">
                         <div className="flex gap-5">
                           <div className="w-16 h-16 rounded-xl border border-gray-100 overflow-hidden shrink-0 bg-gray-50 shadow-sm relative">
                             {blog.heroImage ? (
-                              <img src={blog.heroImage} alt="" className="w-full h-full object-cover" />
+                              <img
+                                src={blog.heroImage}
+                                alt=""
+                                className="w-full h-full object-cover"
+                              />
                             ) : (
                               <div className="w-full h-full flex items-center justify-center text-gray-100">
                                 <AlertCircle size={20} />
                               </div>
                             )}
                             <div className="absolute top-1 right-1">
-                              <span className={`p-1 rounded-full shadow-sm border ${blog.featured ? 'bg-amber-500 border-amber-400' : 'bg-white/80 border-gray-100'} backdrop-blur-md`}>
-                                <Star size={6} className={blog.featured ? 'text-white fill-white' : 'text-gray-300'} />
+                              <span
+                                className={`p-1 rounded-full shadow-sm border ${blog.featured ? "bg-amber-500 border-amber-400" : "bg-white/80 border-gray-100"} backdrop-blur-md`}
+                              >
+                                <Star
+                                  size={6}
+                                  className={
+                                    blog.featured
+                                      ? "text-white fill-white"
+                                      : "text-gray-300"
+                                  }
+                                />
                               </span>
                             </div>
                           </div>
@@ -283,7 +378,7 @@ const MediaList: React.FC = () => {
                             <div className="flex items-center gap-2 mb-1">
                               <span className="flex items-center gap-1 text-xs font-medium px-2 py-0.5 bg-gray-100 text-gray-500 rounded-md border border-gray-200/50">
                                 {getIconForType(blog.type)}
-                                {blog.type || 'blog'}
+                                {blog.type || "blog"}
                               </span>
                               <span className="text-xs font-medium text-emerald-600 bg-emerald-50 border border-emerald-100 px-2 py-0.5 rounded-md">
                                 {blog.category}
@@ -309,18 +404,33 @@ const MediaList: React.FC = () => {
                           >
                             <div className="w-5 h-5 rounded-full border border-gray-100 overflow-hidden shrink-0">
                               {blog.author?.avatar ? (
-                                <img src={blog.author.avatar} alt="" className="w-full h-full object-cover" />
+                                <img
+                                  src={blog.author.avatar}
+                                  alt=""
+                                  className="w-full h-full object-cover"
+                                />
                               ) : (
                                 <div className="w-full h-full bg-gray-50 flex items-center justify-center text-gray-300">
                                   <UserIcon size={10} />
                                 </div>
                               )}
                             </div>
-                            <span className="group-hover/author:underline underline-offset-2">{blog.author?.name || 'Anonymous'}</span>
+                            <span className="group-hover/author:underline underline-offset-2">
+                              {blog.author?.name || "Anonymous"}
+                            </span>
                           </div>
                           <div className="flex items-center gap-2 text-xs font-medium text-gray-500">
                             <Calendar size={10} className="shrink-0" />
-                            <span>{new Date(blog.publishDate).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}</span>
+                            <span>
+                              {new Date(blog.publishDate).toLocaleDateString(
+                                undefined,
+                                {
+                                  month: "short",
+                                  day: "numeric",
+                                  year: "numeric",
+                                },
+                              )}
+                            </span>
                           </div>
                         </div>
                       </td>
@@ -334,7 +444,7 @@ const MediaList: React.FC = () => {
                             <Eye size={14} />
                           </button>
                           <button
-                            onClick={() => navigate(`/admin-ui/media/${blog.id}`)}
+                            onClick={() => navigate(getEditRoute(blog))}
                             className="p-2 text-gray-400 hover:text-black hover:bg-white border border-transparent hover:border-gray-100 rounded-xl transition-all"
                             title="Refine Content"
                           >
@@ -364,18 +474,30 @@ const MediaList: React.FC = () => {
                 </p>
                 <div className="flex items-center gap-2">
                   <button
-                    onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
+                    onClick={() =>
+                      setCurrentPage((prev) => Math.max(1, prev - 1))
+                    }
                     disabled={currentPage === 1}
                     className="p-2 text-gray-400 hover:text-black disabled:opacity-30 disabled:hover:text-gray-400 transition-all"
                   >
                     <ChevronLeft size={16} />
                   </button>
                   <span className="text-xs font-medium px-3 py-1 bg-white border border-gray-100 rounded-lg shadow-sm">
-                    Page {currentPage} of {Math.ceil(totalItems / itemsPerPage) || 1}
+                    Page {currentPage} of{" "}
+                    {Math.ceil(totalItems / itemsPerPage) || 1}
                   </span>
                   <button
-                    onClick={() => setCurrentPage(prev => Math.min(Math.ceil(totalItems / itemsPerPage), prev + 1))}
-                    disabled={currentPage >= Math.ceil(totalItems / itemsPerPage)}
+                    onClick={() =>
+                      setCurrentPage((prev) =>
+                        Math.min(
+                          Math.ceil(totalItems / itemsPerPage),
+                          prev + 1,
+                        ),
+                      )
+                    }
+                    disabled={
+                      currentPage >= Math.ceil(totalItems / itemsPerPage)
+                    }
                     className="p-2 text-gray-400 hover:text-black disabled:opacity-30 disabled:hover:text-gray-400 transition-all"
                   >
                     <ChevronRight size={16} />
@@ -398,7 +520,11 @@ const MediaList: React.FC = () => {
           <div className="space-y-8 animate-in fade-in duration-300">
             <div className="relative aspect-[21/9] rounded-2xl overflow-hidden shadow-2xl shadow-gray-200 border border-gray-100">
               {currentItem.heroImage ? (
-                <img src={currentItem.heroImage} alt="" className="w-full h-full object-cover" />
+                <img
+                  src={currentItem.heroImage}
+                  alt=""
+                  className="w-full h-full object-cover"
+                />
               ) : (
                 <div className="w-full h-full bg-gray-50 flex items-center justify-center">
                   <ImageIcon className="text-gray-200" size={64} />
@@ -410,10 +536,14 @@ const MediaList: React.FC = () => {
                     {currentItem.category}
                   </span>
                   <span className="text-xs font-semibold text-white/60">
-                    {new Date(currentItem.publishDate || "").toLocaleDateString()}
+                    {new Date(
+                      currentItem.publishDate || "",
+                    ).toLocaleDateString()}
                   </span>
                 </div>
-                <h2 className="text-3xl font-bold leading-tight drop-shadow-md">{currentItem.title}</h2>
+                <h2 className="text-3xl font-bold leading-tight drop-shadow-md">
+                  {currentItem.title}
+                </h2>
               </div>
             </div>
 
@@ -427,27 +557,39 @@ const MediaList: React.FC = () => {
                 </p>
               </div>
               <div className="space-y-4 bg-gray-50/50 p-6 rounded-2xl border border-gray-100">
-                <h3 className="text-xs font-medium text-gray-500">Metadata Context</h3>
+                <h3 className="text-xs font-medium text-gray-500">
+                  Metadata Context
+                </h3>
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-1">
                     <span className="text-xs text-gray-500">Format</span>
                     <div className="flex items-center gap-1.5 text-xs font-semibold text-gray-900 capitalize">
-                      {getIconForType(currentItem.type)} {currentItem.type || 'Blog'}
+                      {getIconForType(currentItem.type)}{" "}
+                      {currentItem.type || "Blog"}
                     </div>
                   </div>
                   <div className="space-y-1">
                     <span className="text-xs text-gray-500">Read Capacity</span>
                     <div className="flex items-center gap-1.5 text-xs font-semibold text-gray-900">
-                      <Clock size={12} className="text-gray-400" /> {currentItem.readTime} MINS
+                      <Clock size={12} className="text-gray-400" />{" "}
+                      {currentItem.readTime} MINS
                     </div>
                   </div>
-                  {currentItem.type !== 'article' && (
+                  {currentItem.type !== "article" && (
                     <div className="space-y-1 col-span-2">
-                      <span className="text-xs text-gray-500">Semantic tags</span>
+                      <span className="text-xs text-gray-500">
+                        Semantic tags
+                      </span>
                       <div className="flex flex-wrap gap-1.5 mt-1">
-                        {Array.isArray(currentItem.tags) && currentItem.tags.map((tag, i) => (
-                          <span key={i} className="text-xs font-medium text-gray-500 bg-white border border-gray-100 px-2 py-0.5 rounded-full">#{tag}</span>
-                        ))}
+                        {Array.isArray(currentItem.tags) &&
+                          currentItem.tags.map((tag, i) => (
+                            <span
+                              key={i}
+                              className="text-xs font-medium text-gray-500 bg-white border border-gray-100 px-2 py-0.5 rounded-full"
+                            >
+                              #{tag}
+                            </span>
+                          ))}
                       </div>
                     </div>
                   )}
@@ -459,7 +601,11 @@ const MediaList: React.FC = () => {
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-full border border-gray-100 p-0.5 bg-white shadow-sm">
                   {currentItem.author?.avatar ? (
-                    <img src={currentItem.author.avatar} alt="" className="w-full h-full rounded-full object-cover" />
+                    <img
+                      src={currentItem.author.avatar}
+                      alt=""
+                      className="w-full h-full rounded-full object-cover"
+                    />
                   ) : (
                     <div className="w-full h-full bg-gray-50 rounded-full flex items-center justify-center text-gray-200">
                       <UserIcon size={18} />
@@ -467,10 +613,14 @@ const MediaList: React.FC = () => {
                   )}
                 </div>
                 <div>
-                  <p className="text-xs font-semibold text-gray-900">{currentItem.author?.name || 'Anonymous'}</p>
-                  <p className="text-xs text-gray-500 mt-0.5">{currentItem.author?.title || 'Contributor'}</p>
+                  <p className="text-xs font-semibold text-gray-900">
+                    {currentItem.author?.name || "Anonymous"}
+                  </p>
+                  <p className="text-xs text-gray-500 mt-0.5">
+                    {currentItem.author?.title || "Contributor"}
+                  </p>
                 </div>
-                {currentItem.type === 'article' && (
+                {currentItem.type === "article" && (
                   <div className="ml-4 flex items-center gap-2">
                     <span className="text-xs font-medium text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded-full border border-indigo-100 flex items-center gap-1">
                       <CheckCircle2 size={8} /> Layout Aligned
@@ -481,9 +631,9 @@ const MediaList: React.FC = () => {
               <div className="flex items-center gap-3">
                 <a
                   href={
-                    currentItem.type === 'expert-interview'
+                    currentItem.type === "expert-interview"
                       ? `/expert-interviews/${currentItem.slug}`
-                      : currentItem.type === 'article'
+                      : currentItem.type === "article"
                         ? `/article/${currentItem.slug}`
                         : `/blog/${currentItem.slug}`
                   }
@@ -494,7 +644,7 @@ const MediaList: React.FC = () => {
                   Preview Live <ExternalLink size={12} />
                 </a>
                 <button
-                  onClick={() => navigate(`/admin-ui/media/${currentItem.id}`)}
+                  onClick={() => navigate(getEditRoute(currentItem))}
                   className="px-6 py-2 bg-gray-50 text-gray-900 text-xs font-semibold rounded-xl hover:bg-gray-100 transition-all flex items-center gap-2"
                 >
                   Refine Item <Edit size={12} />
@@ -526,7 +676,11 @@ const MediaList: React.FC = () => {
             <div className="flex flex-col md:flex-row gap-8 items-start">
               <div className="w-32 h-32 rounded-3xl border border-gray-100 p-1 bg-white shadow-xl shadow-gray-100 shrink-0 transform -rotate-1">
                 {currentAuthor.avatar ? (
-                  <img src={currentAuthor.avatar} alt="" className="w-full h-full rounded-2xl object-cover" />
+                  <img
+                    src={currentAuthor.avatar}
+                    alt=""
+                    className="w-full h-full rounded-2xl object-cover"
+                  />
                 ) : (
                   <div className="w-full h-full bg-gray-50 rounded-2xl flex items-center justify-center text-gray-100">
                     <UserIcon size={48} />
@@ -535,34 +689,52 @@ const MediaList: React.FC = () => {
               </div>
               <div className="space-y-4 flex-1 pt-2">
                 <div>
-                  <h2 className="text-2xl font-bold text-gray-900">{currentAuthor.name}</h2>
-                  <p className="text-xs text-gray-500 mt-1">{currentAuthor.title}</p>
+                  <h2 className="text-2xl font-bold text-gray-900">
+                    {currentAuthor.name}
+                  </h2>
+                  <p className="text-xs text-gray-500 mt-1">
+                    {currentAuthor.title}
+                  </p>
                 </div>
                 <p className="text-sm text-gray-500 leading-relaxed italic border-l-4 border-black/5 pl-5">
-                  {currentAuthor.bio || 'This intellectual architect has chosen to remain mystical for now.'}
+                  {currentAuthor.bio ||
+                    "This intellectual architect has chosen to remain mystical for now."}
                 </p>
               </div>
             </div>
 
             <div className="space-y-5 pt-4 border-t border-gray-50">
               <h3 className="text-xs font-medium text-gray-900 flex items-center gap-2">
-                <CheckCircle2 size={12} className="text-emerald-500" /> Intellectual Contributions
+                <CheckCircle2 size={12} className="text-emerald-500" />{" "}
+                Intellectual Contributions
               </h3>
               {loadingAuthorData ? (
                 <div className="flex items-center gap-2 text-xs text-gray-400 animate-pulse italic">
-                  <Loader size={12} className="animate-spin" /> Retrieving publication history...
+                  <Loader size={12} className="animate-spin" /> Retrieving
+                  publication history...
                 </div>
               ) : authorPosts.length === 0 ? (
-                <p className="text-xs text-gray-400 italic">No publications documented under this identity yet.</p>
+                <p className="text-xs text-gray-400 italic">
+                  No publications documented under this identity yet.
+                </p>
               ) : (
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  {authorPosts.slice(0, 4).map(post => (
-                    <div key={post.id} className="p-4 bg-gray-50/50 rounded-2xl border border-gray-100 group cursor-pointer hover:border-black/10 transition-all">
+                  {authorPosts.slice(0, 4).map((post) => (
+                    <div
+                      key={post.id}
+                      className="p-4 bg-gray-50/50 rounded-2xl border border-gray-100 group cursor-pointer hover:border-black/10 transition-all"
+                    >
                       <div className="flex items-center justify-between mb-2">
-                        <span className="text-xs font-medium px-2 py-0.5 bg-white border border-gray-100 rounded-md">{post.categoryName}</span>
-                        <span className="text-xs text-gray-400">{new Date(post.publishDate).toLocaleDateString()}</span>
+                        <span className="text-xs font-medium px-2 py-0.5 bg-white border border-gray-100 rounded-md">
+                          {post.categoryName}
+                        </span>
+                        <span className="text-xs text-gray-400">
+                          {new Date(post.publishDate).toLocaleDateString()}
+                        </span>
                       </div>
-                      <p className="text-xs font-semibold text-gray-900 line-clamp-2 leading-snug group-hover:underline decoration-black/10">{post.title}</p>
+                      <p className="text-xs font-semibold text-gray-900 line-clamp-2 leading-snug group-hover:underline decoration-black/10">
+                        {post.title}
+                      </p>
                     </div>
                   ))}
                 </div>
@@ -577,7 +749,7 @@ const MediaList: React.FC = () => {
         isOpen={isDeleteModalOpen}
         onClose={() => setIsDeleteModalOpen(false)}
         title="Consign to Void"
-        footer={(
+        footer={
           <>
             <button
               onClick={() => setIsDeleteModalOpen(false)}
@@ -591,27 +763,32 @@ const MediaList: React.FC = () => {
               disabled={isDeleting}
               className="px-6 py-2 bg-red-600 text-white text-xs font-medium rounded-xl hover:bg-red-700 shadow-xl shadow-red-100 border border-red-500 transition-all flex items-center justify-center gap-2 disabled:bg-red-400"
             >
-              {isDeleting ? <Loader className="animate-spin" size={12} /> : null}
-              {isDeleting ? 'Deleting...' : 'Delete Permanently'}
+              {isDeleting ? (
+                <Loader className="animate-spin" size={12} />
+              ) : null}
+              {isDeleting ? "Deleting..." : "Delete Permanently"}
             </button>
           </>
-        )}
+        }
       >
         <div className="flex items-center gap-4 p-4 bg-red-50 rounded-2xl border border-red-100 mb-6">
           <AlertCircle className="text-red-500 shrink-0" size={24} />
           <div>
-            <p className="text-xs font-medium text-red-600">Existential Warning</p>
-            <p className="text-xs text-red-600/70 font-medium">This contribution will be erased from the collective memory.</p>
+            <p className="text-xs font-medium text-red-600">
+              Existential Warning
+            </p>
+            <p className="text-xs text-red-600/70 font-medium">
+              This contribution will be erased from the collective memory.
+            </p>
           </div>
         </div>
         <p className="text-sm text-gray-500 leading-relaxed italic">
           {selectedIds.length > 1
             ? `Confirming the permanent erasure of ${selectedIds.length} entities from the repository?`
-            : `Are you certain you wish to delete "${currentItem?.title}"? This protocol is non-restitutive.`
-          }
+            : `Are you certain you wish to delete "${currentItem?.title}"? This protocol is non-restitutive.`}
         </p>
       </Modal>
-    </AppLayout >
+    </AppLayout>
   );
 };
 
