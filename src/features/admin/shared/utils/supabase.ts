@@ -78,6 +78,10 @@ export interface Category {
   name: string;
   slug: string;
   description?: string;
+  filter_group?: string;
+  parent_id?: string | null;
+  is_filter_enabled?: boolean;
+  filter_display_order?: number;
 }
 
 const deleteStorageFileFromUrl = async (url: string | null | undefined) => {

@@ -31,6 +31,15 @@ export interface ListPublicMediaParams {
   tag?: string | null;
   q?: string | null;
   subMarketplace?: "signals" | "insights" | "deep-analysis" | null;
+  marketplaceFilters?: {
+    digital_perspective?: string | null;
+    digital_stream?: string | null;
+    digital_domain?: string | null;
+    digital_sector?: string | null;
+    content_type?: string | null;
+    format?: string | null;
+    popularity?: string | null;
+  };
 }
 
 export interface PublicMediaItem {
@@ -60,6 +69,35 @@ export interface ListPublicMediaResult {
   totalCount: number;
 }
 
+function normalizeMediaType(value?: string | null): string {
+  const raw = String(value || "").trim();
+  if (!raw) return "Blog";
+  const key = raw.toLowerCase();
+  const map: Record<string, string> = {
+    blog: "Blog",
+    blogs: "Blog",
+    article: "Article",
+    articles: "Article",
+    whitepaper: "Whitepaper",
+    whitepapers: "Whitepaper",
+    "research report": "Report",
+    "research reports": "Report",
+    report: "Report",
+    reports: "Report",
+    "expert interview": "Expert Interview",
+    "expert interviews": "Expert Interview",
+    "case study": "Case Study",
+    "case studies": "Case Study",
+    video: "Video",
+    videos: "Video",
+    podcast: "Podcast",
+    podcasts: "Podcast",
+    "prediction analysis": "Prediction Analysis",
+  };
+
+  return map[key] || raw;
+}
+
 // Fetch lean grid items using keyset pagination against v_media_public
 export async function listPublicMedia({
   limit = 12,
@@ -67,18 +105,23 @@ export async function listPublicMedia({
   tag,
   q,
   subMarketplace,
+  marketplaceFilters,
 }: ListPublicMediaParams = {}): Promise<ListPublicMediaResult> {
   try {
     // Fetch blogs from database instead of mock data
-    const { blogService } = await import("../features/admin/shared/utils/supabase");
-    const result = await blogService.getBlogs({ published: true });
+    const { blogService } =
+      await import("../features/admin/shared/utils/supabase");
+    const result = await blogService.getBlogs({
+      published: true,
+      ...(marketplaceFilters || {}),
+    });
     const blogs = Array.isArray(result) ? result : result.data || [];
-    
+
     // Convert blogs to the expected format
     const allItems = blogs.map((blog: any) => ({
       id: blog.id,
       title: blog.title,
-      mediaType: "Blog",
+      mediaType: normalizeMediaType(blog.content_type || blog.type),
       category: blog.category || "Digital Transformation",
       summary: blog.excerpt || blog.summary,
       description: blog.excerpt || blog.summary,
@@ -95,7 +138,7 @@ export async function listPublicMedia({
       authorName: blog.author?.name,
       tags: blog.tags || [],
     }));
-    
+
     let filteredItems = allItems;
 
     // Apply sub-marketplace filter (Knowledge Depth)
@@ -263,6 +306,7 @@ function getFallbackKnowledgeHubData({
   after,
   tag,
   q,
+  marketplaceFilters,
 }: ListPublicMediaParams): ListPublicMediaResult {
   let items = mockKnowledgeHubItems;
 
