@@ -76,6 +76,7 @@ import InsightsUpdatesSignupPage from "./features/content/InsightsUpdatesSignupP
 import ResearchUpdatesSignupPage from "./features/content/ResearchUpdatesSignupPage";
 import BooksLandingPage from "./features/content/BooksLandingPage";
 import { ClientTestimonialsPage } from "./features/company/ClientTestimonialsPage";
+import { FrameworkDecoderHubPage } from "./features/framework-decoder-hub/FrameworkDecoderHubPage";
 
 export function AppRouter() {
   const [bookmarkedCourses, setBookmarkedCourses] = useState<string[]>([]);
@@ -264,6 +265,7 @@ export function AppRouter() {
             <Route path="/blog/:slug" element={<BlogPage />} />
             <Route path="/services" element={<ServicesPage />} />
             <Route path="/services/:slug" element={<ServiceDetailPage />} />
+            <Route path="/framework-decoder-hub" element={<FrameworkDecoderHubPage />} />
             <Route path="/client-testimonials" element={<ClientTestimonialsPage />} />
             <Route
               path="/client-testimonials/abb-dbp-design"

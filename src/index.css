@@ -17,7 +17,7 @@
   --secondary: 225 40% 15%;
   --secondary-foreground: 210 40% 98%;
   --muted: 225 35% 20%;
-  --muted-foreground: 215 20% 65%;
+  --muted-foreground: 215 35% 85%;
   --accent: 16 100% 65%;  /* Changed to orange #FF6B4D */
   --accent-foreground: 0 0% 100%;
   --destructive: 0 84.2% 60.2%;
@@ -26,6 +26,9 @@
   --input: 225 30% 18%;
   --ring: 16 100% 65%;  /* Changed to orange #FF6B4D */
   --radius: 0.5rem;
+  --code-bg: 225 45% 10%;
+  /* Additional variables for framework-decoder-hub */
+  --ring: 16 100% 65%;
 }
 
 /* Custom utilities for research report */
@@ -44,6 +47,14 @@
   background: hsl(225 45% 10% / 0.8);
   backdrop-filter: blur(12px);
   border: 1px solid hsl(225 30% 18%);
+  border-radius: 0.75rem;
+  transition: all 0.2s ease;
+}
+
+.glass-card:hover {
+  border-color: hsl(var(--primary) / 0.3);
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
 }
 
 /* Tailwind CSS variable classes */
@@ -55,6 +66,39 @@
 .border-primary { border-color: hsl(var(--primary)); }
 .bg-primary\/10 { background-color: hsl(var(--primary) / 0.1); }
 .border-primary\/30 { border-color: hsl(var(--primary) / 0.3); }
+.bg-code-bg { background-color: hsl(var(--code-bg)); }
+.bg-secondary { background-color: hsl(var(--secondary)); }
+.text-secondary-foreground { color: hsl(var(--secondary-foreground)); }
+.text-destructive { color: hsl(var(--destructive)); }
+.glow-shadow { box-shadow: 0 0 20px hsl(var(--primary) / 0.3); }
+.gradient-text { 
+  background: linear-gradient(135deg, #FF6B4D, #8B5CF6);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.section-divider {
+  height: 1px;
+  background: linear-gradient(to right, transparent, hsl(var(--border)), transparent);
+  margin: 3rem 0;
+}
+
+/* Animation classes for framework-decoder-hub */
+@keyframes fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in-up {
+  animation: fade-in-up 0.6s ease-out forwards;
+}
 
 .no-scroll {
   overflow: hidden;
