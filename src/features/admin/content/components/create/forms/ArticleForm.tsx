@@ -7,6 +7,8 @@ import { AuthorSelector } from "../../AuthorSelector";
 interface Props {
   formData: Partial<Blog>;
   categories: Category[];
+  groupedCategories: Category[];
+  selectedParentId: string;
   heroPreview: string;
   isSubmitting: boolean;
   onChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => void;
@@ -18,7 +20,7 @@ interface Props {
 }
 
 export function ArticleForm({
-  formData, categories, heroPreview, isSubmitting,
+  formData, categories, groupedCategories, selectedParentId, heroPreview, isSubmitting,
   onChange, onAuthorSelect, onHeroChange, onOpenCategoryModal, onSubmit, onContentChange,
 }: Props) {
   return (
@@ -77,11 +79,22 @@ export function ArticleForm({
                   <Plus size={10} /> Quick Add
                 </button>
               </div>
-              <select name="categoryId" value={formData.categoryId} onChange={onChange}
+              <select name="parentCategoryId" value={selectedParentId} onChange={onChange}
                 className="w-full px-4 py-2 bg-gray-50 border border-gray-100 rounded-lg text-sm focus:ring-1 focus:ring-indigo-500 outline-none">
-                <option value="">Select Category</option>
-                {categories.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
+                <option value="">Select Type</option>
+                {groupedCategories.map((p) => (
+                  <option key={p.id} value={p.id}>{p.name}</option>
+                ))}
               </select>
+              {selectedParentId && (
+                <select name="categoryId" value={formData.categoryId} onChange={onChange}
+                  className="w-full px-4 py-2 bg-gray-50 border border-gray-100 rounded-lg text-sm focus:ring-1 focus:ring-indigo-500 outline-none">
+                  <option value="">Select Subcategory</option>
+                  {(groupedCategories.find((p) => p.id === selectedParentId)?.subcategories ?? []).map((s) => (
+                    <option key={s.id} value={s.id}>{s.name}</option>
+                  ))}
+                </select>
+              )}
             </div>
 
             <div className="space-y-2">

@@ -10,6 +10,8 @@ interface Props {
   podcastData: PodcastData;
   setPodcastData: React.Dispatch<React.SetStateAction<PodcastData>>;
   categories: Category[];
+  groupedCategories: Category[];
+  selectedParentId: string;
   heroPreview: string;
   isSubmitting: boolean;
   onChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => void;
@@ -21,7 +23,8 @@ interface Props {
 }
 
 export function PodcastForm({
-  formData, podcastData, setPodcastData, categories, heroPreview, isSubmitting,
+  formData, podcastData, setPodcastData, categories, groupedCategories, selectedParentId,
+  heroPreview, isSubmitting,
   onChange, onHeroChange, onAuthorSelect, onSubmit, formatDuration, getAudioDuration,
 }: Props) {
   const updateEpisode = (idx: number, field: string, value: any) => {
@@ -213,11 +216,20 @@ export function PodcastForm({
                 </div>
                 <div className="space-y-2">
                   <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Category</label>
-                  <select name="categoryId" value={formData.categoryId} onChange={onChange}
+                  <select name="parentCategoryId" value={selectedParentId} onChange={onChange}
                     className="w-full px-4 py-2 bg-white border border-gray-200 rounded-lg text-sm focus:ring-1 focus:ring-orange-500 outline-none">
-                    <option value="">Select Category</option>
-                    {categories.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
+                    <option value="">Select Type</option>
+                    {groupedCategories.map((p) => <option key={p.id} value={p.id}>{p.name}</option>)}
                   </select>
+                  {selectedParentId && (
+                    <select name="categoryId" value={formData.categoryId} onChange={onChange}
+                      className="w-full px-4 py-2 bg-white border border-gray-200 rounded-lg text-sm focus:ring-1 focus:ring-orange-500 outline-none">
+                      <option value="">Select Subcategory</option>
+                      {(groupedCategories.find((p) => p.id === selectedParentId)?.subcategories ?? []).map((s) => (
+                        <option key={s.id} value={s.id}>{s.name}</option>
+                      ))}
+                    </select>
+                  )}
                 </div>
                 <div className="space-y-2">
                   <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Show Description</label>
