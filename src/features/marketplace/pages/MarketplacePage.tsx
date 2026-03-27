@@ -63,6 +63,15 @@ const getContentTypesForTab = (activeTab: string): string[] => {
         "Sector Specifics",
         "Prediction Analysis",
       ];
+    case "books":
+      return [
+        "Books",
+        "Digital Transformation Guides",
+        "Strategic Frameworks",
+        "Leadership Handbooks",
+        "Industry Playbooks",
+        "Executive Summaries",
+      ];
     case "audio":
       return ["Expert Interviews", "Podcasts", "Expert Discussions"];
     case "videos":

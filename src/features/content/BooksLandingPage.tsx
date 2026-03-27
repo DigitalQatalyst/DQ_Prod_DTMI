@@ -280,7 +280,7 @@ const BooksLandingPage = () => {
                 }}
               >
                 <button
-                  onClick={handleScrollDown}
+                  onClick={() => navigate("/marketplace/dtmi?tab=books")}
                   className="px-10 py-5 bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-600 hover:to-red-700 text-white font-bold text-lg rounded-lg shadow-2xl transform transition-all duration-300 hover:-translate-y-2 hover:shadow-3xl text-center flex items-center justify-center mx-auto overflow-hidden group border-2 border-white/20"
                 >
                   <span className="relative z-10 flex items-center space-x-2">
@@ -349,7 +349,7 @@ const BooksLandingPage = () => {
                   }}
                 >
                   <h1 className="text-4xl md:text-5xl font-bold font-display mb-4">
-                    The Essential Read
+                    Essential Books for Digital Leaders
                   </h1>
                   <p className="text-xl mb-6">
                     A Must-Read for Strategic Innovation in the Digital Economy
@@ -367,8 +367,9 @@ const BooksLandingPage = () => {
                   }}
                 >
                   <p className="text-lg italic">
-                    "Rethink your business model by shifting from a linear value
-                    chain to a dynamic value network."
+                    "Transformation is not a linear event, but a dimensional
+                    synchronization. To master one without the others is to
+                    build a high-performance engine without a chassis."
                   </p>
                 </div>
 
@@ -436,11 +437,11 @@ const BooksLandingPage = () => {
           </div>
         </section>
         {/* 3. Trending Books Section */}
-        <section className="py-16 bg-gray-900 text-white">
+        <section className="py-16 bg-white text-gray-900">
           <div className="container mx-auto px-4 md:px-6 max-w-7xl">
             <div className="mb-12">
               <h2 className="text-4xl font-bold font-display mb-4">
-                Most Popular This Week
+                Top Reads for Chief Digital Officers
               </h2>
             </div>
 
@@ -449,10 +450,10 @@ const BooksLandingPage = () => {
               {frontierBooks.slice(0, 3).map((book, index) => (
                 <div
                   key={book.id}
-                  className="bg-gray-800 rounded-lg overflow-hidden hover:bg-gray-750 transition-all duration-300 cursor-pointer group hover:shadow-2xl hover:-translate-y-2 relative"
+                  className="bg-gray-50 border border-gray-200 rounded-lg overflow-hidden hover:bg-gray-100 transition-all duration-300 cursor-pointer group hover:shadow-2xl hover:-translate-y-2 relative"
                   onClick={() => handleBookReview(book)}
                 >
-                  <div className="aspect-video bg-gradient-to-br from-gray-700 to-gray-800 flex items-center justify-center relative">
+                  <div className="aspect-video bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center relative">
                     <div className="w-32 h-40 bg-gradient-to-br from-gray-100 to-gray-200 rounded overflow-hidden shadow-xl">
                       <img
                         src={book.coverImage}
@@ -477,11 +478,11 @@ const BooksLandingPage = () => {
                   </div>
 
                   <div className="p-6">
-                    <h3 className="text-lg font-bold text-white mb-2 line-clamp-2 group-hover:text-orange-400 transition-colors">
+                    <h3 className="text-lg font-bold text-gray-900 mb-2 line-clamp-2 group-hover:text-orange-600 transition-colors">
                       {book.title}
                     </h3>
-                    <p className="text-gray-400 text-sm mb-3">{book.author}</p>
-                    <p className="text-gray-300 text-sm mb-4 line-clamp-3">
+                    <p className="text-gray-600 text-sm mb-3">{book.author}</p>
+                    <p className="text-gray-700 text-sm mb-4 line-clamp-3">
                       {book.shortDescription}
                     </p>
 
@@ -496,12 +497,12 @@ const BooksLandingPage = () => {
                                 className={`w-4 h-4 ${
                                   i < Math.floor(book.rating)
                                     ? "fill-yellow-400 text-yellow-400"
-                                    : "text-gray-600"
+                                    : "text-gray-400"
                                 }`}
                               />
                             ))}
                           </div>
-                          <span className="text-sm text-gray-300 font-medium">
+                          <span className="text-sm text-gray-700 font-medium">
                             {book.rating}
                           </span>
                           <span className="text-xs text-gray-500">
@@ -511,7 +512,7 @@ const BooksLandingPage = () => {
                       </div>
 
                       {/* Reading stats */}
-                      <div className="flex items-center justify-between text-xs text-gray-400">
+                      <div className="flex items-center justify-between text-xs text-gray-600">
                         <span>
                           📖 {Math.floor(Math.random() * 500 + 100)}+ reading
                         </span>
@@ -522,7 +523,7 @@ const BooksLandingPage = () => {
 
                       {/* CTA */}
                       <div className="pt-2">
-                        <div className="text-orange-400 font-semibold text-sm group-hover:text-orange-300 transition-colors flex items-center">
+                        <div className="text-orange-600 font-semibold text-sm group-hover:text-orange-700 transition-colors flex items-center">
                           Read Expert Review
                           <svg
                             className="w-4 h-4 ml-1 transform group-hover:translate-x-1 transition-transform duration-300"
@@ -552,7 +553,7 @@ const BooksLandingPage = () => {
           <div className="container mx-auto px-4 md:px-6 max-w-7xl">
             <div className="mb-12">
               <h2 className="text-4xl font-bold font-display mb-4">
-                Frontier Watch
+                Books to Build Your Digital Future
               </h2>
 
               {/* Filter Tabs */}
@@ -562,7 +563,7 @@ const BooksLandingPage = () => {
                   "Cognitive Organization",
                   "Business Platforms",
                   "Transformation",
-                  "Workers and Workspace",
+                  "Future of Work",
                   "Accelerators",
                 ].map((filter) => (
                   <button
@@ -571,12 +572,16 @@ const BooksLandingPage = () => {
                       setActiveFilter(
                         filter === "Economy 4.0"
                           ? "Digital Economy"
-                          : `Digital ${filter}`,
+                          : filter === "Future of Work"
+                            ? "Digital Workers and Workspace"
+                            : `Digital ${filter}`,
                       )
                     }
                     className={`px-6 py-2 rounded-full font-medium transition-colors ${
                       (activeFilter === "Digital Economy" &&
                         filter === "Economy 4.0") ||
+                      (activeFilter === "Digital Workers and Workspace" &&
+                        filter === "Future of Work") ||
                       activeFilter === `Digital ${filter}`
                         ? "bg-orange-500 text-white"
                         : "bg-gray-100 text-gray-700 hover:bg-gray-200"
@@ -686,7 +691,7 @@ const BooksLandingPage = () => {
         </section>
 
         {/* 5. Top Books This Month */}
-        <section className="py-16 bg-gray-900 text-white">
+        <section className="py-16 bg-gray-50 text-gray-900">
           <div className="container mx-auto px-4 md:px-6 max-w-7xl">
             <div className="mb-12">
               <h2 className="text-4xl font-bold font-display mb-4">
@@ -699,10 +704,10 @@ const BooksLandingPage = () => {
               {topBooksThisWeek.slice(0, 4).map((book, index) => (
                 <div
                   key={book.id}
-                  className="bg-gray-800 rounded-lg overflow-hidden hover:bg-gray-750 transition-all duration-300 cursor-pointer group hover:shadow-2xl hover:-translate-y-2 relative"
+                  className="bg-white border border-gray-200 rounded-lg overflow-hidden hover:bg-gray-50 transition-all duration-300 cursor-pointer group hover:shadow-2xl hover:-translate-y-2 relative"
                   onClick={() => handleBookReview(book)}
                 >
-                  <div className="aspect-video bg-gradient-to-br from-gray-700 to-gray-800 flex items-center justify-center relative">
+                  <div className="aspect-video bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center relative">
                     <div className="w-32 h-40 bg-gradient-to-br from-gray-100 to-gray-200 rounded overflow-hidden shadow-xl">
                       <img
                         src={book.coverImage}
@@ -727,11 +732,11 @@ const BooksLandingPage = () => {
                   </div>
 
                   <div className="p-6">
-                    <h3 className="text-lg font-bold text-white mb-2 line-clamp-2 group-hover:text-orange-400 transition-colors">
+                    <h3 className="text-lg font-bold text-gray-900 mb-2 line-clamp-2 group-hover:text-orange-600 transition-colors">
                       {book.title}
                     </h3>
-                    <p className="text-gray-400 text-sm mb-3">{book.author}</p>
-                    <p className="text-gray-300 text-sm mb-4 line-clamp-3">
+                    <p className="text-gray-600 text-sm mb-3">{book.author}</p>
+                    <p className="text-gray-700 text-sm mb-4 line-clamp-3">
                       {book.shortDescription}
                     </p>
 
@@ -746,12 +751,12 @@ const BooksLandingPage = () => {
                                 className={`w-4 h-4 ${
                                   i < Math.floor(book.rating)
                                     ? "fill-yellow-400 text-yellow-400"
-                                    : "text-gray-600"
+                                    : "text-gray-400"
                                 }`}
                               />
                             ))}
                           </div>
-                          <span className="text-sm text-gray-300 font-medium">
+                          <span className="text-sm text-gray-700 font-medium">
                             {book.rating}
                           </span>
                           <span className="text-xs text-gray-500">
@@ -761,7 +766,7 @@ const BooksLandingPage = () => {
                       </div>
 
                       {/* Reading stats */}
-                      <div className="flex items-center justify-between text-xs text-gray-400">
+                      <div className="flex items-center justify-between text-xs text-gray-600">
                         <span>
                           📖 {Math.floor(Math.random() * 800 + 200)}+ reading
                         </span>
@@ -772,7 +777,7 @@ const BooksLandingPage = () => {
 
                       {/* CTA */}
                       <div className="pt-2">
-                        <div className="text-orange-400 font-semibold text-sm group-hover:text-orange-300 transition-colors flex items-center">
+                        <div className="text-orange-600 font-semibold text-sm group-hover:text-orange-700 transition-colors flex items-center">
                           Read Expert Review
                           <svg
                             className="w-4 h-4 ml-1 transform group-hover:translate-x-1 transition-transform duration-300"
@@ -798,11 +803,11 @@ const BooksLandingPage = () => {
         </section>
 
         {/* 6. More on Books */}
-        <section id="more-books" className="py-16 bg-gray-900 text-white">
+        <section id="more-books" className="py-16 bg-white text-gray-900">
           <div className="container mx-auto px-4 md:px-6 max-w-7xl">
             <div className="mb-12">
               <h2 className="text-4xl font-bold font-display mb-4">
-                More on Books
+                Digital Transformation Classics
               </h2>
             </div>
 
@@ -811,12 +816,12 @@ const BooksLandingPage = () => {
               {topBooksThisWeek.slice(4, 6).map((book, index) => (
                 <div
                   key={book.id}
-                  className="flex gap-6 p-6 bg-gray-800 rounded-lg hover:bg-gray-700 transition-colors cursor-pointer group"
+                  className="flex gap-6 p-6 bg-gray-50 border border-gray-200 rounded-lg hover:bg-gray-100 transition-colors cursor-pointer group"
                   onClick={() => handleBookReview(book)}
                 >
                   {/* Book icon - consistent with frontier books */}
                   <div className="flex-shrink-0">
-                    <div className="w-12 h-12 bg-gray-600 text-white rounded-full flex items-center justify-center font-bold text-lg">
+                    <div className="w-12 h-12 bg-orange-500 text-white rounded-full flex items-center justify-center font-bold text-lg">
                       📚
                     </div>
                   </div>
@@ -834,7 +839,7 @@ const BooksLandingPage = () => {
                           parent.innerHTML = `
                             <div class="w-full h-full flex items-center justify-center bg-gradient-to-br from-blue-100 to-indigo-100">
                               <div class="text-center text-gray-600">
-                                <div class="w-8 h-8 mx-auto bg-gray-500 rounded flex items-center justify-center text-white text-sm">
+                                <div class="w-8 h-8 mx-auto bg-orange-500 rounded flex items-center justify-center text-white text-sm">
                                   📚
                                 </div>
                               </div>
@@ -847,18 +852,18 @@ const BooksLandingPage = () => {
 
                   {/* Content */}
                   <div className="flex-1 min-w-0">
-                    <h3 className="text-lg font-bold text-white mb-2 line-clamp-2 group-hover:text-gray-300 transition-colors">
+                    <h3 className="text-lg font-bold text-gray-900 mb-2 line-clamp-2 group-hover:text-orange-600 transition-colors">
                       {book.title}
                     </h3>
-                    <p className="text-gray-400 text-sm mb-3">{book.author}</p>
-                    <p className="text-gray-300 text-sm mb-4 line-clamp-2">
+                    <p className="text-gray-600 text-sm mb-3">{book.author}</p>
+                    <p className="text-gray-700 text-sm mb-4 line-clamp-2">
                       {book.shortDescription}
                     </p>
 
                     {/* Ratings */}
                     <div className="flex items-center gap-6 text-sm">
                       <div className="flex items-center gap-2">
-                        <span className="text-gray-400">
+                        <span className="text-gray-600">
                           Transformation Impact:
                         </span>
                         <div className="flex items-center gap-1">
@@ -867,19 +872,19 @@ const BooksLandingPage = () => {
                               key={i}
                               className={`w-3 h-3 ${
                                 i < Math.floor(book.rating)
-                                  ? "fill-gray-400 text-gray-400"
-                                  : "text-gray-600"
+                                  ? "fill-yellow-400 text-yellow-400"
+                                  : "text-gray-400"
                               }`}
                             />
                           ))}
                         </div>
-                        <span className="text-gray-400 font-semibold">
+                        <span className="text-gray-700 font-semibold">
                           {book.rating}
                         </span>
                       </div>
                       <div className="flex items-center gap-2">
-                        <span className="text-gray-400">Actionability:</span>
-                        <span className="text-green-400 font-semibold">
+                        <span className="text-gray-600">Actionability:</span>
+                        <span className="text-green-600 font-semibold">
                           {book.actionabilityScore ||
                             (Math.random() * 2 + 3).toFixed(1)}
                           /5
@@ -892,16 +897,16 @@ const BooksLandingPage = () => {
                       {book.sixDDimensions?.slice(0, 2).map((dimension) => (
                         <span
                           key={dimension}
-                          className="bg-gray-500/20 text-gray-400 px-2 py-1 rounded text-xs font-medium"
+                          className="bg-orange-100 text-orange-700 px-2 py-1 rounded text-xs font-medium"
                         >
                           {dimension}
                         </span>
                       )) || (
                         <>
-                          <span className="bg-gray-500/20 text-gray-400 px-2 py-1 rounded text-xs font-medium">
+                          <span className="bg-orange-100 text-orange-700 px-2 py-1 rounded text-xs font-medium">
                             Digital Economy
                           </span>
-                          <span className="bg-gray-500/20 text-gray-400 px-2 py-1 rounded text-xs font-medium">
+                          <span className="bg-orange-100 text-orange-700 px-2 py-1 rounded text-xs font-medium">
                             AI & Innovation
                           </span>
                         </>
@@ -915,12 +920,12 @@ const BooksLandingPage = () => {
               {frontierBooks.slice(3, 7).map((book, index) => (
                 <div
                   key={book.id}
-                  className="flex gap-6 p-6 bg-gray-800 rounded-lg hover:bg-gray-700 transition-colors cursor-pointer group"
+                  className="flex gap-6 p-6 bg-gray-50 border border-gray-200 rounded-lg hover:bg-gray-100 transition-colors cursor-pointer group"
                   onClick={() => handleBookReview(book)}
                 >
                   {/* Book icon - consistent across all cards */}
                   <div className="flex-shrink-0">
-                    <div className="w-12 h-12 bg-gray-600 text-white rounded-full flex items-center justify-center font-bold text-lg">
+                    <div className="w-12 h-12 bg-orange-500 text-white rounded-full flex items-center justify-center font-bold text-lg">
                       📚
                     </div>
                   </div>
@@ -938,7 +943,7 @@ const BooksLandingPage = () => {
                           parent.innerHTML = `
                             <div class="w-full h-full flex items-center justify-center bg-gradient-to-br from-blue-100 to-indigo-100">
                               <div class="text-center text-gray-600">
-                                <div class="w-8 h-8 mx-auto bg-gray-500 rounded flex items-center justify-center text-white text-sm">
+                                <div class="w-8 h-8 mx-auto bg-orange-500 rounded flex items-center justify-center text-white text-sm">
                                   📚
                                 </div>
                               </div>
@@ -951,18 +956,18 @@ const BooksLandingPage = () => {
 
                   {/* Content */}
                   <div className="flex-1 min-w-0">
-                    <h3 className="text-lg font-bold text-white mb-2 line-clamp-2 group-hover:text-gray-300 transition-colors">
+                    <h3 className="text-lg font-bold text-gray-900 mb-2 line-clamp-2 group-hover:text-orange-600 transition-colors">
                       {book.title}
                     </h3>
-                    <p className="text-gray-400 text-sm mb-3">{book.author}</p>
-                    <p className="text-gray-300 text-sm mb-4 line-clamp-2">
+                    <p className="text-gray-600 text-sm mb-3">{book.author}</p>
+                    <p className="text-gray-700 text-sm mb-4 line-clamp-2">
                       {book.shortDescription}
                     </p>
 
                     {/* Ratings */}
                     <div className="flex items-center gap-6 text-sm">
                       <div className="flex items-center gap-2">
-                        <span className="text-gray-400">
+                        <span className="text-gray-600">
                           Transformation Impact:
                         </span>
                         <div className="flex items-center gap-1">
@@ -971,19 +976,19 @@ const BooksLandingPage = () => {
                               key={i}
                               className={`w-3 h-3 ${
                                 i < Math.floor(book.rating)
-                                  ? "fill-gray-400 text-gray-400"
-                                  : "text-gray-600"
+                                  ? "fill-yellow-400 text-yellow-400"
+                                  : "text-gray-400"
                               }`}
                             />
                           ))}
                         </div>
-                        <span className="text-gray-400 font-semibold">
+                        <span className="text-gray-700 font-semibold">
                           {book.rating}
                         </span>
                       </div>
                       <div className="flex items-center gap-2">
-                        <span className="text-gray-400">Actionability:</span>
-                        <span className="text-green-400 font-semibold">
+                        <span className="text-gray-600">Actionability:</span>
+                        <span className="text-green-600 font-semibold">
                           {book.actionabilityScore ||
                             (Math.random() * 2 + 3).toFixed(1)}
                           /5
@@ -996,16 +1001,16 @@ const BooksLandingPage = () => {
                       {book.sixDDimensions?.slice(0, 2).map((dimension) => (
                         <span
                           key={dimension}
-                          className="bg-gray-500/20 text-gray-400 px-2 py-1 rounded text-xs font-medium"
+                          className="bg-orange-100 text-orange-700 px-2 py-1 rounded text-xs font-medium"
                         >
                           {dimension}
                         </span>
                       )) || (
                         <>
-                          <span className="bg-gray-500/20 text-gray-400 px-2 py-1 rounded text-xs font-medium">
+                          <span className="bg-orange-100 text-orange-700 px-2 py-1 rounded text-xs font-medium">
                             Digital & AI
                           </span>
-                          <span className="bg-gray-500/20 text-gray-400 px-2 py-1 rounded text-xs font-medium">
+                          <span className="bg-orange-100 text-orange-700 px-2 py-1 rounded text-xs font-medium">
                             Operations
                           </span>
                         </>
@@ -1019,7 +1024,7 @@ const BooksLandingPage = () => {
         </section>
 
         {/* 7. Newsletter CTA Section */}
-        <section className="py-16 bg-black text-white">
+        <section className="py-16 bg-gray-900 text-white">
           <div className="container mx-auto px-4 md:px-6 max-w-7xl">
             <div className="grid lg:grid-cols-2 gap-8 items-center">
               {/* Left side - Title */}
