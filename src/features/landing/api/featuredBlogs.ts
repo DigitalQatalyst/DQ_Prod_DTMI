@@ -1,7 +1,7 @@
-import { blogService } from "../../admin/shared/utils/supabase";
+import { fetchLandingContentItems } from "./contentItemsSource";
 
 export interface FeaturedBlog {
-  id: number;
+  id: string;
   title: string;
   description: string;
   image: string;
@@ -20,13 +20,7 @@ export interface FeaturedBlogsResponse {
 
 export const fetchFeaturedBlogs = async (): Promise<FeaturedBlogsResponse> => {
   try {
-    // Fetch blogs from database
-    const result = await blogService.getBlogs({ 
-      limit: 5, 
-      published: true 
-    });
-    
-    const blogs = Array.isArray(result) ? result : result.data || [];
+    const blogs = await fetchLandingContentItems(5);
 
     if (blogs && blogs.length > 0) {
       // Map database blogs to component format
@@ -56,14 +50,14 @@ export const fetchFeaturedBlogs = async (): Promise<FeaturedBlogsResponse> => {
       return {
         featuredBlog: mappedBlogs[0],
         relatedBlogs: mappedBlogs.slice(1, 5),
-        success: true
+        success: true,
       };
     } else {
       // No blogs found
       return {
         featuredBlog: null,
         relatedBlogs: [],
-        success: true
+        success: true,
       };
     }
   } catch (error) {
@@ -72,7 +66,10 @@ export const fetchFeaturedBlogs = async (): Promise<FeaturedBlogsResponse> => {
       featuredBlog: null,
       relatedBlogs: [],
       success: false,
-      error: error instanceof Error ? error.message : "Failed to fetch featured blogs"
+      error:
+        error instanceof Error
+          ? error.message
+          : "Failed to fetch featured blogs",
     };
   }
 };

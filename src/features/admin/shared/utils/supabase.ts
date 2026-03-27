@@ -103,8 +103,11 @@ const deleteStorageFileFromUrl = async (url: string | null | undefined) => {
 export const blogService = {
   async getBlogs(filters: any = {}) {
     let query = getSupabase()
-      .from("v_blogs_all" as any)
-      .select("*", { count: "exact" });
+      .from("content_items" as any)
+      .select(
+        "*, authors:author_id(name, slug, title, avatar_url, bio, bio_html, linkedin_url, twitter_url, website_url), categories:category_id(name)",
+        { count: "exact" },
+      );
 
     if (filters.search) {
       query = query.or(
@@ -194,7 +197,7 @@ export const blogService = {
     }
 
     const { data, error } = await getSupabase()
-      .from("blogs" as any)
+      .from("content_items" as any)
       .select(fieldName)
       .not(fieldName, "is", null)
       .order(fieldName, { ascending: true });
@@ -213,6 +216,9 @@ export const blogService = {
   },
 
   mapBlogRow(row: any): Blog {
+    const author = row.authors || null;
+    const categoryName =
+      row.category || row.categories?.name || row.category_name;
     const blog = {
       id: row.id,
       slug: row.slug,
@@ -220,9 +226,9 @@ export const blogService = {
       excerpt: row.excerpt,
       content: row.content,
       heroImage: row.hero_image,
-      category: row.category_name || row.category,
+      category: categoryName,
       categoryId: row.category_id,
-      categoryName: row.category_name,
+      categoryName,
       tags: row.tags || [],
       publishDate: row.publish_date,
       readTime: row.read_time,
@@ -249,15 +255,15 @@ export const blogService = {
 
       author: {
         id: row.author_id,
-        name: row.author_name,
-        slug: row.author_slug,
-        title: row.author_title,
-        avatar: row.author_avatar,
-        bio: row.author_bio,
-        bioHtml: row.author_bio_html,
-        linkedIn: row.author_linkedin,
-        twitter: row.author_twitter,
-        website: row.author_website,
+        name: author?.name || row.author_name,
+        slug: author?.slug || row.author_slug,
+        title: author?.title || row.author_title,
+        avatar: author?.avatar_url || row.author_avatar,
+        bio: author?.bio || row.author_bio,
+        bioHtml: author?.bio_html || row.author_bio_html,
+        linkedIn: author?.linkedin_url || row.author_linkedin,
+        twitter: author?.twitter_url || row.author_twitter,
+        website: author?.website_url || row.author_website,
       },
       // Marketplace filter fields
       digital_perspective: row.digital_perspective,
@@ -306,8 +312,7 @@ export const blogService = {
             blog.bodyHtml = parsed.abstract || blog.bodyHtml;
           }
         }
-      } catch (e) {
-      }
+      } catch (e) {}
     }
 
     return blog;
@@ -315,8 +320,10 @@ export const blogService = {
 
   async getBlogById(id: string) {
     const { data, error } = (await getSupabase()
-      .from("v_blogs_all" as any)
-      .select("*")
+      .from("content_items" as any)
+      .select(
+        "*, authors:author_id(name, slug, title, avatar_url, bio, bio_html, linkedin_url, twitter_url, website_url), categories:category_id(name)",
+      )
       .eq("id", id)
       .limit(1)) as any;
 
@@ -328,8 +335,10 @@ export const blogService = {
 
   async getBlogBySlug(slug: string) {
     const { data, error } = (await getSupabase()
-      .from("v_blogs_all" as any)
-      .select("*")
+      .from("content_items" as any)
+      .select(
+        "*, authors:author_id(name, slug, title, avatar_url, bio, bio_html, linkedin_url, twitter_url, website_url), categories:category_id(name)",
+      )
       .eq("slug", slug)
       .limit(1)) as any;
 
@@ -374,7 +383,7 @@ export const blogService = {
     };
 
     const { data, error } = await (
-      getSupabaseAdmin().from("blogs" as any) as any
+      getSupabaseAdmin().from("content_items" as any) as any
     )
       .insert([payload])
       .select();
@@ -388,7 +397,7 @@ export const blogService = {
     if (blogData.heroImage) {
       try {
         const { data: existing } = (await getSupabase()
-          .from("blogs" as any)
+          .from("content_items" as any)
           .select("hero_image")
           .eq("id", id)
           .limit(1)) as any;
@@ -402,8 +411,7 @@ export const blogService = {
         ) {
           await deleteStorageFileFromUrl(existingRow.hero_image);
         }
-      } catch (err) {
-      }
+      } catch (err) {}
     }
 
     const payload = {
@@ -440,7 +448,7 @@ export const blogService = {
     };
 
     const { data, error } = await (
-      getSupabaseAdmin().from("blogs" as any) as any
+      getSupabaseAdmin().from("content_items" as any) as any
     )
       .update(payload as any)
       .eq("id", id)
@@ -454,7 +462,7 @@ export const blogService = {
     // Fetch old image URL before deleting record
     try {
       const { data: existing } = (await getSupabase()
-        .from("blogs" as any)
+        .from("content_items" as any)
         .select("hero_image")
         .eq("id", id)
         .limit(1)) as any;
@@ -464,11 +472,10 @@ export const blogService = {
       if (existingRow?.hero_image) {
         await deleteStorageFileFromUrl(existingRow.hero_image);
       }
-    } catch (err) {
-    }
+    } catch (err) {}
 
     const { error } = await getSupabaseAdmin()
-      .from("blogs" as any)
+      .from("content_items" as any)
       .delete()
       .eq("id", id);
 
@@ -641,12 +648,15 @@ export const authorService = {
           .select("avatar_url")
           .eq("id", id)
           .limit(1)) as any;
-        const existingAuthor = existing && existing.length > 0 ? existing[0] : null;
-        if (existingAuthor?.avatar_url && existingAuthor.avatar_url !== authorData.avatar) {
+        const existingAuthor =
+          existing && existing.length > 0 ? existing[0] : null;
+        if (
+          existingAuthor?.avatar_url &&
+          existingAuthor.avatar_url !== authorData.avatar
+        ) {
           await deleteStorageFileFromUrl(existingAuthor.avatar_url);
         }
-      } catch (err) {
-      }
+      } catch (err) {}
     }
 
     const payload: any = { updated_at: new Date().toISOString() };
@@ -655,17 +665,26 @@ export const authorService = {
     if (authorData.avatar !== undefined) payload.avatar_url = authorData.avatar;
     if (authorData.bio !== undefined) payload.bio = authorData.bio;
     if (authorData.bioHtml !== undefined) payload.bio_html = authorData.bioHtml;
-    if (authorData.linkedIn !== undefined) payload.linkedin_url = authorData.linkedIn;
-    if (authorData.twitter !== undefined) payload.twitter_url = authorData.twitter;
-    if (authorData.website !== undefined) payload.website_url = authorData.website;
+    if (authorData.linkedIn !== undefined)
+      payload.linkedin_url = authorData.linkedIn;
+    if (authorData.twitter !== undefined)
+      payload.twitter_url = authorData.twitter;
+    if (authorData.website !== undefined)
+      payload.website_url = authorData.website;
     if (authorData.email !== undefined) payload.email = authorData.email;
-    if (authorData.location !== undefined) payload.location = authorData.location;
-    if (authorData.contributorType !== undefined) payload.contributor_type = authorData.contributorType;
-    if (authorData.subCategory !== undefined) payload.sub_category = authorData.subCategory;
-    if (authorData.affiliation !== undefined) payload.affiliation = authorData.affiliation;
-    if (authorData.expertise !== undefined) payload.expertise = authorData.expertise;
+    if (authorData.location !== undefined)
+      payload.location = authorData.location;
+    if (authorData.contributorType !== undefined)
+      payload.contributor_type = authorData.contributorType;
+    if (authorData.subCategory !== undefined)
+      payload.sub_category = authorData.subCategory;
+    if (authorData.affiliation !== undefined)
+      payload.affiliation = authorData.affiliation;
+    if (authorData.expertise !== undefined)
+      payload.expertise = authorData.expertise;
     if (authorData.tags !== undefined) payload.tags = authorData.tags;
-    if (authorData.worksCount !== undefined) payload.works_count = authorData.worksCount;
+    if (authorData.worksCount !== undefined)
+      payload.works_count = authorData.worksCount;
 
     const { data, error } = await (
       getSupabaseAdmin().from("authors" as any) as any
@@ -708,12 +727,12 @@ export const authorService = {
         .select("avatar_url")
         .eq("id", id)
         .limit(1)) as any;
-      const existingAuthor = existing && existing.length > 0 ? existing[0] : null;
+      const existingAuthor =
+        existing && existing.length > 0 ? existing[0] : null;
       if (existingAuthor?.avatar_url) {
         await deleteStorageFileFromUrl(existingAuthor.avatar_url);
       }
-    } catch (err) {
-    }
+    } catch (err) {}
 
     const { error } = await getSupabaseAdmin()
       .from("authors" as any)
@@ -732,7 +751,9 @@ export const authorService = {
   async uploadAvatar(file: File): Promise<string> {
     const supabase = getSupabaseAdmin();
     const key = `avatars/${uuidv4()}-${file.name.replace(/[^a-z0-9.]/gi, "-")}`;
-    const { error } = await supabase.storage.from("blog-content").upload(key, file);
+    const { error } = await supabase.storage
+      .from("blog-content")
+      .upload(key, file);
     if (error) throw error;
     const { data } = supabase.storage.from("blog-content").getPublicUrl(key);
     return data.publicUrl;

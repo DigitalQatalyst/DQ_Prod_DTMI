@@ -1,7 +1,10 @@
-import { blogService, Blog } from "../../admin/shared/utils/supabase";
+import {
+  fetchLandingContentItems,
+  LandingContentItem,
+} from "./contentItemsSource";
 
 export interface WeekHighlightItem {
-  id: number;
+  id: string;
   title: string;
   description: string;
   image: string;
@@ -45,56 +48,61 @@ const fallbackHighlights: WeekHighlightItem[] = [
   },
 ];
 
-export const fetchWeekHighlights = async (): Promise<WeekHighlightsResponse> => {
-  try {
-    // Fetch recent blogs from database
-    const blogsResult = await blogService.getBlogs({ 
-      limit: 4, 
-      published: true 
-    });
-    
-    const blogs = Array.isArray(blogsResult) ? blogsResult : blogsResult.data || [];
-    
-    const weekHighlights: WeekHighlightItem[] = [];
+export const fetchWeekHighlights =
+  async (): Promise<WeekHighlightsResponse> => {
+    try {
+      const blogs = await fetchLandingContentItems(4);
 
-    // Convert database blogs to highlight items
-    blogs.slice(0, 2).forEach((blog: Blog, index: number) => {
-      const shortDesc = blog.excerpt || 
-        (blog.content ? blog.content.substring(0, 150) + "..." : "Key insights on digital transformation.");
-      
-      weekHighlights.push({
-        id: blog.id,
-        title: blog.title,
-        description: shortDesc,
-        image: blog.heroImage || `/images/Article 0${index + 1}_hero image.png`,
-        link: blog.slug ? `/blog/${blog.slug}` : `/media/blog/${blog.id}`,
-        category: blog.category || "Article",
-        type: "Blog",
-        date: new Date(blog.publishDate).toLocaleDateString('en-US', { 
-          year: 'numeric', 
-          month: 'long', 
-          day: 'numeric' 
-        }),
-        readTime: blog.readTime ? `${blog.readTime} min read` : "5 min read",
+      const weekHighlights: WeekHighlightItem[] = [];
+
+      // Convert database blogs to highlight items
+      blogs.slice(0, 2).forEach((blog: LandingContentItem, index: number) => {
+        const shortDesc =
+          blog.excerpt ||
+          (blog.content
+            ? blog.content.substring(0, 150) + "..."
+            : "Key insights on digital transformation.");
+
+        weekHighlights.push({
+          id: blog.id,
+          title: blog.title,
+          description: shortDesc,
+          image:
+            blog.heroImage || `/images/Article 0${index + 1}_hero image.png`,
+          link: blog.slug ? `/blog/${blog.slug}` : `/media/blog/${blog.id}`,
+          category: blog.category || "Article",
+          type: "Blog",
+          date: new Date(blog.publishDate).toLocaleDateString("en-US", {
+            year: "numeric",
+            month: "long",
+            day: "numeric",
+          }),
+          readTime: blog.readTime ? `${blog.readTime} min read` : "5 min read",
+        });
       });
-    });
 
-    // If we don't have enough blogs, add fallback content
-    if (weekHighlights.length < 2) {
-      const needed = 2 - weekHighlights.length;
-      weekHighlights.push(...fallbackHighlights.slice(0, needed));
+      // If we don't have enough blogs, add fallback content
+      if (weekHighlights.length < 2) {
+        const needed = 2 - weekHighlights.length;
+        weekHighlights.push(...fallbackHighlights.slice(0, needed));
+      }
+
+      return {
+        highlights: weekHighlights.slice(0, 2),
+        success: true,
+      };
+    } catch (error) {
+      console.error(
+        "❌ [Week Highlights API] Error fetching highlights:",
+        error,
+      );
+      return {
+        highlights: fallbackHighlights.slice(0, 2),
+        success: false,
+        error:
+          error instanceof Error
+            ? error.message
+            : "Failed to fetch week highlights",
+      };
     }
-
-    return {
-      highlights: weekHighlights.slice(0, 2),
-      success: true
-    };
-  } catch (error) {
-    console.error("❌ [Week Highlights API] Error fetching highlights:", error);
-    return {
-      highlights: fallbackHighlights.slice(0, 2),
-      success: false,
-      error: error instanceof Error ? error.message : "Failed to fetch week highlights"
-    };
-  }
-};
+  };

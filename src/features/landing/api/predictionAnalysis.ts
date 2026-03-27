@@ -1,7 +1,7 @@
-import { blogService } from "../../admin/shared/utils/supabase";
+import { fetchLandingContentItems } from "./contentItemsSource";
 
 export interface PredictionItem {
-  id: number;
+  id: string;
   title: string;
   description: string;
   image: string;
@@ -54,80 +54,89 @@ const fallbackPredictions: PredictionItem[] = [
   },
 ];
 
-export const fetchPredictionAnalysis = async (): Promise<PredictionAnalysisResponse> => {
-  try {
-    // Fetch blogs that could serve as prediction analysis content
-    const result = await blogService.getBlogs({ 
-      limit: 10, 
-      published: true 
-    });
-    
-    const blogs = Array.isArray(result) ? result : result.data || [];
+export const fetchPredictionAnalysis =
+  async (): Promise<PredictionAnalysisResponse> => {
+    try {
+      const blogs = await fetchLandingContentItems(10);
 
-    if (blogs && blogs.length > 0) {
-      // Filter for blogs that might be analysis-type content
-      // Look for keywords that suggest analytical content
-      const analysisBlogs = blogs.filter((blog: any) => {
-        const content = (blog.title + " " + (blog.excerpt || blog.description || "")).toLowerCase();
-        return content.includes("analysis") || 
-               content.includes("prediction") || 
-               content.includes("future") || 
-               content.includes("trend") || 
-               content.includes("forecast") ||
-               content.includes("insight") ||
-               content.includes("strategy");
-      });
-
-      const blogsToUse = analysisBlogs.length >= 4 ? analysisBlogs : blogs;
-
-      // Map database blogs to prediction format
-      const mappedPredictions = blogsToUse
-        .slice(0, 4)
-        .map((blog: any, index: number): PredictionItem => {
-          return {
-            id: blog.id,
-            title: blog.title,
-            description:
-              blog.excerpt ||
-              blog.summary ||
-              blog.description ||
-              "Explore this prediction analysis on digital transformation.",
-            image: blog.heroImage || `/images/Article 0${(index % 3) + 1}_hero image.png`,
-            link: blog.slug ? `/blog/${blog.slug}` : `/media/blog/${blog.id}`,
-            category: blog.category || "Digital Transformation",
-          };
+      if (blogs && blogs.length > 0) {
+        // Filter for blogs that might be analysis-type content
+        // Look for keywords that suggest analytical content
+        const analysisBlogs = blogs.filter((blog: any) => {
+          const content = (
+            blog.title +
+            " " +
+            (blog.excerpt || blog.description || "")
+          ).toLowerCase();
+          return (
+            content.includes("analysis") ||
+            content.includes("prediction") ||
+            content.includes("future") ||
+            content.includes("trend") ||
+            content.includes("forecast") ||
+            content.includes("insight") ||
+            content.includes("strategy")
+          );
         });
 
-      // If we have enough mapped predictions, use them; otherwise supplement with fallback
-      if (mappedPredictions.length >= 4) {
-        return {
-          predictions: mappedPredictions,
-          success: true
-        };
+        const blogsToUse = analysisBlogs.length >= 4 ? analysisBlogs : blogs;
+
+        // Map database blogs to prediction format
+        const mappedPredictions = blogsToUse
+          .slice(0, 4)
+          .map((blog: any, index: number): PredictionItem => {
+            return {
+              id: blog.id,
+              title: blog.title,
+              description:
+                blog.excerpt ||
+                blog.summary ||
+                blog.description ||
+                "Explore this prediction analysis on digital transformation.",
+              image:
+                blog.heroImage ||
+                `/images/Article 0${(index % 3) + 1}_hero image.png`,
+              link: blog.slug ? `/blog/${blog.slug}` : `/media/blog/${blog.id}`,
+              category: blog.category || "Digital Transformation",
+            };
+          });
+
+        // If we have enough mapped predictions, use them; otherwise supplement with fallback
+        if (mappedPredictions.length >= 4) {
+          return {
+            predictions: mappedPredictions,
+            success: true,
+          };
+        } else {
+          // Combine real data with fallback to ensure we have 4 items
+          const combined = [...mappedPredictions];
+          const needed = 4 - mappedPredictions.length;
+          combined.push(...fallbackPredictions.slice(0, needed));
+
+          return {
+            predictions: combined,
+            success: true,
+          };
+        }
       } else {
-        // Combine real data with fallback to ensure we have 4 items
-        const combined = [...mappedPredictions];
-        const needed = 4 - mappedPredictions.length;
-        combined.push(...fallbackPredictions.slice(0, needed));
-        
+        // No blogs found, use fallback
         return {
-          predictions: combined,
-          success: true
+          predictions: fallbackPredictions,
+          success: true,
         };
       }
-    } else {
-      // No blogs found, use fallback
+    } catch (error) {
+      console.error(
+        "❌ [Prediction Analysis API] Error fetching predictions:",
+        error,
+      );
       return {
         predictions: fallbackPredictions,
-        success: true
+        success: false,
+        error:
+          error instanceof Error
+            ? error.message
+            : "Failed to fetch prediction analysis",
       };
     }
-  } catch (error) {
-    console.error("❌ [Prediction Analysis API] Error fetching predictions:", error);
-    return {
-      predictions: fallbackPredictions,
-      success: false,
-      error: error instanceof Error ? error.message : "Failed to fetch prediction analysis"
-    };
-  }
-};
+  };
