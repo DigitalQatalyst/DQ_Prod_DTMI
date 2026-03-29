@@ -1321,6 +1321,9 @@ export const MarketplacePage: React.FC<MarketplacePageProps> = ({
             legacyFiltersCount: config.filterCategories?.length,
             selectedFilters: filterOptions.length,
             filterOptions: filterOptions,
+            hasBooksInContentTypes: config.writtenFilterCategories
+              ?.find((f) => f.id === "contentType")
+              ?.options?.find((opt) => opt.id === "books"),
           });
 
           setFilterConfig(filterOptions);
