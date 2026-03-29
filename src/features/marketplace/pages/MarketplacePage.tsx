@@ -1301,9 +1301,18 @@ export const MarketplacePage: React.FC<MarketplacePageProps> = ({
     const loadFilterOptions = async () => {
       try {
         if (marketplaceType === "dtmi") {
-          // Use static config for DTMI filters - same for all Knowledge Depth tabs
-          const filterOptions: FilterConfig[] =
-            config.writtenFilterCategories || config.filterCategories;
+          // Use tab-specific config for DTMI filters
+          let filterOptions: FilterConfig[] = [];
+
+          if (activeSubMarketplace === "books") {
+            // Use book-specific filters for books tab
+            filterOptions =
+              (config as any).booksFilterCategories || config.filterCategories;
+          } else {
+            // Use written content filters for other tabs
+            filterOptions =
+              config.writtenFilterCategories || config.filterCategories;
+          }
 
           console.log("DTMI Filter Debug:", {
             activeSubMarketplace,
