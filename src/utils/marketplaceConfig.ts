@@ -1099,36 +1099,28 @@ export const marketplaceConfig: Record<string, MarketplaceConfig> = {
                 name: "Theme",
                 children: [
                   {
-                    id: "6xd-framework",
-                    name: "6xD Framework",
+                    id: "d1-digital-economy",
+                    name: "D1: Digital Economy",
                   },
                   {
-                    id: "dco-transformation",
-                    name: "DCO Transformation",
+                    id: "d2-digital-cognitive-organization",
+                    name: "D2: Digital Cognitive Organization",
                   },
                   {
-                    id: "platform-economics",
-                    name: "Platform Economics",
+                    id: "d3-digital-business-platforms",
+                    name: "D3: Digital Business Platforms",
                   },
                   {
-                    id: "ai-governance",
-                    name: "AI Governance",
+                    id: "d4-digital-transformation",
+                    name: "D4: Digital Transformation",
                   },
                   {
-                    id: "digital-leadership",
-                    name: "Digital Leadership",
+                    id: "d5-digital-workers-workspace",
+                    name: "D5: Digital Workers & Workspace",
                   },
                   {
-                    id: "organizational-design",
-                    name: "Organizational Design",
-                  },
-                  {
-                    id: "business-model-innovation",
-                    name: "Business Model Innovation",
-                  },
-                  {
-                    id: "digital-strategy",
-                    name: "Digital Strategy",
+                    id: "d6-digital-accelerators",
+                    name: "D6: Digital Accelerators",
                   },
                 ],
               },
@@ -1175,24 +1167,40 @@ export const marketplaceConfig: Record<string, MarketplaceConfig> = {
                 name: "Year",
                 children: [
                   {
-                    id: "2025-2026",
-                    name: "2025-2026",
+                    id: "2025",
+                    name: "2025",
                   },
                   {
-                    id: "2023-2024",
-                    name: "2023-2024",
+                    id: "2024",
+                    name: "2024",
                   },
                   {
-                    id: "2021-2022",
-                    name: "2021-2022",
+                    id: "2023",
+                    name: "2023",
                   },
                   {
-                    id: "2019-2020",
-                    name: "2019-2020",
+                    id: "2022",
+                    name: "2022",
                   },
                   {
-                    id: "2017-2018",
-                    name: "2017-2018",
+                    id: "2021",
+                    name: "2021",
+                  },
+                  {
+                    id: "2020",
+                    name: "2020",
+                  },
+                  {
+                    id: "2019",
+                    name: "2019",
+                  },
+                  {
+                    id: "2018",
+                    name: "2018",
+                  },
+                  {
+                    id: "2017",
+                    name: "2017",
                   },
                   {
                     id: "before-2017",
