@@ -167,7 +167,8 @@ const BookReviewPage = () => {
                   <div className="flex items-center gap-2">
                     <User className="w-4 h-4" />
                     <span>
-                      {bookId === "6xd-six-digital-perspectives"
+                      {bookId === "6xd-six-digital-perspectives" ||
+                      bookId === "driving-digital-strategy"
                         ? "Carimi Medah"
                         : "Digital Transformation Review"}
                     </span>
