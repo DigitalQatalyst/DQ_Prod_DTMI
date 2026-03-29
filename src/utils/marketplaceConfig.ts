@@ -1052,6 +1052,250 @@ export const marketplaceConfig: Record<string, MarketplaceConfig> = {
               },
             ],
           },
+          {
+            id: "books",
+            name: "Books",
+            children: [
+              {
+                id: "topic",
+                name: "Topic",
+                children: [
+                  {
+                    id: "digital-economy",
+                    name: "Digital Economy",
+                  },
+                  {
+                    id: "digital-transformation",
+                    name: "Digital Transformation",
+                  },
+                  {
+                    id: "artificial-intelligence",
+                    name: "Artificial Intelligence",
+                  },
+                  {
+                    id: "digital-business-platforms",
+                    name: "Digital Business Platforms",
+                  },
+                  {
+                    id: "digital-cognitive-organizations",
+                    name: "Digital Cognitive Organizations",
+                  },
+                  {
+                    id: "future-of-work",
+                    name: "Future of Work",
+                  },
+                  {
+                    id: "platform-strategy",
+                    name: "Platform Strategy",
+                  },
+                  {
+                    id: "innovation-organizational-change",
+                    name: "Innovation and Organizational Change",
+                  },
+                ],
+              },
+              {
+                id: "theme",
+                name: "Theme",
+                children: [
+                  {
+                    id: "6xd-framework",
+                    name: "6xD Framework",
+                  },
+                  {
+                    id: "dco-transformation",
+                    name: "DCO Transformation",
+                  },
+                  {
+                    id: "platform-economics",
+                    name: "Platform Economics",
+                  },
+                  {
+                    id: "ai-governance",
+                    name: "AI Governance",
+                  },
+                  {
+                    id: "digital-leadership",
+                    name: "Digital Leadership",
+                  },
+                  {
+                    id: "organizational-design",
+                    name: "Organizational Design",
+                  },
+                  {
+                    id: "business-model-innovation",
+                    name: "Business Model Innovation",
+                  },
+                  {
+                    id: "digital-strategy",
+                    name: "Digital Strategy",
+                  },
+                ],
+              },
+              {
+                id: "author",
+                name: "Author",
+                children: [
+                  {
+                    id: "david-rogers",
+                    name: "David Rogers",
+                  },
+                  {
+                    id: "sunil-gupta",
+                    name: "Sunil Gupta",
+                  },
+                  {
+                    id: "stephane-niango",
+                    name: "Dr. Stéphane Niango",
+                  },
+                  {
+                    id: "bill-schmarzo",
+                    name: "Bill Schmarzo",
+                  },
+                  {
+                    id: "thomas-siebel",
+                    name: "Thomas Siebel",
+                  },
+                  {
+                    id: "geoffrey-parker",
+                    name: "Geoffrey Parker",
+                  },
+                  {
+                    id: "marshall-van-alstyne",
+                    name: "Marshall Van Alstyne",
+                  },
+                  {
+                    id: "sangeet-choudary",
+                    name: "Sangeet Paul Choudary",
+                  },
+                ],
+              },
+              {
+                id: "year",
+                name: "Year",
+                children: [
+                  {
+                    id: "2025-2026",
+                    name: "2025-2026",
+                  },
+                  {
+                    id: "2023-2024",
+                    name: "2023-2024",
+                  },
+                  {
+                    id: "2021-2022",
+                    name: "2021-2022",
+                  },
+                  {
+                    id: "2019-2020",
+                    name: "2019-2020",
+                  },
+                  {
+                    id: "2017-2018",
+                    name: "2017-2018",
+                  },
+                  {
+                    id: "before-2017",
+                    name: "Before 2017",
+                  },
+                ],
+              },
+              {
+                id: "reading-level",
+                name: "Reading Level",
+                children: [
+                  {
+                    id: "foundational",
+                    name: "Foundational",
+                  },
+                  {
+                    id: "intermediate",
+                    name: "Intermediate",
+                  },
+                  {
+                    id: "advanced",
+                    name: "Advanced",
+                  },
+                  {
+                    id: "expert",
+                    name: "Expert",
+                  },
+                ],
+              },
+              {
+                id: "book-type",
+                name: "Book Type",
+                children: [
+                  {
+                    id: "strategy",
+                    name: "Strategy",
+                  },
+                  {
+                    id: "theory",
+                    name: "Theory",
+                  },
+                  {
+                    id: "technology",
+                    name: "Technology",
+                  },
+                  {
+                    id: "leadership",
+                    name: "Leadership",
+                  },
+                  {
+                    id: "organizational-change",
+                    name: "Organizational Change",
+                  },
+                  {
+                    id: "ai",
+                    name: "AI",
+                  },
+                  {
+                    id: "economics",
+                    name: "Economics",
+                  },
+                  {
+                    id: "policy-governance",
+                    name: "Policy / Governance",
+                  },
+                ],
+              },
+              {
+                id: "role-relevance",
+                name: "Role Relevance",
+                children: [
+                  {
+                    id: "executive",
+                    name: "Executive",
+                  },
+                  {
+                    id: "strategist",
+                    name: "Strategist",
+                  },
+                  {
+                    id: "product-leader",
+                    name: "Product Leader",
+                  },
+                  {
+                    id: "architect",
+                    name: "Architect",
+                  },
+                  {
+                    id: "transformation-lead",
+                    name: "Transformation Lead",
+                  },
+                  {
+                    id: "researcher",
+                    name: "Researcher",
+                  },
+                  {
+                    id: "student",
+                    name: "Student",
+                  },
+                ],
+              },
+            ],
+          },
         ],
       },
       {
