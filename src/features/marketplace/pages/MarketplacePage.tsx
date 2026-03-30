@@ -1311,13 +1311,11 @@ export const MarketplacePage: React.FC<MarketplacePageProps> = ({
           let filterOptions: FilterConfig[] = [];
 
           if (activeSubMarketplace === "books") {
-            // Use books-specific filters for books tab
+            // For books tab, use written content filters (which now includes Books as separate category)
             filterOptions =
-              config.booksFilterCategories ||
-              config.writtenFilterCategories ||
-              config.filterCategories;
+              config.writtenFilterCategories || config.filterCategories;
           } else {
-            // Use written content filters for other tabs (excluding books-specific filters)
+            // Use written content filters for other tabs
             filterOptions =
               config.writtenFilterCategories || config.filterCategories;
           }
