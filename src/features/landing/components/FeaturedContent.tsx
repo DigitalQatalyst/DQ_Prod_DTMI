@@ -5,14 +5,14 @@ export function FeaturedContent() {
     <section className="py-20 bg-muted border-t border-border">
       <div className="container mx-auto px-4 md:px-6">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-12 relative">
-          {/* Podcast */}
+          {/* Forecast Reports */}
           <div className="flex flex-col items-center justify-center text-center">
             <h2 className="font-heading text-4xl md:text-5xl font-bold text-foreground mb-4 text-center">
-              Podcast
+              Forecast Reports
             </h2>
             <p className="text-muted-foreground leading-relaxed mb-8 max-w-md">
-              Explore real-world success stories and practical implementations
-              of digital transformation across industries.
+              Explore forward-looking market intelligence and scenario-driven
+              outlooks across key digital transformation sectors.
             </p>
             <div className="inline-flex items-center gap-2 px-6 py-3 bg-card text-muted-foreground rounded-lg font-semibold border border-border">
               Coming Soon
@@ -24,14 +24,14 @@ export function FeaturedContent() {
             <Separator orientation="vertical" />
           </div>
 
-          {/* Expert Interviews */}
+          {/* Strategic Essays */}
           <div className="flex flex-col items-center justify-center text-center">
             <h2 className="font-heading text-4xl md:text-5xl font-bold text-foreground mb-4 text-center">
-              Expert Interviews
+              Strategic Essays
             </h2>
             <p className="text-muted-foreground leading-relaxed mb-8 max-w-md">
-              Gain insights from industry leaders and experts sharing their
-              knowledge on digital transformation trends.
+              Gain concise strategic perspectives on leadership, execution, and
+              long-term competitive advantage in the digital economy.
             </p>
             <div className="inline-flex items-center gap-2 px-6 py-3 bg-card text-muted-foreground rounded-lg font-semibold border border-border">
               Coming Soon
