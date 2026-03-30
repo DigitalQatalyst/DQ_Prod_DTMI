@@ -41,6 +41,9 @@ export const fetchKnowledgeHubItems = async () => {
     if (mediaItems.data && mediaItems.data.length > 0) {
     }
     if (!mediaItems.data || mediaItems.data.length === 0) {
+      console.log(
+        "📝 [Marketplace] No real data found, using mock data fallback",
+      );
       return [];
     }
 
@@ -182,6 +185,9 @@ export const fetchKnowledgeHubItems = async () => {
     console.error(
       "❌ [Marketplace] Error fetching knowledge hub items:",
       error,
+    );
+    console.log(
+      "📝 [Marketplace] Falling back to mock data due to fetch error",
     );
     return [];
   }
