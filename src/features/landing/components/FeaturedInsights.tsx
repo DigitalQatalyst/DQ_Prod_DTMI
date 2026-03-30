@@ -35,7 +35,7 @@ export function FeaturedInsights() {
               <Skeleton className="h-40 w-full rounded-lg" />
             </div>
             <div className="lg:col-span-6">
-              <Skeleton className="h-[420px] w-full rounded-lg" />
+              <Skeleton className="h-105 w-full rounded-lg" />
             </div>
             <div className="lg:col-span-3 space-y-4">
               <Skeleton className="h-40 w-full rounded-lg" />
@@ -177,7 +177,7 @@ function ArticleCard({
           className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
         />
         {featured && (
-          <div className="absolute bottom-4 left-4">
+          <div className="absolute bottom-4 left-4 ">
             <span className="bg-destructive text-destructive-foreground text-xs font-bold px-3 py-1 uppercase rounded">
               Trending
             </span>
@@ -185,11 +185,11 @@ function ArticleCard({
         )}
       </div>
       <div
-        className={`flex flex-col justify-between flex-1 ${isLarge ? "p-6" : "p-4"}`}
+        className={`flex flex-col justify-between flex-1 ${isLarge ? "p-6 bg-red-500" : "p-4"}`}
       >
         <div>
           <h3
-            className={`font-heading font-bold text-card-foreground group-hover:text-primary transition-colors line-clamp-2 mb-2 ${isLarge ? "text-xl" : "text-sm"}`}
+            className={`font-heading bg-green-400 font-bold text-card-foreground group-hover:text-primary transition-colors line-clamp-2 mb-2 ${isLarge ? "text-xl" : "text-sm"}`}
           >
             {article.title}
           </h3>
