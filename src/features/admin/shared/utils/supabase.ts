@@ -810,7 +810,9 @@ export const categoryService = {
     return data as Category[];
   },
 
-  async getCategoriesGroupedByFilterGroup(filterGroup: string): Promise<Category[]> {
+  async getCategoriesGroupedByFilterGroup(
+    filterGroup: string,
+  ): Promise<Category[]> {
     const all = await categoryService.getCategoriesByFilterGroup(filterGroup);
     const parents = all.filter((c) => !c.parent_id);
     return parents.map((p) => ({
@@ -827,8 +829,10 @@ export const categoryService = {
       .not("filter_group", "is", null);
 
     if (error) throw error;
-    
-    const uniqueGroups = [...new Set(data.map((item: any) => item.filter_group))];
+
+    const uniqueGroups = [
+      ...new Set(data.map((item: any) => item.filter_group)),
+    ];
     return uniqueGroups.sort();
   },
 

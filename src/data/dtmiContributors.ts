@@ -41,7 +41,7 @@ export const contributorProfiles: ContributorProfile[] = [
     avatar: "/images/Kaylynn_Avatar.png",
     profileUrl: "/authors/kaylynn-oceanne",
   },
-  
+
   // Human Intelligence Analysts
   {
     id: 3,
@@ -142,7 +142,8 @@ export const contributorProfiles: ContributorProfile[] = [
     type: "AI Research Agents",
     subCategory: "DCO Agent",
     affiliation: "DigitalQatalyst AI Research",
-    expertise: "Digital Cognitive Organizations, AI-driven Organizational Design",
+    expertise:
+      "Digital Cognitive Organizations, AI-driven Organizational Design",
     tags: ["AI Agent", "DCO Specialist"],
     works: 18,
     bio: "AI research agent specializing in Digital Cognitive Organizations and intelligent organizational structures.",
@@ -235,7 +236,8 @@ export const contributorProfiles: ContributorProfile[] = [
     type: "Editorial Publication Team",
     subCategory: "Editorial Writer (AI Curator)",
     affiliation: "DigitalQatalyst Editorial",
-    expertise: "AI Content Curation, Automated Editorial Processes, Content Intelligence",
+    expertise:
+      "AI Content Curation, Automated Editorial Processes, Content Intelligence",
     tags: ["AI Curator", "Content Intelligence"],
     works: 22,
     bio: "AI-assisted editorial writer specializing in content curation and intelligent editorial process automation.",
