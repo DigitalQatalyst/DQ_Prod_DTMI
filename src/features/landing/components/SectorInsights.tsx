@@ -1,5 +1,4 @@
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
 import {
   ArrowRight,
   Sparkles,
@@ -141,7 +140,6 @@ const sectorGroups = [
 
 export function SectorInsights() {
   const navigate = useNavigate();
-  const [hovered, setHovered] = useState<string | null>(null);
 
   return (
     <section className="py-12 bg-muted">
@@ -157,8 +155,8 @@ export function SectorInsights() {
         </div>
 
         <div className="space-y-6">
-          {sectorGroups.map((group, gi) => (
-            <div key={gi}>
+          {sectorGroups.map((group) => (
+            <div key={group.groupTitle}>
               <div className="mb-3">
                 <h3 className="text-base font-bold text-foreground mb-0.5">
                   {group.groupTitle}
@@ -174,8 +172,6 @@ export function SectorInsights() {
                     <button
                       key={sector.name}
                       className="border border-border rounded-md p-2 bg-card hover:bg-accent transition-all duration-300 flex flex-col min-h-15 shadow-sm hover:shadow-md text-left"
-                      onMouseEnter={() => setHovered(sector.name)}
-                      onMouseLeave={() => setHovered(null)}
                       onClick={() => navigate(sector.link)}
                     >
                       <div className="flex items-center gap-1.5 mb-1">
