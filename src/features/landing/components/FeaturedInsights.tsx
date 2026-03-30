@@ -167,7 +167,7 @@ function ArticleCard({
   const isLarge = size === "large";
   return (
     <Card
-      className={`group overflow-hidden hover:shadow-xl transition-all duration-300 cursor-pointer border-border p-0 bg-card flex flex-col`}
+      className={`group overflow-hidden hover:shadow-xl transition-all duration-300 cursor-pointer border-border p-0 bg-card flex flex-col ${isLarge ? "" : "gap-0"}`}
       onClick={onClick}
     >
       <div className={`relative overflow-hidden ${isLarge ? "h-80" : "h-40"}`}>
@@ -185,16 +185,16 @@ function ArticleCard({
         )}
       </div>
       <div
-        className={`flex flex-col justify-between flex-1 ${isLarge ? "p-6 bg-red-500" : "p-4"}`}
+        className={`flex flex-col justify-between flex-1 ${isLarge ? "p-6" : "p-4"}`}
       >
         <div>
           <h3
-            className={`font-heading bg-green-400 font-bold text-card-foreground group-hover:text-primary transition-colors line-clamp-2 mb-2 ${isLarge ? "text-xl" : "text-sm"}`}
+            className={`font-heading font-bold text-card-foreground group-hover:text-primary transition-colors line-clamp-2 mb-2 ${isLarge ? "text-xl" : "text-sm"}`}
           >
             {article.title}
           </h3>
           {isLarge && (
-            <p className="text-sm text-muted-foreground line-clamp-2 mb-3">
+            <p className="text-sm text-muted-foreground line-clamp-3 mb-2">
               {article.description}
             </p>
           )}
