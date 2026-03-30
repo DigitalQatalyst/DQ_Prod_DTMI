@@ -963,7 +963,7 @@ export const marketplaceConfig: Record<string, MarketplaceConfig> = {
     writtenFilterCategories: [
       {
         id: "contentType",
-        title: "Content Type",
+        title: "Content Types",
         isNested: true,
         options: [
           {
@@ -1074,7 +1074,7 @@ export const marketplaceConfig: Record<string, MarketplaceConfig> = {
       },
       {
         id: "perspective6xd",
-        title: "Perspectives",
+        title: "Perspective (6xD)",
         options: [
           {
             id: "digital-economy",
@@ -1169,8 +1169,8 @@ export const marketplaceConfig: Record<string, MarketplaceConfig> = {
         ],
       },
       {
-        id: "platform",
-        title: "Platform",
+        id: "platformDomain",
+        title: "By Platform Domain (DBP)",
         isNested: true,
         options: [
           {
@@ -1253,7 +1253,7 @@ export const marketplaceConfig: Record<string, MarketplaceConfig> = {
       },
       {
         id: "category",
-        title: "Domains",
+        title: "Category",
         isNested: true,
         options: [
           {

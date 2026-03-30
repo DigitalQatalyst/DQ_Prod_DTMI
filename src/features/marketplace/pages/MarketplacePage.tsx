@@ -2502,6 +2502,71 @@ export const MarketplacePage: React.FC<MarketplacePageProps> = ({
                         </div>
                       )}
                     </div>
+
+                    {/* Books Section */}
+                    <div className="pb-4 sm:pb-0">
+                      <button
+                        onClick={() =>
+                          setCollapsedCategories((prev) => ({
+                            ...prev,
+                            books: !prev.books,
+                          }))
+                        }
+                        className="flex items-center justify-between w-full text-left py-2 sm:py-0 mb-3 sm:mb-4"
+                      >
+                        <h4 className="text-base sm:text-lg font-medium text-gray-900">
+                          Books
+                        </h4>
+                        <svg
+                          className={`w-5 h-5 transition-transform ${!collapsedCategories.books ? "rotate-45" : ""}`}
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M12 6v6m0 0v6m0-6h6m-6 0H6"
+                          />
+                        </svg>
+                      </button>
+                      {!collapsedCategories.books && (
+                        <div className="space-y-3 max-h-48 sm:max-h-64 overflow-y-auto">
+                          {filterConfig
+                            .find((f) => f.id === "books")
+                            ?.options.map((bookCategory) => (
+                              <div key={bookCategory.id} className="space-y-2">
+                                <div className="font-medium text-sm text-gray-800 border-b border-gray-100 pb-1">
+                                  {bookCategory.name}
+                                </div>
+                                {bookCategory.children?.map((option) => (
+                                  <label
+                                    key={option.id}
+                                    className="flex items-center gap-3 cursor-pointer ml-2 sm:ml-4 py-1 sm:py-0"
+                                  >
+                                    <input
+                                      type="checkbox"
+                                      checked={activeFilters.includes(
+                                        option.name,
+                                      )}
+                                      onChange={() =>
+                                        handleKnowledgeHubFilterChange(
+                                          option.name,
+                                        )
+                                      }
+                                      className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                                    />
+                                    <span className="text-sm text-gray-700">
+                                      {option.name}
+                                    </span>
+                                  </label>
+                                ))}
+                              </div>
+                            ))}
+                        </div>
+                      )}
+                    </div>
                   </div>
                 </div>
 
