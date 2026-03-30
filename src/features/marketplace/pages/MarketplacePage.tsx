@@ -345,6 +345,12 @@ export const MarketplacePage: React.FC<MarketplacePageProps> = ({
     // Clear all filters when switching tabs
     setActiveFilters([]);
     setSearchQuery("");
+
+    // Auto-expand Content Types filter when Books tab is active
+    if (tabId === "books") {
+      setTypesExpanded(true); // Expand Content Types filter
+      setShowFilters(true); // Show filter sidebar for books
+    }
   }, []);
 
   // Loading and error states
@@ -1045,7 +1051,7 @@ export const MarketplacePage: React.FC<MarketplacePageProps> = ({
         return;
       }
       // Convert content type filters to mediaType values for legacy filtering
-      let contentTypeParam = null;
+      let contentTypeParam: string | null = null;
 
       // Handle Audio and Videos tabs with specific content types
       if (activeSubMarketplace === "audio") {
@@ -1197,7 +1203,7 @@ export const MarketplacePage: React.FC<MarketplacePageProps> = ({
         const pageLimit = Math.max(1, khPageSize || computedPageSize);
 
         // Convert content type filters to mediaType values for legacy filtering
-        let contentTypeParam = null;
+        let contentTypeParam: string | null = null;
 
         // Handle Audio and Videos tabs with specific content types
         if (activeSubMarketplace === "audio") {
@@ -1305,11 +1311,13 @@ export const MarketplacePage: React.FC<MarketplacePageProps> = ({
           let filterOptions: FilterConfig[] = [];
 
           if (activeSubMarketplace === "books") {
-            // Use book-specific filters for books tab
+            // Use books-specific filters for books tab
             filterOptions =
-              (config as any).booksFilterCategories || config.filterCategories;
+              config.booksFilterCategories ||
+              config.writtenFilterCategories ||
+              config.filterCategories;
           } else {
-            // Use written content filters for other tabs
+            // Use written content filters for other tabs (excluding books-specific filters)
             filterOptions =
               config.writtenFilterCategories || config.filterCategories;
           }
@@ -1317,13 +1325,19 @@ export const MarketplacePage: React.FC<MarketplacePageProps> = ({
           console.log("DTMI Filter Debug:", {
             activeSubMarketplace,
             hasWrittenFilters: !!config.writtenFilterCategories,
+            hasBooksFilters: !!config.booksFilterCategories,
             writtenFiltersCount: config.writtenFilterCategories?.length,
+            booksFiltersCount: config.booksFilterCategories?.length,
             legacyFiltersCount: config.filterCategories?.length,
             selectedFilters: filterOptions.length,
             filterOptions: filterOptions,
-            hasBooksInContentTypes: config.writtenFilterCategories
-              ?.find((f) => f.id === "contentType")
-              ?.options?.find((opt) => opt.id === "books"),
+            hasBooksAsTopLevel: config.writtenFilterCategories?.find(
+              (f) => f.id === "books",
+            ),
+            booksFilterStructure:
+              config.booksFilterCategories ||
+              config.writtenFilterCategories?.find((f) => f.id === "books")
+                ?.options,
           });
 
           setFilterConfig(filterOptions);
@@ -2215,28 +2229,63 @@ export const MarketplacePage: React.FC<MarketplacePageProps> = ({
                                 <div className="font-medium text-sm text-gray-800 border-b border-gray-100 pb-1">
                                   {category.name}
                                 </div>
-                                {category.children?.map((subcategory) => (
-                                  <label
-                                    key={subcategory.id}
-                                    className="flex items-center gap-3 cursor-pointer ml-2 sm:ml-4 py-1 sm:py-0"
-                                  >
-                                    <input
-                                      type="checkbox"
-                                      checked={activeFilters.includes(
-                                        subcategory.name,
-                                      )}
-                                      onChange={() =>
-                                        handleKnowledgeHubFilterChange(
-                                          subcategory.name,
-                                        )
-                                      }
-                                      className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
-                                    />
-                                    <span className="text-sm text-gray-700">
-                                      {subcategory.name}
-                                    </span>
-                                  </label>
-                                ))}
+                                {category.id === "books"
+                                  ? // Special handling for Books section with deeper nesting
+                                    category.children?.map((bookFilter) => (
+                                      <div
+                                        key={bookFilter.id}
+                                        className="ml-2 sm:ml-4 space-y-2"
+                                      >
+                                        <div className="font-medium text-xs text-gray-700 mt-2 mb-1">
+                                          {bookFilter.name}
+                                        </div>
+                                        {bookFilter.children?.map((option) => (
+                                          <label
+                                            key={option.id}
+                                            className="flex items-center gap-3 cursor-pointer ml-2 sm:ml-4 py-1 sm:py-0"
+                                          >
+                                            <input
+                                              type="checkbox"
+                                              checked={activeFilters.includes(
+                                                option.name,
+                                              )}
+                                              onChange={() =>
+                                                handleKnowledgeHubFilterChange(
+                                                  option.name,
+                                                )
+                                              }
+                                              className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                                            />
+                                            <span className="text-sm text-gray-700">
+                                              {option.name}
+                                            </span>
+                                          </label>
+                                        ))}
+                                      </div>
+                                    ))
+                                  : // Standard handling for other sections
+                                    category.children?.map((subcategory) => (
+                                      <label
+                                        key={subcategory.id}
+                                        className="flex items-center gap-3 cursor-pointer ml-2 sm:ml-4 py-1 sm:py-0"
+                                      >
+                                        <input
+                                          type="checkbox"
+                                          checked={activeFilters.includes(
+                                            subcategory.name,
+                                          )}
+                                          onChange={() =>
+                                            handleKnowledgeHubFilterChange(
+                                              subcategory.name,
+                                            )
+                                          }
+                                          className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                                        />
+                                        <span className="text-sm text-gray-700">
+                                          {subcategory.name}
+                                        </span>
+                                      </label>
+                                    ))}
                               </div>
                             ))}
                         </div>
