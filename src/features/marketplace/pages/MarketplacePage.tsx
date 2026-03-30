@@ -1311,9 +1311,12 @@ export const MarketplacePage: React.FC<MarketplacePageProps> = ({
           let filterOptions: FilterConfig[] = [];
 
           if (activeSubMarketplace === "books") {
-            // For books tab, use written content filters (which now includes Books as separate category)
-            filterOptions =
+            // For books tab, use written content filters but exclude the Books filter
+            const allFilters =
               config.writtenFilterCategories || config.filterCategories;
+            filterOptions = allFilters.filter(
+              (filter) => filter.id !== "books",
+            );
           } else {
             // Use written content filters for other tabs
             filterOptions =
@@ -2001,13 +2004,15 @@ export const MarketplacePage: React.FC<MarketplacePageProps> = ({
         <div className="flex items-center justify-between mb-2">
           <h1 className="text-3xl font-bold text-gray-800">{config.title}</h1>
           {/* Desktop Filter Button - Hidden on Mobile */}
-          <button
-            onClick={() => setShowFilters(true)}
-            className="hidden sm:flex items-center gap-2 px-4 py-2 bg-brand-navy text-white rounded-lg hover:bg-brand-navy/90 transition-colors"
-          >
-            <FilterIcon size={16} />
-            <span>Filter</span>
-          </button>
+          {activeSubMarketplace !== "books" && (
+            <button
+              onClick={() => setShowFilters(true)}
+              className="hidden sm:flex items-center gap-2 px-4 py-2 bg-brand-navy text-white rounded-lg hover:bg-brand-navy/90 transition-colors"
+            >
+              <FilterIcon size={16} />
+              <span>Filter</span>
+            </button>
+          )}
         </div>
         <div className="flex items-center justify-between mb-6">
           <p className="text-gray-600">{config.description}</p>
@@ -2023,15 +2028,17 @@ export const MarketplacePage: React.FC<MarketplacePageProps> = ({
         </div>
 
         {/* Mobile Filter Button - WEF Style, Hidden on Desktop */}
-        <div className="mb-6 sm:hidden">
-          <button
-            onClick={() => setShowFilters(true)}
-            className="w-full flex items-center justify-center gap-3 px-6 py-4 bg-brand-navy text-white rounded-full hover:bg-brand-navy/90 transition-colors font-medium"
-          >
-            <FilterIcon size={20} />
-            <span>Filter</span>
-          </button>
-        </div>
+        {activeSubMarketplace !== "books" && (
+          <div className="mb-6 sm:hidden">
+            <button
+              onClick={() => setShowFilters(true)}
+              className="w-full flex items-center justify-center gap-3 px-6 py-4 bg-brand-navy text-white rounded-full hover:bg-brand-navy/90 transition-colors font-medium"
+            >
+              <FilterIcon size={20} />
+              <span>Filter</span>
+            </button>
+          </div>
+        )}
 
         {/* Sub-marketplace tabs for DTMI and Services */}
         {(marketplaceType === "dtmi" ||
@@ -2164,7 +2171,7 @@ export const MarketplacePage: React.FC<MarketplacePageProps> = ({
 
         <div className="space-y-6">
           {/* Filter Modal - Responsive Design */}
-          {showFilters && (
+          {showFilters && activeSubMarketplace !== "books" && (
             <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-2 sm:p-4">
               <div className="bg-white rounded-lg w-full max-w-sm sm:max-w-md md:max-w-lg lg:max-w-2xl xl:max-w-4xl max-h-[95vh] sm:max-h-[90vh] overflow-hidden flex flex-col">
                 {/* Modal Header */}
