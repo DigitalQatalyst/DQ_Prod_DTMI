@@ -54,6 +54,7 @@ export interface Author {
   name: string;
   slug?: string;
   title: string;
+  contributorTitle?: string;
   avatar: string;
   bio: string;
   bioHtml?: string;
@@ -538,6 +539,7 @@ export const authorService = {
       name: a.name,
       slug: a.slug,
       title: a.title,
+      contributorTitle: a.contributor_title,
       avatar: a.avatar_url,
       bio: a.bio,
       bioHtml: a.bio_html,
@@ -571,6 +573,7 @@ export const authorService = {
       name: a.name,
       slug: a.slug,
       title: a.title,
+      contributorTitle: a.contributor_title,
       avatar: a.avatar_url,
       bio: a.bio,
       bioHtml: a.bio_html,
@@ -595,6 +598,7 @@ export const authorService = {
       id: uuidv4(),
       name: authorData.name,
       title: authorData.title,
+      contributor_title: authorData.contributorTitle,
       avatar_url: authorData.avatar,
       bio: authorData.bio,
       bio_html: authorData.bioHtml,
@@ -626,6 +630,7 @@ export const authorService = {
       name: a.name,
       slug: a.slug,
       title: a.title,
+      contributorTitle: a.contributor_title,
       avatar: a.avatar_url,
       bio: a.bio,
       bioHtml: a.bio_html,
@@ -667,6 +672,8 @@ export const authorService = {
     const payload: any = { updated_at: new Date().toISOString() };
     if (authorData.name !== undefined) payload.name = authorData.name;
     if (authorData.title !== undefined) payload.title = authorData.title;
+    if (authorData.contributorTitle !== undefined)
+      payload.contributor_title = authorData.contributorTitle;
     if (authorData.avatar !== undefined) payload.avatar_url = authorData.avatar;
     if (authorData.bio !== undefined) payload.bio = authorData.bio;
     if (authorData.bioHtml !== undefined) payload.bio_html = authorData.bioHtml;
@@ -706,6 +713,7 @@ export const authorService = {
       name: a.name,
       slug: a.slug,
       title: a.title,
+      contributorTitle: a.contributor_title,
       avatar: a.avatar_url,
       bio: a.bio,
       bioHtml: a.bio_html,

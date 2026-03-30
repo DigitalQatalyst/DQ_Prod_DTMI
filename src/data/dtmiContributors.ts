@@ -2,6 +2,7 @@ export type ContributorProfile = {
   id: number;
   name: string;
   type: string;
+  contributorTitle?: string;
   subCategory: string; // New field for sub-categories
   affiliation: string;
   expertise: string;

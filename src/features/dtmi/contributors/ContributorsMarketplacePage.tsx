@@ -142,6 +142,7 @@ export function ContributorsMarketplacePage() {
             id: 1000 + i,
             name: a.name,
             type: a.contributorType || 'Contributor',
+            contributorTitle: a.contributorTitle || '',
             subCategory: a.subCategory || '',
             affiliation: a.affiliation || 'DigitalQatalyst',
             expertise: a.expertise || a.title || '',
@@ -689,6 +690,11 @@ function ContributorCard({ contributor }: { contributor: ContributorProfile }) {
               <h3 className="text-xl font-semibold text-gray-900 leading-tight hover:underline">
                 {contributor.name}
               </h3>
+              {contributor.contributorTitle && (
+                <p className="text-sm font-medium text-gray-700">
+                  {contributor.contributorTitle}
+                </p>
+              )}
               <p className="text-sm text-gray-500">{contributor.affiliation}</p>
             </div>
           </div>

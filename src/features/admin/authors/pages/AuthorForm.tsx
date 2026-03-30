@@ -85,6 +85,7 @@ const AuthorForm: React.FC = () => {
   const [form, setForm] = useState<Partial<Author>>({
     name: '',
     title: '',
+    contributorTitle: '',
     bio: '',
     bioHtml: '',
     linkedIn: '',
@@ -257,6 +258,16 @@ const AuthorForm: React.FC = () => {
                     <option value="">— None —</option>
                     {CONTRIBUTOR_TYPES.map(t => <option key={t} value={t}>{t}</option>)}
                   </select>
+                </div>
+                <div className="space-y-1">
+                  <label className="text-xs text-gray-500">Contributor Title</label>
+                  <input
+                    type="text"
+                    value={form.contributorTitle || ''}
+                    onChange={e => set('contributorTitle', e.target.value)}
+                    className="w-full px-3 py-2 bg-gray-50 border border-gray-100 rounded-lg text-xs focus:ring-1 focus:ring-gray-300 outline-none"
+                    placeholder="e.g. Principal Research Analyst"
+                  />
                 </div>
                 <div className="space-y-1">
                   <label className="text-xs text-gray-500">Sub-Category</label>
