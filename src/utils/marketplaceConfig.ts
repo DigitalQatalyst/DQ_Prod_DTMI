@@ -1105,66 +1105,97 @@ export const marketplaceConfig: Record<string, MarketplaceConfig> = {
       {
         id: "sector",
         title: "Sectors",
+        isNested: true,
         options: [
           {
-            id: "cross-economy-40",
-            name: "Cross (Economy 4.0)",
+            id: "cross",
+            name: "Cross",
+            children: [
+              {
+                id: "cross-economy-40",
+                name: "Economy 4.0",
+              },
+              {
+                id: "cross-experience-40",
+                name: "Experience 4.0",
+              },
+              {
+                id: "cross-agility-40",
+                name: "Agility 4.0",
+              },
+              {
+                id: "cross-intelligence-40",
+                name: "Intelligence 4.0",
+              },
+              {
+                id: "cross-workspace-40",
+                name: "Workspace 4.0",
+              },
+            ],
           },
           {
-            id: "cross-experience-40",
-            name: "Cross (Experience 4.0)",
+            id: "primary",
+            name: "Primary",
+            children: [
+              {
+                id: "primary-mining-40",
+                name: "Mining 4.0",
+              },
+              {
+                id: "primary-farming-40",
+                name: "Farming 4.0",
+              },
+            ],
           },
           {
-            id: "cross-agility-40",
-            name: "Cross (Agility 4.0)",
+            id: "secondary",
+            name: "Secondary",
+            children: [
+              {
+                id: "secondary-plant-40",
+                name: "Plant 4.0",
+              },
+              {
+                id: "secondary-logistics-40",
+                name: "Logistics 4.0",
+              },
+              {
+                id: "secondary-infrastructure-40",
+                name: "Infrastructure 4.0",
+              },
+            ],
           },
           {
-            id: "cross-intelligence-40",
-            name: "Cross (Intelligence 4.0)",
+            id: "tertiary",
+            name: "Tertiary",
+            children: [
+              {
+                id: "tertiary-government-40",
+                name: "Government 4.0",
+              },
+              {
+                id: "tertiary-services-40",
+                name: "Services 4.0",
+              },
+              {
+                id: "tertiary-retail-40",
+                name: "Retail 4.0",
+              },
+            ],
           },
           {
-            id: "cross-workspace-40",
-            name: "Cross (Workspace 4.0)",
-          },
-          {
-            id: "primary-mining-40",
-            name: "Primary (Mining 4.0)",
-          },
-          {
-            id: "primary-farming-40",
-            name: "Primary (Farming 4.0)",
-          },
-          {
-            id: "secondary-plant-40",
-            name: "Secondary (Plant 4.0)",
-          },
-          {
-            id: "secondary-logistics-40",
-            name: "Secondary (Logistics 4.0)",
-          },
-          {
-            id: "secondary-infrastructure-40",
-            name: "Secondary (Infrastructure 4.0)",
-          },
-          {
-            id: "tertiary-government-40",
-            name: "Tertiary (Government 4.0)",
-          },
-          {
-            id: "tertiary-services-40",
-            name: "Tertiary (Services 4.0)",
-          },
-          {
-            id: "tertiary-retail-40",
-            name: "Tertiary (Retail 4.0)",
-          },
-          {
-            id: "quaternary-hospitality-40",
-            name: "Quaternary (Hospitality 4.0)",
-          },
-          {
-            id: "quaternary-wellness-40",
-            name: "Quaternary (Wellness 4.0)",
+            id: "quaternary",
+            name: "Quaternary",
+            children: [
+              {
+                id: "quaternary-hospitality-40",
+                name: "Hospitality 4.0",
+              },
+              {
+                id: "quaternary-wellness-40",
+                name: "Wellness 4.0",
+              },
+            ],
           },
         ],
       },

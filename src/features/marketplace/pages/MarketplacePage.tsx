@@ -2416,26 +2416,37 @@ export const MarketplacePage: React.FC<MarketplacePageProps> = ({
                         </svg>
                       </button>
                       {sectorsExpanded && (
-                        <div className="mt-3 sm:mt-4 space-y-2 max-h-48 sm:max-h-64 overflow-y-auto">
+                        <div className="mt-3 sm:mt-4 space-y-3 max-h-48 sm:max-h-64 overflow-y-auto">
                           {filterConfig
                             .find((f) => f.id === "sector")
-                            ?.options.map((sector) => (
-                              <label
-                                key={sector.id}
-                                className="flex items-center gap-3 cursor-pointer py-1 sm:py-0"
-                              >
-                                <input
-                                  type="checkbox"
-                                  checked={activeFilters.includes(sector.name)}
-                                  onChange={() =>
-                                    handleKnowledgeHubFilterChange(sector.name)
-                                  }
-                                  className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
-                                />
-                                <span className="text-sm text-gray-700">
-                                  {sector.name}
-                                </span>
-                              </label>
+                            ?.options.map((sectorGroup) => (
+                              <div key={sectorGroup.id} className="space-y-2">
+                                <div className="font-medium text-sm text-gray-800 border-b border-gray-100 pb-1">
+                                  {sectorGroup.name}
+                                </div>
+                                {sectorGroup.children?.map((sector) => (
+                                  <label
+                                    key={sector.id}
+                                    className="flex items-center gap-3 cursor-pointer ml-2 sm:ml-4 py-1 sm:py-0"
+                                  >
+                                    <input
+                                      type="checkbox"
+                                      checked={activeFilters.includes(
+                                        sector.name,
+                                      )}
+                                      onChange={() =>
+                                        handleKnowledgeHubFilterChange(
+                                          sector.name,
+                                        )
+                                      }
+                                      className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                                    />
+                                    <span className="text-sm text-gray-700">
+                                      {sector.name}
+                                    </span>
+                                  </label>
+                                ))}
+                              </div>
                             ))}
                         </div>
                       )}
