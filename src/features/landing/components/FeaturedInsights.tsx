@@ -184,7 +184,9 @@ function ArticleCard({
           </div>
         )}
       </div>
-      <div className={`flex flex-col justify-between flex-1 ${isLarge ? "p-6" : "p-4"}`}>
+      <div
+        className={`flex flex-col justify-between flex-1 ${isLarge ? "p-6" : "p-4"}`}
+      >
         <div>
           <h3
             className={`font-heading font-bold text-card-foreground group-hover:text-primary transition-colors line-clamp-2 mb-2 ${isLarge ? "text-xl" : "text-sm"}`}

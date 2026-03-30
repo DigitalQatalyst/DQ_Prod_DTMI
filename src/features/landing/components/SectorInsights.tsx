@@ -168,14 +168,15 @@ export function SectorInsights() {
                 </p>
               </div>
               <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-2">
-                {group.sectors.map((sector, i) => {
+                {group.sectors.map((sector) => {
                   const Icon = sector.icon;
                   return (
-                    <div
-                      key={i}
-                      className="border border-border rounded-md p-2 bg-card hover:bg-accent transition-all duration-300 flex flex-col min-h-15 shadow-sm hover:shadow-md cursor-default"
+                    <button
+                      key={sector.name}
+                      className="border border-border rounded-md p-2 bg-card hover:bg-accent transition-all duration-300 flex flex-col min-h-15 shadow-sm hover:shadow-md text-left"
                       onMouseEnter={() => setHovered(sector.name)}
                       onMouseLeave={() => setHovered(null)}
+                      onClick={() => navigate(sector.link)}
                     >
                       <div className="flex items-center gap-1.5 mb-1">
                         <Icon size={16} className="text-primary shrink-0" />
@@ -190,7 +191,7 @@ export function SectorInsights() {
                           {sector.description}
                         </p>
                       </div>
-                    </div>
+                    </button>
                   );
                 })}
               </div>
