@@ -173,7 +173,7 @@ export function SectorInsights() {
                   return (
                     <div
                       key={i}
-                      className="border border-border rounded-md p-2 bg-card hover:bg-accent transition-all duration-300 flex flex-col min-h-[60px] shadow-sm hover:shadow-md cursor-default"
+                      className="border border-border rounded-md p-2 bg-card hover:bg-accent transition-all duration-300 flex flex-col min-h-15 shadow-sm hover:shadow-md cursor-default"
                       onMouseEnter={() => setHovered(sector.name)}
                       onMouseLeave={() => setHovered(null)}
                     >
@@ -184,7 +184,7 @@ export function SectorInsights() {
                         </h4>
                       </div>
                       <div
-                        className={`transition-all duration-300 overflow-hidden ${hovered === sector.name ? "opacity-100 max-h-20" : "opacity-0 max-h-0"}`}
+                        className={`transition-all duration-300 overflow-hidden`}
                       >
                         <p className="text-[10px] text-muted-foreground leading-tight">
                           {sector.description}

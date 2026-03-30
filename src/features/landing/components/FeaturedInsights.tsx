@@ -163,7 +163,7 @@ function ArticleCard({
   size,
   featured = false,
   onClick,
-}: ArticleCardProps) {
+}: Readonly<ArticleCardProps>) {
   const isLarge = size === "large";
   return (
     <Card
@@ -190,9 +190,7 @@ function ArticleCard({
         >
           {article.title}
         </h3>
-        <p
-          className={`text-sm text-muted-foreground line-clamp-2 ${isLarge ? "mb-4" : "mb-3"}`}
-        >
+        <p className="text-sm text-muted-foreground line-clamp-2 mb-3">
           {article.description}
         </p>
         <p className="text-xs text-muted-foreground">{article.date}</p>
