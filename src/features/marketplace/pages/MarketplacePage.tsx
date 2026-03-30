@@ -2504,7 +2504,7 @@ export const MarketplacePage: React.FC<MarketplacePageProps> = ({
                     </div>
 
                     {/* Books Section */}
-                    <div className="pb-4 sm:pb-0">
+                    <div className="border-b border-gray-200 pb-4 sm:pb-6">
                       <button
                         onClick={() =>
                           setCollapsedCategories((prev) => ({
