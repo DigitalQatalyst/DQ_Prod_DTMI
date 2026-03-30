@@ -2442,10 +2442,10 @@ export const MarketplacePage: React.FC<MarketplacePageProps> = ({
                     </div>
 
                     {/* Platform Domain (DBP) Section - Nested */}
-                    <div className="pb-4 sm:pb-0">
+                    <div className="border-b border-gray-200 pb-4 sm:pb-6">
                       <button
                         onClick={() => setPlatformExpanded(!platformExpanded)}
-                        className="flex items-center justify-between w-full text-left py-2 sm:py-0 mb-3 sm:mb-4"
+                        className="flex items-center justify-between w-full text-left py-2 sm:py-0"
                       >
                         <h4 className="text-base sm:text-lg font-medium text-gray-900">
                           Platform Domain (DBP)
@@ -2510,7 +2510,7 @@ export const MarketplacePage: React.FC<MarketplacePageProps> = ({
                             books: !prev.books,
                           }))
                         }
-                        className="flex items-center justify-between w-full text-left py-2 sm:py-0 mb-3 sm:mb-4"
+                        className="flex items-center justify-between w-full text-left py-2 sm:py-0"
                       >
                         <h4 className="text-base sm:text-lg font-medium text-gray-900">
                           Books
