@@ -1,2 +1,7 @@
-import React from 'react';
-export { Footer } from './Footer';
+/**
+ * Footer Component  
+ * Main footer for the application
+ */
+
+export { Footer } from "./Footer";
+

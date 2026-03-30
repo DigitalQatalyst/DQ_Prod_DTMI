@@ -1,4 +1,7 @@
 import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
 import {
   ArrowRight,
   CheckCircle,
@@ -7,126 +10,100 @@ import {
   Lightbulb,
   Users,
 } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { Spinner } from "@/components/ui/spinner";
 
-const FormInput = ({
-  label,
-  type = "text",
-  placeholder,
-  value,
-  onChange,
-  required = false,
-}) => {
-  return (
-    <div className="mb-4">
-      <label className="block text-sm font-medium text-gray-600 mb-1">
-        {label}
-      </label>
-      <input
-        type={type}
-        placeholder={placeholder}
-        value={value}
-        onChange={onChange}
-        required={required}
-        className="w-full px-3 py-2.5 border border-gray-200 rounded-md focus:ring-1 focus:ring-brand-coral focus:border-brand-coral transition-all duration-200 text-sm"
-      />
-    </div>
-  );
-};
+const schema = z.object({
+  name: z.string().min(2, "Name must be at least 2 characters"),
+  email: z.string().email("Enter a valid email address"),
+  company: z.string().optional(),
+  role: z.string().optional(),
+  interests: z.string().optional(),
+});
 
-const FormSelect = ({ label, options, value, onChange, required = false }) => {
-  return (
-    <div className="mb-4">
-      <label className="block text-sm font-medium text-gray-600 mb-1">
-        {label}
-      </label>
-      <select
-        value={value}
-        onChange={onChange}
-        required={required}
-        className="w-full px-3 py-2.5 border border-gray-200 rounded-md focus:ring-1 focus:ring-brand-coral focus:border-brand-coral transition-all duration-200 bg-white text-sm appearance-none"
-        style={{
-          backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e")`,
-          backgroundPosition: "right 0.5rem center",
-          backgroundRepeat: "no-repeat",
-          backgroundSize: "1.5em 1.5em",
-          paddingRight: "2.5rem",
-        }}
-      >
-        <option value="">Select an option</option>
-        {options.map((option) => (
-          <option key={option.value} value={option.value}>
-            {option.label}
-          </option>
-        ))}
-      </select>
-    </div>
-  );
-};
+type FormValues = z.infer<typeof schema>;
+
+const benefits = [
+  {
+    icon: TrendingUp,
+    title: "Latest Industry Trends",
+    desc: "Stay ahead with insights on digital transformation and emerging technologies",
+  },
+  {
+    icon: Lightbulb,
+    title: "Actionable Strategies",
+    desc: "Practical frameworks and methodologies you can implement immediately",
+  },
+  {
+    icon: Users,
+    title: "Expert Perspectives",
+    desc: "Exclusive content from industry leaders and digital transformation experts",
+  },
+];
 
 export function NewsletterSignupForm() {
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    company: "",
-    role: "",
-    interests: "",
+  const [success, setSuccess] = useState(false);
+  const [serverError, setServerError] = useState("");
+
+  const form = useForm<FormValues>({
+    resolver: zodResolver(schema),
+    defaultValues: {
+      name: "",
+      email: "",
+      company: "",
+      role: "",
+      interests: "",
+    },
   });
 
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [formSuccess, setFormSuccess] = useState(false);
-  const [submitError, setSubmitError] = useState("");
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsSubmitting(true);
-    setSubmitError("");
-
+  const onSubmit = async (values: FormValues) => {
+    setServerError("");
     try {
-      const formSubmitData = new FormData();
-      formSubmitData.append("Name", formData.name);
-      formSubmitData.append("Email Address", formData.email);
-      formSubmitData.append("Company", formData.company || "Not provided");
-      formSubmitData.append("Role", formData.role || "Not provided");
-      formSubmitData.append("Interests", formData.interests || "Not provided");
-      formSubmitData.append(
-        "_subject",
-        "📰 New Newsletter Subscription - DTMI Insights",
-      );
-      formSubmitData.append("_captcha", "false");
-      formSubmitData.append("_template", "table");
-      formSubmitData.append("_next", "https://digitalqatalyst.com/thank-you");
-      formSubmitData.append("_cc", "insights@digitalqatalyst.com");
-
+      const fd = new FormData();
+      fd.append("Name", values.name);
+      fd.append("Email Address", values.email);
+      fd.append("Company", values.company || "Not provided");
+      fd.append("Role", values.role || "Not provided");
+      fd.append("Interests", values.interests || "Not provided");
+      fd.append("_subject", "New Newsletter Subscription - DTMI Insights");
+      fd.append("_captcha", "false");
+      fd.append("_template", "table");
+      fd.append("_cc", "insights@digitalqatalyst.com");
       await fetch("https://formsubmit.co/info@digitalqatalyst.com", {
         method: "POST",
-        body: formSubmitData,
+        body: fd,
         mode: "no-cors",
       });
-
-      setFormSuccess(true);
-
+      setSuccess(true);
       setTimeout(() => {
-        setFormSuccess(false);
-        setFormData({
-          name: "",
-          email: "",
-          company: "",
-          role: "",
-          interests: "",
-        });
-      }, 3000);
-    } catch (error) {
-      console.error("Error submitting newsletter signup:", error);
-      setSubmitError(
-        "Failed to submit. Please try again or contact us at insights@digitalqatalyst.com",
+        setSuccess(false);
+        form.reset();
+      }, 4000);
+    } catch {
+      setServerError(
+        "Failed to submit. Please try again or contact insights@digitalqatalyst.com",
       );
-    } finally {
-      setIsSubmitting(false);
     }
   };
 
   return (
-    <section id="newsletter-signup" className="py-0">
+    <section id="newsletter-signup">
       <div
         className="min-h-screen relative overflow-hidden"
         style={{
@@ -135,232 +112,212 @@ export function NewsletterSignupForm() {
           backgroundPosition: "center",
         }}
       >
-        {/* Dark overlay */}
-        <div className="absolute inset-0 bg-secondary-900/75"></div>
-
+        <div className="absolute inset-0 bg-secondary/75" />
         <div className="relative z-10 min-h-screen grid grid-cols-1 lg:grid-cols-2">
-          {/* Left Content */}
+          {/* Left — Benefits */}
           <div className="flex items-center justify-center p-8 lg:p-16">
-            <div className="text-white max-w-lg">
-              <div className="inline-flex items-center px-4 py-2 bg-white/10 backdrop-blur-sm rounded-full mb-6 border border-white/20">
-                <Bell size={18} className="mr-2" />
+            <div className="text-secondary-foreground max-w-lg">
+              <div className="inline-flex items-center px-4 py-2 bg-secondary-foreground/10 backdrop-blur-sm rounded-full mb-6 border border-secondary-foreground/20">
+                <Bell className="mr-2 h-4 w-4" />
                 <span className="text-sm font-medium">
                   DTMI Insights Newsletter
                 </span>
               </div>
-
-              <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight">
+              <h2 className="font-heading text-4xl md:text-5xl font-bold mb-6 leading-tight text-center">
                 Stay Updated with Our Insights
               </h2>
-              <p className="text-xl text-white/90 mb-8 leading-relaxed">
+              <p className="text-xl text-secondary-foreground/90 mb-8 leading-relaxed">
                 Get exclusive access to cutting-edge research, AI-driven
                 strategies, and actionable insights delivered directly to your
                 inbox.
               </p>
-
-              {/* Benefits List */}
               <ul className="space-y-4">
-                <li className="flex items-start text-white">
-                  <TrendingUp
-                    size={24}
-                    className="text-white mr-4 flex-shrink-0 mt-1"
-                  />
-                  <div>
-                    <h3 className="text-lg font-semibold mb-1">
-                      Latest Industry Trends
-                    </h3>
-                    <p className="text-white/80 text-sm">
-                      Stay ahead with insights on digital transformation and
-                      emerging technologies
-                    </p>
-                  </div>
-                </li>
-                <li className="flex items-start text-white">
-                  <Lightbulb
-                    size={24}
-                    className="text-white mr-4 flex-shrink-0 mt-1"
-                  />
-                  <div>
-                    <h3 className="text-lg font-semibold mb-1">
-                      Actionable Strategies
-                    </h3>
-                    <p className="text-white/80 text-sm">
-                      Practical frameworks and methodologies you can implement
-                      immediately
-                    </p>
-                  </div>
-                </li>
-                <li className="flex items-start text-white">
-                  <Users
-                    size={24}
-                    className="text-white mr-4 flex-shrink-0 mt-1"
-                  />
-                  <div>
-                    <h3 className="text-lg font-semibold mb-1">
-                      Expert Perspectives
-                    </h3>
-                    <p className="text-white/80 text-sm">
-                      Exclusive content from industry leaders and digital
-                      transformation experts
-                    </p>
-                  </div>
-                </li>
+                {benefits.map(({ icon: Icon, title, desc }) => (
+                  <li key={title} className="flex items-start">
+                    <Icon className="mr-4 shrink-0 mt-1 h-6 w-6" />
+                    <div>
+                      <h3 className="text-lg font-semibold mb-1">{title}</h3>
+                      <p className="text-secondary-foreground/80 text-sm">
+                        {desc}
+                      </p>
+                    </div>
+                  </li>
+                ))}
               </ul>
             </div>
           </div>
 
-          {/* Right Form */}
+          {/* Right — Form */}
           <div className="flex items-center justify-center p-8 lg:p-16">
-            <div className="bg-white rounded-xl shadow-2xl p-8 w-full max-w-xl">
-              <h3 className="text-2xl font-bold text-gray-900 mb-6 text-center">
+            <div className="bg-card rounded-xl shadow-2xl p-8 w-full max-w-xl">
+              <h3 className="font-heading text-2xl font-bold text-card-foreground mb-6 text-center">
                 Subscribe to DTMI Insights
               </h3>
 
-              <form onSubmit={handleSubmit}>
-                {submitError && (
-                  <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-md">
-                    <p className="text-sm text-red-600">{submitError}</p>
+              {success ? (
+                <div className="text-center py-8">
+                  <div className="inline-flex items-center justify-center w-16 h-16 bg-green-100 rounded-full mb-4">
+                    <CheckCircle className="h-8 w-8 text-green-600" />
                   </div>
-                )}
+                  <h4 className="text-lg font-medium text-card-foreground mb-2">
+                    Welcome aboard!
+                  </h4>
+                  <p className="text-muted-foreground">
+                    You are now subscribed to DTMI Insights. Check your inbox
+                    for a confirmation email.
+                  </p>
+                </div>
+              ) : (
+                <Form {...form}>
+                  <form
+                    onSubmit={form.handleSubmit(onSubmit)}
+                    className="space-y-4"
+                  >
+                    {serverError && (
+                      <div className="p-3 bg-destructive/10 border border-destructive/20 rounded-md">
+                        <p className="text-sm text-destructive">
+                          {serverError}
+                        </p>
+                      </div>
+                    )}
 
-                {formSuccess ? (
-                  <div className="text-center py-8">
-                    <div className="inline-flex items-center justify-center w-16 h-16 bg-green-100 rounded-full mb-4">
-                      <CheckCircle size={32} className="text-green-600" />
-                    </div>
-                    <h4 className="text-lg font-medium text-gray-900 mb-2">
-                      Welcome aboard!
-                    </h4>
-                    <p className="text-gray-600">
-                      You're now subscribed to DTMI Insights. Check your inbox
-                      for a confirmation email.
-                    </p>
-                  </div>
-                ) : (
-                  <>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                      <FormInput
-                        label="Your Name"
-                        placeholder="John Doe"
-                        value={formData.name}
-                        onChange={(e) =>
-                          setFormData({
-                            ...formData,
-                            name: e.target.value,
-                          })
-                        }
-                        required
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <FormField
+                        control={form.control}
+                        name="name"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Your Name</FormLabel>
+                            <FormControl>
+                              <Input placeholder="[name]" {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
                       />
-                      <FormInput
-                        label="Email Address"
-                        type="email"
-                        placeholder="john@company.com"
-                        value={formData.email}
-                        onChange={(e) =>
-                          setFormData({
-                            ...formData,
-                            email: e.target.value,
-                          })
-                        }
-                        required
-                      />
-                    </div>
-
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                      <FormInput
-                        label="Company (Optional)"
-                        placeholder="Your Company"
-                        value={formData.company}
-                        onChange={(e) =>
-                          setFormData({
-                            ...formData,
-                            company: e.target.value,
-                          })
-                        }
-                      />
-                      <FormInput
-                        label="Job Title (Optional)"
-                        placeholder="Your Role"
-                        value={formData.role}
-                        onChange={(e) =>
-                          setFormData({
-                            ...formData,
-                            role: e.target.value,
-                          })
-                        }
+                      <FormField
+                        control={form.control}
+                        name="email"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Email Address</FormLabel>
+                            <FormControl>
+                              <Input
+                                type="email"
+                                placeholder="[email]"
+                                {...field}
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
                       />
                     </div>
 
-                    <FormSelect
-                      label="What topics interest you most?"
-                      options={[
-                        {
-                          value: "digital-transformation",
-                          label: "Digital Transformation",
-                        },
-                        { value: "ai-innovation", label: "AI & Innovation" },
-                        { value: "industry-4.0", label: "Industry 4.0" },
-                        { value: "data-analytics", label: "Data & Analytics" },
-                        {
-                          value: "change-management",
-                          label: "Change Management",
-                        },
-                        { value: "all-topics", label: "All Topics" },
-                      ]}
-                      value={formData.interests}
-                      onChange={(e) =>
-                        setFormData({
-                          ...formData,
-                          interests: e.target.value,
-                        })
-                      }
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <FormField
+                        control={form.control}
+                        name="company"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>
+                              Company{" "}
+                              <span className="text-muted-foreground">
+                                (Optional)
+                              </span>
+                            </FormLabel>
+                            <FormControl>
+                              <Input placeholder="Your Company" {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name="role"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>
+                              Job Title{" "}
+                              <span className="text-muted-foreground">
+                                (Optional)
+                              </span>
+                            </FormLabel>
+                            <FormControl>
+                              <Input placeholder="Your Role" {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+
+                    <FormField
+                      control={form.control}
+                      name="interests"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Topics of Interest</FormLabel>
+                          <Select
+                            onValueChange={field.onChange}
+                            value={field.value}
+                          >
+                            <FormControl>
+                              <SelectTrigger>
+                                <SelectValue placeholder="Select an option" />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              <SelectItem value="digital-transformation">
+                                Digital Transformation
+                              </SelectItem>
+                              <SelectItem value="ai-innovation">
+                                AI & Innovation
+                              </SelectItem>
+                              <SelectItem value="industry-4.0">
+                                Industry 4.0
+                              </SelectItem>
+                              <SelectItem value="data-analytics">
+                                Data & Analytics
+                              </SelectItem>
+                              <SelectItem value="change-management">
+                                Change Management
+                              </SelectItem>
+                              <SelectItem value="all-topics">
+                                All Topics
+                              </SelectItem>
+                            </SelectContent>
+                          </Select>
+                          <FormMessage />
+                        </FormItem>
+                      )}
                     />
 
-                    <p className="text-xs text-gray-500 mb-6 mt-4">
+                    <p className="text-xs text-muted-foreground pt-1">
                       By subscribing, you agree to receive emails from
                       DigitalQatalyst. You can unsubscribe at any time.
                     </p>
 
-                    <button
+                    <Button
                       type="submit"
-                      disabled={isSubmitting}
-                      className={`w-full px-6 py-3.5 mt-2 font-bold text-sm rounded-lg shadow-lg bg-brand-coral hover:bg-brand-coral/90 text-white transition-all duration-300 flex items-center justify-center ${
-                        isSubmitting ? "opacity-70 cursor-not-allowed" : ""
-                      }`}
+                      disabled={form.formState.isSubmitting}
+                      className="w-full bg-primary text-primary-foreground hover:bg-primary/90"
                     >
-                      {isSubmitting ? (
+                      {form.formState.isSubmitting ? (
                         <>
-                          <svg
-                            className="animate-spin -ml-1 mr-2 h-4 w-4 text-white"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                          >
-                            <circle
-                              className="opacity-25"
-                              cx="12"
-                              cy="12"
-                              r="10"
-                              stroke="currentColor"
-                              strokeWidth="4"
-                            ></circle>
-                            <path
-                              className="opacity-75"
-                              fill="currentColor"
-                              d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                            ></path>
-                          </svg>
+                          <Spinner className="mr-2" />
                           Subscribing...
                         </>
                       ) : (
                         <>
-                          Subscribe Now
-                          <ArrowRight size={18} className="ml-2" />
+                          Subscribe Now <ArrowRight className="ml-2 h-4 w-4" />
                         </>
                       )}
-                    </button>
-                  </>
-                )}
-              </form>
+                    </Button>
+                  </form>
+                </Form>
+              )}
             </div>
           </div>
         </div>

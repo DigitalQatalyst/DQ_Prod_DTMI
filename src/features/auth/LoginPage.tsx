@@ -1,136 +1,162 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { Link, useLocation, useNavigate, useSearchParams } from "react-router-dom";
+import { useForm, Controller } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
 import { ArrowLeft, Bookmark, Bell, Tag, Eye, EyeOff } from "lucide-react";
-import { useAuth } from "../../shared/Header/context/AuthContext";
-import { useDarkMode } from "../../hooks/useDarkMode";
-import { Footer } from "../../shared/Footer/Footer";
+import { useAuth } from "./context/AuthContext";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Spinner } from "@/components/ui/spinner";
 
+// ── Schemas ───────────────────────────────────────────────────────────────────
+const signInSchema = z.object({
+  email: z.string().email("Enter a valid email"),
+  password: z.string().min(1, "Password is required"),
+});
+
+const signUpSchema = z
+  .object({
+    name: z.string().min(2, "Full name is required"),
+    email: z.string().email("Enter a valid email"),
+    password: z.string().min(8, "Password must be at least 8 characters"),
+    confirmPassword: z.string(),
+  })
+  .refine((d) => d.password === d.confirmPassword, {
+    message: "Passwords do not match",
+    path: ["confirmPassword"],
+  });
+
+type SignInValues = z.infer<typeof signInSchema>;
+type SignUpValues = z.infer<typeof signUpSchema>;
 type Mode = "signin" | "signup";
 
-interface LocationState {
-  from?: { pathname: string };
+// ── PasswordInput helper ──────────────────────────────────────────────────────
+function PasswordInput({ value, onChange, onBlur, placeholder, autoComplete }: {
+  value: string;
+  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onBlur: () => void;
+  placeholder: string;
+  autoComplete: string;
+}) {
+  const [show, setShow] = useState(false);
+  return (
+    <div className="relative">
+      <Input type={show ? "text" : "password"} value={value} onChange={onChange} onBlur={onBlur} placeholder={placeholder} autoComplete={autoComplete} />
+      <button type="button" onClick={() => setShow((v) => !v)} className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground" tabIndex={-1}>
+        {show ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+      </button>
+    </div>
+  );
 }
 
-const LoginPage: React.FC = () => {
+// ── Component ─────────────────────────────────────────────────────────────────
+export default function LoginPage() {
   const { user, isLoading, login, signup } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
   const [searchParams] = useSearchParams();
-  const { isDarkMode } = useDarkMode();
+  const [mode, setMode] = useState<Mode>(searchParams.get("mode") === "signup" ? "signup" : "signin");
+  const [serverError, setServerError] = useState<string | null>(null);
+  const [successMsg, setSuccessMsg] = useState<string | null>(null);
 
-  const fromParam = searchParams.get("from");
-  const fromState = (location.state as LocationState)?.from?.pathname;
-  const from = fromParam || fromState || "/";
-
-  const initialMode: Mode = searchParams.get("mode") === "signup" ? "signup" : "signin";
-  const [mode, setMode] = useState<Mode>(initialMode);
-
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
-  const [showConfirm, setShowConfirm] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [success, setSuccess] = useState<string | null>(null);
-  const [submitting, setSubmitting] = useState(false);
+  const from =
+    searchParams.get("from") ||
+    (location.state as { from?: { pathname: string } })?.from?.pathname ||
+    "/";
 
   useEffect(() => {
-    if (!isLoading && user) {
-      navigate(from, { replace: true });
-    }
+    if (!isLoading && user) navigate(from, { replace: true });
   }, [user, isLoading, navigate, from]);
+
+  const signInForm = useForm<SignInValues>({
+    resolver: zodResolver(signInSchema),
+    defaultValues: { email: "", password: "" },
+  });
+
+  const signUpForm = useForm<SignUpValues>({
+    resolver: zodResolver(signUpSchema),
+    defaultValues: { name: "", email: "", password: "", confirmPassword: "" },
+  });
 
   const switchMode = (m: Mode) => {
     setMode(m);
-    setError(null);
-    setSuccess(null);
-    setPassword("");
-    setConfirmPassword("");
+    setServerError(null);
+    setSuccessMsg(null);
+    signInForm.reset();
+    signUpForm.reset();
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setError(null);
-    setSuccess(null);
-
-    if (mode === "signup") {
-      if (!name.trim()) return setError("Full name is required");
-      if (password.length < 8) return setError("Password must be at least 8 characters");
-      if (password !== confirmPassword) return setError("Passwords do not match");
-    }
-
-    setSubmitting(true);
+  const handleSignIn = async (values: SignInValues) => {
+    setServerError(null);
     try {
-      if (mode === "signin") {
-        await login(email, password);
-        navigate(from, { replace: true });
-      } else {
-        await signup(email, password, name.trim());
-        setSuccess("Account created! Check your email to confirm, then sign in.");
-        switchMode("signin");
-        setEmail(email);
-      }
-    } catch (err: unknown) {
-      setError(err instanceof Error ? err.message : "Something went wrong");
-    } finally {
-      setSubmitting(false);
+      await login(values.email, values.password);
+      navigate(from, { replace: true });
+    } catch (err) {
+      setServerError(err instanceof Error ? err.message : "Something went wrong");
+    }
+  };
+
+  const handleSignUp = async (values: SignUpValues) => {
+    setServerError(null);
+    try {
+      await signup(values.email, values.password, values.name);
+      setSuccessMsg("Account created! Check your email to confirm, then sign in.");
+      switchMode("signin");
+    } catch (err) {
+      setServerError(err instanceof Error ? err.message : "Something went wrong");
     }
   };
 
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-secondary">
-        <div className="animate-spin rounded-full h-10 w-10 border-4 border-white/20 border-t-white" />
+        <Spinner className="h-10 w-10 text-secondary-foreground" />
       </div>
     );
   }
 
   const benefits = [
-    { icon: <Tag size={22} />, title: "Personalized content feed", desc: "Curate a tailored feed of insights and research relevant to your journey" },
-    { icon: <Bookmark size={22} />, title: "Saved items", desc: "Save articles, blogs, and case studies to access anytime from your dashboard" },
-    { icon: <Bell size={22} />, title: "Email subscriptions", desc: "Get newsletters, webinars, and exclusive content delivered to your inbox" },
+    { icon: Tag, title: "Personalized content feed", desc: "Curate a tailored feed of insights and research relevant to your journey" },
+    { icon: Bookmark, title: "Saved items", desc: "Save articles, blogs, and case studies to access anytime from your dashboard" },
+    { icon: Bell, title: "Email subscriptions", desc: "Get newsletters, webinars, and exclusive content delivered to your inbox" },
   ];
 
   return (
-    <div className="min-h-screen bg-white flex flex-col">
+    <div className="min-h-screen bg-background flex flex-col">
       {/* Header */}
       <header className="bg-secondary py-4 px-6">
         <div className="container mx-auto flex items-center justify-between">
-          <Link to="/" className="flex items-center">
-            <img
-              src={isDarkMode ? "/images/DQ Logo White.svg" : "/images/DQ Logo Dark.svg"}
-              alt="DigitalQatalyst"
-              className="h-10"
-            />
+          <Link to="/">
+            <img src="/images/DQ Logo White.svg" alt="DigitalQatalyst" className="h-10" />
           </Link>
           <Link
             to="/"
-            className="flex items-center gap-2 text-white/80 hover:text-white transition-colors text-sm font-medium"
+            className="flex items-center gap-2 text-secondary-foreground/80 hover:text-secondary-foreground text-sm font-medium transition-colors"
           >
-            <ArrowLeft size={16} />
+            <ArrowLeft className="h-4 w-4" />
             Back to Home
           </Link>
         </div>
       </header>
 
-      <main className="flex-1 bg-gradient-to-br from-secondary via-secondary/95 to-secondary/90">
+      <main className="flex-1 bg-linear-to-br from-secondary via-secondary/95 to-secondary/90">
         <div className="container mx-auto px-4 py-16">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center max-w-6xl mx-auto">
 
             {/* Left — Benefits */}
-            <div className="text-white">
-              <h1 className="text-4xl md:text-5xl font-bold mb-4">Make My DQ yours</h1>
-              <p className="text-xl text-white/80 mb-12">Join, customize, connect</p>
+            <div className="text-secondary-foreground">
+              <h1 className="font-heading text-4xl md:text-5xl font-bold mb-4">Make My DQ yours</h1>
+              <p className="text-xl text-secondary-foreground/80 mb-12">Join, customize, connect</p>
               <div className="space-y-8">
-                {benefits.map((b) => (
-                  <div key={b.title} className="flex gap-4">
-                    <div className="flex-shrink-0 w-12 h-12 bg-primary/20 rounded-lg flex items-center justify-center text-primary">
-                      {b.icon}
+                {benefits.map(({ icon: Icon, title, desc }) => (
+                  <div key={title} className="flex gap-4">
+                    <div className="shrink-0 w-12 h-12 bg-primary/20 rounded-lg flex items-center justify-center text-primary">
+                      <Icon className="h-5 w-5" />
                     </div>
                     <div>
-                      <h3 className="text-lg font-semibold mb-1">{b.title}</h3>
-                      <p className="text-white/70">{b.desc}</p>
+                      <h3 className="text-lg font-semibold mb-1">{title}</h3>
+                      <p className="text-secondary-foreground/70">{desc}</p>
                     </div>
                   </div>
                 ))}
@@ -138,139 +164,118 @@ const LoginPage: React.FC = () => {
             </div>
 
             {/* Right — Auth Card */}
-            <div className="bg-white rounded-2xl shadow-2xl p-8 md:p-10">
-              {/* Tab toggle */}
-              <div className="flex rounded-xl bg-gray-100 p-1 mb-8">
-                <button
-                  type="button"
-                  onClick={() => switchMode("signin")}
-                  className={`flex-1 py-2 text-sm font-semibold rounded-lg transition-all ${
-                    mode === "signin" ? "bg-white text-gray-900 shadow-sm" : "text-gray-500 hover:text-gray-700"
-                  }`}
-                >
-                  Sign In
-                </button>
-                <button
-                  type="button"
-                  onClick={() => switchMode("signup")}
-                  className={`flex-1 py-2 text-sm font-semibold rounded-lg transition-all ${
-                    mode === "signup" ? "bg-white text-gray-900 shadow-sm" : "text-gray-500 hover:text-gray-700"
-                  }`}
-                >
-                  Create Account
-                </button>
+            <div className="bg-card rounded-2xl shadow-2xl p-8 md:p-10">
+              {/* Mode toggle */}
+              <div className="flex rounded-xl bg-muted p-1 mb-8">
+                {(["signin", "signup"] as Mode[]).map((m) => (
+                  <button
+                    key={m}
+                    type="button"
+                    onClick={() => switchMode(m)}
+                    className={`flex-1 py-2 text-sm font-semibold rounded-lg transition-all ${
+                      mode === m
+                        ? "bg-card text-foreground shadow-sm"
+                        : "text-muted-foreground hover:text-foreground"
+                    }`}
+                  >
+                    {m === "signin" ? "Sign In" : "Create Account"}
+                  </button>
+                ))}
               </div>
 
-              <h2 className="text-2xl font-bold text-gray-900 mb-1 text-center">
+              <h2 className="font-heading text-2xl font-bold text-card-foreground mb-1 text-center">
                 {mode === "signin" ? "Welcome back" : "Get started"}
               </h2>
-              <p className="text-gray-500 text-sm text-center mb-7">
+              <p className="text-muted-foreground text-sm text-center mb-7">
                 {mode === "signin"
                   ? "Sign in to access your personalized dashboard"
                   : "Create your account to access personalized insights"}
               </p>
 
-              {success && (
+              {successMsg && (
                 <div className="mb-5 p-3 bg-green-50 border border-green-200 rounded-lg text-sm text-green-700">
-                  {success}
+                  {successMsg}
+                </div>
+              )}
+              {serverError && (
+                <div className="mb-5 p-3 bg-destructive/10 border border-destructive/20 rounded-lg text-sm text-destructive">
+                  {serverError}
                 </div>
               )}
 
-              <form onSubmit={handleSubmit} className="space-y-4">
-                {mode === "signup" && (
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
-                    <input
-                      type="text"
-                      autoComplete="name"
-                      required
-                      value={name}
-                      onChange={(e) => setName(e.target.value)}
-                      placeholder="Your full name"
-                      className="w-full px-4 py-2.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary transition"
-                    />
+              {/* Sign In Form */}
+              {mode === "signin" && (
+                <form onSubmit={signInForm.handleSubmit(handleSignIn)} className="space-y-4">
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium">Email</label>
+                    <Controller control={signInForm.control} name="email" render={({ field, fieldState }) => (
+                      <>
+                        <Input type="email" placeholder="[email]" autoComplete="email" {...field} />
+                        {fieldState.error && <p className="text-destructive text-sm">{fieldState.error.message}</p>}
+                      </>
+                    )} />
                   </div>
-                )}
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
-                  <input
-                    type="email"
-                    autoComplete="email"
-                    required
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    placeholder="you@example.com"
-                    className="w-full px-4 py-2.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary transition"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Password</label>
-                  <div className="relative">
-                    <input
-                      type={showPassword ? "text" : "password"}
-                      autoComplete={mode === "signin" ? "current-password" : "new-password"}
-                      required
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                      placeholder={mode === "signup" ? "Min. 8 characters" : "••••••••"}
-                      className="w-full px-4 py-2.5 pr-10 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary transition"
-                    />
-                    <button
-                      type="button"
-                      onClick={() => setShowPassword((v) => !v)}
-                      className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
-                      tabIndex={-1}
-                    >
-                      {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
-                    </button>
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium">Password</label>
+                    <Controller control={signInForm.control} name="password" render={({ field, fieldState }) => (
+                      <>
+                        <PasswordInput value={field.value} onChange={field.onChange} onBlur={field.onBlur} placeholder="••••••••" autoComplete="current-password" />
+                        {fieldState.error && <p className="text-destructive text-sm">{fieldState.error.message}</p>}
+                      </>
+                    )} />
                   </div>
-                </div>
+                  <Button type="submit" disabled={signInForm.formState.isSubmitting} className="w-full bg-primary text-primary-foreground hover:bg-primary/90 mt-2">
+                    {signInForm.formState.isSubmitting ? <><Spinner className="mr-2" />Signing in…</> : "Sign In"}
+                  </Button>
+                </form>
+              )}
 
-                {mode === "signup" && (
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Confirm Password</label>
-                    <div className="relative">
-                      <input
-                        type={showConfirm ? "text" : "password"}
-                        autoComplete="new-password"
-                        required
-                        value={confirmPassword}
-                        onChange={(e) => setConfirmPassword(e.target.value)}
-                        placeholder="Repeat your password"
-                        className="w-full px-4 py-2.5 pr-10 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary transition"
-                      />
-                      <button
-                        type="button"
-                        onClick={() => setShowConfirm((v) => !v)}
-                        className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
-                        tabIndex={-1}
-                      >
-                        {showConfirm ? <EyeOff size={16} /> : <Eye size={16} />}
-                      </button>
-                    </div>
+              {/* Sign Up Form */}
+              {mode === "signup" && (
+                <form onSubmit={signUpForm.handleSubmit(handleSignUp)} className="space-y-4">
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium">Full Name</label>
+                    <Controller control={signUpForm.control} name="name" render={({ field, fieldState }) => (
+                      <>
+                        <Input placeholder="[name]" autoComplete="name" {...field} />
+                        {fieldState.error && <p className="text-destructive text-sm">{fieldState.error.message}</p>}
+                      </>
+                    )} />
                   </div>
-                )}
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium">Email</label>
+                    <Controller control={signUpForm.control} name="email" render={({ field, fieldState }) => (
+                      <>
+                        <Input type="email" placeholder="[email]" autoComplete="email" {...field} />
+                        {fieldState.error && <p className="text-destructive text-sm">{fieldState.error.message}</p>}
+                      </>
+                    )} />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium">Password</label>
+                    <Controller control={signUpForm.control} name="password" render={({ field, fieldState }) => (
+                      <>
+                        <PasswordInput value={field.value} onChange={field.onChange} onBlur={field.onBlur} placeholder="Min. 8 characters" autoComplete="new-password" />
+                        {fieldState.error && <p className="text-destructive text-sm">{fieldState.error.message}</p>}
+                      </>
+                    )} />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium">Confirm Password</label>
+                    <Controller control={signUpForm.control} name="confirmPassword" render={({ field, fieldState }) => (
+                      <>
+                        <PasswordInput value={field.value} onChange={field.onChange} onBlur={field.onBlur} placeholder="Repeat your password" autoComplete="new-password" />
+                        {fieldState.error && <p className="text-destructive text-sm">{fieldState.error.message}</p>}
+                      </>
+                    )} />
+                  </div>
+                  <Button type="submit" disabled={signUpForm.formState.isSubmitting} className="w-full bg-primary text-primary-foreground hover:bg-primary/90 mt-2">
+                    {signUpForm.formState.isSubmitting ? <><Spinner className="mr-2" />Creating account…</> : "Create Account"}
+                  </Button>
+                </form>
+              )}
 
-                {error && (
-                  <p className="text-sm text-red-600 bg-red-50 border border-red-100 px-3 py-2 rounded-lg">
-                    {error}
-                  </p>
-                )}
-
-                <button
-                  type="submit"
-                  disabled={submitting}
-                  className="w-full bg-primary hover:bg-primary/90 disabled:opacity-60 text-white font-semibold py-3 rounded-lg transition-all duration-200 mt-2"
-                >
-                  {submitting
-                    ? mode === "signin" ? "Signing in…" : "Creating account…"
-                    : mode === "signin" ? "Sign In" : "Create Account"}
-                </button>
-              </form>
-
-              <p className="text-xs text-gray-400 text-center mt-6">
+              <p className="text-xs text-muted-foreground text-center mt-6">
                 By continuing, you agree to our{" "}
                 <Link to="/terms" className="text-primary hover:underline">Terms of Service</Link>
                 {" "}and{" "}
@@ -281,10 +286,6 @@ const LoginPage: React.FC = () => {
           </div>
         </div>
       </main>
-
-      <Footer />
     </div>
   );
-};
-
-export default LoginPage;
+}

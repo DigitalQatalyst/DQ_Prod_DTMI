@@ -1,241 +1,202 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Container, Title, Text, Grid, Card, Image, Group, Button, Loader, Center, Stack } from "@mantine/core";
-import { IconArrowRight } from "@tabler/icons-react";
+import { ArrowRight } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
 import { useFeaturedInsights } from "../hooks/useFeaturedInsights";
-import { FeaturedArticle } from "../api/featuredInsights";
+import type { FeaturedArticle } from "../api/featuredInsights";
 
 export function FeaturedInsights() {
   const navigate = useNavigate();
   const [featuredIndex, setFeaturedIndex] = useState(0);
   const { data, isLoading, error } = useFeaturedInsights();
-
   const articles = data?.articles || [];
 
-  // Auto-rotate featured article every 30 seconds
   useEffect(() => {
     if (articles.length === 0) return;
-
     const interval = setInterval(() => {
-      setFeaturedIndex((prevIndex) => (prevIndex + 1) % articles.length);
-    }, 30000); // 30 seconds
-
+      setFeaturedIndex((prev) => (prev + 1) % articles.length);
+    }, 30000);
     return () => clearInterval(interval);
   }, [articles.length]);
 
   if (isLoading) {
     return (
-      <section className="py-20 bg-gray-50">
-        <Container size="xl">
-          <Stack align="center" gap="xl">
-            <div className="text-center mb-12">
-              <Title order={2} size="h1" className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
-                Latest Perspectives
-              </Title>
-              <Text size="lg" c="dimmed" className="max-w-2xl mx-auto">
-                Discover the latest insights and perspectives from our digital transformation experts
-              </Text>
+      <section className="py-20 bg-muted">
+        <div className="container mx-auto px-4">
+          <div className="mb-12">
+            <Skeleton className="h-10 w-80 mb-4" />
+            <Skeleton className="h-5 w-96" />
+          </div>
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+            <div className="lg:col-span-3 space-y-4">
+              <Skeleton className="h-40 w-full rounded-lg" />
+              <Skeleton className="h-40 w-full rounded-lg" />
             </div>
-            <Center className="py-20">
-              <Stack align="center" gap="xl">
-                <div className="relative">
-                  <Loader size="xl" />
-                </div>
-                <div className="text-center">
-                  <Text fw={500} size="lg" className="mb-2">Loading latest content</Text>
-                  <Text size="sm" c="dimmed">Fetching the most recent articles and insights...</Text>
-                </div>
-              </Stack>
-            </Center>
-          </Stack>
-        </Container>
+            <div className="lg:col-span-6">
+              <Skeleton className="h-[420px] w-full rounded-lg" />
+            </div>
+            <div className="lg:col-span-3 space-y-4">
+              <Skeleton className="h-40 w-full rounded-lg" />
+              <Skeleton className="h-40 w-full rounded-lg" />
+            </div>
+          </div>
+        </div>
       </section>
     );
   }
 
   if (error || articles.length === 0) {
     return (
-      <section className="py-20 bg-gray-50">
-        <Container size="xl">
-          <div className="text-center">
-            <Title order={2} size="h1" className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
-              Latest Perspectives
-            </Title>
-            <Text size="lg" c="dimmed">
-              {error ? "Failed to load articles" : "No articles available at the moment."}
-            </Text>
-          </div>
-        </Container>
+      <section className="py-20 bg-muted">
+        <div className="container mx-auto px-4 text-center">
+          <h2 className="font-heading text-4xl md:text-5xl font-bold text-foreground mb-4 text-center">
+            Latest Perspectives
+          </h2>
+          <p className="text-muted-foreground">
+            {error
+              ? "Failed to load articles"
+              : "No articles available at the moment."}
+          </p>
+        </div>
       </section>
     );
   }
 
-  // Rotate articles based on featuredIndex
-  const rotatedArticles = [
+  const rotated = [
     ...articles.slice(featuredIndex),
     ...articles.slice(0, featuredIndex),
   ];
-
-  const featuredArticle = rotatedArticles[0];
-  const leftArticles = rotatedArticles.slice(1, 3);
-  const rightArticles = rotatedArticles.slice(3, 5);
+  const featured = rotated[0];
+  const left = rotated.slice(1, 3);
+  const right = rotated.slice(3, 5);
 
   return (
-    <section className="py-20 bg-gray-50">
-      <Container size="xl">
-        {/* Section Header */}
-        <Group justify="space-between" className="mb-12">
-          <Title order={2} size="h1" className="text-4xl md:text-5xl font-bold text-gray-900">
+    <section className="py-20 bg-muted">
+      <div className="container mx-auto px-4">
+        {/* Header */}
+        <div className="mb-12 text-center">
+          <h2 className="font-heading text-4xl md:text-5xl font-bold text-foreground text-center mb-4">
             THE WEEK'S HIGHLIGHTS
-          </Title>
+          </h2>
           <Button
-            variant="subtle"
-            rightSection={<IconArrowRight size={20} />}
-            onClick={() => navigate("/marketplace/dtmi?tab=insights")}
-            className="text-blue-600 hover:text-blue-700 font-semibold"
+            variant="ghost"
+            onClick={() => navigate("/marketplace?tab=insights")}
+            className="text-primary hover:text-primary/80 font-semibold"
           >
             Browse All Insights
+            <ArrowRight className="ml-2 h-5 w-5" />
           </Button>
-        </Group>
+        </div>
 
         {/* Three-Column Layout */}
-        <Grid className="mb-8">
-          {/* Left Column - Small Articles */}
-          <Grid.Col span={{ base: 12, lg: 3 }}>
-            <Stack gap="md">
-              {leftArticles.map((article) => (
-                <ArticleCard key={article.id} article={article} size="small" onClick={() => navigate(article.link)} />
-              ))}
-            </Stack>
-          </Grid.Col>
-
-          {/* Center Column - Featured Article */}
-          <Grid.Col span={{ base: 12, lg: 6 }}>
-            {featuredArticle && (
-              <ArticleCard 
-                article={featuredArticle} 
-                size="large" 
-                featured 
-                onClick={() => navigate(featuredArticle.link)} 
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 mb-8">
+          <div className="lg:col-span-3 space-y-4">
+            {left.map((a) => (
+              <ArticleCard
+                key={a.id}
+                article={a}
+                size="small"
+                onClick={() => navigate(a.link)}
+              />
+            ))}
+          </div>
+          <div className="lg:col-span-6">
+            {featured && (
+              <ArticleCard
+                article={featured}
+                size="large"
+                featured
+                onClick={() => navigate(featured.link)}
               />
             )}
-          </Grid.Col>
+          </div>
+          <div className="lg:col-span-3 space-y-4">
+            {right.map((a) => (
+              <ArticleCard
+                key={a.id}
+                article={a}
+                size="small"
+                onClick={() => navigate(a.link)}
+              />
+            ))}
+          </div>
+        </div>
 
-          {/* Right Column - Small Articles */}
-          <Grid.Col span={{ base: 12, lg: 3 }}>
-            <Stack gap="md">
-              {rightArticles.map((article) => (
-                <ArticleCard key={article.id} article={article} size="small" onClick={() => navigate(article.link)} />
-              ))}
-            </Stack>
-          </Grid.Col>
-        </Grid>
-
-        {/* Bottom Row - Text-Only Headlines with Scrolling Animation */}
+        {/* Scrolling Headlines */}
         <div className="relative overflow-hidden">
           <div className="animate-scroll flex gap-6 whitespace-nowrap">
-            {/* First set of dynamic headlines */}
-            {articles.map((article, index) => (
+            {[...articles, ...articles].map((article, index) => (
               <div
                 key={`headline-${index}`}
-                className="group cursor-pointer inline-block min-w-max"
+                className="cursor-pointer inline-block min-w-max"
                 onClick={() => navigate(article.link)}
               >
-                <Text size="sm" fw={600} className="text-gray-900 hover:text-brand-coral transition-colors">
+                <span className="text-sm font-semibold text-foreground hover:text-primary transition-colors">
                   {article.title}
-                </Text>
-              </div>
-            ))}
-            {/* Duplicate set for seamless loop */}
-            {articles.map((article, index) => (
-              <div
-                key={`headline-duplicate-${index}`}
-                className="group cursor-pointer inline-block min-w-max"
-                onClick={() => navigate(article.link)}
-              >
-                <Text size="sm" fw={600} className="text-gray-900 hover:text-brand-coral transition-colors">
-                  {article.title}
-                </Text>
+                </span>
               </div>
             ))}
           </div>
         </div>
 
-        {/* CSS Animation */}
         <style>{`
-          @keyframes scroll {
-            0% {
-              transform: translateX(0);
-            }
-            100% {
-              transform: translateX(-50%);
-            }
-          }
-          .animate-scroll {
-            animation: scroll 40s linear infinite;
-          }
-          .animate-scroll:hover {
-            animation-play-state: paused;
-          }
+          @keyframes scroll { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+          .animate-scroll { animation: scroll 40s linear infinite; }
+          .animate-scroll:hover { animation-play-state: paused; }
         `}</style>
-      </Container>
+      </div>
     </section>
   );
 }
 
 interface ArticleCardProps {
   article: FeaturedArticle;
-  size: 'small' | 'large';
+  size: "small" | "large";
   featured?: boolean;
   onClick: () => void;
 }
 
-function ArticleCard({ article, size, featured = false, onClick }: ArticleCardProps) {
-  const isLarge = size === 'large';
-  
+function ArticleCard({
+  article,
+  size,
+  featured = false,
+  onClick,
+}: ArticleCardProps) {
+  const isLarge = size === "large";
   return (
     <Card
-      className={`group bg-white rounded-lg overflow-hidden hover:shadow-xl transition-all duration-300 cursor-pointer ${isLarge ? 'h-full' : ''}`}
+      className={`group overflow-hidden hover:shadow-xl transition-all duration-300 cursor-pointer border-border p-0 bg-card ${isLarge ? "h-full" : ""}`}
       onClick={onClick}
     >
-      {/* Image */}
-      <div className={`relative overflow-hidden ${isLarge ? 'h-80' : 'h-40'}`}>
-        <Image
+      <div className={`relative overflow-hidden ${isLarge ? "h-80" : "h-40"}`}>
+        <img
           src={article.image}
           alt={article.title}
           className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
         />
-        {/* Trending Badge for featured */}
         {featured && (
           <div className="absolute bottom-4 left-4">
-            <span className="bg-red-600 text-white text-xs font-bold px-3 py-1 uppercase rounded">
+            <span className="bg-destructive text-destructive-foreground text-xs font-bold px-3 py-1 uppercase rounded">
               Trending
             </span>
           </div>
         )}
       </div>
-
-      {/* Content */}
       <div className={isLarge ? "p-6" : "p-4"}>
-        <Title 
-          order={3} 
-          size={isLarge ? "h3" : "sm"} 
-          fw={700}
-          className={`text-gray-900 mb-2 group-hover:text-brand-coral transition-colors line-clamp-2 ${isLarge ? 'mb-3' : ''}`}
+        <h3
+          className={`font-heading font-bold text-card-foreground group-hover:text-primary transition-colors line-clamp-2 mb-2 ${isLarge ? "text-xl" : "text-sm"}`}
         >
           {article.title}
-        </Title>
-        {isLarge && (
-          <Text size="sm" c="dimmed" className="mb-4 line-clamp-2">
-            {article.description}
-          </Text>
-        )}
-        <Text size="xs" c="dimmed">
-          {article.date}
-        </Text>
+        </h3>
+        <p
+          className={`text-sm text-muted-foreground line-clamp-2 ${isLarge ? "mb-4" : "mb-3"}`}
+        >
+          {article.description}
+        </p>
+        <p className="text-xs text-muted-foreground">{article.date}</p>
       </div>
     </Card>
   );
 }
-
-

@@ -8,9 +8,6 @@ pnpm-debug.log*
 lerna-debug.log*
 
 node_modules
-api-knowledgehub-server
-magic_patterns_media_marketplace
-.env
 dist
 dist-ssr
 *.local
@@ -25,7 +22,6 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
-.vercel
-
-# Moat task system
-.moat/
+DQ_Prod_DTMI
+.env
+opencode.json

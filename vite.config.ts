@@ -1,42 +1,14 @@
-import { defineConfig, loadEnv } from "vite";
+import path from "node:path";
+import tailwindcss from "@tailwindcss/vite";
 import react from "@vitejs/plugin-react";
-import path from "path";
+import { defineConfig } from "vite";
 
-// https://vitejs.dev/config/
-export default defineConfig(({ mode }) => {
-  // Load env file based on `mode` in the current working directory.
-  // Set the third parameter to '' to load all env regardless of the `VITE_` prefix.
-  const env = loadEnv(mode, process.cwd(), "");
-
-  return {
-    resolve: {
-      alias: {
-        "@": path.resolve(__dirname, "./src"),
-      },
+// https://vite.dev/config/
+export default defineConfig({
+  plugins: [react(), tailwindcss()],
+  resolve: {
+    alias: {
+      "@": path.resolve(__dirname, "./src"),
     },
-    plugins: [react()],
-    server: {
-      port: 3000,
-      strictPort: true,
-      host: "localhost",
-      proxy: {
-        "/api": {
-          target: "http://localhost:3001",
-          changeOrigin: true,
-          secure: false,
-        },
-      },
-    },
-    preview: {
-      port: 3000,
-      host: true, // 👈 ensures it binds to 0.0.0.0
-      allowedHosts: ["qatalyst.tech", "staging-stage012.qatalyst.tech"],
-    },
-    // Load environment variables from .env file
-    envDir: ".",
-    envPrefix: ["VITE_", "STORAGE_", "CONTAINER_", "AZURE_", "SAS_"],
-    build: {
-      chunkSizeWarningLimit: 4000,
-    },
-  };
+  },
 });

@@ -1,11 +1,7 @@
-import React from "react";
+/**
+ * Header Component
+ * Main navigation header for the application
+ */
+
 export { Header } from "./Header";
-export { ProfileDropdown } from "./ProfileDropdown";
-export { NotificationsMenu } from "./notifications/NotificationsMenu";
-export { NotificationCenter } from "./notifications/NotificationCenter";
-export { NotificationItem } from "./notifications/NotificationItem";
-export { ExploreDropdown } from "./components/ExploreDropdown";
-export { MobileDrawer } from "./components/MobileDrawer";
-export { AuthProvider, useAuth } from "./context/AuthContext";
-export { getNotifications } from "./utils/notifications";
-export type { Notification } from "./utils/notifications";
+

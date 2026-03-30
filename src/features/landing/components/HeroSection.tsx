@@ -1,17 +1,25 @@
+/**
+ * Hero Section Component
+ * Full-screen hero section for DTMI landing page with animations
+ */
+
 import { useNavigate } from "react-router-dom";
 import { ArrowRight, ChevronDown } from "lucide-react";
 import { useEffect, useState } from "react";
+import { Button } from "@/components/ui/button";
 
-export function DtmiHeroSection() {
+export function HeroSection() {
   const navigate = useNavigate();
   const [isLoaded, setIsLoaded] = useState(false);
 
   useEffect(() => {
-    setIsLoaded(true);
+    // Use setTimeout to avoid synchronous state update in effect
+    const timer = setTimeout(() => setIsLoaded(true), 0);
+    return () => clearTimeout(timer);
   }, []);
 
   const handleExploreInsights = () => {
-    navigate("/marketplace/dtmi");
+    navigate("/marketplace");
   };
 
   const handleScrollDown = () => {
@@ -24,7 +32,7 @@ export function DtmiHeroSection() {
       className="relative w-full bg-gradient-to-r from-[#0A1628] via-[#1a2942] to-[#0f1f3d] overflow-hidden"
       style={{ height: "100vh" }}
     >
-      {/* Animated background image with zoom effect - Person reading in modern environment */}
+      {/* Animated background image with zoom effect */}
       <div
         className="absolute inset-0 transition-transform duration-[3000ms] ease-out"
         style={{
@@ -34,15 +42,15 @@ export function DtmiHeroSection() {
           backgroundPosition: "center",
           transform: isLoaded ? "scale(1)" : "scale(1.1)",
         }}
-      ></div>
+      />
 
       {/* Animated gradient overlay */}
       <div
-        className="absolute inset-0 bg-gradient-to-r from-brand-coral/20 to-blue-500/20 mix-blend-multiply"
+        className="absolute inset-0 bg-linear-to-r from-primary/20 to-blue-500/20 mix-blend-multiply"
         style={{
           animation: "pulse-gradient 8s ease-in-out infinite alternate",
         }}
-      ></div>
+      />
 
       {/* Animated Neural Network Lines */}
       <div className="absolute inset-0 opacity-20">
@@ -55,7 +63,11 @@ export function DtmiHeroSection() {
               x2="100%"
               y2="100%"
             >
-              <stop offset="0%" stopColor="#FF6B4D" stopOpacity="0.6" />
+              <stop
+                offset="0%"
+                stopColor="hsl(var(--primary))"
+                stopOpacity="0.6"
+              />
               <stop offset="100%" stopColor="#4F9CF9" stopOpacity="0.6" />
             </linearGradient>
           </defs>
@@ -93,7 +105,13 @@ export function DtmiHeroSection() {
               strokeWidth="1"
             />
           </g>
-          <circle cx="10%" cy="20%" r="4" fill="#FF6B4D" opacity="0.8">
+          <circle
+            cx="10%"
+            cy="20%"
+            r="4"
+            fill="hsl(var(--primary))"
+            opacity="0.8"
+          >
             <animate
               attributeName="opacity"
               values="0.8;1;0.8"
@@ -109,7 +127,13 @@ export function DtmiHeroSection() {
               repeatCount="indefinite"
             />
           </circle>
-          <circle cx="90%" cy="35%" r="4" fill="#FF6B4D" opacity="0.8">
+          <circle
+            cx="90%"
+            cy="35%"
+            r="4"
+            fill="hsl(var(--primary))"
+            opacity="0.8"
+          >
             <animate
               attributeName="opacity"
               values="0.8;1;0.8"
@@ -120,8 +144,10 @@ export function DtmiHeroSection() {
         </svg>
       </div>
 
+      {/* Content Container */}
       <div className="container mx-auto px-4 h-full flex flex-col justify-center items-center relative z-10">
         <div className="text-center max-w-4xl mx-auto mb-8">
+          {/* Badge */}
           <div
             className="inline-block px-4 py-2 text-sm font-medium bg-white/10 backdrop-blur-sm text-white rounded-full mb-6 border border-white/20"
             style={{
@@ -133,8 +159,9 @@ export function DtmiHeroSection() {
             Digital Transformation Management Insights
           </div>
 
+          {/* Main Heading */}
           <h1
-            className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6 leading-tight"
+            className="font-heading text-4xl md:text-5xl font-bold text-white mb-6 leading-tight text-center"
             style={{
               opacity: isLoaded ? 1 : 0,
               transform: isLoaded ? "translateY(0)" : "translateY(20px)",
@@ -145,8 +172,9 @@ export function DtmiHeroSection() {
             Signals, Insights, and Analysis to navigate Economy 4.0
           </h1>
 
+          {/* Subheading */}
           <p
-            className="text-lg md:text-xl text-white/90 mb-10 leading-relaxed"
+            className="font-sans text-lg md:text-xl text-white/90 mb-10 leading-relaxed"
             style={{
               opacity: isLoaded ? 1 : 0,
               transform: isLoaded ? "translateY(0)" : "translateY(20px)",
@@ -160,7 +188,7 @@ export function DtmiHeroSection() {
           </p>
         </div>
 
-        {/* Call to Action Button */}
+        {/* CTA Button */}
         <div
           style={{
             opacity: isLoaded ? 1 : 0,
@@ -169,43 +197,31 @@ export function DtmiHeroSection() {
               "opacity 1.2s ease-out 0.6s, transform 1.2s ease-out 0.6s",
           }}
         >
-          <button
+          <Button
             onClick={handleExploreInsights}
-            className="px-8 py-3 bg-brand-coral hover:bg-brand-coral/90 text-white font-bold rounded-lg shadow-lg transform transition-all duration-300 hover:-translate-y-1 hover:shadow-xl text-center flex items-center justify-center overflow-hidden group"
+            size="lg"
+            className="bg-primary text-primary-foreground hover:bg-primary/90 shadow-lg transform transition-all duration-300 hover:-translate-y-1 hover:shadow-xl group"
           >
             <span className="relative z-10">Explore Insights</span>
-            <ArrowRight
-              size={18}
-              className="ml-2 relative z-10 group-hover:translate-x-1 transition-transform duration-300"
-            />
-            <span className="absolute inset-0 overflow-hidden rounded-lg">
-              <span className="absolute inset-0 bg-white/20 transform scale-0 opacity-0 group-hover:scale-[2.5] group-hover:opacity-100 rounded-full transition-all duration-700 origin-center"></span>
-            </span>
-          </button>
+            <ArrowRight className="ml-2 h-5 w-5 relative z-10 group-hover:translate-x-1 transition-transform duration-300" />
+          </Button>
         </div>
       </div>
 
-      {/* Scroll indicator with animation */}
+      {/* Scroll indicator */}
       <div
         className="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce cursor-pointer"
         onClick={handleScrollDown}
       >
-        <ChevronDown size={24} className="text-white" />
+        <ChevronDown className="h-6 w-6 text-white" />
         <span className="sr-only">Scroll down</span>
       </div>
 
-      {/* Keyframes for gradient animation */}
+      {/* CSS Animations */}
       <style>{`
         @keyframes pulse-gradient {
-          0% {
-            opacity: 0.4;
-          }
-          50% {
-            opacity: 0.6;
-          }
-          100% {
-            opacity: 0.4;
-          }
+          0%, 100% { opacity: 0.4; }
+          50% { opacity: 0.6; }
         }
       `}</style>
     </section>

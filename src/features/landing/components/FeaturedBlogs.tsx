@@ -1,180 +1,163 @@
 import { useNavigate } from "react-router-dom";
-import { Container, Title, Text, Grid, Card, Image, Group, Button, Loader, Center, Stack, Badge } from "@mantine/core";
-import { IconArrowRight, IconClock } from "@tabler/icons-react";
+import { ArrowRight, Clock } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Skeleton } from "@/components/ui/skeleton";
 import { useFeaturedBlogs } from "../hooks/useFeaturedBlogs";
-import { FeaturedBlog } from "../api/featuredBlogs";
+import type { FeaturedBlog } from "../api/featuredBlogs";
 
 export function FeaturedBlogs() {
   const navigate = useNavigate();
   const { data, isLoading, error } = useFeaturedBlogs();
-
   const featuredBlog = data?.featuredBlog;
   const relatedBlogs = data?.relatedBlogs || [];
 
   if (isLoading) {
     return (
-      <section className="py-20 bg-white">
-        <Container size="xl">
-          <Center>
-            <Stack align="center" gap="md">
-              <Loader size="lg" />
-              <Text c="dimmed">Loading blogs...</Text>
-            </Stack>
-          </Center>
-        </Container>
+      <section className="py-20 bg-background">
+        <div className="container mx-auto px-4">
+          <Skeleton className="h-10 w-64 mb-12" />
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <Skeleton className="h-96 w-full rounded-lg" />
+            <div className="space-y-4">
+              {[1, 2, 3].map((i) => (
+                <Skeleton key={i} className="h-24 w-full rounded-lg" />
+              ))}
+            </div>
+          </div>
+        </div>
       </section>
     );
   }
 
   if (error || !featuredBlog) {
     return (
-      <section className="py-20 bg-white">
-        <Container size="xl">
-          <Center>
-            <Text c="dimmed">
-              {error ? "Failed to load blogs" : "No blogs available at the moment."}
-            </Text>
-          </Center>
-        </Container>
+      <section className="py-20 bg-background">
+        <div className="container mx-auto px-4 text-center">
+          <p className="text-muted-foreground">
+            {error
+              ? "Failed to load blogs"
+              : "No blogs available at the moment."}
+          </p>
+        </div>
       </section>
     );
   }
 
   return (
-    <section className="py-20 bg-white">
-      <Container size="xl">
-        {/* Section Header */}
-        <Group justify="space-between" className="mb-12">
-          <Title order={2} size="h1" className="text-4xl md:text-5xl font-bold text-gray-900">
+    <section className="py-20 bg-background">
+      <div className="container mx-auto px-4">
+        <div className="mb-12 text-center">
+          <h2 className="font-heading text-4xl md:text-5xl font-bold text-foreground text-center mb-4">
             Latest Signals
-          </Title>
+          </h2>
           <Button
-            variant="subtle"
-            rightSection={<IconArrowRight size={20} />}
-            onClick={() => navigate("/marketplace/dtmi?tab=signals")}
-            className="text-brand-coral hover:text-orange-700 font-semibold"
+            variant="ghost"
+            onClick={() => navigate("/marketplace?tab=signals")}
+            className="text-primary hover:text-primary/80 font-semibold"
           >
             Browse All Signals
+            <ArrowRight className="ml-2 h-5 w-5" />
           </Button>
-        </Group>
+        </div>
 
-        {/* Two-Column Layout */}
-        <Grid>
-          {/* Left Column - Featured Blog */}
-          <Grid.Col span={{ base: 12, lg: 6 }}>
-            <FeaturedBlogCard blog={featuredBlog} onClick={() => navigate(featuredBlog.link)} />
-          </Grid.Col>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          {/* Featured Blog */}
+          <FeaturedBlogCard
+            blog={featuredBlog}
+            onClick={() => navigate(featuredBlog.link)}
+          />
 
-          {/* Right Column - Related Blogs */}
-          <Grid.Col span={{ base: 12, lg: 6 }}>
-            <Stack gap="md">
-              <Title order={3} size="h4" className="text-xl font-bold text-gray-900">
-                Related Blogs
-              </Title>
-              <Stack gap="md">
-                {relatedBlogs.map((blog) => (
-                  <RelatedBlogCard 
-                    key={blog.id} 
-                    blog={blog} 
-                    onClick={() => navigate(blog.link)} 
-                  />
-                ))}
-              </Stack>
-            </Stack>
-          </Grid.Col>
-        </Grid>
-      </Container>
+          {/* Related Blogs */}
+          <div className="space-y-4">
+            <h3 className="font-heading text-xl font-bold text-foreground">
+              Related Blogs
+            </h3>
+            <div className="space-y-4">
+              {relatedBlogs.map((blog) => (
+                <RelatedBlogCard
+                  key={blog.id}
+                  blog={blog}
+                  onClick={() => navigate(blog.link)}
+                />
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
     </section>
   );
 }
 
-interface FeaturedBlogCardProps {
+function FeaturedBlogCard({
+  blog,
+  onClick,
+}: {
   blog: FeaturedBlog;
   onClick: () => void;
-}
-
-function FeaturedBlogCard({ blog, onClick }: FeaturedBlogCardProps) {
+}) {
   return (
     <div className="group cursor-pointer" onClick={onClick}>
-      {/* Image */}
       <div className="relative h-64 rounded-lg overflow-hidden mb-4">
-        <Image
+        <img
           src={blog.image}
           alt={blog.title}
           className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
         />
       </div>
-
-      <Stack gap="sm">
-        {/* Category Badge */}
-        <Badge variant="light" size="sm" className="w-fit">
+      <div className="space-y-3">
+        <Badge variant="secondary" className="w-fit">
           {blog.category}
         </Badge>
-
-        {/* Title */}
-        <Title 
-          order={3} 
-          size="h3" 
-          className="text-2xl md:text-3xl font-bold text-gray-900 group-hover:text-brand-coral transition-colors leading-tight"
-        >
+        <h3 className="font-heading text-2xl md:text-3xl font-bold text-foreground group-hover:text-primary transition-colors leading-tight">
           {blog.title}
-        </Title>
-
-        {/* Description */}
-        <Text c="dimmed" size="sm" className="leading-relaxed">
+        </h3>
+        <p className="text-muted-foreground text-sm leading-relaxed">
           {blog.description}
-        </Text>
-
-        {/* Meta Info */}
-        <Group gap="xs">
+        </p>
+        <div className="flex items-center gap-2 text-muted-foreground text-sm">
           {blog.readTime && (
             <>
-              <IconClock size={16} className="text-gray-500" />
-              <Text size="sm" c="dimmed">{blog.readTime}</Text>
-              <Text size="sm" c="dimmed">•</Text>
+              <Clock className="h-4 w-4" />
+              <span>{blog.readTime}</span>
+              <span>•</span>
             </>
           )}
-          <Text size="sm" c="dimmed">{blog.date}</Text>
-        </Group>
-      </Stack>
+          <span>{blog.date}</span>
+        </div>
+      </div>
     </div>
   );
 }
 
-interface RelatedBlogCardProps {
+function RelatedBlogCard({
+  blog,
+  onClick,
+}: {
   blog: FeaturedBlog;
   onClick: () => void;
-}
-
-function RelatedBlogCard({ blog, onClick }: RelatedBlogCardProps) {
+}) {
   return (
-    <Group 
-      gap="md" 
-      className="group cursor-pointer pb-5 border-b border-gray-200 last:border-b-0" 
+    <div
+      className="group cursor-pointer flex gap-4 pb-5 border-b border-border last:border-b-0"
       onClick={onClick}
-      align="flex-start"
     >
-      {/* Thumbnail */}
-      <div className="relative w-20 h-20 flex-shrink-0 rounded overflow-hidden">
-        <Image
+      <div className="relative w-20 h-20 shrink-0 rounded overflow-hidden">
+        <img
           src={blog.image}
           alt={blog.title}
           className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
         />
       </div>
-
-      {/* Content */}
-      <Stack gap="xs" className="flex-1">
-        <Title 
-          order={4} 
-          size="sm" 
-          fw={700}
-          className="text-gray-900 group-hover:text-brand-coral transition-colors line-clamp-2 leading-snug"
-        >
+      <div className="flex-1 space-y-1">
+        <h4 className="font-heading text-sm font-bold text-foreground group-hover:text-primary transition-colors line-clamp-2 leading-snug">
           {blog.title}
-        </Title>
-        <Text size="xs" c="dimmed">{blog.date}</Text>
-      </Stack>
-    </Group>
+        </h4>
+        <p className="text-xs text-muted-foreground leading-relaxed line-clamp-2">
+          {blog.description}
+        </p>
+        <p className="text-xs text-muted-foreground">{blog.date}</p>
+      </div>
+    </div>
   );
 }

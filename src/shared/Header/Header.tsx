@@ -1,256 +1,129 @@
-import { useEffect, useState } from "react";
-import { ExploreDropdown } from "./components/ExploreDropdown";
-import { MobileDrawer } from "./components/MobileDrawer";
-import { ProfileDropdown } from "./ProfileDropdown";
-import { NotificationsMenu } from "./notifications/NotificationsMenu";
-import { NotificationCenter } from "./notifications/NotificationCenter";
-import { getNotifications } from "./utils/notifications";
-import { useAuth } from "@/shared/Header/context/AuthContext";
+/**
+ * Header Component
+ * Main navigation header for DTMI landing page
+ */
+
+import { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { useDarkMode } from "../../hooks/useDarkMode";
+import { ArrowRight, Menu } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 
-import { ArrowRight, AlertCircle, LogIn } from "lucide-react";
-
-interface HeaderProps {
-  "data-id"?: string;
-}
-
-export function Header({ "data-id": dataId }: HeaderProps) {
-  const [showNotificationsMenu, setShowNotificationsMenu] = useState(false);
-  const [showNotificationCenter, setShowNotificationCenter] = useState(false);
-  const { user, isLoading, isSyncing, syncError, login } = useAuth();
-  const navigate = useNavigate();
+export function Header() {
   const location = useLocation();
-  const { isDarkMode } = useDarkMode();
+  const navigate = useNavigate();
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-  // Count unread notifications
-  const unreadCount = getNotifications().filter((notif) => !notif.read).length;
-
-  // Toggle notifications menu
-  const toggleNotificationsMenu = () => {
-    setShowNotificationsMenu(!showNotificationsMenu);
-    if (showNotificationCenter) setShowNotificationCenter(false);
-  };
-
-  // Open notification center
-  const openNotificationCenter = () => {
-    setShowNotificationCenter(true);
-    setShowNotificationsMenu(false);
-  };
-
-  // Close notification center
-  const closeNotificationCenter = () => {
-    setShowNotificationCenter(false);
-  };
-
-  // Handle get in touch - redirect to consultation page
   const handleGetInTouch = () => {
     navigate("/consultation");
   };
 
-  // Reset notification states when user logs out
-  useEffect(() => {
-    if (!user) {
-      setShowNotificationsMenu(false);
-      setShowNotificationCenter(false);
-    }
-  }, [user]);
+  const navLinks = [
+    { label: "Home", path: "/" },
+    { label: "Signals", path: "/signals" },
+    { label: "Insights", path: "/insights" },
+    { label: "Research", path: "/research" },
+    { label: "Books", path: "/books" },
+  ];
 
   return (
     <>
-      <header
-        className={`fixed top-0 left-0 right-0 z-50 w-full bg-secondary-900 shadow-md text-white transition-all duration-300`}
-        data-id={dataId}
-      >
+      <header className="fixed top-0 left-0 right-0 z-50 w-full bg-secondary shadow-md">
         <div className="container mx-auto px-4 md:px-6 py-3">
           <div className="flex items-center justify-between gap-6">
             {/* Logo */}
-            <div className="flex flex-row items-center">
-              <Link to="/" className="flex items-center px-4 py-2 rounded-md">
-                <img
-                  src={
-                    isDarkMode
-                      ? "/images/DQ Logo White.svg"
-                      : "/images/DQ Logo Dark.svg"
+            <Link to="/" className="flex items-center px-4 py-2 rounded-md">
+              <img
+                src="/images/DQ Logo White.svg"
+                alt="DigitalQatalyst"
+                className="h-12"
+                onError={(e) => {
+                  e.currentTarget.style.display = "none";
+                  const parent = e.currentTarget.parentElement;
+                  if (parent) {
+                    const span = document.createElement("span");
+                    span.className =
+                      "font-heading text-2xl font-bold text-white";
+                    span.textContent = "DQ";
+                    parent.appendChild(span);
                   }
-                  alt="DigitalQatalyst"
-                  className="h-12"
-                />
-              </Link>
-            </div>
+                }}
+              />
+            </Link>
 
-            {/* Left: Explore Dropdown */}
-            <div className="hidden lg:flex items-center">
-              <ExploreDropdown isCompact={false} />
-            </div>
-
-            {/* Center: Main Navigation */}
+            {/* Desktop Navigation */}
             <nav className="hidden lg:flex flex-1 items-center justify-center space-x-8">
-              <Link
-                to="/"
-                className={`text-sm font-semibold text-white transition-colors ${
-                  location.pathname === "/"
-                    ? "text-white"
-                    : "text-white/80 hover:text-primary-500"
-                }`}
-              >
-                Home
-              </Link>
-              {/* <Link
-                to="/services"
-                className={`text-sm font-medium transition-colors ${
-                  location.pathname === "/services"
-                    ? "text-white"
-                    : "text-white/80 hover:text-primary-500"
-                }`}
-              >
-                Services
-              </Link> */}
-              {/* <Link
-                to="/products"
-                className={`text-sm font-medium transition-colors ${
-                  location.pathname.includes("/products")
-                    ? "text-white"
-                    : "text-white/80 hover:text-primary-500"
-                }`}
-              >
-                Products
-              </Link> */}
-              {/* <Link
-                to="/dtmi"
-                className={`text-sm font-medium transition-colors ${
-                  location.pathname.includes("/dtmi")
-                    ? "text-white"
-                    : "text-white/80 hover:text-primary-500"
-                }`}
-              >
-                DTMI
-              </Link> */}
-              <Link
-                to="/signals"
-                className={`text-sm font-medium transition-colors ${
-                  location.pathname.includes("/signals")
-                    ? "text-white"
-                    : "text-white/80 hover:text-primary-500"
-                }`}
-              >
-                Signals
-              </Link>
-              <Link
-                to="/insights"
-                className={`text-sm font-medium transition-colors ${
-                  location.pathname.includes("/insights")
-                    ? "text-white"
-                    : "text-white/80 hover:text-primary-500"
-                }`}
-              >
-                Insights
-              </Link>
-              <Link
-                to="/research"
-                className={`text-sm font-medium transition-colors ${
-                  location.pathname.includes("/research")
-                    ? "text-white"
-                    : "text-white/80 hover:text-primary-500"
-                }`}
-              >
-                Research
-              </Link>
-              <Link
-                to="/books"
-                className={`text-sm font-medium transition-colors ${
-                  location.pathname.includes("/books")
-                    ? "text-white"
-                    : "text-white/80 hover:text-primary-500"
-                }`}
-              >
-                Books
-              </Link>
-              {/* <Link
-                to="/about-us"
-                className={`text-sm font-medium transition-colors ${
-                  location.pathname.includes("/about-us")
-                    ? "text-white"
-                    : "text-white/80 hover:text-primary-500"
-                }`}
-              >
-                // cahenged
-                Company
-              </Link>  */}
-              {/* Research link hidden - feature/stage02-hide */}
-              {/* <Link
-                to="/research-report"
-                className={`text-sm font-medium transition-colors ${
-                  location.pathname.includes("/research-report")
-                    ? "text-white border-b-2 border-primary pb-1"
-                    : "text-white/80 hover:text-white"
-                }`}
-              >
-                Research
-              </Link> */}
+              {navLinks.map((link) => (
+                <Link
+                  key={link.path}
+                  to={link.path}
+                  className={`text-sm font-medium transition-colors ${
+                    location.pathname === link.path
+                      ? "text-white"
+                      : "text-white/80 hover:text-primary"
+                  }`}
+                >
+                  {link.label}
+                </Link>
+              ))}
             </nav>
 
-            {/* Right: CTAs */}
+            {/* Desktop CTA */}
             <div className="hidden lg:flex items-center gap-4">
-              <button
+              <Button
                 onClick={handleGetInTouch}
-                className="flex flex-row items-center gap-2 bg-primary-500 text-white font-semibold px-6 py-2.5 rounded-lg shadow-lg hover:bg-primary-600 transition-all duration-200"
+                className="bg-primary text-primary-foreground hover:bg-primary/90"
               >
                 Get In Touch
-                <ArrowRight size={18} />
-              </button>
-
-              {/* Login/Profile Section */}
-              {isLoading ? (
-                <div className="w-10 h-10 rounded-full bg-white/20 animate-pulse" />
-              ) : user ? (
-                <div className="flex items-center gap-3">
-                  {syncError && (
-                    <div className="flex items-center gap-2 px-3 py-1.5 bg-red-500/20 border border-red-500/50 rounded-lg text-red-100 text-xs">
-                      <AlertCircle size={14} />
-                      <span className="truncate max-w-xs">{syncError}</span>
-                    </div>
-                  )}
-                  {isSyncing && (
-                    <div className="text-xs text-white/60 animate-pulse">
-                      Syncing...
-                    </div>
-                  )}
-                  <ProfileDropdown />
-                </div>
-              ) : null}
+                <ArrowRight className="ml-2 h-4 w-4" />
+              </Button>
             </div>
 
             {/* Mobile Menu */}
-            <div className="lg:hidden flex items-center ml-auto">
-              <MobileDrawer isSignedIn={!!user} />
-            </div>
+            <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
+              <SheetTrigger asChild className="lg:hidden">
+                <Button variant="ghost" size="icon" className="text-white">
+                  <Menu className="h-6 w-6" />
+                </Button>
+              </SheetTrigger>
+              <SheetContent
+                side="right"
+                className="w-75 bg-secondary text-white"
+              >
+                <div className="flex flex-col space-y-4 mt-8">
+                  {navLinks.map((link) => (
+                    <Link
+                      key={link.path}
+                      to={link.path}
+                      onClick={() => setMobileMenuOpen(false)}
+                      className={`text-lg font-medium transition-colors px-4 py-2 rounded-lg ${
+                        location.pathname === link.path
+                          ? "bg-secondary-foreground/10 text-white"
+                          : "text-white/80 hover:text-white hover:bg-secondary-foreground/5"
+                      }`}
+                    >
+                      {link.label}
+                    </Link>
+                  ))}
+                  <Button
+                    onClick={() => {
+                      handleGetInTouch();
+                      setMobileMenuOpen(false);
+                    }}
+                    className="bg-primary text-primary-foreground hover:bg-primary/90 w-full mt-4"
+                  >
+                    Get In Touch
+                    <ArrowRight className="ml-2 h-4 w-4" />
+                  </Button>
+                </div>
+              </SheetContent>
+            </Sheet>
           </div>
         </div>
       </header>
 
-      {/* Spacer to offset fixed header height */}
-      <div className="h-[72px]" aria-hidden="true" />
-
-      {/* Notifications Menu */}
-      {showNotificationsMenu && user && (
-        <NotificationsMenu
-          onViewAll={openNotificationCenter}
-          onClose={() => setShowNotificationsMenu(false)}
-        />
-      )}
-      {/* Notification Center Modal */}
-      {showNotificationCenter && user && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center overflow-hidden">
-          <div
-            className="absolute inset-0 bg-black bg-opacity-50 backdrop-blur-sm"
-            onClick={closeNotificationCenter}
-          ></div>
-          <div className="relative bg-white shadow-xl rounded-lg max-w-2xl w-full max-h-[90vh] m-4 transform transition-all duration-300">
-            <NotificationCenter onBack={closeNotificationCenter} />
-          </div>
-        </div>
-      )}
+      {/* Spacer to offset fixed header */}
+      <div className="h-18" aria-hidden="true" />
     </>
   );
 }
