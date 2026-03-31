@@ -5,9 +5,14 @@ import { NewsletterSignupForm } from "../landing/components/NewsletterSignupForm
 import { Footer } from "../../shared/Footer/Footer";
 import ModernDQChatbot from "../../shared/ModernDQChatbot";
 import { LeadCaptureModal } from "../../shared/LeadCaptureModal";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { ChevronDown } from "lucide-react";
 
 const ResearchLandingPage = () => {
+  const [isLoaded, setIsLoaded] = useState(false);
+  useEffect(() => {
+    setIsLoaded(true);
+  }, []);
   const navigate = useNavigate();
   const [modalState, setModalState] = useState({
     isOpen: false,
@@ -53,22 +58,150 @@ const ResearchLandingPage = () => {
 
       <main className="flex-1">
         {/* Hero Section */}
-        <section className="bg-gradient-to-br from-brand-navy via-brand-navy to-blue-900 text-white py-20">
-          <div className="container mx-auto px-4 md:px-6">
+        <section className="relative w-full bg-gradient-to-r from-[#0A1628] via-[#1a2942] to-[#0f1f3d] overflow-hidden py-32">
+          {/* Background image with zoom animation */}
+          <div
+            className="absolute inset-0 transition-transform duration-[3000ms] ease-out"
+            style={{
+              backgroundImage:
+                "linear-gradient(rgba(10, 22, 40, 0.65), rgba(10, 22, 40, 0.65)), url('https://images.unsplash.com/photo-1460925895917-afdab827c52f?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80')",
+              backgroundSize: "cover",
+              backgroundPosition: "center",
+              transform: isLoaded ? "scale(1)" : "scale(1.1)",
+            }}
+          />
+          {/* Animated gradient overlay */}
+          <div
+            className="absolute inset-0 bg-gradient-to-r from-purple-600/20 to-indigo-500/20 mix-blend-multiply"
+            style={{
+              animation: "pulse-gradient 8s ease-in-out infinite alternate",
+            }}
+          />
+          {/* Neural network lines */}
+          <div className="absolute inset-0 opacity-20">
+            <svg className="w-full h-full" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <linearGradient
+                  id="researchLineGrad"
+                  x1="0%"
+                  y1="0%"
+                  x2="100%"
+                  y2="100%"
+                >
+                  <stop offset="0%" stopColor="#a78bfa" stopOpacity="0.6" />
+                  <stop offset="100%" stopColor="#818cf8" stopOpacity="0.6" />
+                </linearGradient>
+              </defs>
+              <g className="animate-pulse">
+                <line
+                  x1="10%"
+                  y1="35%"
+                  x2="35%"
+                  y2="55%"
+                  stroke="url(#researchLineGrad)"
+                  strokeWidth="1"
+                />
+                <line
+                  x1="35%"
+                  y1="55%"
+                  x2="55%"
+                  y2="20%"
+                  stroke="url(#researchLineGrad)"
+                  strokeWidth="1"
+                />
+                <line
+                  x1="55%"
+                  y1="20%"
+                  x2="78%"
+                  y2="50%"
+                  stroke="url(#researchLineGrad)"
+                  strokeWidth="1"
+                />
+                <line
+                  x1="78%"
+                  y1="50%"
+                  x2="92%"
+                  y2="28%"
+                  stroke="url(#researchLineGrad)"
+                  strokeWidth="1"
+                />
+              </g>
+              <circle cx="10%" cy="35%" r="4" fill="#a78bfa" opacity="0.8">
+                <animate
+                  attributeName="opacity"
+                  values="0.8;1;0.8"
+                  dur="3s"
+                  repeatCount="indefinite"
+                />
+              </circle>
+              <circle cx="55%" cy="20%" r="4" fill="#818cf8" opacity="0.8">
+                <animate
+                  attributeName="opacity"
+                  values="0.8;1;0.8"
+                  dur="3.5s"
+                  repeatCount="indefinite"
+                />
+              </circle>
+              <circle cx="92%" cy="28%" r="4" fill="#a78bfa" opacity="0.8">
+                <animate
+                  attributeName="opacity"
+                  values="0.8;1;0.8"
+                  dur="4s"
+                  repeatCount="indefinite"
+                />
+              </circle>
+            </svg>
+          </div>
+
+          <div className="container mx-auto px-4 md:px-6 relative z-10">
             <div className="max-w-4xl mx-auto text-center">
-              <h1 className="text-4xl md:text-6xl font-bold mb-6">
+              <div
+                className="inline-block px-4 py-2 text-sm font-medium bg-white/10 backdrop-blur-sm text-white rounded-full mb-6 border border-white/20"
+                style={{
+                  opacity: isLoaded ? 1 : 0,
+                  transform: isLoaded ? "translateY(0)" : "translateY(20px)",
+                  transition: "opacity 0.6s ease-out, transform 0.6s ease-out",
+                }}
+              >
+                Strategic Research & Deep Analysis
+              </div>
+              <h1
+                className="text-4xl md:text-6xl font-bold text-white mb-6 leading-tight"
+                style={{
+                  opacity: isLoaded ? 1 : 0,
+                  transform: isLoaded ? "translateY(0)" : "translateY(20px)",
+                  transition:
+                    "opacity 0.8s ease-out 0.2s, transform 0.8s ease-out 0.2s",
+                }}
+              >
                 Digital Transformation Research
               </h1>
-              <p className="text-xl md:text-2xl text-blue-100 mb-8 leading-relaxed">
+              <p
+                className="text-xl md:text-2xl text-blue-100 mb-10 leading-relaxed"
+                style={{
+                  opacity: isLoaded ? 1 : 0,
+                  transform: isLoaded ? "translateY(0)" : "translateY(20px)",
+                  transition:
+                    "opacity 1s ease-out 0.4s, transform 1s ease-out 0.4s",
+                }}
+              >
                 Comprehensive research reports and strategic deep analysis that
                 inform critical digital transformation decisions and strategies
               </p>
-              <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <div
+                className="flex flex-col sm:flex-row gap-4 justify-center"
+                style={{
+                  opacity: isLoaded ? 1 : 0,
+                  transform: isLoaded ? "translateY(0)" : "translateY(20px)",
+                  transition:
+                    "opacity 1.2s ease-out 0.6s, transform 1.2s ease-out 0.6s",
+                }}
+              >
                 <button
                   onClick={() =>
                     navigate("/marketplace/dtmi?tab=deep-analysis")
                   }
-                  className="bg-primary-500 hover:bg-primary-600 text-white px-8 py-4 rounded-lg font-semibold text-lg transition-all duration-200 shadow-lg"
+                  className="bg-primary-500 hover:bg-primary-600 text-white px-8 py-4 rounded-lg font-semibold text-lg transition-all duration-200 shadow-lg hover:-translate-y-1"
                 >
                   Explore Research Reports
                 </button>
@@ -79,9 +212,13 @@ const ResearchLandingPage = () => {
                   Subscribe to Updates
                 </button>
               </div>
-
-              {/* Additional CTA for Research Panel */}
-              <div className="mt-6 text-center">
+              <div
+                className="mt-6 text-center"
+                style={{
+                  opacity: isLoaded ? 1 : 0,
+                  transition: "opacity 1.4s ease-out 0.8s",
+                }}
+              >
                 <button
                   onClick={() => navigate("/research-panel")}
                   className="text-blue-100 hover:text-white underline font-medium transition-colors"
@@ -91,6 +228,20 @@ const ResearchLandingPage = () => {
               </div>
             </div>
           </div>
+
+          {/* Scroll indicator */}
+          <div
+            className="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce cursor-pointer"
+            onClick={() =>
+              document
+                .querySelector("main > section:nth-child(2)")
+                ?.scrollIntoView({ behavior: "smooth" })
+            }
+          >
+            <ChevronDown size={24} className="text-white" />
+          </div>
+
+          <style>{`@keyframes pulse-gradient { 0% { opacity: 0.4; } 50% { opacity: 0.6; } 100% { opacity: 0.4; } }`}</style>
         </section>
 
         {/* Research Reports Section */}

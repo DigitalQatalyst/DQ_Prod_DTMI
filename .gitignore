@@ -29,3 +29,10 @@ dist-ssr
 
 # Moat task system
 .moat/
+
+# Book cover images with long filenames
+public/10 book covers/
+public/DBP/
+public/DCO/
+public/Digital E/
+public/Digital Economy/
