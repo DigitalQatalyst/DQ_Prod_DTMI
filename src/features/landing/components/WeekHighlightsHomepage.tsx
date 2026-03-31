@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { Container, Title, Text, Grid, Card, Image, Group, Loader, Center, Stack, Badge } from "@mantine/core";
+import { Container, Title, Text, Grid, Image, Group, Loader, Center, Stack, Badge } from "@mantine/core";
 import { IconArrowRight, IconClock } from "@tabler/icons-react";
 import { useWeekHighlights } from "../hooks/useWeekHighlights";
 import { WeekHighlightItem } from "../api/weekHighlights";
@@ -43,8 +43,8 @@ export function WeekHighlightsHomepage() {
     <section className="py-16 bg-white">
       <Container size="xl">
         {/* Section Header */}
-        <div className="mb-12">
-          <Title order={2} size="h1" className="text-4xl md:text-5xl font-bold text-gray-900">
+        <div className="text-center mb-12">
+          <Title order={2} size="h1" className="font-display text-4xl md:text-5xl font-bold text-gray-900 tracking-tight">
             EDITOR'S PICK
           </Title>
         </div>

@@ -47,8 +47,8 @@ export function PredictionAnalysis() {
     <section className="py-20 bg-gray-50">
       <Container size="xl">
         {/* Section Header */}
-        <Group justify="space-between" className="mb-12">
-          <Title order={2} size="h1" className="text-4xl md:text-5xl font-bold text-gray-900">
+        <div className="text-center mb-12">
+          <Title order={2} size="h1" className="font-display text-4xl md:text-5xl font-bold text-gray-900 tracking-tight mb-4">
             Featured Deep Analysis
           </Title>
           <Button
@@ -59,7 +59,7 @@ export function PredictionAnalysis() {
           >
             Browse All Deep Analysis
           </Button>
-        </Group>
+        </div>
 
         {/* Carousel */}
         <Carousel

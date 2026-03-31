@@ -5,7 +5,7 @@ export function FeaturedContent() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-12 relative">
           {/* Podcast */}
           <div className="flex flex-col items-center justify-center text-center">
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+            <h2 className="font-display text-3xl md:text-4xl font-bold text-gray-900 mb-4 tracking-tight">
               Podcast
             </h2>
             <p className="text-base text-gray-600 leading-relaxed mb-8 max-w-md">
@@ -22,7 +22,7 @@ export function FeaturedContent() {
 
           {/* Expert Interviews */}
           <div className="flex flex-col items-center justify-center text-center">
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+            <h2 className="font-display text-3xl md:text-4xl font-bold text-gray-900 mb-4 tracking-tight">
               Expert Interviews
             </h2>
             <p className="text-base text-gray-600 leading-relaxed mb-8 max-w-md">

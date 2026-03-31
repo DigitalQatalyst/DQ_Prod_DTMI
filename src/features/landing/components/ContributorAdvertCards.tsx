@@ -9,7 +9,7 @@ export function ContributorAdvertCards() {
       <div className="container mx-auto px-4 md:px-6">
         <div className="text-center">
           {/* Main Heading */}
-          <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
+          <h2 className="font-display text-3xl md:text-4xl font-bold text-white mb-4 tracking-tight">
             Become a Contributor?
           </h2>
 

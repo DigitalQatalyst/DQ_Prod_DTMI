@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Container, Title, Text, Grid, Card, Image, Group, Button, Loader, Center, Stack } from "@mantine/core";
+import { Container, Title, Text, Grid, Card, Image, Button, Loader, Center, Stack } from "@mantine/core";
 import { IconArrowRight } from "@tabler/icons-react";
 import { useFeaturedInsights } from "../hooks/useFeaturedInsights";
 import { FeaturedArticle } from "../api/featuredInsights";
@@ -84,8 +84,8 @@ export function FeaturedInsights() {
     <section className="py-20 bg-gray-50">
       <Container size="xl">
         {/* Section Header */}
-        <Group justify="space-between" className="mb-12">
-          <Title order={2} size="h1" className="text-4xl md:text-5xl font-bold text-gray-900">
+        <div className="text-center mb-12">
+          <Title order={2} size="h1" className="font-display text-4xl md:text-5xl font-bold text-gray-900 tracking-tight mb-4">
             THE WEEK'S HIGHLIGHTS
           </Title>
           <Button
@@ -96,7 +96,7 @@ export function FeaturedInsights() {
           >
             Browse All Insights
           </Button>
-        </Group>
+        </div>
 
         {/* Three-Column Layout */}
         <Grid className="mb-8">

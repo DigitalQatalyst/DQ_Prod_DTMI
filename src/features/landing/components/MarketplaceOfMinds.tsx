@@ -13,7 +13,7 @@ export function MarketplaceOfMinds() {
       <div className="container mx-auto px-4 md:px-6">
         <div className="max-w-4xl mx-auto text-center">
           {/* Section Header */}
-          <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
+          <h2 className="font-display text-4xl md:text-5xl font-bold text-gray-900 mb-4 tracking-tight">
             Marketplace of Minds
           </h2>
           <p className="text-lg text-gray-600 leading-relaxed mb-8">

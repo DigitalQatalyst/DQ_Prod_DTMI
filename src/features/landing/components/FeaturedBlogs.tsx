@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { Container, Title, Text, Grid, Card, Image, Group, Button, Loader, Center, Stack, Badge } from "@mantine/core";
+import { Container, Title, Text, Grid, Image, Button, Group, Loader, Center, Stack, Badge } from "@mantine/core";
 import { IconArrowRight, IconClock } from "@tabler/icons-react";
 import { useFeaturedBlogs } from "../hooks/useFeaturedBlogs";
 import { FeaturedBlog } from "../api/featuredBlogs";
@@ -44,8 +44,8 @@ export function FeaturedBlogs() {
     <section className="py-20 bg-white">
       <Container size="xl">
         {/* Section Header */}
-        <Group justify="space-between" className="mb-12">
-          <Title order={2} size="h1" className="text-4xl md:text-5xl font-bold text-gray-900">
+        <div className="text-center mb-12">
+          <Title order={2} size="h1" className="font-display text-4xl md:text-5xl font-bold text-gray-900 tracking-tight mb-4">
             Latest Signals
           </Title>
           <Button
@@ -56,7 +56,7 @@ export function FeaturedBlogs() {
           >
             Browse All Signals
           </Button>
-        </Group>
+        </div>
 
         {/* Two-Column Layout */}
         <Grid>
