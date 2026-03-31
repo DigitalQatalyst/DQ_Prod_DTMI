@@ -2397,7 +2397,139 @@ const BooksLandingPage = () => {
           </div>
         </section>
 
-        {/* 11. CONNECT TO DTMI CONTENT */}
+        {/* 11. FINAL CTA - PERSONAL READING INTELLIGENCE */}
+        <section className="relative py-20 overflow-hidden bg-gradient-to-br from-[#0A1628] via-[#1a2942] to-[#0f1f3d]">
+          {/* Subtle background pattern */}
+          <div className="absolute inset-0 opacity-10">
+            <svg className="w-full h-full" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <linearGradient
+                  id="ctaLineGrad"
+                  x1="0%"
+                  y1="0%"
+                  x2="100%"
+                  y2="100%"
+                >
+                  <stop offset="0%" stopColor="#f97316" stopOpacity="0.8" />
+                  <stop offset="100%" stopColor="#ef4444" stopOpacity="0.8" />
+                </linearGradient>
+              </defs>
+              <g>
+                <line
+                  x1="0%"
+                  y1="30%"
+                  x2="20%"
+                  y2="50%"
+                  stroke="url(#ctaLineGrad)"
+                  strokeWidth="1"
+                />
+                <line
+                  x1="20%"
+                  y1="50%"
+                  x2="50%"
+                  y2="20%"
+                  stroke="url(#ctaLineGrad)"
+                  strokeWidth="1"
+                />
+                <line
+                  x1="50%"
+                  y1="20%"
+                  x2="80%"
+                  y2="60%"
+                  stroke="url(#ctaLineGrad)"
+                  strokeWidth="1"
+                />
+                <line
+                  x1="80%"
+                  y1="60%"
+                  x2="100%"
+                  y2="30%"
+                  stroke="url(#ctaLineGrad)"
+                  strokeWidth="1"
+                />
+              </g>
+              <circle cx="20%" cy="50%" r="3" fill="#f97316" opacity="0.8">
+                <animate
+                  attributeName="opacity"
+                  values="0.8;1;0.8"
+                  dur="3s"
+                  repeatCount="indefinite"
+                />
+              </circle>
+              <circle cx="50%" cy="20%" r="3" fill="#ef4444" opacity="0.8">
+                <animate
+                  attributeName="opacity"
+                  values="0.8;1;0.8"
+                  dur="4s"
+                  repeatCount="indefinite"
+                />
+              </circle>
+              <circle cx="80%" cy="60%" r="3" fill="#f97316" opacity="0.8">
+                <animate
+                  attributeName="opacity"
+                  values="0.8;1;0.8"
+                  dur="3.5s"
+                  repeatCount="indefinite"
+                />
+              </circle>
+            </svg>
+          </div>
+
+          <div className="container mx-auto px-4 max-w-3xl text-center relative z-10">
+            {/* Icon */}
+            <div className="w-16 h-16 mx-auto mb-6 bg-orange-500/20 rounded-full flex items-center justify-center border border-orange-500/30">
+              <BookmarkPlus className="w-8 h-8 text-orange-400" />
+            </div>
+
+            {/* Headline */}
+            <h2 className="text-3xl md:text-4xl font-bold text-white mb-4 leading-tight">
+              Start Building Your Personal Reading Intelligence Today
+            </h2>
+
+            {/* Subtext */}
+            <p className="text-lg text-white/80 mb-10 leading-relaxed max-w-2xl mx-auto">
+              Sign up for free and begin curating, shortlisting, and tracking
+              the books that matter most to your role and goals.
+            </p>
+
+            {/* Primary CTA */}
+            <div className="mb-4">
+              <button
+                onClick={() => navigate("/signup")}
+                className="group inline-flex items-center gap-3 px-10 py-4 bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-600 hover:to-red-700 text-white font-bold text-lg rounded-lg shadow-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-1"
+              >
+                <Bookmark className="w-5 h-5 group-hover:scale-110 transition-transform duration-300" />
+                Create My Shortlist
+                <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform duration-300" />
+              </button>
+            </div>
+
+            {/* Microcopy */}
+            <p className="text-sm text-white/50 mb-10">
+              It's free, quick, and personalized to your learning goals.
+            </p>
+
+            {/* Secondary Actions */}
+            <div className="flex flex-col sm:flex-row gap-3 justify-center">
+              <button
+                onClick={() => navigate("/signin")}
+                className="px-6 py-3 border border-white/30 text-white/80 hover:border-white hover:text-white rounded-lg font-medium transition-all duration-200 text-sm"
+              >
+                Sign In
+              </button>
+              <button
+                onClick={() =>
+                  navigate("/marketplace/dtmi?tab=books&view=collections")
+                }
+                className="px-6 py-3 border border-white/30 text-white/80 hover:border-white hover:text-white rounded-lg font-medium transition-all duration-200 text-sm"
+              >
+                Browse Featured Collections
+              </button>
+            </div>
+          </div>
+        </section>
+
+        {/* 12. CONNECT TO DTMI CONTENT */}
         <section className="py-16 bg-gray-50">
           <div className="container mx-auto px-4 max-w-6xl text-center">
             <h2 className="text-3xl md:text-4xl font-bold font-display mb-6 text-gray-900">
