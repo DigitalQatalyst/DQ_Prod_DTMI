@@ -3,7 +3,6 @@ import { Footer } from "../../shared/Footer/Footer";
 import { useNavigate } from "react-router-dom";
 import ModernDQChatbot from "../../shared/ModernDQChatbot";
 import { useState, useEffect } from "react";
-import { frontierBooks } from "../../utils/mockBookData";
 import {
   Star,
   Search,
@@ -37,7 +36,6 @@ const BooksLandingPage = () => {
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState("");
   const [isLoaded, setIsLoaded] = useState(false);
-  const [activeFilter, setActiveFilter] = useState("D1: Digital Economy");
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [selectedSuggestionIndex, setSelectedSuggestionIndex] = useState(-1);
 
@@ -96,15 +94,6 @@ const BooksLandingPage = () => {
   useEffect(() => {
     setIsLoaded(true);
   }, []);
-
-  // Filter books based on active filter - exactly 4 books per topic
-  const getFilteredBooks = () => {
-    return frontierBooks
-      .filter((book) => book.sixDDimensions?.includes(activeFilter))
-      .slice(0, 4);
-  };
-
-  const filteredBooks = getFilteredBooks();
 
   // Featured books for section 3
   const featuredBooksData = [
@@ -2242,164 +2231,7 @@ const BooksLandingPage = () => {
           </div>
         </section>
 
-        {/* 9. BROWSE BY CATEGORY - 6xD Books Grid with Filter Tabs */}
-        <section className="py-16 bg-gray-50">
-          <div className="container mx-auto px-4 md:px-6 max-w-7xl">
-            <div className="mb-12">
-              <h2 className="text-4xl font-bold font-display mb-4 text-gray-900">
-                Browse by Category
-              </h2>
-
-              {/* Filter Tabs */}
-              <div className="flex flex-wrap gap-4 mb-8">
-                {[
-                  "Digital Economy",
-                  "Cognitive Organization",
-                  "Business Platforms",
-                  "Transformation",
-                  "Future of Work",
-                  "Accelerators",
-                ].map((filter) => (
-                  <button
-                    key={filter}
-                    onClick={() =>
-                      setActiveFilter(
-                        filter === "Digital Economy"
-                          ? "D1: Digital Economy"
-                          : filter === "Cognitive Organization"
-                            ? "D2: Digital Cognitive Organization"
-                            : filter === "Business Platforms"
-                              ? "D3: Digital Business Platforms"
-                              : filter === "Future of Work"
-                                ? "D5: Digital Workers and Workspace"
-                                : filter === "Accelerators"
-                                  ? "D6: Digital Accelerators"
-                                  : `D4: Digital ${filter}`,
-                      )
-                    }
-                    className={`px-6 py-2 rounded-full font-medium transition-colors ${
-                      (activeFilter === "D1: Digital Economy" &&
-                        filter === "Digital Economy") ||
-                      (activeFilter === "D2: Digital Cognitive Organization" &&
-                        filter === "Cognitive Organization") ||
-                      (activeFilter === "D3: Digital Business Platforms" &&
-                        filter === "Business Platforms") ||
-                      (activeFilter === "D5: Digital Workers and Workspace" &&
-                        filter === "Future of Work") ||
-                      (activeFilter === "D6: Digital Accelerators" &&
-                        filter === "Accelerators") ||
-                      activeFilter === `D4: Digital ${filter}`
-                        ? "bg-orange-500 text-white"
-                        : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-                    }`}
-                  >
-                    {filter}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            {/* 4 Cards Grid Layout */}
-            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-              {filteredBooks.map((book) => (
-                <div
-                  key={book.id}
-                  className="bg-white border border-gray-200 rounded-xl overflow-hidden hover:shadow-2xl hover:border-orange-200 transition-all duration-300 cursor-pointer group hover:-translate-y-2 relative"
-                  onClick={() =>
-                    navigate(
-                      `/marketplace/dtmi?tab=books&book=${book.title.toLowerCase().replace(/\s+/g, "-")}`,
-                    )
-                  }
-                >
-                  {/* Hover overlay */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-orange-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10"></div>
-
-                  <div className="aspect-video bg-gradient-to-br from-gray-50 to-gray-100 flex items-center justify-center relative">
-                    <div className="w-24 h-32 bg-gradient-to-br from-gray-100 to-gray-200 rounded overflow-hidden shadow-xl group-hover:shadow-2xl transition-shadow duration-300">
-                      <img
-                        src={book.coverImage}
-                        alt={book.title}
-                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                        onError={(e) => {
-                          const target = e.target as HTMLImageElement;
-                          const parent = target.parentElement!;
-                          parent.innerHTML = `
-                            <div class="w-full h-full flex items-center justify-center bg-gradient-to-br from-blue-100 to-indigo-100">
-                              <div class="text-center text-gray-600">
-                                <div class="w-8 h-8 mx-auto mb-2 bg-orange-500 rounded flex items-center justify-center text-white text-sm">
-                                  📚
-                                </div>
-                                <p class="text-xs font-medium">6xD Book</p>
-                              </div>
-                            </div>
-                          `;
-                        }}
-                      />
-                    </div>
-
-                    {/* Quick action overlay */}
-                    <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
-                      <div className="bg-white/90 backdrop-blur-sm px-4 py-2 rounded-full text-sm font-semibold text-gray-900 transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
-                        View Details
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="p-4 relative z-20">
-                    <h3 className="text-base font-bold text-gray-900 mb-2 line-clamp-2 group-hover:text-orange-600 transition-colors duration-300">
-                      {book.title}
-                    </h3>
-                    <p className="text-gray-600 text-sm mb-2 group-hover:text-gray-700 transition-colors duration-300">
-                      {book.author}
-                    </p>
-                    <p className="text-gray-700 text-sm mb-3 line-clamp-2 group-hover:text-gray-800 transition-colors duration-300">
-                      {book.shortDescription}
-                    </p>
-
-                    {/* Enhanced Rating and Tags */}
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-1">
-                        <div className="flex items-center gap-1">
-                          {[...Array(5)].map((_, i) => (
-                            <Star
-                              key={i}
-                              className={`w-3 h-3 transition-colors duration-300 ${
-                                i < Math.floor(book.rating)
-                                  ? "fill-yellow-400 text-yellow-400 group-hover:fill-yellow-500 group-hover:text-yellow-500"
-                                  : "text-gray-300 group-hover:text-gray-400"
-                              }`}
-                            />
-                          ))}
-                        </div>
-                        <span className="text-xs text-gray-500 ml-1 group-hover:text-gray-600 transition-colors duration-300">
-                          {book.rating}
-                        </span>
-                      </div>
-                      <div className="flex items-center space-x-2">
-                        <span className="text-xs text-orange-600 font-semibold bg-orange-50 px-2 py-1 rounded-full group-hover:bg-orange-100 transition-colors duration-300">
-                          6xD
-                        </span>
-                      </div>
-                    </div>
-
-                    {/* Reading indicator */}
-                    <div className="mt-3 pt-3 border-t border-gray-100 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                      <div className="flex items-center justify-between text-xs text-gray-500">
-                        <span>
-                          📖 {Math.floor(Math.random() * 200 + 50)}+ readers
-                        </span>
-                        <span className="text-orange-600 font-medium">
-                          View Details →
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-        {/* 10. REVIEWS HIGHLIGHT */}
+        {/* 9. REVIEWS HIGHLIGHT */}
         <section className="py-16 bg-gray-900 text-white">
           <div className="container mx-auto px-4 max-w-6xl">
             <h2 className="text-3xl md:text-4xl font-bold font-display mb-12 text-center">
@@ -2436,7 +2268,7 @@ const BooksLandingPage = () => {
           </div>
         </section>
 
-        {/* 11. PERSONAL READING LIST */}
+        {/* 10. PERSONAL READING LIST */}
         <section className="py-16 bg-white">
           <div className="container mx-auto px-4 max-w-6xl">
             <div className="grid lg:grid-cols-2 gap-12 items-center">
@@ -2515,7 +2347,7 @@ const BooksLandingPage = () => {
           </div>
         </section>
 
-        {/* 12. CONNECT TO DTMI CONTENT */}
+        {/* 11. CONNECT TO DTMI CONTENT */}
         <section className="py-16 bg-gradient-to-br from-gray-900 to-gray-800 text-white">
           <div className="container mx-auto px-4 max-w-6xl text-center">
             <h2 className="text-3xl md:text-4xl font-bold font-display mb-6">
@@ -2544,7 +2376,7 @@ const BooksLandingPage = () => {
           </div>
         </section>
 
-        {/* 13. FINAL CTA */}
+        {/* 12. FINAL CTA */}
         <section className="py-16 bg-white">
           <div className="container mx-auto px-4 max-w-4xl text-center">
             <h2 className="text-3xl md:text-4xl font-bold font-display mb-6 text-gray-900">
