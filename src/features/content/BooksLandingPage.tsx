@@ -27,6 +27,10 @@ import {
   BarChart3,
   Tags,
   Zap,
+  ChevronLeft,
+  ChevronRight,
+  Sparkles,
+  Clock,
 } from "lucide-react";
 
 const BooksLandingPage = () => {
@@ -1926,7 +1930,388 @@ const BooksLandingPage = () => {
           </div>
         </section>
 
-        {/* 8. BROWSE BY CATEGORY - 6xD Books Grid with Filter Tabs */}
+        {/* 8. SMART RECOMMENDATIONS - AI-POWERED INSIGHTS */}
+        <section className="py-16 bg-gray-50">
+          <div className="container mx-auto px-4 max-w-7xl">
+            <div className="text-center mb-12">
+              <h2 className="text-3xl md:text-4xl font-bold font-display mb-4 text-gray-900">
+                Your AI-Powered Reading Recommendations
+              </h2>
+              <p className="text-xl text-gray-600 leading-relaxed max-w-3xl mx-auto">
+                DTMI uses advanced analysis to suggest books that align with
+                your role, interests, and goals.
+              </p>
+            </div>
+
+            {/* Personalization Filters */}
+            <div className="flex justify-center mb-8">
+              <div className="flex bg-white rounded-lg p-1 shadow-sm border border-gray-200">
+                <button className="px-4 py-2 bg-orange-500 text-white rounded-md font-medium text-sm transition-colors flex items-center gap-2">
+                  <Sparkles className="w-4 h-4" />
+                  For My Role
+                </button>
+                <button className="px-4 py-2 text-gray-600 hover:text-gray-900 rounded-md font-medium text-sm transition-colors flex items-center gap-2">
+                  <TrendingUp className="w-4 h-4" />
+                  Trending
+                </button>
+                <button className="px-4 py-2 text-gray-600 hover:text-gray-900 rounded-md font-medium text-sm transition-colors flex items-center gap-2">
+                  <Clock className="w-4 h-4" />
+                  New Additions
+                </button>
+              </div>
+            </div>
+
+            {/* Recommendations Grid */}
+            <div className="relative">
+              {/* Navigation Arrows */}
+              <button className="absolute left-0 top-1/2 transform -translate-y-1/2 -translate-x-4 z-10 w-10 h-10 bg-white hover:bg-gray-50 border border-gray-200 rounded-full flex items-center justify-center shadow-lg transition-colors">
+                <ChevronLeft className="w-5 h-5 text-gray-600" />
+              </button>
+              <button className="absolute right-0 top-1/2 transform -translate-y-1/2 translate-x-4 z-10 w-10 h-10 bg-white hover:bg-gray-50 border border-gray-200 rounded-full flex items-center justify-center shadow-lg transition-colors">
+                <ChevronRight className="w-5 h-5 text-gray-600" />
+              </button>
+
+              {/* Recommendation Cards */}
+              <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+                {/* Recommendation 1: AI Strategy for Executives */}
+                <div className="group bg-white rounded-xl shadow-sm hover:shadow-lg transition-all duration-300 hover:-translate-y-1 border border-gray-100 relative overflow-hidden">
+                  {/* AI Recommendation Badge */}
+                  <div className="absolute top-3 right-3 z-10">
+                    <div className="bg-gradient-to-r from-orange-500 to-red-500 text-white px-2 py-1 rounded-full text-xs font-medium flex items-center gap-1">
+                      <Sparkles className="w-3 h-3" />
+                      AI Pick
+                    </div>
+                  </div>
+
+                  <div className="aspect-[3/4] bg-gradient-to-br from-gray-100 to-gray-200 overflow-hidden">
+                    <img
+                      src="https://images.unsplash.com/photo-1485827404703-89b55fcc595e?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80"
+                      alt="Competing in the Age of AI"
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                      onError={(e) => {
+                        const target = e.target as HTMLImageElement;
+                        target.src =
+                          "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjI2NyIgdmlld0JveD0iMCAwIDIwMCAyNjciIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIyMDAiIGhlaWdodD0iMjY3IiBmaWxsPSIjRjM5NTAwIi8+Cjx0ZXh0IHg9IjEwMCIgeT0iMTMzIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iNDAiIGZpbGw9IndoaXRlIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBkb21pbmFudC1iYXNlbGluZT0ibWlkZGxlIj7wn5OyPC90ZXh0Pgo8L3N2Zz4K";
+                      }}
+                    />
+                  </div>
+
+                  <div className="p-5">
+                    <h3 className="text-lg font-bold text-gray-900 mb-1 group-hover:text-orange-600 transition-colors">
+                      Competing in the Age of AI
+                    </h3>
+                    <p className="text-gray-600 text-sm mb-3">
+                      Marco Iansiti & Karim Lakhani
+                    </p>
+
+                    {/* Tags */}
+                    <div className="flex flex-wrap gap-1 mb-3">
+                      <span className="text-xs bg-orange-100 text-orange-700 px-2 py-1 rounded-full">
+                        AI
+                      </span>
+                      <span className="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded-full">
+                        Strategy
+                      </span>
+                      <span className="text-xs bg-green-100 text-green-700 px-2 py-1 rounded-full">
+                        Leadership
+                      </span>
+                    </div>
+
+                    {/* DTMI Score */}
+                    <div className="flex items-center justify-between mb-3">
+                      <div className="flex items-center gap-2">
+                        <span className="text-sm font-medium text-gray-700">
+                          DTMI Score:
+                        </span>
+                        <span className="text-lg font-bold text-orange-600">
+                          9.1
+                        </span>
+                        <span className="text-sm text-gray-500">/ 10</span>
+                      </div>
+                      <Award className="w-4 h-4 text-orange-500" />
+                    </div>
+
+                    {/* Recommendation Note */}
+                    <div className="bg-orange-50 border border-orange-100 rounded-lg p-3 mb-4">
+                      <p className="text-sm text-orange-800 font-medium mb-1">
+                        Why this book?
+                      </p>
+                      <p className="text-xs text-orange-700">
+                        Recommended for executives focused on AI strategy and
+                        digital transformation.
+                      </p>
+                    </div>
+
+                    {/* Actions */}
+                    <div className="flex items-center gap-2">
+                      <button className="flex-1 px-3 py-2 bg-orange-500 hover:bg-orange-600 text-white text-sm font-medium rounded-lg transition-colors">
+                        View Details
+                      </button>
+                      <button className="p-2 border border-gray-200 hover:border-orange-300 hover:bg-orange-50 rounded-lg transition-colors group/save">
+                        <Heart className="w-4 h-4 text-gray-400 group-hover/save:text-orange-500 transition-colors" />
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Recommendation 2: Platform Strategy */}
+                <div className="group bg-white rounded-xl shadow-sm hover:shadow-lg transition-all duration-300 hover:-translate-y-1 border border-gray-100 relative overflow-hidden">
+                  {/* Trending Badge */}
+                  <div className="absolute top-3 right-3 z-10">
+                    <div className="bg-gradient-to-r from-green-500 to-emerald-500 text-white px-2 py-1 rounded-full text-xs font-medium flex items-center gap-1">
+                      <TrendingUp className="w-3 h-3" />
+                      Trending
+                    </div>
+                  </div>
+
+                  <div className="aspect-[3/4] bg-gradient-to-br from-gray-100 to-gray-200 overflow-hidden">
+                    <img
+                      src="https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80"
+                      alt="Platform Revolution"
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                      onError={(e) => {
+                        const target = e.target as HTMLImageElement;
+                        target.src =
+                          "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjI2NyIgdmlld0JveD0iMCAwIDIwMCAyNjciIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIyMDAiIGhlaWdodD0iMjY3IiBmaWxsPSIjMTA5OTZFIi8+Cjx0ZXh0IHg9IjEwMCIgeT0iMTMzIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iNDAiIGZpbGw9IndoaXRlIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBkb21pbmFudC1iYXNlbGluZT0ibWlkZGxlIj7wn5OyPC90ZXh0Pgo8L3N2Zz4K";
+                      }}
+                    />
+                  </div>
+
+                  <div className="p-5">
+                    <h3 className="text-lg font-bold text-gray-900 mb-1 group-hover:text-green-600 transition-colors">
+                      Platform Revolution
+                    </h3>
+                    <p className="text-gray-600 text-sm mb-3">
+                      Parker, Van Alstyne & Choudary
+                    </p>
+
+                    {/* Tags */}
+                    <div className="flex flex-wrap gap-1 mb-3">
+                      <span className="text-xs bg-green-100 text-green-700 px-2 py-1 rounded-full">
+                        Platforms
+                      </span>
+                      <span className="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded-full">
+                        Strategy
+                      </span>
+                      <span className="text-xs bg-purple-100 text-purple-700 px-2 py-1 rounded-full">
+                        Business Models
+                      </span>
+                    </div>
+
+                    {/* DTMI Score */}
+                    <div className="flex items-center justify-between mb-3">
+                      <div className="flex items-center gap-2">
+                        <span className="text-sm font-medium text-gray-700">
+                          DTMI Score:
+                        </span>
+                        <span className="text-lg font-bold text-green-600">
+                          8.9
+                        </span>
+                        <span className="text-sm text-gray-500">/ 10</span>
+                      </div>
+                      <TrendingUp className="w-4 h-4 text-green-500" />
+                    </div>
+
+                    {/* Recommendation Note */}
+                    <div className="bg-green-50 border border-green-100 rounded-lg p-3 mb-4">
+                      <p className="text-sm text-green-800 font-medium mb-1">
+                        Why this book?
+                      </p>
+                      <p className="text-xs text-green-700">
+                        Perfect for product managers exploring platform business
+                        models and network effects.
+                      </p>
+                    </div>
+
+                    {/* Actions */}
+                    <div className="flex items-center gap-2">
+                      <button className="flex-1 px-3 py-2 bg-green-500 hover:bg-green-600 text-white text-sm font-medium rounded-lg transition-colors">
+                        View Details
+                      </button>
+                      <button className="p-2 border border-gray-200 hover:border-green-300 hover:bg-green-50 rounded-lg transition-colors group/save">
+                        <Heart className="w-4 h-4 text-gray-400 group-hover/save:text-green-500 transition-colors" />
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Recommendation 3: Digital Transformation */}
+                <div className="group bg-white rounded-xl shadow-sm hover:shadow-lg transition-all duration-300 hover:-translate-y-1 border border-gray-100 relative overflow-hidden">
+                  {/* New Addition Badge */}
+                  <div className="absolute top-3 right-3 z-10">
+                    <div className="bg-gradient-to-r from-blue-500 to-indigo-500 text-white px-2 py-1 rounded-full text-xs font-medium flex items-center gap-1">
+                      <Clock className="w-3 h-3" />
+                      New
+                    </div>
+                  </div>
+
+                  <div className="aspect-[3/4] bg-gradient-to-br from-gray-100 to-gray-200 overflow-hidden">
+                    <img
+                      src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80"
+                      alt="Leading Digital"
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                      onError={(e) => {
+                        const target = e.target as HTMLImageElement;
+                        target.src =
+                          "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjI2NyIgdmlld0JveD0iMCAwIDIwMCAyNjciIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIyMDAiIGhlaWdodD0iMjY3IiBmaWxsPSIjMzMzNUZGIi8+Cjx0ZXh0IHg9IjEwMCIgeT0iMTMzIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iNDAiIGZpbGw9IndoaXRlIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBkb21pbmFudC1iYXNlbGluZT0ibWlkZGxlIj7wn5OyPC90ZXh0Pgo8L3N2Zz4K";
+                      }}
+                    />
+                  </div>
+
+                  <div className="p-5">
+                    <h3 className="text-lg font-bold text-gray-900 mb-1 group-hover:text-blue-600 transition-colors">
+                      Leading Digital
+                    </h3>
+                    <p className="text-gray-600 text-sm mb-3">
+                      George Westerman et al.
+                    </p>
+
+                    {/* Tags */}
+                    <div className="flex flex-wrap gap-1 mb-3">
+                      <span className="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded-full">
+                        Transformation
+                      </span>
+                      <span className="text-xs bg-orange-100 text-orange-700 px-2 py-1 rounded-full">
+                        Leadership
+                      </span>
+                      <span className="text-xs bg-green-100 text-green-700 px-2 py-1 rounded-full">
+                        Strategy
+                      </span>
+                    </div>
+
+                    {/* DTMI Score */}
+                    <div className="flex items-center justify-between mb-3">
+                      <div className="flex items-center gap-2">
+                        <span className="text-sm font-medium text-gray-700">
+                          DTMI Score:
+                        </span>
+                        <span className="text-lg font-bold text-blue-600">
+                          8.6
+                        </span>
+                        <span className="text-sm text-gray-500">/ 10</span>
+                      </div>
+                      <Clock className="w-4 h-4 text-blue-500" />
+                    </div>
+
+                    {/* Recommendation Note */}
+                    <div className="bg-blue-50 border border-blue-100 rounded-lg p-3 mb-4">
+                      <p className="text-sm text-blue-800 font-medium mb-1">
+                        Why this book?
+                      </p>
+                      <p className="text-xs text-blue-700">
+                        Essential for transformation leads building digital
+                        capabilities and leadership skills.
+                      </p>
+                    </div>
+
+                    {/* Actions */}
+                    <div className="flex items-center gap-2">
+                      <button className="flex-1 px-3 py-2 bg-blue-500 hover:bg-blue-600 text-white text-sm font-medium rounded-lg transition-colors">
+                        View Details
+                      </button>
+                      <button className="p-2 border border-gray-200 hover:border-blue-300 hover:bg-blue-50 rounded-lg transition-colors group/save">
+                        <Heart className="w-4 h-4 text-gray-400 group-hover/save:text-blue-500 transition-colors" />
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Recommendation 4: Future of Work */}
+                <div className="group bg-white rounded-xl shadow-sm hover:shadow-lg transition-all duration-300 hover:-translate-y-1 border border-gray-100 relative overflow-hidden">
+                  {/* Personalized Badge */}
+                  <div className="absolute top-3 right-3 z-10">
+                    <div className="bg-gradient-to-r from-purple-500 to-pink-500 text-white px-2 py-1 rounded-full text-xs font-medium flex items-center gap-1">
+                      <User className="w-3 h-3" />
+                      For You
+                    </div>
+                  </div>
+
+                  <div className="aspect-[3/4] bg-gradient-to-br from-gray-100 to-gray-200 overflow-hidden">
+                    <img
+                      src="https://images.unsplash.com/photo-1481627834876-b7833e8f5570?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80"
+                      alt="The Future of Work"
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                      onError={(e) => {
+                        const target = e.target as HTMLImageElement;
+                        target.src =
+                          "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjI2NyIgdmlld0JveD0iMCAwIDIwMCAyNjciIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIyMDAiIGhlaWdodD0iMjY3IiBmaWxsPSIjQTg1NUY3Ii8+Cjx0ZXh0IHg9IjEwMCIgeT0iMTMzIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iNDAiIGZpbGw9IndoaXRlIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBkb21pbmFudC1iYXNlbGluZT0ibWlkZGxlIj7wn5OyPC90ZXh0Pgo8L3N2Zz4K";
+                      }}
+                    />
+                  </div>
+
+                  <div className="p-5">
+                    <h3 className="text-lg font-bold text-gray-900 mb-1 group-hover:text-purple-600 transition-colors">
+                      The Future of Work
+                    </h3>
+                    <p className="text-gray-600 text-sm mb-3">Jacob Morgan</p>
+
+                    {/* Tags */}
+                    <div className="flex flex-wrap gap-1 mb-3">
+                      <span className="text-xs bg-purple-100 text-purple-700 px-2 py-1 rounded-full">
+                        Future Work
+                      </span>
+                      <span className="text-xs bg-orange-100 text-orange-700 px-2 py-1 rounded-full">
+                        Leadership
+                      </span>
+                      <span className="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded-full">
+                        Organizations
+                      </span>
+                    </div>
+
+                    {/* DTMI Score */}
+                    <div className="flex items-center justify-between mb-3">
+                      <div className="flex items-center gap-2">
+                        <span className="text-sm font-medium text-gray-700">
+                          DTMI Score:
+                        </span>
+                        <span className="text-lg font-bold text-purple-600">
+                          8.4
+                        </span>
+                        <span className="text-sm text-gray-500">/ 10</span>
+                      </div>
+                      <User className="w-4 h-4 text-purple-500" />
+                    </div>
+
+                    {/* Recommendation Note */}
+                    <div className="bg-purple-50 border border-purple-100 rounded-lg p-3 mb-4">
+                      <p className="text-sm text-purple-800 font-medium mb-1">
+                        Why this book?
+                      </p>
+                      <p className="text-xs text-purple-700">
+                        Matches your interest in organizational design and
+                        workforce transformation.
+                      </p>
+                    </div>
+
+                    {/* Actions */}
+                    <div className="flex items-center gap-2">
+                      <button className="flex-1 px-3 py-2 bg-purple-500 hover:bg-purple-600 text-white text-sm font-medium rounded-lg transition-colors">
+                        View Details
+                      </button>
+                      <button className="p-2 border border-gray-200 hover:border-purple-300 hover:bg-purple-50 rounded-lg transition-colors group/save">
+                        <Heart className="w-4 h-4 text-gray-400 group-hover/save:text-purple-500 transition-colors" />
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* View More Recommendations */}
+            <div className="text-center mt-8">
+              <button
+                onClick={() =>
+                  navigate("/marketplace/dtmi?tab=books&view=recommendations")
+                }
+                className="px-8 py-3 border-2 border-orange-500 text-orange-600 hover:bg-orange-500 hover:text-white font-medium rounded-lg transition-colors"
+              >
+                View All Recommendations
+              </button>
+            </div>
+          </div>
+        </section>
+
+        {/* 9. BROWSE BY CATEGORY - 6xD Books Grid with Filter Tabs */}
         <section className="py-16 bg-gray-50">
           <div className="container mx-auto px-4 md:px-6 max-w-7xl">
             <div className="mb-12">
@@ -2083,7 +2468,7 @@ const BooksLandingPage = () => {
             </div>
           </div>
         </section>
-        {/* 9. TOP AI BOOKS FOR LEADERS */}
+        {/* 10. TOP AI BOOKS FOR LEADERS */}
         <section className="py-16 bg-white">
           <div className="container mx-auto px-4 max-w-7xl">
             <h2 className="text-3xl md:text-4xl font-bold font-display mb-12 text-gray-900 text-center">
@@ -2199,7 +2584,7 @@ const BooksLandingPage = () => {
           </div>
         </section>
 
-        {/* 10. MUST-READ DIGITAL TRANSFORMATION BOOKS */}
+        {/* 11. MUST-READ DIGITAL TRANSFORMATION BOOKS */}
         <section className="py-16 bg-gray-50">
           <div className="container mx-auto px-4 max-w-7xl">
             <h2 className="text-3xl md:text-4xl font-bold font-display mb-12 text-gray-900 text-center">
@@ -2321,7 +2706,7 @@ const BooksLandingPage = () => {
           </div>
         </section>
 
-        {/* 11. REVIEWS HIGHLIGHT */}
+        {/* 12. REVIEWS HIGHLIGHT */}
         <section className="py-16 bg-gray-900 text-white">
           <div className="container mx-auto px-4 max-w-6xl">
             <h2 className="text-3xl md:text-4xl font-bold font-display mb-12 text-center">
@@ -2358,7 +2743,7 @@ const BooksLandingPage = () => {
           </div>
         </section>
 
-        {/* 12. PERSONAL READING LIST */}
+        {/* 13. PERSONAL READING LIST */}
         <section className="py-16 bg-white">
           <div className="container mx-auto px-4 max-w-6xl">
             <div className="grid lg:grid-cols-2 gap-12 items-center">
@@ -2437,7 +2822,7 @@ const BooksLandingPage = () => {
           </div>
         </section>
 
-        {/* 13. CONNECT TO DTMI CONTENT */}
+        {/* 14. CONNECT TO DTMI CONTENT */}
         <section className="py-16 bg-gradient-to-br from-gray-900 to-gray-800 text-white">
           <div className="container mx-auto px-4 max-w-6xl text-center">
             <h2 className="text-3xl md:text-4xl font-bold font-display mb-6">
@@ -2466,7 +2851,7 @@ const BooksLandingPage = () => {
           </div>
         </section>
 
-        {/* 14. FINAL CTA */}
+        {/* 15. FINAL CTA */}
         <section className="py-16 bg-white">
           <div className="container mx-auto px-4 max-w-4xl text-center">
             <h2 className="text-3xl md:text-4xl font-bold font-display mb-6 text-gray-900">
