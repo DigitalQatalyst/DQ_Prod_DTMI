@@ -1,7 +1,6 @@
 import React, { useState, useMemo, useEffect } from "react";
 import { BookCard } from "../../../components/books/BookCard";
 import { featuredBooks, bookCategories } from "../../../utils/mockBookData";
-import { getKnowledgeHubItems } from "../../../utils/mockMarketplaceData";
 import { Book } from "../../../types/book";
 import { useNavigate } from "react-router-dom";
 
@@ -17,74 +16,9 @@ export const BooksMarketplace: React.FC<BooksMarketplaceProps> = ({
   const navigate = useNavigate();
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
   const [sortBy, setSortBy] = useState<"title" | "rating" | "date">("rating");
-  const [marketplaceBooks, setMarketplaceBooks] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
 
-  // Fetch books from marketplace data
-  useEffect(() => {
-    const fetchBooks = async () => {
-      try {
-        const items = await getKnowledgeHubItems();
-        // Filter only book items
-        const bookItems = items.filter(
-          (item) => item.mediaType === "Book" || item.filterType === "Books",
-        );
-        setMarketplaceBooks(bookItems);
-      } catch (error) {
-        console.error("Error fetching marketplace books:", error);
-        // Fallback to featured books if marketplace fetch fails
-        setMarketplaceBooks([]);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchBooks();
-  }, []);
-
-  // Convert marketplace book items to Book format for compatibility
-  const convertedBooks = useMemo(() => {
-    return marketplaceBooks.map(
-      (item): Book => ({
-        id: item.id.replace("book-", ""), // Remove 'book-' prefix if present
-        title: item.title,
-        author: item.author?.name || "Unknown Author",
-        description: item.description,
-        shortDescription: item.description.substring(0, 100) + "...",
-        perspectiveOn: item.category || "Digital Transformation",
-        coverImage: item.imageUrl,
-        rating: 4.5, // Default rating since marketplace items don't have ratings
-        reviewCount: Math.floor(Math.random() * 300) + 50, // Random review count
-        category:
-          bookCategories.find((cat) =>
-            cat.name.toLowerCase().includes(item.category?.toLowerCase() || ""),
-          ) || bookCategories[0],
-        tags: item.tags || [],
-        isbn: `978-${Math.random().toString().substring(2, 12)}`, // Generate random ISBN
-        publishDate: item.date || new Date().toISOString(),
-        pageCount: parseInt(item.readTime?.replace(/\D/g, "") || "300"),
-        format: ["hardcover", "ebook"],
-        availability: "available" as const,
-        keyFocusArea: item.category || "Digital Transformation",
-        reviewSummary: item.description.substring(0, 80) + "...",
-        transformationImpactScore: Math.random() * 2 + 7, // Random score between 7-9
-        actionabilityScore: Math.random() * 1 + 4, // Random score between 4-5
-        strategicDepthScore: Math.random() * 1 + 4, // Random score between 4-5
-        sixDDimensions: item.digital_perspective
-          ? [item.digital_perspective]
-          : [],
-      }),
-    );
-  }, [marketplaceBooks]);
-
-  // Combine marketplace books with featured books, avoiding duplicates
-  const allBooks = useMemo(() => {
-    const marketplaceBookIds = new Set(convertedBooks.map((book) => book.id));
-    const uniqueFeaturedBooks = featuredBooks.filter(
-      (book) => !marketplaceBookIds.has(book.id),
-    );
-    return [...convertedBooks, ...uniqueFeaturedBooks];
-  }, [convertedBooks]);
+  // Use featured books directly since mockMarketplaceData was removed
+  const allBooks = featuredBooks;
 
   // Filter and sort books
   const filteredBooks = useMemo(() => {
@@ -145,19 +79,6 @@ export const BooksMarketplace: React.FC<BooksMarketplaceProps> = ({
   const handleBookExplore = (book: Book) => {
     navigate(`/books/${book.id}`);
   };
-
-  if (loading) {
-    return (
-      <div className="space-y-6">
-        <div className="flex justify-center items-center py-16">
-          <div className="text-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto mb-4"></div>
-            <p className="text-gray-600">Loading books...</p>
-          </div>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="space-y-6">

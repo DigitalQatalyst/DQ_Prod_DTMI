@@ -9,6 +9,7 @@ import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { FilterSidebar, FilterConfig } from "../components/FilterSidebar.tsx";
 import { MarketplaceGrid } from "../components/MarketplaceGrid.tsx";
+import { BooksMarketplace } from "../components/BooksMarketplace.tsx";
 import { SearchBar } from "../../../shared/SearchBar.tsx";
 import {
   SubMarketplaceTabs,
@@ -211,6 +212,91 @@ const buildDTMIFilterConfigFromCategories = (
       id: "platformDomain",
       title: "Platform Domain (DBP)",
       options: platformDomainOptions,
+    },
+    {
+      id: "books",
+      title: "Books",
+      options: [
+        {
+          id: "topic",
+          name: "Topic",
+          children: [
+            { id: "digital-transformation", name: "Digital Transformation" },
+            { id: "artificial-intelligence", name: "Artificial Intelligence" },
+            { id: "digital-strategy", name: "Digital Strategy" },
+            { id: "innovation", name: "Innovation" },
+            { id: "leadership", name: "Leadership" },
+            { id: "technology", name: "Technology" },
+          ],
+        },
+        {
+          id: "theme",
+          name: "Theme",
+          children: [
+            { id: "digital-economy", name: "Digital Economy" },
+            {
+              id: "digital-cognitive-organization",
+              name: "Digital Cognitive Organization",
+            },
+            {
+              id: "digital-business-platforms",
+              name: "Digital Business Platforms",
+            },
+            { id: "digital-accelerators", name: "Digital Accelerators" },
+          ],
+        },
+        {
+          id: "author",
+          name: "Author",
+          children: [
+            { id: "stephane-niango", name: "Stéphane Niango" },
+            { id: "michael-wade", name: "Michael Wade" },
+            { id: "james-macaulay", name: "James Macaulay" },
+            { id: "andy-noronha", name: "Andy Noronha" },
+          ],
+        },
+        {
+          id: "year",
+          name: "Year",
+          children: [
+            { id: "2024", name: "2024" },
+            { id: "2023", name: "2023" },
+            { id: "2022", name: "2022" },
+            { id: "2021", name: "2021" },
+          ],
+        },
+        {
+          id: "reading-level",
+          name: "Reading Level",
+          children: [
+            { id: "beginner", name: "Beginner" },
+            { id: "intermediate", name: "Intermediate" },
+            { id: "advanced", name: "Advanced" },
+            { id: "expert", name: "Expert" },
+          ],
+        },
+        {
+          id: "book-type",
+          name: "Book Type",
+          children: [
+            { id: "business", name: "Business" },
+            { id: "technical", name: "Technical" },
+            { id: "academic", name: "Academic" },
+            { id: "practical-guide", name: "Practical Guide" },
+          ],
+        },
+        {
+          id: "role-relevance",
+          name: "Role Relevance",
+          children: [
+            { id: "ceo-executive", name: "CEO/Executive" },
+            { id: "cto-technical", name: "CTO/Technical" },
+            { id: "manager", name: "Manager" },
+            { id: "consultant", name: "Consultant" },
+            { id: "analyst", name: "Analyst" },
+          ],
+        },
+      ],
     },
   ].filter((group) => Array.isArray(group.options) && group.options.length > 0);
 };
@@ -435,6 +521,12 @@ export const MarketplacePage: React.FC<MarketplacePageProps> = ({
             description:
               "Strategic intellectual assets - Research & comprehensive reports",
           },
+          {
+            id: "books",
+            label: "📚 Books",
+            description:
+              "Curated intelligence - Essential reads for digital transformation",
+          },
         ]
       : [
           {
@@ -565,6 +657,7 @@ export const MarketplacePage: React.FC<MarketplacePageProps> = ({
         "signals",
         "insights",
         "deep-analysis",
+        "books",
         "audio",
         "videos",
       ];
@@ -2033,14 +2126,16 @@ export const MarketplacePage: React.FC<MarketplacePageProps> = ({
 
         <div className="flex items-center justify-between mb-2">
           <h1 className="text-3xl font-bold text-gray-800">{config.title}</h1>
-          {/* Desktop Filter Button - Hidden on Mobile */}
-          <button
-            onClick={() => setShowFilters(true)}
-            className="hidden sm:flex items-center gap-2 px-4 py-2 bg-brand-navy text-white rounded-lg hover:bg-brand-navy/90 transition-colors"
-          >
-            <FilterIcon size={16} />
-            <span>Filter</span>
-          </button>
+          {/* Desktop Filter Button - Hidden on Mobile and Books Tab */}
+          {activeSubMarketplace !== "books" && (
+            <button
+              onClick={() => setShowFilters(true)}
+              className="hidden sm:flex items-center gap-2 px-4 py-2 bg-brand-navy text-white rounded-lg hover:bg-brand-navy/90 transition-colors"
+            >
+              <FilterIcon size={16} />
+              <span>Filter</span>
+            </button>
+          )}
         </div>
         <div className="flex items-center justify-between mb-6">
           <p className="text-gray-600">{config.description}</p>
@@ -2055,16 +2150,18 @@ export const MarketplacePage: React.FC<MarketplacePageProps> = ({
           )}
         </div>
 
-        {/* Mobile Filter Button - WEF Style, Hidden on Desktop */}
-        <div className="mb-6 sm:hidden">
-          <button
-            onClick={() => setShowFilters(true)}
-            className="w-full flex items-center justify-center gap-3 px-6 py-4 bg-brand-navy text-white rounded-full hover:bg-brand-navy/90 transition-colors font-medium"
-          >
-            <FilterIcon size={20} />
-            <span>Filter</span>
-          </button>
-        </div>
+        {/* Mobile Filter Button - WEF Style, Hidden on Desktop and Books Tab */}
+        {activeSubMarketplace !== "books" && (
+          <div className="mb-6 sm:hidden">
+            <button
+              onClick={() => setShowFilters(true)}
+              className="w-full flex items-center justify-center gap-3 px-6 py-4 bg-brand-navy text-white rounded-full hover:bg-brand-navy/90 transition-colors font-medium"
+            >
+              <FilterIcon size={20} />
+              <span>Filter</span>
+            </button>
+          </div>
+        )}
 
         {/* Sub-marketplace tabs for DTMI and Services */}
         {(marketplaceType === "dtmi" ||
@@ -2192,8 +2289,8 @@ export const MarketplacePage: React.FC<MarketplacePageProps> = ({
         )}
 
         <div className="space-y-6">
-          {/* Filter Modal - Responsive Design */}
-          {showFilters && (
+          {/* Filter Modal - Responsive Design - Hidden for Books Tab */}
+          {showFilters && activeSubMarketplace !== "books" && (
             <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-2 sm:p-4">
               <div className="bg-white rounded-lg w-full max-w-sm sm:max-w-md md:max-w-lg lg:max-w-2xl xl:max-w-4xl max-h-[95vh] sm:max-h-[90vh] overflow-hidden flex flex-col">
                 {/* Modal Header */}
@@ -2540,6 +2637,8 @@ export const MarketplacePage: React.FC<MarketplacePageProps> = ({
               <div className="text-center text-gray-600 py-8">
                 No content available
               </div>
+            ) : activeSubMarketplace === "books" ? (
+              <BooksMarketplace />
             ) : (
               <div ref={gridContainerRef}>
                 <MarketplaceGrid
