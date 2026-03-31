@@ -1468,8 +1468,109 @@ export const MarketplacePage: React.FC<MarketplacePageProps> = ({
         if (marketplaceType === "dtmi") {
           // Load DTMI filter taxonomy from database categories.
           const categories = await categoryService.getCategories();
-          const filterOptions: FilterConfig[] =
+          let filterOptions: FilterConfig[] =
             buildDTMIFilterConfigFromCategories(categories);
+
+          // Always ensure Books filter is included for DTMI marketplace
+          const hasBooks = filterOptions.some(
+            (filter) => filter.id === "books",
+          );
+          if (!hasBooks) {
+            filterOptions.push({
+              id: "books",
+              title: "Books",
+              options: [
+                {
+                  id: "topic",
+                  name: "Topic",
+                  children: [
+                    {
+                      id: "digital-transformation",
+                      name: "Digital Transformation",
+                    },
+                    {
+                      id: "artificial-intelligence",
+                      name: "Artificial Intelligence",
+                    },
+                    { id: "digital-strategy", name: "Digital Strategy" },
+                    { id: "innovation", name: "Innovation" },
+                    { id: "leadership", name: "Leadership" },
+                    { id: "technology", name: "Technology" },
+                  ],
+                },
+                {
+                  id: "theme",
+                  name: "Theme",
+                  children: [
+                    { id: "digital-economy", name: "Digital Economy" },
+                    {
+                      id: "digital-cognitive-organization",
+                      name: "Digital Cognitive Organization",
+                    },
+                    {
+                      id: "digital-business-platforms",
+                      name: "Digital Business Platforms",
+                    },
+                    {
+                      id: "digital-accelerators",
+                      name: "Digital Accelerators",
+                    },
+                  ],
+                },
+                {
+                  id: "author",
+                  name: "Author",
+                  children: [
+                    { id: "stephane-niango", name: "Stéphane Niango" },
+                    { id: "michael-wade", name: "Michael Wade" },
+                    { id: "james-macaulay", name: "James Macaulay" },
+                    { id: "andy-noronha", name: "Andy Noronha" },
+                  ],
+                },
+                {
+                  id: "year",
+                  name: "Year",
+                  children: [
+                    { id: "2024", name: "2024" },
+                    { id: "2023", name: "2023" },
+                    { id: "2022", name: "2022" },
+                    { id: "2021", name: "2021" },
+                  ],
+                },
+                {
+                  id: "reading-level",
+                  name: "Reading Level",
+                  children: [
+                    { id: "beginner", name: "Beginner" },
+                    { id: "intermediate", name: "Intermediate" },
+                    { id: "advanced", name: "Advanced" },
+                    { id: "expert", name: "Expert" },
+                  ],
+                },
+                {
+                  id: "book-type",
+                  name: "Book Type",
+                  children: [
+                    { id: "business", name: "Business" },
+                    { id: "technical", name: "Technical" },
+                    { id: "academic", name: "Academic" },
+                    { id: "practical-guide", name: "Practical Guide" },
+                  ],
+                },
+                {
+                  id: "role-relevance",
+                  name: "Role Relevance",
+                  children: [
+                    { id: "ceo-executive", name: "CEO/Executive" },
+                    { id: "cto-technical", name: "CTO/Technical" },
+                    { id: "manager", name: "Manager" },
+                    { id: "consultant", name: "Consultant" },
+                    { id: "analyst", name: "Analyst" },
+                  ],
+                },
+              ],
+            });
+          }
 
           if (!filterOptions.length) {
             throw new Error("No DTMI filter categories found in database");
