@@ -95,45 +95,6 @@ const BooksLandingPage = () => {
     setIsLoaded(true);
   }, []);
 
-  // Featured books for section 3
-  const featuredBooksData = [
-    {
-      title: "Platform Revolution",
-      author: "Geoffrey G. Parker",
-      summary:
-        "A practical guide to understanding how platform-based businesses are transforming industries.",
-      coverImage:
-        "https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80",
-      rating: 4.5,
-    },
-    {
-      title: "The Second Machine Age",
-      author: "Erik Brynjolfsson & Andrew McAfee",
-      summary:
-        "Explains how digital technologies are reshaping work, productivity, and the economy.",
-      coverImage:
-        "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80",
-      rating: 4.3,
-    },
-    {
-      title: "AI Superpowers",
-      author: "Kai-Fu Lee",
-      summary:
-        "A comparison of global AI development and its impact on economies and innovation.",
-      coverImage:
-        "https://images.unsplash.com/photo-1485827404703-89b55fcc595e?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80",
-      rating: 4.7,
-    },
-    {
-      title: "Leading Digital",
-      author: "George Westerman",
-      summary:
-        "Insights on how organizations can successfully navigate digital transformation.",
-      coverImage:
-        "https://images.unsplash.com/photo-1481627834876-b7833e8f5570?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80",
-      rating: 4.4,
-    },
-  ];
   // Reviews for section 6
   const reviews = [
     {
@@ -2268,86 +2229,7 @@ const BooksLandingPage = () => {
           </div>
         </section>
 
-        {/* 10. PERSONAL READING LIST */}
-        <section className="py-16 bg-white">
-          <div className="container mx-auto px-4 max-w-6xl">
-            <div className="grid lg:grid-cols-2 gap-12 items-center">
-              <div>
-                <h2 className="text-3xl md:text-4xl font-bold font-display mb-6 text-gray-900">
-                  Your Reading List
-                </h2>
-                <p className="text-xl text-gray-600 mb-8">
-                  Create and manage your personal shortlist of books. Save what
-                  you want to read, track your progress, and build your own
-                  learning journey.
-                </p>
-
-                <div className="space-y-4 mb-8">
-                  <div className="flex items-center gap-3">
-                    <CheckCircle className="w-6 h-6 text-green-500" />
-                    <span className="text-gray-700">
-                      Track your reading progress
-                    </span>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <CheckCircle className="w-6 h-6 text-green-500" />
-                    <span className="text-gray-700">
-                      Get personalized recommendations
-                    </span>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <CheckCircle className="w-6 h-6 text-green-500" />
-                    <span className="text-gray-700">
-                      Share lists with your team
-                    </span>
-                  </div>
-                </div>
-
-                <button
-                  onClick={() =>
-                    navigate("/marketplace/dtmi?tab=books&action=create-list")
-                  }
-                  className="px-8 py-4 bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-600 hover:to-red-700 text-white font-bold rounded-lg transition-all duration-300 hover:-translate-y-1 hover:shadow-lg"
-                >
-                  Create Your Reading List
-                </button>
-              </div>
-
-              <div className="bg-gray-50 rounded-xl p-6">
-                <h3 className="text-lg font-bold text-gray-900 mb-4">
-                  Sample Reading List
-                </h3>
-                <div className="space-y-4">
-                  {featuredBooksData.slice(0, 3).map((book, index) => (
-                    <div
-                      key={index}
-                      className="flex items-center gap-4 p-3 bg-white rounded-lg"
-                    >
-                      <div className="w-10 h-12 bg-gradient-to-br from-orange-100 to-orange-200 rounded flex items-center justify-center text-sm">
-                        📚
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <p className="font-medium text-gray-900 truncate">
-                          {book.title}
-                        </p>
-                        <p className="text-sm text-gray-500">{book.author}</p>
-                      </div>
-                      <div className="text-xs text-gray-400">
-                        {index === 0
-                          ? "Reading"
-                          : index === 1
-                            ? "Next"
-                            : "Saved"}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* 11. CONNECT TO DTMI CONTENT */}
+        {/* 10. CONNECT TO DTMI CONTENT */}
         <section className="py-16 bg-gradient-to-br from-gray-900 to-gray-800 text-white">
           <div className="container mx-auto px-4 max-w-6xl text-center">
             <h2 className="text-3xl md:text-4xl font-bold font-display mb-6">
@@ -2376,7 +2258,7 @@ const BooksLandingPage = () => {
           </div>
         </section>
 
-        {/* 12. FINAL CTA */}
+        {/* 11. FINAL CTA */}
         <section className="py-16 bg-white">
           <div className="container mx-auto px-4 max-w-4xl text-center">
             <h2 className="text-3xl md:text-4xl font-bold font-display mb-6 text-gray-900">
