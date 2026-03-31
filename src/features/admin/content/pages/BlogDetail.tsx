@@ -42,6 +42,7 @@ import {
   Category,
   Blog,
 } from "../../shared/utils/supabase";
+import { WhitepaperData } from "../types/create.types";
 import { Toast, ToastType } from "../../shared/components/Toast";
 import RichTextEditor from "../components/RichTextEditor";
 import { AuthorSelector } from "../components/AuthorSelector";
@@ -79,6 +80,52 @@ export const BlogDetail: React.FC = () => {
     tmp.innerHTML = html;
     return tmp.textContent || tmp.innerText || "";
   };
+
+  // Whitepaper specific state
+  const [whitepaperData, setWhitepaperData] = useState<WhitepaperData>({
+    hero: {
+      title: "",
+      subtitle: "",
+      volumeLabel: "",
+      heroImage: null,
+      heroImagePreview: "",
+    },
+    hookText: "",
+    foreword: {
+      title: "",
+      content: "",
+      heroImage: null,
+      heroImagePreview: "",
+      author: {
+        name: "",
+        title: "",
+        image: null,
+        imagePreview: "",
+      },
+    },
+    executiveSummary: {
+      title: "",
+      content: "",
+      heroImage: null,
+      heroImagePreview: "",
+    },
+    chapters: [],
+    conclusion: {
+      title: "",
+      content: "",
+      heroImage: null,
+      heroImagePreview: "",
+    },
+    references: {
+      title: "",
+      heroImage: null,
+      heroImagePreview: "",
+      items: [],
+    },
+    footer: {
+      copyright: "",
+    },
+  });
 
   // Helper to format duration from seconds to MM:SS
   const formatDuration = (seconds: number) => {
@@ -323,6 +370,61 @@ export const BlogDetail: React.FC = () => {
           } catch (e) {
             console.error("Failed to parse podcast JSON", e);
           }
+        } else if (blogData.type === "whitepaper") {
+          try {
+            const parsed =
+              typeof blogData.content === "string" &&
+              blogData.content.startsWith("{")
+                ? JSON.parse(blogData.content)
+                : {};
+
+            setWhitepaperData({
+              hero: {
+                title: parsed.hero?.title || blogData.title || "",
+                subtitle: parsed.hero?.subtitle || "",
+                volumeLabel: parsed.hero?.volumeLabel || "",
+                heroImage: null,
+                heroImagePreview: parsed.hero?.heroImageUrl || blogData.heroImage || "",
+              },
+              hookText: parsed.hookText || blogData.excerpt || "",
+              foreword: {
+                title: parsed.foreword?.title || "Foreword",
+                content: parsed.foreword?.content || "",
+                heroImage: null,
+                heroImagePreview: parsed.foreword?.heroImageUrl || "",
+                author: {
+                  name: parsed.foreword?.author?.name || blogData.author?.name || "",
+                  title: parsed.foreword?.author?.title || blogData.author?.title || "",
+                  image: null,
+                  imagePreview: parsed.foreword?.author?.imageUrl || blogData.author?.avatar || "",
+                },
+              },
+              executiveSummary: {
+                title: parsed.executiveSummary?.title || "Executive Summary",
+                content: parsed.executiveSummary?.content || "",
+                heroImage: null,
+                heroImagePreview: parsed.executiveSummary?.heroImageUrl || "",
+              },
+              chapters: parsed.chapters || [],
+              conclusion: {
+                title: parsed.conclusion?.title || "Conclusion",
+                content: parsed.conclusion?.content || "",
+                heroImage: null,
+                heroImagePreview: parsed.conclusion?.heroImageUrl || "",
+              },
+              references: {
+                title: parsed.references?.title || "References",
+                heroImage: null,
+                heroImagePreview: parsed.references?.heroImageUrl || "",
+                items: parsed.references?.items || [],
+              },
+              footer: {
+                copyright: parsed.footer?.copyright || "© 2025 DigitalQatalyst. All rights reserved.",
+              },
+            });
+          } catch (e) {
+            console.error("Failed to parse whitepaper JSON", e);
+          }
         }
       } catch (err) {
         console.error("Failed to load data", err);
@@ -528,6 +630,19 @@ export const BlogDetail: React.FC = () => {
           detailedSections: predictionData.detailedSections,
         });
         finalExcerpt = formData.excerpt;
+      } else if (formData.type === "whitepaper") {
+        finalContent = JSON.stringify({
+          hero: { ...whitepaperData.hero },
+          hookText: whitepaperData.hookText,
+          foreword: { ...whitepaperData.foreword },
+          executiveSummary: { ...whitepaperData.executiveSummary },
+          chapters: whitepaperData.chapters,
+          conclusion: { ...whitepaperData.conclusion },
+          references: { ...whitepaperData.references },
+          footer: whitepaperData.footer,
+        });
+        finalExcerpt = whitepaperData.hookText.slice(0, 160) + "...";
+        if (whitepaperData.hookText.length <= 160) finalExcerpt = whitepaperData.hookText;
       }
 
       await blogService.updateBlog(id, {
@@ -604,7 +719,9 @@ export const BlogDetail: React.FC = () => {
                     ? `/article/${formData.slug}`
                     : formData.type === "podcast"
                       ? `/podcast/${formData.slug}`
-                      : `/blog/${formData.slug}`
+                      : formData.type === "whitepaper"
+                        ? `/whitepaper/${formData.slug}/view`
+                        : `/blog/${formData.slug}`
               }
               target="_blank"
               rel="noopener noreferrer"
@@ -1489,6 +1606,210 @@ export const BlogDetail: React.FC = () => {
                         setFormData((prev) => ({ ...prev, content: html }))
                       }
                     />
+                  </div>
+                </div>
+              </div>
+            ) : formData.type === "whitepaper" ? (
+              <div className="space-y-8 animate-in fade-in duration-500">
+                <div className="bg-gradient-to-br from-purple-50 to-indigo-50 p-1 rounded-2xl border border-purple-100">
+                  <div className="bg-white p-8 rounded-xl">
+                    <div className="flex items-center gap-3 mb-6">
+                      <div className="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center">
+                        <BookOpen size={24} className="text-purple-600" />
+                      </div>
+                      <div>
+                        <h3 className="text-xl font-black text-gray-900">Whitepaper Editor</h3>
+                        <p className="text-sm text-gray-500">Edit comprehensive whitepaper content</p>
+                      </div>
+                    </div>
+
+                    {/* Hero Section */}
+                    <div className="space-y-6 mb-8">
+                      <h4 className="text-lg font-bold text-gray-900 border-b border-gray-200 pb-2">Hero Section</h4>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                          <label className="text-xs font-black text-gray-400 uppercase tracking-widest">Title</label>
+                          <input
+                            type="text"
+                            value={whitepaperData.hero.title}
+                            onChange={(e) => setWhitepaperData({
+                              ...whitepaperData,
+                              hero: { ...whitepaperData.hero, title: e.target.value }
+                            })}
+                            className="w-full p-3 border border-gray-200 rounded-lg text-sm font-bold"
+                            placeholder="Whitepaper title"
+                          />
+                        </div>
+                        <div>
+                          <label className="text-xs font-black text-gray-400 uppercase tracking-widest">Volume Label</label>
+                          <input
+                            type="text"
+                            value={whitepaperData.hero.volumeLabel}
+                            onChange={(e) => setWhitepaperData({
+                              ...whitepaperData,
+                              hero: { ...whitepaperData.hero, volumeLabel: e.target.value }
+                            })}
+                            className="w-full p-3 border border-gray-200 rounded-lg text-sm"
+                            placeholder="D1"
+                          />
+                        </div>
+                      </div>
+                      <div>
+                        <label className="text-xs font-black text-gray-400 uppercase tracking-widest">Subtitle</label>
+                        <input
+                          type="text"
+                          value={whitepaperData.hero.subtitle}
+                          onChange={(e) => setWhitepaperData({
+                            ...whitepaperData,
+                            hero: { ...whitepaperData.hero, subtitle: e.target.value }
+                          })}
+                          className="w-full p-3 border border-gray-200 rounded-lg text-sm"
+                          placeholder="Subtitle or description"
+                        />
+                      </div>
+                    </div>
+
+                    {/* Hook Text */}
+                    <div className="space-y-4 mb-8">
+                      <h4 className="text-lg font-bold text-gray-900 border-b border-gray-200 pb-2">Hook Text</h4>
+                      <RichTextEditor
+                        valueHtml={whitepaperData.hookText}
+                        onChange={(json, html) => setWhitepaperData({ ...whitepaperData, hookText: html })}
+                      />
+                    </div>
+
+                    {/* Foreword */}
+                    <div className="space-y-6 mb-8">
+                      <h4 className="text-lg font-bold text-gray-900 border-b border-gray-200 pb-2">Foreword</h4>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                          <label className="text-xs font-black text-gray-400 uppercase tracking-widest">Author Name</label>
+                          <input
+                            type="text"
+                            value={whitepaperData.foreword.author.name}
+                            onChange={(e) => setWhitepaperData({
+                              ...whitepaperData,
+                              foreword: {
+                                ...whitepaperData.foreword,
+                                author: { ...whitepaperData.foreword.author, name: e.target.value }
+                              }
+                            })}
+                            className="w-full p-3 border border-gray-200 rounded-lg text-sm"
+                            placeholder="Author name"
+                          />
+                        </div>
+                        <div>
+                          <label className="text-xs font-black text-gray-400 uppercase tracking-widest">Author Title</label>
+                          <input
+                            type="text"
+                            value={whitepaperData.foreword.author.title}
+                            onChange={(e) => setWhitepaperData({
+                              ...whitepaperData,
+                              foreword: {
+                                ...whitepaperData.foreword,
+                                author: { ...whitepaperData.foreword.author, title: e.target.value }
+                              }
+                            })}
+                            className="w-full p-3 border border-gray-200 rounded-lg text-sm"
+                            placeholder="Author title"
+                          />
+                        </div>
+                      </div>
+                      <div>
+                        <label className="text-xs font-black text-gray-400 uppercase tracking-widest">Foreword Content</label>
+                        <RichTextEditor
+                          valueHtml={whitepaperData.foreword.content}
+                          onChange={(json, html) => setWhitepaperData({
+                            ...whitepaperData,
+                            foreword: { ...whitepaperData.foreword, content: html }
+                          })}
+                        />
+                      </div>
+                    </div>
+
+                    {/* Executive Summary */}
+                    <div className="space-y-4 mb-8">
+                      <h4 className="text-lg font-bold text-gray-900 border-b border-gray-200 pb-2">Executive Summary</h4>
+                      <RichTextEditor
+                        valueHtml={whitepaperData.executiveSummary.content}
+                        onChange={(json, html) => setWhitepaperData({
+                          ...whitepaperData,
+                          executiveSummary: { ...whitepaperData.executiveSummary, content: html }
+                        })}
+                      />
+                    </div>
+
+                    {/* Chapters */}
+                    <div className="space-y-4 mb-8">
+                      <h4 className="text-lg font-bold text-gray-900 border-b border-gray-200 pb-2">Chapters</h4>
+                      {whitepaperData.chapters.map((chapter, index) => (
+                        <div key={index} className="border border-gray-200 rounded-lg p-4 space-y-4">
+                          <input
+                            type="text"
+                            value={chapter.title}
+                            onChange={(e) => {
+                              const updatedChapters = [...whitepaperData.chapters];
+                              updatedChapters[index].title = e.target.value;
+                              setWhitepaperData({ ...whitepaperData, chapters: updatedChapters });
+                            }}
+                            className="w-full p-3 border border-gray-200 rounded-lg text-sm font-bold"
+                            placeholder={`Chapter ${index + 1} Title`}
+                          />
+                          <RichTextEditor
+                            valueHtml={chapter.content}
+                            onChange={(json, html) => {
+                              const updatedChapters = [...whitepaperData.chapters];
+                              updatedChapters[index].content = html;
+                              setWhitepaperData({ ...whitepaperData, chapters: updatedChapters });
+                            }}
+                          />
+                        </div>
+                      ))}
+                      <button
+                        type="button"
+                        onClick={() => setWhitepaperData({
+                          ...whitepaperData,
+                          chapters: [...whitepaperData.chapters, {
+                            id: `chapter-${whitepaperData.chapters.length + 1}`,
+                            title: "",
+                            content: "",
+                            heroImage: null,
+                            heroImagePreview: "",
+                            heroImageUrl: ""
+                          }]
+                        })}
+                        className="px-4 py-2 bg-purple-600 text-white rounded-lg text-sm font-medium hover:bg-purple-700"
+                      >
+                        Add Chapter
+                      </button>
+                    </div>
+
+                    {/* Conclusion */}
+                    <div className="space-y-4 mb-8">
+                      <h4 className="text-lg font-bold text-gray-900 border-b border-gray-200 pb-2">Conclusion</h4>
+                      <RichTextEditor
+                        valueHtml={whitepaperData.conclusion.content}
+                        onChange={(json, html) => setWhitepaperData({
+                          ...whitepaperData,
+                          conclusion: { ...whitepaperData.conclusion, content: html }
+                        })}
+                      />
+                    </div>
+
+                    {/* Footer */}
+                    <div className="space-y-4">
+                      <h4 className="text-lg font-bold text-gray-900 border-b border-gray-200 pb-2">Footer</h4>
+                      <input
+                        type="text"
+                        value={whitepaperData.footer.copyright}
+                        onChange={(e) => setWhitepaperData({
+                          ...whitepaperData,
+                          footer: { ...whitepaperData.footer, copyright: e.target.value }
+                        })}
+                        className="w-full p-3 border border-gray-200 rounded-lg text-sm"
+                        placeholder="© 2025 DigitalQatalyst. All rights reserved."
+                      />
+                    </div>
                   </div>
                 </div>
               </div>

@@ -173,7 +173,9 @@ export function useCreateContent() {
     if (type === "checkbox") {
       setFormData((prev) => ({ ...prev, [name]: (e.target as HTMLInputElement).checked }));
     } else if (name === "title") {
-      const slug = value.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+      const timestamp = Date.now().toString().slice(-6);
+      const baseSlug = value.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+      const slug = baseSlug ? `${baseSlug}-${timestamp}` : timestamp;
       setFormData((prev) => ({ ...prev, title: value, slug }));
     } else if (name === "readTime") {
       setFormData((prev) => ({ ...prev, [name]: parseInt(value) || 0 }));
@@ -449,8 +451,13 @@ export function useCreateContent() {
         footer: whitepaperData.footer,
       });
 
+      // Generate unique slug for whitepaper
+      const timestamp = Date.now().toString().slice(-6);
+      const baseSlug = whitepaperData.hero.title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+      const uniqueSlug = baseSlug ? `${baseSlug}-${timestamp}` : timestamp;
+
       await blogService.createBlog({
-        title: whitepaperData.hero.title, slug: formData.slug,
+        title: whitepaperData.hero.title, slug: formData.slug || uniqueSlug,
         excerpt: whitepaperData.hookText.slice(0, 200) + "...",
         content: finalContent, categoryId: formData.categoryId,
         tags: formData.tags, publishDate: formData.publishDate,

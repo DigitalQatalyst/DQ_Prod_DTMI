@@ -122,7 +122,7 @@ export const MarketplaceGrid: React.FC<MarketplaceGridProps> = ({
                 if (type.includes('interview')) return 'Expert Interview';
                 if (type.includes('podcast')) return 'Podcast';
                 if (type.includes('video')) return 'Video';
-                if (type.includes('white paper')) return 'White Paper';
+                if (type.includes('whitepaper') || type.includes('white paper')) return 'White Paper';
                 if (type.includes('report')) return 'Research Report';
                 return 'Article'; // default
               };
@@ -205,22 +205,23 @@ export const MarketplaceGrid: React.FC<MarketplaceGridProps> = ({
                       navigate(item.detailsUrl);
                     } else if (item.expertInterviewUrl) {
                       navigate(item.expertInterviewUrl);
-                    } else if (item.blogUrl) {
-                      navigate(item.blogUrl);
-                    } else if (item.articleUrl) {
-                      navigate(item.articleUrl);
-                    } else if (item.newsUrl) {
-                      navigate(item.newsUrl);
-                    } else if (item.guideUrl) {
-                      navigate(item.guideUrl);
-                    } else if (item.researchReportUrl) {
-                      navigate(item.researchReportUrl);
                     } else {
+                      // Check media type first before generic URLs
                       const lowerType = (item.mediaType || 'article').toLowerCase();
                       if (lowerType.includes('whitepaper') || lowerType.includes('white paper')) {
                         navigate(`/whitepaper/${item.slug || item.id}/view`);
                       } else if (lowerType.includes('report') || lowerType.includes('research')) {
                         navigate(`/research-report/${item.slug || item.id}`);
+                      } else if (item.blogUrl) {
+                        navigate(item.blogUrl);
+                      } else if (item.articleUrl) {
+                        navigate(item.articleUrl);
+                      } else if (item.newsUrl) {
+                        navigate(item.newsUrl);
+                      } else if (item.guideUrl) {
+                        navigate(item.guideUrl);
+                      } else if (item.researchReportUrl) {
+                        navigate(item.researchReportUrl);
                       } else {
                         const typeSlug = lowerType.replace(/\s+/g, '-');
                         navigate(`/${typeSlug}/${item.id}`);

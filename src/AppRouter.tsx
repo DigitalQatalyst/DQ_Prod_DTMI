@@ -45,6 +45,7 @@ import ResearchReportPage from "./features/content/ResearchReportPage";
 import ResearchReportDetailPage from "./features/content/ResearchReportDetailPage";
 import WhitepaperDetailPage from "./features/content/WhitepaperDetailPage";
 import WhitepaperScrollPage from "./features/content/WhitepaperScrollPage";
+import DynamicWhitepaperPage from "./features/content/DynamicWhitepaperPage";
 import ResearchPanelLandingPage from "./features/dtmi/research-panel/ResearchPanelLandingPage";
 import ResearchPanelApplicationPage from "./features/dtmi/research-panel/ResearchPanelApplicationPage";
 import SavedItemsPage from "./features/dashboard/SavedItemsPage";
@@ -303,6 +304,10 @@ export function AppRouter() {
             <Route
               path="/whitepaper/digital-economy-4-0"
               element={<WhitepaperScrollPage />}
+            />
+            <Route
+              path="/whitepaper/:id/view"
+              element={<DynamicWhitepaperPage />}
             />
             <Route path="/podcast/:id" element={<PodcastDetailPage />} />
             <Route path="/terms-of-service" element={<TermsOfServicePage />} />

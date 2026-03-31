@@ -36,7 +36,9 @@ export function QuickCategoryModal({ isOpen, isCreating, newCategory, onChange, 
           <input type="text" value={newCategory.name} autoFocus
             onChange={(e) => {
               const val = e.target.value;
-              const slug = val.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+              const timestamp = Date.now().toString().slice(-6);
+              const baseSlug = val.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+              const slug = baseSlug ? `${baseSlug}-${timestamp}` : timestamp;
               onChange({ name: val, slug });
             }}
             className="w-full px-0 py-1 bg-transparent border-b border-gray-100 focus:border-black text-sm font-bold outline-none transition-all placeholder:text-gray-200"

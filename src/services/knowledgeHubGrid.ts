@@ -121,7 +121,7 @@ export async function listPublicMedia({
     const allItems = blogs.map((blog: any) => ({
       id: blog.id,
       title: blog.title,
-      mediaType: normalizeMediaType(blog.content_type || blog.type),
+      type: normalizeMediaType(blog.content_type || blog.type),
       category: blog.category || "Digital Transformation",
       summary: blog.excerpt || blog.summary,
       description: blog.excerpt || blog.summary,
@@ -146,13 +146,13 @@ export async function listPublicMedia({
       if (subMarketplace === "signals") {
         // Signals: Short-form content (Blogs, Commentary, Market Signals)
         filteredItems = filteredItems.filter((item) =>
-          ["Blog", "News", "Commentary"].includes(item.mediaType),
+          ["Blog", "News", "Commentary"].includes(item.type),
         );
       } else if (subMarketplace === "insights") {
         // Insights: Structured analysis (Articles, Expert Interviews, Case Studies)
         filteredItems = filteredItems.filter((item) =>
           ["Article", "Expert Interview", "Case Study", "Guide"].includes(
-            item.mediaType,
+            item.type,
           ),
         );
       } else if (subMarketplace === "deep-analysis") {
@@ -163,7 +163,7 @@ export async function listPublicMedia({
             "Report",
             "Prediction Analysis",
             "Research Report",
-          ].includes(item.mediaType),
+          ].includes(item.type),
         );
       }
     }
@@ -173,8 +173,8 @@ export async function listPublicMedia({
       const filterTypes = tag.split(",").map((t) => t.trim().toLowerCase());
 
       filteredItems = filteredItems.filter((item) => {
-        const itemType = (item.mediaType || "").toLowerCase();
-        // Check if item's mediaType matches any of the filter types
+        const itemType = (item.type || "").toLowerCase();
+        // Check if item's type matches any of the filter types
         const typeMatch = filterTypes.includes(itemType);
 
         // Also check if any of the filter types exist in the item's tags
@@ -211,7 +211,7 @@ export async function listPublicMedia({
       title: item.title,
       summary: item.description || null,
       thumbnail_url: item.imageUrl || null,
-      type: item.mediaType || null,
+      type: item.type || null,
       tags: Array.isArray(item.tags) ? item.tags.map(String) : null,
       published_at: item.date || new Date().toISOString(),
       blogUrl: item.blogUrl || null,
@@ -222,6 +222,7 @@ export async function listPublicMedia({
       detailsUrl: item.detailsUrl,
       provider: item.provider,
     }));
+
     // Proper pagination using cursor
     const cursor = decodeCursor(after);
     const startIndex =
@@ -233,11 +234,8 @@ export async function listPublicMedia({
       paginatedItems.length === limit && endIndex < publicItems.length
         ? encodeCursor({ p: new Date().toISOString(), id: String(endIndex) })
         : null;
-    return {
-      items: paginatedItems,
-      nextCursor,
-      totalCount: publicItems.length,
-    };
+
+    return { items: paginatedItems, nextCursor, totalCount: publicItems.length };
   } catch (error) {
     console.error(
       "❌ [KnowledgeHubGrid] Error in listPublicMedia, falling back to original Supabase query:",
@@ -340,7 +338,7 @@ function getFallbackKnowledgeHubData({
     title: item.title,
     summary: item.description || null,
     thumbnail_url: item.imageUrl || null,
-    type: item.mediaType || null,
+    type: item.type || null,
     tags: Array.isArray(item.tags) ? item.tags.map(String) : null,
     published_at: item.date || new Date().toISOString(),
   }));
