@@ -139,9 +139,9 @@ export function ContributorsMarketplacePage() {
 
   const [filters, setFilters] = useState<ContributorFilters>(initialFilters);
   const [showFilters, setShowFilters] = useState(false);
-  // Show contributors grid if URL already carries ?category= or ?showAll=true (e.g. navigated from landing page)
+  // Show contributors grid if URL already carries ?category= (including 'all')
   const [showContributors, setShowContributors] = useState(
-    () => !!searchParams.get("category") || searchParams.get("showAll") === "true",
+    () => !!searchParams.get("category"),
   );
   const [collapsedGroups, setCollapsedGroups] = useState<
     Record<"type" | "tag" | "worksRange", boolean>
@@ -194,7 +194,7 @@ export function ContributorsMarketplacePage() {
 
   // Sync type filter with category URL param — also reveals the grid
   useEffect(() => {
-    if (selectedCategory) {
+    if (selectedCategory && selectedCategory !== "all") {
       const categoryName = CONTRIBUTOR_CATEGORIES.find(
         (cat) => cat.id === selectedCategory,
       )?.name;
@@ -203,17 +203,13 @@ export function ContributorsMarketplacePage() {
         type: categoryName ? [categoryName] : [],
       }));
       setShowContributors(true); // auto-reveal when navigated with ?category=
+    } else if (selectedCategory === "all") {
+      setFilters((prev) => ({ ...prev, type: [] }));
+      setShowContributors(true);
     } else {
       setFilters((prev) => ({ ...prev, type: [] }));
     }
   }, [selectedCategory]);
-
-  // Handle ?showAll=true — reveal grid with no filter
-  useEffect(() => {
-    if (searchParams.get("showAll") === "true") {
-      setShowContributors(true);
-    }
-  }, [searchParams]);
 
   const typeOptions: FilterOption[] = useMemo(() => {
     const standardTypes: FilterOption[] = [
@@ -402,8 +398,12 @@ export function ContributorsMarketplacePage() {
                   Explore {CONTRIBUTOR_CATEGORIES.length} contributor categories
                 </p>
                 <button
-                  onClick={() => setShowContributors(true)}
-                  className="inline-flex items-center gap-2 bg-brand-coral text-white font-semibold text-sm px-5 py-2.5 rounded-lg hover:bg-opacity-90 transition-all"
+                  onClick={() => {
+                    setFilters(initialFilters);
+                    setSearchParams({ category: "all" });
+                    setShowContributors(true);
+                  }}
+                  className="inline-flex items-center gap-2 bg-brand-coral text-white font-semibold text-sm px-5 py-2.5 rounded-lg hover:bg-opacity-90 transition-all shadow-sm active:scale-95"
                 >
                   View All Contributors
                   <ArrowRight size={16} />
@@ -484,15 +484,19 @@ export function ContributorsMarketplacePage() {
 
           {/* Active category banner — shows which filter is active with a clear option */}
           {selectedCategory && (
-            <div className="flex items-center justify-between mb-6 bg-white border border-gray-100 rounded-xl px-5 py-3 shadow-sm">
+            <div className="flex items-center justify-between mb-6 bg-white border border-gray-100 rounded-xl px-5 py-3 shadow-sm animate-in fade-in slide-in-from-top-1">
               <div className="flex items-center gap-3">
-                <span className="text-2xl">
-                  {CONTRIBUTOR_CATEGORIES.find(c => c.id === selectedCategory)?.icon}
-                </span>
+                <div className="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center text-xl border border-blue-100">
+                  {selectedCategory !== "all" 
+                    ? CONTRIBUTOR_CATEGORIES.find(c => c.id === selectedCategory)?.icon 
+                    : "🌟"}
+                </div>
                 <div>
-                  <p className="text-xs text-gray-400 uppercase tracking-wide font-semibold">Filtered by category</p>
+                  <p className="text-[10px] text-gray-400 uppercase tracking-widest font-bold">Current View</p>
                   <p className="font-bold text-gray-900 text-sm">
-                    {CONTRIBUTOR_CATEGORIES.find(c => c.id === selectedCategory)?.name}
+                    {selectedCategory !== "all" 
+                      ? CONTRIBUTOR_CATEGORIES.find(c => c.id === selectedCategory)?.name 
+                      : "All Contributors"}
                   </p>
                 </div>
               </div>
@@ -501,7 +505,7 @@ export function ContributorsMarketplacePage() {
                 className="flex items-center gap-1.5 text-xs font-semibold text-gray-500 hover:text-brand-coral transition-colors"
               >
                 <XIcon size={14} />
-                Clear filter
+                Reset View
               </button>
             </div>
           )}
