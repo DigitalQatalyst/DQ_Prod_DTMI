@@ -139,9 +139,9 @@ export function ContributorsMarketplacePage() {
 
   const [filters, setFilters] = useState<ContributorFilters>(initialFilters);
   const [showFilters, setShowFilters] = useState(false);
-  // Show contributors grid if URL already carries ?category= or ?showAll=true (e.g. navigated from landing page)
+  // Show contributors grid if URL already carries ?category= (including 'all')
   const [showContributors, setShowContributors] = useState(
-    () => !!searchParams.get("category") || searchParams.get("showAll") === "true",
+    () => !!searchParams.get("category"),
   );
   const [collapsedGroups, setCollapsedGroups] = useState<
     Record<"type" | "tag" | "worksRange", boolean>
@@ -194,7 +194,7 @@ export function ContributorsMarketplacePage() {
 
   // Sync type filter with category URL param — also reveals the grid
   useEffect(() => {
-    if (selectedCategory) {
+    if (selectedCategory && selectedCategory !== "all") {
       const categoryName = CONTRIBUTOR_CATEGORIES.find(
         (cat) => cat.id === selectedCategory,
       )?.name;
@@ -203,17 +203,13 @@ export function ContributorsMarketplacePage() {
         type: categoryName ? [categoryName] : [],
       }));
       setShowContributors(true); // auto-reveal when navigated with ?category=
+    } else if (selectedCategory === "all") {
+      setFilters((prev) => ({ ...prev, type: [] }));
+      setShowContributors(true);
     } else {
       setFilters((prev) => ({ ...prev, type: [] }));
     }
   }, [selectedCategory]);
-
-  // Handle ?showAll=true — reveal grid with no filter
-  useEffect(() => {
-    if (searchParams.get("showAll") === "true") {
-      setShowContributors(true);
-    }
-  }, [searchParams]);
 
   const typeOptions: FilterOption[] = useMemo(() => {
     const standardTypes: FilterOption[] = [
@@ -402,8 +398,12 @@ export function ContributorsMarketplacePage() {
                   Explore {CONTRIBUTOR_CATEGORIES.length} contributor categories
                 </p>
                 <button
-                  onClick={() => setShowContributors(true)}
-                  className="inline-flex items-center gap-2 bg-brand-coral text-white font-semibold text-sm px-5 py-2.5 rounded-lg hover:bg-opacity-90 transition-all"
+                  onClick={() => {
+                    setFilters(initialFilters);
+                    setSearchParams({ category: "all" });
+                    setShowContributors(true);
+                  }}
+                  className="inline-flex items-center gap-2 bg-brand-coral text-white font-semibold text-sm px-5 py-2.5 rounded-lg hover:bg-opacity-90 transition-all shadow-sm active:scale-95"
                 >
                   View All Contributors
                   <ArrowRight size={16} />
@@ -448,9 +448,20 @@ export function ContributorsMarketplacePage() {
                     </p>
 
                     {/* Expertise */}
-                    <div className="flex flex-wrap gap-1 text-sm text-gray-600">
-                      <span className="font-semibold text-gray-900">Expertise:</span>
-                      <span>{cat.expertise}</span>
+                    <div className="flex flex-col gap-2">
+                      <span className="text-[10px] font-bold uppercase tracking-widest text-gray-400">
+                        Expertise
+                      </span>
+                      <div className="flex flex-wrap gap-1.5">
+                        {(cat.expertise || "").split(",").map((item, idx) => (
+                          <span 
+                            key={idx} 
+                            className="px-2 py-0.5 bg-indigo-50 text-indigo-600 rounded text-[11px] font-medium border border-indigo-100"
+                          >
+                            {item.trim()}
+                          </span>
+                        ))}
+                      </div>
                     </div>
 
                     {/* Category tag */}
@@ -473,15 +484,19 @@ export function ContributorsMarketplacePage() {
 
           {/* Active category banner — shows which filter is active with a clear option */}
           {selectedCategory && (
-            <div className="flex items-center justify-between mb-6 bg-white border border-gray-100 rounded-xl px-5 py-3 shadow-sm">
+            <div className="flex items-center justify-between mb-6 bg-white border border-gray-100 rounded-xl px-5 py-3 shadow-sm animate-in fade-in slide-in-from-top-1">
               <div className="flex items-center gap-3">
-                <span className="text-2xl">
-                  {CONTRIBUTOR_CATEGORIES.find(c => c.id === selectedCategory)?.icon}
-                </span>
+                <div className="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center text-xl border border-blue-100">
+                  {selectedCategory !== "all" 
+                    ? CONTRIBUTOR_CATEGORIES.find(c => c.id === selectedCategory)?.icon 
+                    : "🌟"}
+                </div>
                 <div>
-                  <p className="text-xs text-gray-400 uppercase tracking-wide font-semibold">Filtered by category</p>
+                  <p className="text-[10px] text-gray-400 uppercase tracking-widest font-bold">Current View</p>
                   <p className="font-bold text-gray-900 text-sm">
-                    {CONTRIBUTOR_CATEGORIES.find(c => c.id === selectedCategory)?.name}
+                    {selectedCategory !== "all" 
+                      ? CONTRIBUTOR_CATEGORIES.find(c => c.id === selectedCategory)?.name 
+                      : "All Contributors"}
                   </p>
                 </div>
               </div>
@@ -490,7 +505,7 @@ export function ContributorsMarketplacePage() {
                 className="flex items-center gap-1.5 text-xs font-semibold text-gray-500 hover:text-brand-coral transition-colors"
               >
                 <XIcon size={14} />
-                Clear filter
+                Reset View
               </button>
             </div>
           )}
@@ -845,11 +860,24 @@ function ContributorCard({ contributor }: { contributor: ContributorProfile }) {
           </div>
         </div>
 
-        <p className="text-sm text-gray-700 line-clamp-3">{contributor.bio}</p>
+        {/* Bio */}
+        <p className="text-sm text-gray-600 line-clamp-3 leading-relaxed">{contributor.bio}</p>
 
-        <div className="text-sm text-gray-600 flex gap-2">
-          <span className="font-semibold text-gray-900">Expertise:</span>
-          <span className="line-clamp-1">{contributor.expertise}</span>
+        {/* Expertise Badges */}
+        <div className="flex flex-col gap-1.5">
+          <span className="text-[10px] font-bold uppercase tracking-widest text-gray-400">
+            Areas of Expertise
+          </span>
+          <div className="flex flex-wrap gap-1.5">
+            {(contributor.expertise || "").split(",").map((item, idx) => (
+              <span 
+                key={idx} 
+                className="px-2.5 py-1 bg-indigo-50 text-indigo-700 rounded-md text-[11px] font-semibold border border-indigo-100/50"
+              >
+                {item.trim()}
+              </span>
+            ))}
+          </div>
         </div>
 
         <div className="mb-2 flex flex-wrap gap-2">

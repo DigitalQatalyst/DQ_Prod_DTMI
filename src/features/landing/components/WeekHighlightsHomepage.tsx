@@ -80,36 +80,46 @@ function HighlightCard({ item, onClick }: HighlightCardProps) {
       </div>
 
       {/* Content */}
-      <Stack gap="sm">
-        <Badge variant="light" size="sm" className="w-fit">
+      <div className="flex flex-col flex-1 h-full">
+        <Badge variant="light" size="xs" className="w-fit mb-3 uppercase tracking-wider font-bold">
           {item.category}
         </Badge>
         
-        <Group gap="xs" align="flex-start">
+        <div className="flex items-start justify-between gap-4 mb-3">
           <Title 
             order={3} 
             size="h3" 
-            className="text-2xl font-bold text-gray-900 group-hover:text-blue-600 transition-colors leading-tight flex-1"
+            className="text-xl md:text-2xl font-bold text-gray-900 group-hover:text-brand-coral transition-colors leading-tight flex-1"
           >
             {item.title}
           </Title>
           <IconArrowRight 
-            size={20} 
-            className="text-blue-600 mt-1 transition-transform group-hover:translate-x-1" 
+            size={22} 
+            className="text-brand-coral mt-1.5 transition-transform group-hover:translate-x-1 flex-shrink-0" 
           />
-        </Group>
+        </div>
         
-        <Text c="dimmed" className="leading-relaxed">
-          <Text component="em" size="sm">{item.date}</Text> - {item.description}
+        <Text c="dimmed" size="sm" className="leading-relaxed line-clamp-3 mb-6 flex-1">
+          {item.description}
         </Text>
         
-        {item.readTime && (
-          <Group gap="xs">
-            <IconClock size={16} className="text-gray-500" />
-            <Text size="sm" c="dimmed">{item.readTime}</Text>
+        <div className="mt-auto pt-4 border-t border-gray-100">
+          <Group justify="space-between" align="center">
+            <Group gap="xs">
+              <Text size="xs" fw={700} className="text-gray-400 uppercase tracking-widest italic">
+                {item.date}
+              </Text>
+            </Group>
+            
+            {item.readTime && (
+              <Group gap="xs">
+                <IconClock size={14} className="text-gray-400" />
+                <Text size="xs" c="dimmed" fw={500}>{item.readTime}</Text>
+              </Group>
+            )}
           </Group>
-        )}
-      </Stack>
+        </div>
+      </div>
     </div>
   );
 }

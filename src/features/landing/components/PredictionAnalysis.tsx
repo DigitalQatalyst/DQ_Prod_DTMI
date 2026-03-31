@@ -124,9 +124,9 @@ function PredictionCard({ prediction, onClick }: PredictionCardProps) {
       className="bg-white rounded-2xl overflow-hidden shadow-lg cursor-pointer hover:shadow-xl transition-all duration-300 border border-gray-100"
       onClick={onClick}
     >
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-0 min-h-[400px] lg:h-[480px]">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-0 items-stretch">
         {/* Text Content - Left */}
-        <div className="p-8 md:p-12 lg:p-14 flex flex-col justify-center order-2 lg:order-1 bg-white">
+        <div className="p-8 md:p-10 lg:p-12 flex flex-col justify-center order-2 lg:order-1 bg-white">
           <Badge
             variant="filled"
             color="indigo"
@@ -150,21 +150,23 @@ function PredictionCard({ prediction, onClick }: PredictionCardProps) {
             {prediction.description}
           </Text>
 
-          <Group gap="xs" className="text-indigo-600 hover:text-indigo-700 transition-colors font-bold group cursor-pointer mt-auto lg:mt-0">
-            <span className="text-sm uppercase tracking-wider">Read full analysis</span>
-            <IconArrowRight
-              size={18}
-              className="group-hover:translate-x-1 transition-transform"
-            />
-          </Group>
+          <div className="mt-2">
+            <Group gap="xs" className="text-indigo-600 hover:text-indigo-700 transition-colors font-bold group cursor-pointer inline-flex items-center">
+              <span className="text-sm uppercase tracking-wider">Read full analysis</span>
+              <IconArrowRight
+                size={18}
+                className="group-hover:translate-x-1 transition-transform"
+              />
+            </Group>
+          </div>
         </div>
 
         {/* Image - Right */}
-        <div className="relative h-[250px] lg:h-full order-1 lg:order-2 overflow-hidden">
+        <div className="relative min-h-[300px] lg:min-h-full order-1 lg:order-2 overflow-hidden">
           <img
             src={prediction.image}
             alt={prediction.title}
-            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+            className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
           />
         </div>
       </div>
