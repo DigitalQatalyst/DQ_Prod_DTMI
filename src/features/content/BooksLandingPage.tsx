@@ -2399,245 +2399,7 @@ const BooksLandingPage = () => {
             </div>
           </div>
         </section>
-        {/* 10. TOP AI BOOKS FOR LEADERS */}
-        <section className="py-16 bg-white">
-          <div className="container mx-auto px-4 max-w-7xl">
-            <h2 className="text-3xl md:text-4xl font-bold font-display mb-12 text-gray-900 text-center">
-              Top AI Books for Leaders
-            </h2>
-
-            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-              {[
-                {
-                  title: "Co-Intelligence: Living and Working with AI",
-                  author: "Ethan Mollick",
-                  year: "2024",
-                  summary:
-                    "Widely recommended as the best starting point for leaders, focusing on practical, daily collaboration with AI, promoting the 'human in the loop' approach and treating AI as an 'alien expert'.",
-                  coverImage:
-                    "https://images.unsplash.com/photo-1677442136019-21780ecad995?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80",
-                  rating: 4.8,
-                },
-                {
-                  title: "The AI-Driven Leader",
-                  author: "Geoff Woods",
-                  year: "2025/2026",
-                  summary:
-                    "An essential guide for executives, focusing on translating AI into tangible business impact and using it as a strategic partner to overcome operational challenges.",
-                  coverImage:
-                    "https://images.unsplash.com/photo-1485827404703-89b55fcc595e?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80",
-                  rating: 4.7,
-                },
-                {
-                  title: "Human + Machine: Reimagining Work in the Age of AI",
-                  author: "Paul R. Daugherty & H. James Wilson",
-                  year: "2018",
-                  summary:
-                    "A classic for understanding how AI augments, rather than replaces, human capabilities, offering a framework for redesigning business processes.",
-                  coverImage:
-                    "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80",
-                  rating: 4.6,
-                },
-                {
-                  title:
-                    "The Coming Wave: Technology, Power, and the Twenty-First Century's Greatest Dilemma",
-                  author: "Mustafa Suleyman",
-                  year: "2023",
-                  summary:
-                    "Highly recommended by leaders like Bill Gates, this book offers a strategic view of the societal and geopolitical impacts of AI.",
-                  coverImage:
-                    "https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80",
-                  rating: 4.9,
-                },
-              ].map((book, index) => (
-                <div
-                  key={index}
-                  className="bg-white border border-gray-200 rounded-xl overflow-hidden hover:shadow-xl hover:border-orange-200 transition-all duration-300 group"
-                >
-                  <div className="aspect-[3/4] bg-gradient-to-br from-gray-100 to-gray-200 overflow-hidden">
-                    <img
-                      src={book.coverImage}
-                      alt={book.title}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                      onError={(e) => {
-                        const target = e.target as HTMLImageElement;
-                        target.src =
-                          "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjI2NyIgdmlld0JveD0iMCAwIDIwMCAyNjciIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIyMDAiIGhlaWdodD0iMjY3IiBmaWxsPSIjRjM5NTAwIi8+Cjx0ZXh0IHg9IjEwMCIgeT0iMTMzIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iNDAiIGZpbGw9IndoaXRlIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBkb21pbmFudC1iYXNlbGluZT0ibWlkZGxlIj7wn5OyPC90ZXh0Pgo8L3N2Zz4K";
-                      }}
-                    />
-                  </div>
-
-                  <div className="p-6">
-                    <h3 className="text-lg font-bold text-gray-900 mb-2 group-hover:text-orange-600 transition-colors">
-                      {book.title}
-                    </h3>
-                    <p className="text-gray-600 text-sm mb-1">{book.author}</p>
-                    <p className="text-gray-500 text-xs mb-3">{book.year}</p>
-                    <p className="text-gray-700 text-sm mb-4 line-clamp-3">
-                      {book.summary}
-                    </p>
-
-                    <div className="flex items-center justify-between mb-4">
-                      <div className="flex items-center gap-1">
-                        {[...Array(5)].map((_, i) => (
-                          <Star
-                            key={i}
-                            className={`w-4 h-4 ${
-                              i < Math.floor(book.rating)
-                                ? "fill-yellow-400 text-yellow-400"
-                                : "text-gray-300"
-                            }`}
-                          />
-                        ))}
-                        <span className="text-sm text-gray-600 ml-1">
-                          {book.rating}
-                        </span>
-                      </div>
-                      <span className="text-xs text-blue-600 font-semibold bg-blue-50 px-2 py-1 rounded-full">
-                        AI Leadership
-                      </span>
-                    </div>
-
-                    <button
-                      onClick={() =>
-                        navigate(
-                          `/marketplace/dtmi?tab=books&book=${book.title.toLowerCase().replace(/\s+/g, "-")}`,
-                        )
-                      }
-                      className="w-full px-4 py-2 bg-orange-500 hover:bg-orange-600 text-white font-medium rounded-lg transition-colors"
-                    >
-                      View Details
-                    </button>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* 11. MUST-READ DIGITAL TRANSFORMATION BOOKS */}
-        <section className="py-16 bg-gray-50">
-          <div className="container mx-auto px-4 max-w-7xl">
-            <h2 className="text-3xl md:text-4xl font-bold font-display mb-12 text-gray-900 text-center">
-              Must-Read Digital Transformation Books
-            </h2>
-
-            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-              {[
-                {
-                  title: "Designed for Digital",
-                  author: "Jeanne Ross et al.",
-                  publisher: "MIT",
-                  summary:
-                    "Focuses on the 'architectural' side—how to organize your people and data so you can actually execute on a digital strategy rather than just talking about it.",
-                  coverImage:
-                    "https://images.unsplash.com/photo-1460925895917-afdab827c52f?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80",
-                  rating: 4.6,
-                },
-                {
-                  title: "Leading Digital",
-                  author: "George Westerman et al.",
-                  year: "2014",
-                  summary:
-                    "Highlights 'Digital Masters'—companies that excel in both digital capability and leadership capability, providing a roadmap for transformation success.",
-                  coverImage:
-                    "https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80",
-                  rating: 4.5,
-                },
-                {
-                  title: "The Innovator's Dilemma",
-                  author: "Clayton Christensen",
-                  year: "1997",
-                  summary:
-                    "Though written in 1997, it remains the foundational text on why successful companies fail when faced with disruptive technologies.",
-                  coverImage:
-                    "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80",
-                  rating: 4.7,
-                },
-                {
-                  title: "The Phoenix Project",
-                  author: "Gene Kim et al.",
-                  year: "2013",
-                  summary:
-                    "A novel (business fable) that is surprisingly effective at showing how IT bottlenecks kill businesses and how to fix them using 'The Three Ways.'",
-                  coverImage:
-                    "https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80",
-                  rating: 4.8,
-                },
-              ].map((book, index) => (
-                <div
-                  key={index}
-                  className="bg-white border border-gray-200 rounded-xl overflow-hidden hover:shadow-xl hover:border-green-200 transition-all duration-300 group"
-                >
-                  <div className="aspect-[3/4] bg-gradient-to-br from-gray-100 to-gray-200 overflow-hidden">
-                    <img
-                      src={book.coverImage}
-                      alt={book.title}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                      onError={(e) => {
-                        const target = e.target as HTMLImageElement;
-                        target.src =
-                          "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjI2NyIgdmlld0JveD0iMCAwIDIwMCAyNjciIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIyMDAiIGhlaWdodD0iMjY3IiBmaWxsPSIjMTA5OTZFIi8+Cjx0ZXh0IHg9IjEwMCIgeT0iMTMzIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iNDAiIGZpbGw9IndoaXRlIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBkb21pbmFudC1iYXNlbGluZT0ibWlkZGxlIj7wn5OyPC90ZXh0Pgo8L3N2Zz4K";
-                      }}
-                    />
-                  </div>
-
-                  <div className="p-6">
-                    <h3 className="text-lg font-bold text-gray-900 mb-2 group-hover:text-green-600 transition-colors">
-                      {book.title}
-                    </h3>
-                    <p className="text-gray-600 text-sm mb-1">{book.author}</p>
-                    {book.publisher && (
-                      <p className="text-gray-500 text-xs mb-1">
-                        {book.publisher}
-                      </p>
-                    )}
-                    {book.year && (
-                      <p className="text-gray-500 text-xs mb-3">{book.year}</p>
-                    )}
-                    <p className="text-gray-700 text-sm mb-4 line-clamp-3">
-                      {book.summary}
-                    </p>
-
-                    <div className="flex items-center justify-between mb-4">
-                      <div className="flex items-center gap-1">
-                        {[...Array(5)].map((_, i) => (
-                          <Star
-                            key={i}
-                            className={`w-4 h-4 ${
-                              i < Math.floor(book.rating)
-                                ? "fill-yellow-400 text-yellow-400"
-                                : "text-gray-300"
-                            }`}
-                          />
-                        ))}
-                        <span className="text-sm text-gray-600 ml-1">
-                          {book.rating}
-                        </span>
-                      </div>
-                      <span className="text-xs text-green-600 font-semibold bg-green-50 px-2 py-1 rounded-full">
-                        Digital Transformation
-                      </span>
-                    </div>
-
-                    <button
-                      onClick={() =>
-                        navigate(
-                          `/marketplace/dtmi?tab=books&book=${book.title.toLowerCase().replace(/\s+/g, "-")}`,
-                        )
-                      }
-                      className="w-full px-4 py-2 bg-green-500 hover:bg-green-600 text-white font-medium rounded-lg transition-colors"
-                    >
-                      View Details
-                    </button>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* 12. REVIEWS HIGHLIGHT */}
+        {/* 10. REVIEWS HIGHLIGHT */}
         <section className="py-16 bg-gray-900 text-white">
           <div className="container mx-auto px-4 max-w-6xl">
             <h2 className="text-3xl md:text-4xl font-bold font-display mb-12 text-center">
@@ -2674,7 +2436,7 @@ const BooksLandingPage = () => {
           </div>
         </section>
 
-        {/* 13. PERSONAL READING LIST */}
+        {/* 11. PERSONAL READING LIST */}
         <section className="py-16 bg-white">
           <div className="container mx-auto px-4 max-w-6xl">
             <div className="grid lg:grid-cols-2 gap-12 items-center">
@@ -2753,7 +2515,7 @@ const BooksLandingPage = () => {
           </div>
         </section>
 
-        {/* 14. CONNECT TO DTMI CONTENT */}
+        {/* 12. CONNECT TO DTMI CONTENT */}
         <section className="py-16 bg-gradient-to-br from-gray-900 to-gray-800 text-white">
           <div className="container mx-auto px-4 max-w-6xl text-center">
             <h2 className="text-3xl md:text-4xl font-bold font-display mb-6">
@@ -2782,7 +2544,7 @@ const BooksLandingPage = () => {
           </div>
         </section>
 
-        {/* 15. FINAL CTA */}
+        {/* 13. FINAL CTA */}
         <section className="py-16 bg-white">
           <div className="container mx-auto px-4 max-w-4xl text-center">
             <h2 className="text-3xl md:text-4xl font-bold font-display mb-6 text-gray-900">
