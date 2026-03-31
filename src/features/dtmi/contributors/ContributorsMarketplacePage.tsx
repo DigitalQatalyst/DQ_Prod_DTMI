@@ -448,9 +448,20 @@ export function ContributorsMarketplacePage() {
                     </p>
 
                     {/* Expertise */}
-                    <div className="flex flex-wrap gap-1 text-sm text-gray-600">
-                      <span className="font-semibold text-gray-900">Expertise:</span>
-                      <span>{cat.expertise}</span>
+                    <div className="flex flex-col gap-2">
+                      <span className="text-[10px] font-bold uppercase tracking-widest text-gray-400">
+                        Expertise
+                      </span>
+                      <div className="flex flex-wrap gap-1.5">
+                        {(cat.expertise || "").split(",").map((item, idx) => (
+                          <span 
+                            key={idx} 
+                            className="px-2 py-0.5 bg-indigo-50 text-indigo-600 rounded text-[11px] font-medium border border-indigo-100"
+                          >
+                            {item.trim()}
+                          </span>
+                        ))}
+                      </div>
                     </div>
 
                     {/* Category tag */}
@@ -845,11 +856,24 @@ function ContributorCard({ contributor }: { contributor: ContributorProfile }) {
           </div>
         </div>
 
-        <p className="text-sm text-gray-700 line-clamp-3">{contributor.bio}</p>
+        {/* Bio */}
+        <p className="text-sm text-gray-600 line-clamp-3 leading-relaxed">{contributor.bio}</p>
 
-        <div className="text-sm text-gray-600 flex gap-2">
-          <span className="font-semibold text-gray-900">Expertise:</span>
-          <span className="line-clamp-1">{contributor.expertise}</span>
+        {/* Expertise Badges */}
+        <div className="flex flex-col gap-1.5">
+          <span className="text-[10px] font-bold uppercase tracking-widest text-gray-400">
+            Areas of Expertise
+          </span>
+          <div className="flex flex-wrap gap-1.5">
+            {(contributor.expertise || "").split(",").map((item, idx) => (
+              <span 
+                key={idx} 
+                className="px-2.5 py-1 bg-indigo-50 text-indigo-700 rounded-md text-[11px] font-semibold border border-indigo-100/50"
+              >
+                {item.trim()}
+              </span>
+            ))}
+          </div>
         </div>
 
         <div className="mb-2 flex flex-wrap gap-2">

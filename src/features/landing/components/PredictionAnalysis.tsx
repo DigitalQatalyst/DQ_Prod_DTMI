@@ -135,7 +135,7 @@ function PredictionCard({ prediction, onClick }: PredictionCardProps) {
           >
             {prediction.category}
           </Badge>
-          
+
           <Title
             order={3}
             size="h3"
@@ -143,13 +143,13 @@ function PredictionCard({ prediction, onClick }: PredictionCardProps) {
           >
             {prediction.title}
           </Title>
-          
+
           <Text
             className="text-sm md:text-base text-gray-600 mb-6 leading-relaxed line-clamp-4"
           >
             {prediction.description}
           </Text>
-          
+
           <div className="mt-2">
             <Group gap="xs" className="text-indigo-600 hover:text-indigo-700 transition-colors font-bold group cursor-pointer inline-flex items-center">
               <span className="text-sm uppercase tracking-wider">Read full analysis</span>
