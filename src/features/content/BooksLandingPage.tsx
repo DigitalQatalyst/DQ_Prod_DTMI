@@ -4,7 +4,16 @@ import { useNavigate } from "react-router-dom";
 import ModernDQChatbot from "../../shared/ModernDQChatbot";
 import { useState, useEffect } from "react";
 import { frontierBooks } from "../../utils/mockBookData";
-import { Star, Search, BookOpen, Brain, CheckCircle } from "lucide-react";
+import {
+  Star,
+  Search,
+  BookOpen,
+  Brain,
+  CheckCircle,
+  FileText,
+  Target,
+  Bookmark,
+} from "lucide-react";
 
 const BooksLandingPage = () => {
   const navigate = useNavigate();
@@ -262,25 +271,298 @@ const BooksLandingPage = () => {
             </div>
           </div>
         </section>
-        {/* 2. PURPOSE / INTRO */}
+        {/* 2. WHY DTMI BOOKS - 4 VALUE PILLARS */}
         <section className="py-16 bg-gray-50">
-          <div className="container mx-auto px-4 max-w-4xl text-center">
-            <h2 className="text-3xl md:text-4xl font-bold font-display mb-6 text-gray-900">
-              Your Curated Intelligence Layer
-            </h2>
-            <p className="text-xl text-gray-700 leading-relaxed">
-              Finding the right books can be overwhelming. DTMI Books serves as
-              your curated intelligence layer, simplifying the discovery process
-              by organizing, reviewing, and shortlisting the most relevant reads
-              for understanding digital transformation, artificial intelligence,
-              and the digital economy. Whether you are a leader, practitioner,
-              or learner, this is your guide to the books that truly matter for
-              strategy, learning, and real-world transformation.
-            </p>
+          <div className="container mx-auto px-4 max-w-6xl">
+            <div className="text-center mb-16">
+              <h2 className="text-3xl md:text-4xl font-bold font-display mb-6 text-gray-900">
+                Why DTMI Books?
+              </h2>
+              <p className="text-xl text-gray-700 leading-relaxed max-w-3xl mx-auto">
+                A curated intelligence layer that saves time and adds
+                decision-making value
+              </p>
+            </div>
+
+            {/* 4 Value Pillars Grid */}
+            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+              {/* Pillar 1: Curated, Not Crowdsourced */}
+              <div className="group bg-white rounded-xl p-8 text-center hover:shadow-lg hover:-translate-y-1 transition-all duration-300 border border-gray-100">
+                <div className="w-16 h-16 mx-auto mb-6 bg-blue-50 rounded-full flex items-center justify-center group-hover:bg-blue-100 transition-colors duration-300">
+                  <CheckCircle className="w-8 h-8 text-blue-600 group-hover:scale-110 transition-transform duration-300" />
+                </div>
+                <h3 className="text-xl font-bold text-gray-900 mb-4">
+                  Curated, Not Crowdsourced
+                </h3>
+                <p className="text-gray-600 leading-relaxed">
+                  Every book is carefully selected for its relevance to the
+                  digital economy, AI, and transformation — no noise, no
+                  clutter.
+                </p>
+              </div>
+
+              {/* Pillar 2: Structured, Insightful Reviews */}
+              <div className="group bg-white rounded-xl p-8 text-center hover:shadow-lg hover:-translate-y-1 transition-all duration-300 border border-gray-100">
+                <div className="w-16 h-16 mx-auto mb-6 bg-green-50 rounded-full flex items-center justify-center group-hover:bg-green-100 transition-colors duration-300">
+                  <FileText className="w-8 h-8 text-green-600 group-hover:scale-110 transition-transform duration-300" />
+                </div>
+                <h3 className="text-xl font-bold text-gray-900 mb-4">
+                  Structured Reviews That Matter
+                </h3>
+                <p className="text-gray-600 leading-relaxed">
+                  Go beyond star ratings with multi-dimensional reviews covering
+                  strategy, practicality, and real-world relevance.
+                </p>
+              </div>
+
+              {/* Pillar 3: Built for Strategic Relevance */}
+              <div className="group bg-white rounded-xl p-8 text-center hover:shadow-lg hover:-translate-y-1 transition-all duration-300 border border-gray-100">
+                <div className="w-16 h-16 mx-auto mb-6 bg-orange-50 rounded-full flex items-center justify-center group-hover:bg-orange-100 transition-colors duration-300">
+                  <Target className="w-8 h-8 text-orange-600 group-hover:scale-110 transition-transform duration-300" />
+                </div>
+                <h3 className="text-xl font-bold text-gray-900 mb-4">
+                  Designed for Real-World Application
+                </h3>
+                <p className="text-gray-600 leading-relaxed">
+                  Understand not just what a book says, but why it matters for
+                  your role, decisions, and transformation priorities.
+                </p>
+              </div>
+
+              {/* Pillar 4: Shortlist with Purpose */}
+              <div className="group bg-white rounded-xl p-8 text-center hover:shadow-lg hover:-translate-y-1 transition-all duration-300 border border-gray-100">
+                <div className="w-16 h-16 mx-auto mb-6 bg-purple-50 rounded-full flex items-center justify-center group-hover:bg-purple-100 transition-colors duration-300">
+                  <Bookmark className="w-8 h-8 text-purple-600 group-hover:scale-110 transition-transform duration-300" />
+                </div>
+                <h3 className="text-xl font-bold text-gray-900 mb-4">
+                  Shortlist with Purpose
+                </h3>
+                <p className="text-gray-600 leading-relaxed">
+                  Save, organize, and prioritize books based on your goals,
+                  themes, and learning journey.
+                </p>
+              </div>
+            </div>
           </div>
         </section>
 
-        {/* 3. FEATURED BOOKS */}
+        {/* 3. FEATURED COLLECTIONS - GUIDED DISCOVERY */}
+        <section className="py-16 bg-white">
+          <div className="container mx-auto px-4 max-w-7xl">
+            <div className="text-center mb-12">
+              <h2 className="text-3xl md:text-4xl font-bold font-display mb-4 text-gray-900">
+                Explore Curated Reading Collections
+              </h2>
+              <p className="text-xl text-gray-600 leading-relaxed max-w-3xl mx-auto">
+                Start with expertly curated book groups designed around key
+                themes in digital economy, AI, and transformation.
+              </p>
+            </div>
+
+            {/* Collections Grid */}
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {/* Collection 1: Digital Economy Essentials */}
+              <div className="group bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl p-6 hover:shadow-lg hover:-translate-y-1 transition-all duration-300 border border-blue-100">
+                <div className="mb-4">
+                  <h3 className="text-xl font-bold text-gray-900 mb-2 group-hover:text-blue-600 transition-colors">
+                    Digital Economy Essentials
+                  </h3>
+                  <p className="text-gray-600 text-sm mb-3">
+                    Foundational books that explain how digital markets,
+                    platforms, and ecosystems operate.
+                  </p>
+                  <div className="flex items-center justify-between mb-4">
+                    <span className="text-sm text-blue-600 font-medium">
+                      12 books
+                    </span>
+                    <div className="flex items-center gap-1">
+                      <span className="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded-full">
+                        Digital Economy
+                      </span>
+                    </div>
+                  </div>
+                </div>
+                <button
+                  onClick={() =>
+                    navigate(
+                      "/marketplace/dtmi?tab=books&collection=digital-economy",
+                    )
+                  }
+                  className="w-full px-4 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors group-hover:shadow-md"
+                >
+                  Explore Collection
+                </button>
+              </div>
+
+              {/* Collection 2: AI for Leaders */}
+              <div className="group bg-gradient-to-br from-orange-50 to-red-50 rounded-xl p-6 hover:shadow-lg hover:-translate-y-1 transition-all duration-300 border border-orange-100">
+                <div className="mb-4">
+                  <h3 className="text-xl font-bold text-gray-900 mb-2 group-hover:text-orange-600 transition-colors">
+                    AI for Leaders
+                  </h3>
+                  <p className="text-gray-600 text-sm mb-3">
+                    Strategic and practical books to help leaders understand and
+                    leverage artificial intelligence.
+                  </p>
+                  <div className="flex items-center justify-between mb-4">
+                    <span className="text-sm text-orange-600 font-medium">
+                      10 books
+                    </span>
+                    <div className="flex items-center gap-1">
+                      <span className="text-xs bg-orange-100 text-orange-700 px-2 py-1 rounded-full">
+                        AI Leadership
+                      </span>
+                    </div>
+                  </div>
+                </div>
+                <button
+                  onClick={() =>
+                    navigate(
+                      "/marketplace/dtmi?tab=books&collection=ai-leaders",
+                    )
+                  }
+                  className="w-full px-4 py-3 bg-orange-600 hover:bg-orange-700 text-white font-medium rounded-lg transition-colors group-hover:shadow-md"
+                >
+                  Explore Collection
+                </button>
+              </div>
+
+              {/* Collection 3: Platform Business Strategy */}
+              <div className="group bg-gradient-to-br from-green-50 to-emerald-50 rounded-xl p-6 hover:shadow-lg hover:-translate-y-1 transition-all duration-300 border border-green-100">
+                <div className="mb-4">
+                  <h3 className="text-xl font-bold text-gray-900 mb-2 group-hover:text-green-600 transition-colors">
+                    Platform Business Strategy
+                  </h3>
+                  <p className="text-gray-600 text-sm mb-3">
+                    Books focused on platform models, network effects, and
+                    ecosystem-driven growth.
+                  </p>
+                  <div className="flex items-center justify-between mb-4">
+                    <span className="text-sm text-green-600 font-medium">
+                      8 books
+                    </span>
+                    <div className="flex items-center gap-1">
+                      <span className="text-xs bg-green-100 text-green-700 px-2 py-1 rounded-full">
+                        Platforms
+                      </span>
+                    </div>
+                  </div>
+                </div>
+                <button
+                  onClick={() =>
+                    navigate(
+                      "/marketplace/dtmi?tab=books&collection=platform-strategy",
+                    )
+                  }
+                  className="w-full px-4 py-3 bg-green-600 hover:bg-green-700 text-white font-medium rounded-lg transition-colors group-hover:shadow-md"
+                >
+                  Explore Collection
+                </button>
+              </div>
+
+              {/* Collection 4: Digital Transformation Foundations */}
+              <div className="group bg-gradient-to-br from-purple-50 to-violet-50 rounded-xl p-6 hover:shadow-lg hover:-translate-y-1 transition-all duration-300 border border-purple-100">
+                <div className="mb-4">
+                  <h3 className="text-xl font-bold text-gray-900 mb-2 group-hover:text-purple-600 transition-colors">
+                    Digital Transformation Foundations
+                  </h3>
+                  <p className="text-gray-600 text-sm mb-3">
+                    Core reads for understanding how organizations evolve in the
+                    digital age.
+                  </p>
+                  <div className="flex items-center justify-between mb-4">
+                    <span className="text-sm text-purple-600 font-medium">
+                      15 books
+                    </span>
+                    <div className="flex items-center gap-1">
+                      <span className="text-xs bg-purple-100 text-purple-700 px-2 py-1 rounded-full">
+                        Transformation
+                      </span>
+                    </div>
+                  </div>
+                </div>
+                <button
+                  onClick={() =>
+                    navigate(
+                      "/marketplace/dtmi?tab=books&collection=digital-transformation",
+                    )
+                  }
+                  className="w-full px-4 py-3 bg-purple-600 hover:bg-purple-700 text-white font-medium rounded-lg transition-colors group-hover:shadow-md"
+                >
+                  Explore Collection
+                </button>
+              </div>
+
+              {/* Collection 5: Organizational Change & Leadership */}
+              <div className="group bg-gradient-to-br from-teal-50 to-cyan-50 rounded-xl p-6 hover:shadow-lg hover:-translate-y-1 transition-all duration-300 border border-teal-100">
+                <div className="mb-4">
+                  <h3 className="text-xl font-bold text-gray-900 mb-2 group-hover:text-teal-600 transition-colors">
+                    Organizational Change & Leadership
+                  </h3>
+                  <p className="text-gray-600 text-sm mb-3">
+                    Books that address culture, leadership, and change
+                    management in transformation journeys.
+                  </p>
+                  <div className="flex items-center justify-between mb-4">
+                    <span className="text-sm text-teal-600 font-medium">
+                      9 books
+                    </span>
+                    <div className="flex items-center gap-1">
+                      <span className="text-xs bg-teal-100 text-teal-700 px-2 py-1 rounded-full">
+                        Leadership
+                      </span>
+                    </div>
+                  </div>
+                </div>
+                <button
+                  onClick={() =>
+                    navigate(
+                      "/marketplace/dtmi?tab=books&collection=organizational-change",
+                    )
+                  }
+                  className="w-full px-4 py-3 bg-teal-600 hover:bg-teal-700 text-white font-medium rounded-lg transition-colors group-hover:shadow-md"
+                >
+                  Explore Collection
+                </button>
+              </div>
+
+              {/* Collection 6: Building Digital Cognitive Organizations */}
+              <div className="group bg-gradient-to-br from-rose-50 to-pink-50 rounded-xl p-6 hover:shadow-lg hover:-translate-y-1 transition-all duration-300 border border-rose-100">
+                <div className="mb-4">
+                  <h3 className="text-xl font-bold text-gray-900 mb-2 group-hover:text-rose-600 transition-colors">
+                    Building Digital Cognitive Organizations
+                  </h3>
+                  <p className="text-gray-600 text-sm mb-3">
+                    Advanced thinking on integrating AI, data, and human
+                    intelligence within organizations.
+                  </p>
+                  <div className="flex items-center justify-between mb-4">
+                    <span className="text-sm text-rose-600 font-medium">
+                      7 books
+                    </span>
+                    <div className="flex items-center gap-1">
+                      <span className="text-xs bg-rose-100 text-rose-700 px-2 py-1 rounded-full">
+                        DCO
+                      </span>
+                    </div>
+                  </div>
+                </div>
+                <button
+                  onClick={() =>
+                    navigate(
+                      "/marketplace/dtmi?tab=books&collection=digital-cognitive",
+                    )
+                  }
+                  className="w-full px-4 py-3 bg-rose-600 hover:bg-rose-700 text-white font-medium rounded-lg transition-colors group-hover:shadow-md"
+                >
+                  Explore Collection
+                </button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* 4. FEATURED BOOKS */}
         <section className="py-16 bg-white">
           <div className="container mx-auto px-4 max-w-7xl">
             <h2 className="text-3xl md:text-4xl font-bold font-display mb-12 text-gray-900 text-center">
