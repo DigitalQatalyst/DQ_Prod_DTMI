@@ -30,6 +30,8 @@ import {
   ChevronRight,
   Sparkles,
   Clock,
+  Quote,
+  Users,
 } from "lucide-react";
 
 const BooksLandingPage = () => {
@@ -2229,7 +2231,278 @@ const BooksLandingPage = () => {
           </div>
         </section>
 
-        {/* 10. CONNECT TO DTMI CONTENT */}
+        {/* 10. TESTIMONIALS & SOCIAL PROOF */}
+        <section className="py-16 bg-white">
+          <div className="container mx-auto px-4 max-w-7xl">
+            <div className="text-center mb-16">
+              <h2 className="text-3xl md:text-4xl font-bold font-display mb-4 text-gray-900">
+                Trusted by Leaders and Learners in the Digital Economy
+              </h2>
+              <p className="text-xl text-gray-600 leading-relaxed max-w-3xl mx-auto">
+                Hear from professionals, executives, and enthusiasts who rely on
+                DTMI Books to navigate the digital transformation landscape.
+              </p>
+            </div>
+
+            {/* Testimonials Grid */}
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
+              {/* Testimonial 1 */}
+              <div className="bg-gray-50 rounded-xl p-8 relative hover:shadow-lg transition-all duration-300 border border-gray-100">
+                <div className="absolute top-6 left-6">
+                  <Quote className="w-8 h-8 text-orange-200" />
+                </div>
+                <div className="pt-6">
+                  <p className="text-gray-700 text-lg leading-relaxed mb-6 italic">
+                    "DTMI Books helped me identify the most relevant AI strategy
+                    books for our leadership team — no more sifting through
+                    endless recommendations."
+                  </p>
+                  <div className="flex items-center gap-4">
+                    <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-full flex items-center justify-center text-white font-bold text-lg">
+                      AM
+                    </div>
+                    <div>
+                      <p className="font-semibold text-gray-900">Alex Mwangi</p>
+                      <p className="text-sm text-gray-600">
+                        Head of Digital Transformation
+                      </p>
+                      <div className="flex items-center gap-1 mt-1">
+                        <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                        <span className="text-xs text-gray-500">
+                          Verified Professional
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Testimonial 2 */}
+              <div className="bg-gray-50 rounded-xl p-8 relative hover:shadow-lg transition-all duration-300 border border-gray-100">
+                <div className="absolute top-6 left-6">
+                  <Quote className="w-8 h-8 text-green-200" />
+                </div>
+                <div className="pt-6">
+                  <p className="text-gray-700 text-lg leading-relaxed mb-6 italic">
+                    "The multi-dimensional reviews and insights are unmatched.
+                    It's like having a research team curate your reading list."
+                  </p>
+                  <div className="flex items-center gap-4">
+                    <div className="w-12 h-12 bg-gradient-to-br from-green-500 to-green-600 rounded-full flex items-center justify-center text-white font-bold text-lg">
+                      PS
+                    </div>
+                    <div>
+                      <p className="font-semibold text-gray-900">
+                        Priya Sharma
+                      </p>
+                      <p className="text-sm text-gray-600">
+                        Innovation Strategist
+                      </p>
+                      <div className="flex items-center gap-1 mt-1">
+                        <Award className="w-3 h-3 text-orange-500" />
+                        <span className="text-xs text-gray-500">
+                          Top 5 books saved this month
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Testimonial 3 */}
+              <div className="bg-gray-50 rounded-xl p-8 relative hover:shadow-lg transition-all duration-300 border border-gray-100">
+                <div className="absolute top-6 left-6">
+                  <Quote className="w-8 h-8 text-purple-200" />
+                </div>
+                <div className="pt-6">
+                  <p className="text-gray-700 text-lg leading-relaxed mb-6 italic">
+                    "The personalized recommendations align perfectly with my
+                    role and learning goals. I've saved over 20 books already."
+                  </p>
+                  <div className="flex items-center gap-4">
+                    <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-purple-600 rounded-full flex items-center justify-center text-white font-bold text-lg">
+                      MK
+                    </div>
+                    <div>
+                      <p className="font-semibold text-gray-900">
+                        Michael Kimani
+                      </p>
+                      <p className="text-sm text-gray-600">Product Manager</p>
+                      <div className="flex items-center gap-1 mt-1">
+                        <BookmarkPlus className="w-3 h-3 text-purple-500" />
+                        <span className="text-xs text-gray-500">
+                          20+ books shortlisted
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Testimonial 4 */}
+              <div className="bg-gray-50 rounded-xl p-8 relative hover:shadow-lg transition-all duration-300 border border-gray-100">
+                <div className="absolute top-6 left-6">
+                  <Quote className="w-8 h-8 text-blue-200" />
+                </div>
+                <div className="pt-6">
+                  <p className="text-gray-700 text-lg leading-relaxed mb-6 italic">
+                    "Finally, a platform that understands the nuance between
+                    different digital transformation approaches. The DTMI scores
+                    are incredibly helpful."
+                  </p>
+                  <div className="flex items-center gap-4">
+                    <div className="w-12 h-12 bg-gradient-to-br from-indigo-500 to-indigo-600 rounded-full flex items-center justify-center text-white font-bold text-lg">
+                      SC
+                    </div>
+                    <div>
+                      <p className="font-semibold text-gray-900">Sarah Chen</p>
+                      <p className="text-sm text-gray-600">
+                        Chief Technology Officer
+                      </p>
+                      <div className="flex items-center gap-1 mt-1">
+                        <Star className="w-3 h-3 text-yellow-500 fill-current" />
+                        <span className="text-xs text-gray-500">
+                          5-star platform rating
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Testimonial 5 */}
+              <div className="bg-gray-50 rounded-xl p-8 relative hover:shadow-lg transition-all duration-300 border border-gray-100">
+                <div className="absolute top-6 left-6">
+                  <Quote className="w-8 h-8 text-teal-200" />
+                </div>
+                <div className="pt-6">
+                  <p className="text-gray-700 text-lg leading-relaxed mb-6 italic">
+                    "The AI-powered recommendations have introduced me to books
+                    I never would have discovered. My team's transformation
+                    knowledge has accelerated significantly."
+                  </p>
+                  <div className="flex items-center gap-4">
+                    <div className="w-12 h-12 bg-gradient-to-br from-teal-500 to-teal-600 rounded-full flex items-center justify-center text-white font-bold text-lg">
+                      RJ
+                    </div>
+                    <div>
+                      <p className="font-semibold text-gray-900">
+                        Robert Johnson
+                      </p>
+                      <p className="text-sm text-gray-600">
+                        VP of Digital Strategy
+                      </p>
+                      <div className="flex items-center gap-1 mt-1">
+                        <Users className="w-3 h-3 text-teal-500" />
+                        <span className="text-xs text-gray-500">
+                          Team leader • 15+ members
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Testimonial 6 */}
+              <div className="bg-gray-50 rounded-xl p-8 relative hover:shadow-lg transition-all duration-300 border border-gray-100">
+                <div className="absolute top-6 left-6">
+                  <Quote className="w-8 h-8 text-rose-200" />
+                </div>
+                <div className="pt-6">
+                  <p className="text-gray-700 text-lg leading-relaxed mb-6 italic">
+                    "As a researcher, I appreciate the structured approach to
+                    book evaluation. The insights go far beyond typical book
+                    reviews."
+                  </p>
+                  <div className="flex items-center gap-4">
+                    <div className="w-12 h-12 bg-gradient-to-br from-rose-500 to-rose-600 rounded-full flex items-center justify-center text-white font-bold text-lg">
+                      LW
+                    </div>
+                    <div>
+                      <p className="font-semibold text-gray-900">
+                        Dr. Lisa Wang
+                      </p>
+                      <p className="text-sm text-gray-600">
+                        Digital Economy Researcher
+                      </p>
+                      <div className="flex items-center gap-1 mt-1">
+                        <FileText className="w-3 h-3 text-rose-500" />
+                        <span className="text-xs text-gray-500">
+                          Academic • Published researcher
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Trust Indicators */}
+            <div className="border-t border-gray-200 pt-12">
+              <div className="text-center mb-8">
+                <p className="text-gray-600 font-medium">
+                  Trusted by professionals at leading organizations
+                </p>
+              </div>
+              <div className="flex flex-wrap justify-center items-center gap-8 opacity-60">
+                <div className="text-gray-400 font-semibold text-lg">
+                  Microsoft
+                </div>
+                <div className="text-gray-400 font-semibold text-lg">
+                  Deloitte
+                </div>
+                <div className="text-gray-400 font-semibold text-lg">
+                  McKinsey
+                </div>
+                <div className="text-gray-400 font-semibold text-lg">
+                  Accenture
+                </div>
+                <div className="text-gray-400 font-semibold text-lg">IBM</div>
+                <div className="text-gray-400 font-semibold text-lg">PwC</div>
+              </div>
+            </div>
+
+            {/* Stats Section */}
+            <div className="mt-16 bg-gradient-to-r from-orange-50 to-red-50 rounded-2xl p-8">
+              <div className="grid md:grid-cols-4 gap-8 text-center">
+                <div>
+                  <div className="text-3xl font-bold text-orange-600 mb-2">
+                    2,500+
+                  </div>
+                  <div className="text-gray-700 font-medium">
+                    Active Readers
+                  </div>
+                </div>
+                <div>
+                  <div className="text-3xl font-bold text-orange-600 mb-2">
+                    15,000+
+                  </div>
+                  <div className="text-gray-700 font-medium">
+                    Books Shortlisted
+                  </div>
+                </div>
+                <div>
+                  <div className="text-3xl font-bold text-orange-600 mb-2">
+                    4.8/5
+                  </div>
+                  <div className="text-gray-700 font-medium">
+                    Average Rating
+                  </div>
+                </div>
+                <div>
+                  <div className="text-3xl font-bold text-orange-600 mb-2">
+                    95%
+                  </div>
+                  <div className="text-gray-700 font-medium">
+                    Recommendation Accuracy
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* 11. CONNECT TO DTMI CONTENT */}
         <section className="py-16 bg-gradient-to-br from-gray-900 to-gray-800 text-white">
           <div className="container mx-auto px-4 max-w-6xl text-center">
             <h2 className="text-3xl md:text-4xl font-bold font-display mb-6">
@@ -2258,7 +2531,7 @@ const BooksLandingPage = () => {
           </div>
         </section>
 
-        {/* 11. FINAL CTA */}
+        {/* 12. FINAL CTA */}
         <section className="py-16 bg-white">
           <div className="container mx-auto px-4 max-w-4xl text-center">
             <h2 className="text-3xl md:text-4xl font-bold font-display mb-6 text-gray-900">
