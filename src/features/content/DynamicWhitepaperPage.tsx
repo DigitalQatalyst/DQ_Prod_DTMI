@@ -351,16 +351,6 @@ const DynamicWhitepaperPage: React.FC = () => {
         </>
       ) : null}
 
-      {/* Dynamic Chapters */}
-      {whitepaperContent?.chapters?.map((chapter, index) => (
-        <React.Fragment key={chapter.id || index}>
-          <ParallaxSection image={chapter2Img} title={chapter.title} id={`chapter-${index + 1}`} />
-          <ContentSection>
-            <div dangerouslySetInnerHTML={{ __html: chapter.content }} />
-          </ContentSection>
-        </React.Fragment>
-      ))}
-
       {/* Conclusion */}
       <ParallaxSection 
         image={whitepaperContent?.conclusion?.heroImageUrl || conclusionImg} 
