@@ -16,6 +16,10 @@ import {
   Heart,
   TrendingUp,
   Award,
+  Filter,
+  X,
+  Sliders,
+  GitCompare,
 } from "lucide-react";
 
 const BooksLandingPage = () => {
@@ -25,6 +29,17 @@ const BooksLandingPage = () => {
   const [activeFilter, setActiveFilter] = useState("D1: Digital Economy");
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [selectedSuggestionIndex, setSelectedSuggestionIndex] = useState(-1);
+
+  // Smart Discovery filters state
+  const [selectedTopic, setSelectedTopic] = useState("");
+  const [selectedRole, setSelectedRole] = useState("");
+  const [selectedLevel, setSelectedLevel] = useState("");
+  const [selectedType, setSelectedType] = useState("");
+  const [aiRelevance, setAiRelevance] = useState(5);
+  const [strategicDepth, setStrategicDepth] = useState(5);
+  const [practicalApplicability, setPracticalApplicability] = useState(5);
+  const [discoverySearchQuery, setDiscoverySearchQuery] = useState("");
+  const [selectedBooks, setSelectedBooks] = useState<string[]>([]);
 
   // Smart search suggestions
   const smartSuggestions = [
@@ -144,6 +159,27 @@ const BooksLandingPage = () => {
 
   return (
     <div className="flex flex-col w-full min-h-screen bg-white">
+      <style jsx>{`
+        .slider-orange::-webkit-slider-thumb {
+          appearance: none;
+          height: 20px;
+          width: 20px;
+          border-radius: 50%;
+          background: #f97316;
+          cursor: pointer;
+          border: 2px solid #fff;
+          box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+        .slider-orange::-moz-range-thumb {
+          height: 20px;
+          width: 20px;
+          border-radius: 50%;
+          background: #f97316;
+          cursor: pointer;
+          border: 2px solid #fff;
+          box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+      `}</style>
       <Header />
 
       <main className="flex-1">
@@ -946,7 +982,530 @@ const BooksLandingPage = () => {
           </div>
         </section>
 
-        {/* 5. BROWSE BY CATEGORY - 6xD Books Grid with Filter Tabs */}
+        {/* 5. SMART DISCOVERY - FILTERS + INTENT-BASED NAVIGATION */}
+        <section className="py-16 bg-white">
+          <div className="container mx-auto px-4 max-w-7xl">
+            <div className="text-center mb-12">
+              <h2 className="text-3xl md:text-4xl font-bold font-display mb-4 text-gray-900">
+                Find Books That Match Your Needs
+              </h2>
+              <p className="text-xl text-gray-600 leading-relaxed max-w-3xl mx-auto">
+                Filter, explore, and discover books based on your role, goals,
+                and areas of interest.
+              </p>
+            </div>
+
+            {/* Quick Intent Buttons */}
+            <div className="mb-8">
+              <h3 className="text-lg font-semibold text-gray-900 mb-4 text-center">
+                Start With a Goal
+              </h3>
+              <div className="flex flex-wrap justify-center gap-3">
+                {[
+                  {
+                    label: "Understand AI Strategy",
+                    topic: "Artificial Intelligence",
+                    role: "Executive / Leader",
+                  },
+                  {
+                    label: "Lead Digital Transformation",
+                    topic: "Digital Transformation",
+                    role: "Transformation Lead",
+                  },
+                  {
+                    label: "Learn Platform Business Models",
+                    topic: "Platform Business",
+                    role: "Product Manager",
+                  },
+                  {
+                    label: "Improve Organizational Design",
+                    topic: "Organizational Design",
+                    role: "Executive / Leader",
+                  },
+                  {
+                    label: "Explore Future of Work",
+                    topic: "Future of Work",
+                    role: "Executive / Leader",
+                  },
+                ].map((intent, index) => (
+                  <button
+                    key={index}
+                    onClick={() => {
+                      setSelectedTopic(intent.topic);
+                      setSelectedRole(intent.role);
+                    }}
+                    className="px-4 py-2 bg-gray-100 hover:bg-orange-100 hover:text-orange-700 text-gray-700 rounded-full text-sm font-medium transition-colors border hover:border-orange-200"
+                  >
+                    {intent.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Search + Filter Combination */}
+            <div className="mb-8">
+              <div className="max-w-2xl mx-auto relative">
+                <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+                <input
+                  type="text"
+                  value={discoverySearchQuery}
+                  onChange={(e) => setDiscoverySearchQuery(e.target.value)}
+                  placeholder="Search books, authors, or topics..."
+                  className="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-400 focus:border-orange-400 transition-colors"
+                />
+              </div>
+            </div>
+
+            {/* Two-Part Layout: Filters + Results */}
+            <div className="grid lg:grid-cols-4 gap-8">
+              {/* Left Side - Filters Panel */}
+              <div className="lg:col-span-1">
+                <div className="bg-gray-50 rounded-xl p-6 sticky top-4">
+                  <div className="flex items-center justify-between mb-6">
+                    <h3 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
+                      <Filter className="w-5 h-5" />
+                      Filters
+                    </h3>
+                    <button
+                      onClick={() => {
+                        setSelectedTopic("");
+                        setSelectedRole("");
+                        setSelectedLevel("");
+                        setSelectedType("");
+                        setAiRelevance(5);
+                        setStrategicDepth(5);
+                        setPracticalApplicability(5);
+                        setDiscoverySearchQuery("");
+                      }}
+                      className="text-sm text-orange-600 hover:text-orange-700 font-medium"
+                    >
+                      Clear All
+                    </button>
+                  </div>
+
+                  {/* Active Filters Tags */}
+                  {(selectedTopic ||
+                    selectedRole ||
+                    selectedLevel ||
+                    selectedType ||
+                    discoverySearchQuery) && (
+                    <div className="mb-6">
+                      <div className="flex flex-wrap gap-2">
+                        {selectedTopic && (
+                          <span className="inline-flex items-center gap-1 px-3 py-1 bg-orange-100 text-orange-700 rounded-full text-sm">
+                            {selectedTopic}
+                            <X
+                              className="w-3 h-3 cursor-pointer"
+                              onClick={() => setSelectedTopic("")}
+                            />
+                          </span>
+                        )}
+                        {selectedRole && (
+                          <span className="inline-flex items-center gap-1 px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-sm">
+                            {selectedRole}
+                            <X
+                              className="w-3 h-3 cursor-pointer"
+                              onClick={() => setSelectedRole("")}
+                            />
+                          </span>
+                        )}
+                        {selectedLevel && (
+                          <span className="inline-flex items-center gap-1 px-3 py-1 bg-green-100 text-green-700 rounded-full text-sm">
+                            {selectedLevel}
+                            <X
+                              className="w-3 h-3 cursor-pointer"
+                              onClick={() => setSelectedLevel("")}
+                            />
+                          </span>
+                        )}
+                        {selectedType && (
+                          <span className="inline-flex items-center gap-1 px-3 py-1 bg-purple-100 text-purple-700 rounded-full text-sm">
+                            {selectedType}
+                            <X
+                              className="w-3 h-3 cursor-pointer"
+                              onClick={() => setSelectedType("")}
+                            />
+                          </span>
+                        )}
+                        {discoverySearchQuery && (
+                          <span className="inline-flex items-center gap-1 px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-sm">
+                            "{discoverySearchQuery}"
+                            <X
+                              className="w-3 h-3 cursor-pointer"
+                              onClick={() => setDiscoverySearchQuery("")}
+                            />
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Topic Filter */}
+                  <div className="mb-6">
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Topic / Theme
+                    </label>
+                    <select
+                      value={selectedTopic}
+                      onChange={(e) => setSelectedTopic(e.target.value)}
+                      className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-400 focus:border-orange-400"
+                    >
+                      <option value="">All Topics</option>
+                      <option value="Digital Economy">Digital Economy</option>
+                      <option value="Artificial Intelligence">
+                        Artificial Intelligence
+                      </option>
+                      <option value="Platform Business">
+                        Platform Business
+                      </option>
+                      <option value="Digital Transformation">
+                        Digital Transformation
+                      </option>
+                      <option value="Organizational Design">
+                        Organizational Design
+                      </option>
+                      <option value="Future of Work">Future of Work</option>
+                    </select>
+                  </div>
+
+                  {/* Role Filter */}
+                  <div className="mb-6">
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Role-Based Filter
+                    </label>
+                    <select
+                      value={selectedRole}
+                      onChange={(e) => setSelectedRole(e.target.value)}
+                      className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-400 focus:border-orange-400"
+                    >
+                      <option value="">All Roles</option>
+                      <option value="Executive / Leader">
+                        Executive / Leader
+                      </option>
+                      <option value="Product Manager">Product Manager</option>
+                      <option value="Architect / Engineer">
+                        Architect / Engineer
+                      </option>
+                      <option value="Transformation Lead">
+                        Transformation Lead
+                      </option>
+                      <option value="Researcher">Researcher</option>
+                      <option value="Student">Student</option>
+                    </select>
+                  </div>
+
+                  {/* Reading Level */}
+                  <div className="mb-6">
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Reading Level
+                    </label>
+                    <select
+                      value={selectedLevel}
+                      onChange={(e) => setSelectedLevel(e.target.value)}
+                      className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-400 focus:border-orange-400"
+                    >
+                      <option value="">All Levels</option>
+                      <option value="Beginner">Beginner</option>
+                      <option value="Intermediate">Intermediate</option>
+                      <option value="Advanced">Advanced</option>
+                    </select>
+                  </div>
+
+                  {/* Book Type */}
+                  <div className="mb-6">
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Book Type
+                    </label>
+                    <select
+                      value={selectedType}
+                      onChange={(e) => setSelectedType(e.target.value)}
+                      className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-400 focus:border-orange-400"
+                    >
+                      <option value="">All Types</option>
+                      <option value="Strategy">Strategy</option>
+                      <option value="Practical / Implementation">
+                        Practical / Implementation
+                      </option>
+                      <option value="Technical">Technical</option>
+                      <option value="Leadership">Leadership</option>
+                      <option value="Economics">Economics</option>
+                      <option value="Policy / Governance">
+                        Policy / Governance
+                      </option>
+                    </select>
+                  </div>
+
+                  {/* Relevance Sliders */}
+                  <div className="border-t border-gray-200 pt-6">
+                    <h4 className="text-sm font-medium text-gray-700 mb-4 flex items-center gap-2">
+                      <Sliders className="w-4 h-4" />
+                      Relevance Priorities
+                    </h4>
+
+                    <div className="space-y-4">
+                      <div>
+                        <div className="flex justify-between items-center mb-2">
+                          <label className="text-sm text-gray-600">
+                            AI Relevance
+                          </label>
+                          <span className="text-sm font-medium text-gray-900">
+                            {aiRelevance}/10
+                          </span>
+                        </div>
+                        <input
+                          type="range"
+                          min="1"
+                          max="10"
+                          value={aiRelevance}
+                          onChange={(e) =>
+                            setAiRelevance(parseInt(e.target.value))
+                          }
+                          className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer slider-orange"
+                        />
+                      </div>
+
+                      <div>
+                        <div className="flex justify-between items-center mb-2">
+                          <label className="text-sm text-gray-600">
+                            Strategic Depth
+                          </label>
+                          <span className="text-sm font-medium text-gray-900">
+                            {strategicDepth}/10
+                          </span>
+                        </div>
+                        <input
+                          type="range"
+                          min="1"
+                          max="10"
+                          value={strategicDepth}
+                          onChange={(e) =>
+                            setStrategicDepth(parseInt(e.target.value))
+                          }
+                          className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer slider-orange"
+                        />
+                      </div>
+
+                      <div>
+                        <div className="flex justify-between items-center mb-2">
+                          <label className="text-sm text-gray-600">
+                            Practical Applicability
+                          </label>
+                          <span className="text-sm font-medium text-gray-900">
+                            {practicalApplicability}/10
+                          </span>
+                        </div>
+                        <input
+                          type="range"
+                          min="1"
+                          max="10"
+                          value={practicalApplicability}
+                          onChange={(e) =>
+                            setPracticalApplicability(parseInt(e.target.value))
+                          }
+                          className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer slider-orange"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Right Side - Dynamic Results */}
+              <div className="lg:col-span-3">
+                {/* Results Header */}
+                <div className="flex items-center justify-between mb-6">
+                  <div>
+                    <h3 className="text-lg font-semibold text-gray-900">
+                      Recommended Books
+                      <span className="text-sm font-normal text-gray-500 ml-2">
+                        (8 results)
+                      </span>
+                    </h3>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    {selectedBooks.length > 0 && (
+                      <button className="flex items-center gap-2 px-4 py-2 bg-orange-500 hover:bg-orange-600 text-white rounded-lg text-sm font-medium transition-colors">
+                        <GitCompare className="w-4 h-4" />
+                        Compare ({selectedBooks.length})
+                      </button>
+                    )}
+                    <select className="p-2 border border-gray-300 rounded-lg text-sm">
+                      <option>Sort by DTMI Score</option>
+                      <option>Sort by Relevance</option>
+                      <option>Sort by Publication Date</option>
+                    </select>
+                  </div>
+                </div>
+
+                {/* Dynamic Book Results Grid */}
+                <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-6">
+                  {/* Sample filtered results - these would be dynamically generated */}
+                  {[
+                    {
+                      title: "Platform Revolution",
+                      author: "Parker, Van Alstyne & Choudary",
+                      tags: ["Platforms", "Strategy", "Digital Economy"],
+                      score: 8.9,
+                      insight:
+                        "Explains how platform-based business models reshape industries through network effects.",
+                      image:
+                        "https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80",
+                      id: "platform-revolution",
+                    },
+                    {
+                      title: "Competing in the Age of AI",
+                      author: "Marco Iansiti & Karim Lakhani",
+                      tags: ["AI", "Strategy", "Organizations"],
+                      score: 9.1,
+                      insight:
+                        "Demonstrates how AI transforms operating models and organizational structures.",
+                      image:
+                        "https://images.unsplash.com/photo-1485827404703-89b55fcc595e?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80",
+                      id: "competing-ai",
+                    },
+                    {
+                      title: "The Digital Transformation Playbook",
+                      author: "David L. Rogers",
+                      tags: ["Transformation", "Strategy", "Leadership"],
+                      score: 8.5,
+                      insight:
+                        "Provides a structured framework for rethinking business models in digital-first world.",
+                      image:
+                        "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80",
+                      id: "digital-playbook",
+                    },
+                    {
+                      title: "Prediction Machines",
+                      author: "Ajay Agrawal, Joshua Gans & Avi Goldfarb",
+                      tags: ["AI", "Economics", "Decision-Making"],
+                      score: 8.8,
+                      insight:
+                        "Breaks down AI as a prediction tool and its impact on business decisions.",
+                      image:
+                        "https://images.unsplash.com/photo-1481627834876-b7833e8f5570?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80",
+                      id: "prediction-machines",
+                    },
+                    {
+                      title: "The Network Society",
+                      author: "Jan van Dijk",
+                      tags: ["Networks", "Society", "Digital Economy"],
+                      score: 8.3,
+                      insight:
+                        "Explores how network structures reshape social and economic relationships.",
+                      image:
+                        "https://images.unsplash.com/photo-1460925895917-afdab827c52f?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80",
+                      id: "network-society",
+                    },
+                    {
+                      title: "Leading Digital",
+                      author: "George Westerman",
+                      tags: ["Leadership", "Transformation", "Strategy"],
+                      score: 8.6,
+                      insight:
+                        "Highlights Digital Masters and provides roadmap for transformation success.",
+                      image:
+                        "https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80",
+                      id: "leading-digital",
+                    },
+                  ].map((book, index) => (
+                    <div
+                      key={index}
+                      className="group bg-white rounded-xl shadow-sm hover:shadow-lg transition-all duration-300 hover:-translate-y-1 border border-gray-100"
+                    >
+                      <div className="aspect-[4/3] bg-gradient-to-br from-gray-100 to-gray-200 overflow-hidden rounded-t-xl relative">
+                        <img
+                          src={book.image}
+                          alt={book.title}
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                          onError={(e) => {
+                            const target = e.target as HTMLImageElement;
+                            target.src =
+                              "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjE1MCIgdmlld0JveD0iMCAwIDIwMCAxNTAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIyMDAiIGhlaWdodD0iMTUwIiBmaWxsPSIjRjM5NTAwIi8+Cjx0ZXh0IHg9IjEwMCIgeT0iNzUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIzMCIgZmlsbD0id2hpdGUiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGRvbWluYW50LWJhc2VsaW5lPSJtaWRkbGUiPvCfk7I8L3RleHQ+Cjwvc3ZnPgo=";
+                          }}
+                        />
+                        {/* Compare checkbox */}
+                        <div className="absolute top-3 right-3">
+                          <input
+                            type="checkbox"
+                            checked={selectedBooks.includes(book.id)}
+                            onChange={(e) => {
+                              if (e.target.checked) {
+                                setSelectedBooks([...selectedBooks, book.id]);
+                              } else {
+                                setSelectedBooks(
+                                  selectedBooks.filter((id) => id !== book.id),
+                                );
+                              }
+                            }}
+                            className="w-4 h-4 text-orange-600 bg-white border-gray-300 rounded focus:ring-orange-500"
+                          />
+                        </div>
+                      </div>
+                      <div className="p-4">
+                        <h3 className="text-base font-bold text-gray-900 mb-1 group-hover:text-orange-600 transition-colors line-clamp-2">
+                          {book.title}
+                        </h3>
+                        <p className="text-gray-600 text-sm mb-3">
+                          {book.author}
+                        </p>
+
+                        {/* Tags */}
+                        <div className="flex flex-wrap gap-1 mb-3">
+                          {book.tags.map((tag, tagIndex) => (
+                            <span
+                              key={tagIndex}
+                              className="text-xs bg-gray-100 text-gray-700 px-2 py-1 rounded-full"
+                            >
+                              {tag}
+                            </span>
+                          ))}
+                        </div>
+
+                        {/* DTMI Score */}
+                        <div className="flex items-center justify-between mb-3">
+                          <div className="flex items-center gap-2">
+                            <span className="text-sm font-medium text-gray-700">
+                              DTMI:
+                            </span>
+                            <span className="text-lg font-bold text-orange-600">
+                              {book.score}
+                            </span>
+                            <span className="text-sm text-gray-500">/10</span>
+                          </div>
+                          <Award className="w-4 h-4 text-orange-500" />
+                        </div>
+
+                        {/* Insight */}
+                        <p className="text-sm text-gray-700 mb-4 line-clamp-2">
+                          {book.insight}
+                        </p>
+
+                        {/* Actions */}
+                        <div className="flex items-center gap-2">
+                          <button className="flex-1 px-3 py-2 bg-orange-500 hover:bg-orange-600 text-white text-sm font-medium rounded-lg transition-colors">
+                            View Details
+                          </button>
+                          <button className="p-2 border border-gray-200 hover:border-orange-300 hover:bg-orange-50 rounded-lg transition-colors group/save">
+                            <Heart className="w-4 h-4 text-gray-400 group-hover/save:text-orange-500 transition-colors" />
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Load More */}
+                <div className="text-center mt-8">
+                  <button className="px-6 py-3 border-2 border-gray-300 hover:border-orange-500 hover:text-orange-600 text-gray-700 font-medium rounded-lg transition-colors">
+                    Load More Results
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* 6. BROWSE BY CATEGORY - 6xD Books Grid with Filter Tabs */}
         <section className="py-16 bg-gray-50">
           <div className="container mx-auto px-4 md:px-6 max-w-7xl">
             <div className="mb-12">
@@ -1103,7 +1662,7 @@ const BooksLandingPage = () => {
             </div>
           </div>
         </section>
-        {/* 6. TOP AI BOOKS FOR LEADERS */}
+        {/* 7. TOP AI BOOKS FOR LEADERS */}
         <section className="py-16 bg-white">
           <div className="container mx-auto px-4 max-w-7xl">
             <h2 className="text-3xl md:text-4xl font-bold font-display mb-12 text-gray-900 text-center">
@@ -1219,7 +1778,7 @@ const BooksLandingPage = () => {
           </div>
         </section>
 
-        {/* 7. MUST-READ DIGITAL TRANSFORMATION BOOKS */}
+        {/* 8. MUST-READ DIGITAL TRANSFORMATION BOOKS */}
         <section className="py-16 bg-gray-50">
           <div className="container mx-auto px-4 max-w-7xl">
             <h2 className="text-3xl md:text-4xl font-bold font-display mb-12 text-gray-900 text-center">
@@ -1341,7 +1900,7 @@ const BooksLandingPage = () => {
           </div>
         </section>
 
-        {/* 8. REVIEWS HIGHLIGHT */}
+        {/* 9. REVIEWS HIGHLIGHT */}
         <section className="py-16 bg-gray-900 text-white">
           <div className="container mx-auto px-4 max-w-6xl">
             <h2 className="text-3xl md:text-4xl font-bold font-display mb-12 text-center">
@@ -1378,7 +1937,7 @@ const BooksLandingPage = () => {
           </div>
         </section>
 
-        {/* 9. HOW IT WORKS */}
+        {/* 10. HOW IT WORKS */}
         <section className="py-16 bg-gray-50">
           <div className="container mx-auto px-4 max-w-6xl">
             <div className="text-center mb-12">
@@ -1434,7 +1993,7 @@ const BooksLandingPage = () => {
             </div>
           </div>
         </section>
-        {/* 10. PERSONAL READING LIST */}
+        {/* 11. PERSONAL READING LIST */}
         <section className="py-16 bg-white">
           <div className="container mx-auto px-4 max-w-6xl">
             <div className="grid lg:grid-cols-2 gap-12 items-center">
@@ -1513,7 +2072,7 @@ const BooksLandingPage = () => {
           </div>
         </section>
 
-        {/* 11. CONNECT TO DTMI CONTENT */}
+        {/* 12. CONNECT TO DTMI CONTENT */}
         <section className="py-16 bg-gradient-to-br from-gray-900 to-gray-800 text-white">
           <div className="container mx-auto px-4 max-w-6xl text-center">
             <h2 className="text-3xl md:text-4xl font-bold font-display mb-6">
@@ -1542,7 +2101,7 @@ const BooksLandingPage = () => {
           </div>
         </section>
 
-        {/* 12. FINAL CTA */}
+        {/* 13. FINAL CTA */}
         <section className="py-16 bg-white">
           <div className="container mx-auto px-4 max-w-4xl text-center">
             <h2 className="text-3xl md:text-4xl font-bold font-display mb-6 text-gray-900">
