@@ -27,7 +27,7 @@ const initialFilters: ContributorFilters = {
   type: [],
   tag: [],
   worksRange: [],
-  search: '',
+  search: "",
 };
 
 const WORKS_BUCKETS = [
@@ -44,15 +44,18 @@ const CONTRIBUTOR_CATEGORIES = [
   {
     id: "research-leadership",
     name: "Research Leadership",
-    description: "Strategic research direction and methodological oversight for DTMI's cognitive transformation initiatives.",
+    description:
+      "Strategic research direction and methodological oversight for DTMI's cognitive transformation initiatives.",
     contributorCount: 2,
     icon: "🎯",
-    expertise: "Strategic Research, Cognitive Analysis, Transformation Leadership",
+    expertise:
+      "Strategic Research, Cognitive Analysis, Transformation Leadership",
   },
   {
     id: "human-intelligence-analysts",
-    name: "Human Intelligence Analysts", 
-    description: "Expert analysts specializing in digital transformation domains and cognitive organizational frameworks.",
+    name: "Human Intelligence Analysts",
+    description:
+      "Expert analysts specializing in digital transformation domains and cognitive organizational frameworks.",
     contributorCount: 5,
     icon: "🧠",
     expertise: "Domain Analysis, Platform Architecture, Digital Strategy",
@@ -60,7 +63,8 @@ const CONTRIBUTOR_CATEGORIES = [
   {
     id: "ai-research-agents",
     name: "AI Research Agents",
-    description: "Specialized AI agents conducting autonomous research across the 6xD framework and digital transformation domains.",
+    description:
+      "Specialized AI agents conducting autonomous research across the 6xD framework and digital transformation domains.",
     contributorCount: 7,
     icon: "🤖",
     expertise: "AI Research, Autonomous Analysis, Framework Specialization",
@@ -68,7 +72,8 @@ const CONTRIBUTOR_CATEGORIES = [
   {
     id: "editorial-publication-team",
     name: "Editorial Publication Team",
-    description: "Content curation, editorial oversight, and publication management for DTMI research outputs.",
+    description:
+      "Content curation, editorial oversight, and publication management for DTMI research outputs.",
     contributorCount: 3,
     icon: "✍️",
     expertise: "Editorial Leadership, Content Strategy, Publication Management",
@@ -79,30 +84,45 @@ const CONTRIBUTOR_ADVERTS = [
   {
     id: "join-research-leadership",
     title: "Join Our Research Leadership Team",
-    description: "Lead groundbreaking research in digital cognitive organizations and shape the future of enterprise transformation.",
+    description:
+      "Lead groundbreaking research in digital cognitive organizations and shape the future of enterprise transformation.",
     callToAction: "Apply Now",
     category: "Research Leadership",
-    benefits: ["Lead strategic research initiatives", "Shape DTMI methodology", "Global recognition"],
+    benefits: [
+      "Lead strategic research initiatives",
+      "Shape DTMI methodology",
+      "Global recognition",
+    ],
     applicationUrl: "/dtmi/apply/research-leadership",
     gradient: "from-blue-500 to-indigo-600",
   },
   {
     id: "become-hi-analyst",
     title: "Become a Human Intelligence Analyst",
-    description: "Apply your expertise in digital transformation domains and contribute to cutting-edge cognitive analysis.",
+    description:
+      "Apply your expertise in digital transformation domains and contribute to cutting-edge cognitive analysis.",
     callToAction: "Join Us",
     category: "Human Intelligence Analysts",
-    benefits: ["Work on diverse domains", "Collaborate with experts", "Publish research"],
+    benefits: [
+      "Work on diverse domains",
+      "Collaborate with experts",
+      "Publish research",
+    ],
     applicationUrl: "/dtmi/apply/human-intelligence-analyst",
     gradient: "from-purple-500 to-pink-600",
   },
   {
     id: "editorial-opportunities",
     title: "Editorial & Publication Opportunities",
-    description: "Shape how DTMI research reaches the world through content strategy and editorial excellence.",
+    description:
+      "Shape how DTMI research reaches the world through content strategy and editorial excellence.",
     callToAction: "Get Started",
     category: "Editorial Publication Team",
-    benefits: ["Content strategy leadership", "Editorial oversight", "Publication management"],
+    benefits: [
+      "Content strategy leadership",
+      "Editorial oversight",
+      "Publication management",
+    ],
     applicationUrl: "/dtmi/apply/editorial-team",
     gradient: "from-green-500 to-teal-600",
   },
@@ -115,12 +135,12 @@ type FilterOption = {
 
 export function ContributorsMarketplacePage() {
   const [searchParams, setSearchParams] = useSearchParams();
-  const selectedCategory = searchParams.get('category');
-  
+  const selectedCategory = searchParams.get("category");
+
   const [filters, setFilters] = useState<ContributorFilters>(initialFilters);
   const [showFilters, setShowFilters] = useState(false);
   const [collapsedGroups, setCollapsedGroups] = useState<
-    Record<'type' | 'tag' | 'worksRange', boolean>
+    Record<"type" | "tag" | "worksRange", boolean>
   >({
     type: false,
     tag: false,
@@ -128,59 +148,75 @@ export function ContributorsMarketplacePage() {
   });
 
   // DB authors only — no static fallbacks
-  const [contributorProfiles, setContributorProfiles] = useState<ContributorProfile[]>([]);
+  const [contributorProfiles, setContributorProfiles] = useState<
+    ContributorProfile[]
+  >([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    authorService.getAuthors().then((authors) => {
-      // Show all authors — contributor_type is used for filtering, not gating
-      const dbProfiles: ContributorProfile[] = authors
-        .map((a, i) => {
-          const slug = a.slug || a.name.toLowerCase().normalize('NFD')
-            .replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+    authorService
+      .getAuthors()
+      .then((authors) => {
+        // Show all authors — contributor_type is used for filtering, not gating
+        const dbProfiles: ContributorProfile[] = authors.map((a, i) => {
+          const slug =
+            a.slug ||
+            a.name
+              .toLowerCase()
+              .normalize("NFD")
+              .replace(/[\u0300-\u036f]/g, "")
+              .replace(/[^a-z0-9]+/g, "-")
+              .replace(/^-+|-+$/g, "");
           return {
             id: 1000 + i,
             name: a.name,
-            type: a.contributorType || 'Contributor',
-            subCategory: a.subCategory || '',
-            affiliation: a.affiliation || 'DigitalQatalyst',
-            expertise: a.expertise || a.title || '',
+            type: a.contributorType || "Contributor",
+            contributorTitle: a.contributorTitle || "",
+            subCategory: a.subCategory || "",
+            affiliation: a.affiliation || "DigitalQatalyst",
+            expertise: a.expertise || a.title || "",
             tags: a.tags || [],
             works: a.worksCount ?? 0,
-            bio: a.bio || '',
+            bio: a.bio || "",
             avatar: a.avatar || undefined,
             profileUrl: `/contributors/${slug}`,
           };
         });
-      setContributorProfiles(dbProfiles);
-    }).catch(err => console.error('Failed to load contributors', err))
-    .finally(() => setLoading(false));
+        setContributorProfiles(dbProfiles);
+      })
+      .catch((err) => console.error("Failed to load contributors", err))
+      .finally(() => setLoading(false));
   }, []);
 
   // Sync type filter with category URL param
   useEffect(() => {
     if (selectedCategory) {
-      const categoryName = CONTRIBUTOR_CATEGORIES.find(cat => cat.id === selectedCategory)?.name;
-      setFilters(prev => ({
+      const categoryName = CONTRIBUTOR_CATEGORIES.find(
+        (cat) => cat.id === selectedCategory,
+      )?.name;
+      setFilters((prev) => ({
         ...prev,
         type: categoryName ? [categoryName] : [],
       }));
     } else {
-      setFilters(prev => ({ ...prev, type: [] }));
+      setFilters((prev) => ({ ...prev, type: [] }));
     }
   }, [selectedCategory]);
 
   const typeOptions: FilterOption[] = useMemo(() => {
     const standardTypes: FilterOption[] = [
       { id: "Research Leadership", label: "Research Leadership" },
-      { id: "Human Intelligence Analysts", label: "Human Intelligence Analysts" },
+      {
+        id: "Human Intelligence Analysts",
+        label: "Human Intelligence Analysts",
+      },
       { id: "AI Research Agents", label: "AI Research Agents" },
       { id: "Editorial Publication Team", label: "Editorial Publication Team" },
     ];
     const extraTypes = Array.from(
-      new Set(contributorProfiles.map((p) => p.type))
+      new Set(contributorProfiles.map((p) => p.type)),
     )
-      .filter(type => !standardTypes.find(std => std.id === type))
+      .filter((type) => !standardTypes.find((std) => std.id === type))
       .sort()
       .map((value) => ({ id: value, label: value }));
     return [...standardTypes, ...extraTypes];
@@ -213,10 +249,14 @@ export function ContributorsMarketplacePage() {
           return bucket ? bucket.matches(profile.works) : true;
         });
       const searchMatch =
-        filters.search.trim() === '' ||
+        filters.search.trim() === "" ||
         profile.name.toLowerCase().includes(filters.search.toLowerCase()) ||
-        profile.expertise.toLowerCase().includes(filters.search.toLowerCase()) ||
-        profile.tags.some(t => t.toLowerCase().includes(filters.search.toLowerCase())) ||
+        profile.expertise
+          .toLowerCase()
+          .includes(filters.search.toLowerCase()) ||
+        profile.tags.some((t) =>
+          t.toLowerCase().includes(filters.search.toLowerCase()),
+        ) ||
         profile.bio.toLowerCase().includes(filters.search.toLowerCase());
       return typeMatch && tagMatch && worksMatch && searchMatch;
     });
@@ -226,29 +266,30 @@ export function ContributorsMarketplacePage() {
   const contributorsWithAdverts = useMemo(() => {
     const contributors = [...filteredContributors];
     const adverts = [...CONTRIBUTOR_ADVERTS];
-    const result: Array<{ type: 'contributor' | 'advert', data: any }> = [];
-    
+    const result: Array<{ type: "contributor" | "advert"; data: any }> = [];
+
     // Add contributors and insert first advert as the 3rd item (index 2)
     contributors.forEach((contributor, index) => {
-      result.push({ type: 'contributor', data: contributor });
-      
+      result.push({ type: "contributor", data: contributor });
+
       // Insert first advert as the 3rd item (after 2 contributors)
       if (index === 1 && adverts.length > 0) {
-        result.push({ type: 'advert', data: adverts[0] });
+        result.push({ type: "advert", data: adverts[0] });
       }
       // Insert additional adverts every 8 items after the first one
       else if (index > 1 && (index - 1) % 8 === 0 && adverts.length > 0) {
         const advertIndex = Math.floor((index - 1) / 8) % adverts.length;
-        const nextAdvert = adverts[advertIndex === 0 ? 1 : advertIndex] || adverts[0];
-        result.push({ type: 'advert', data: nextAdvert });
+        const nextAdvert =
+          adverts[advertIndex === 0 ? 1 : advertIndex] || adverts[0];
+        result.push({ type: "advert", data: nextAdvert });
       }
     });
-    
+
     return result;
   }, [filteredContributors]);
 
   const handleFilterChange = (
-    filterType: keyof Omit<ContributorFilters, 'search'>,
+    filterType: keyof Omit<ContributorFilters, "search">,
     value: string,
   ) => {
     const newFilters = {
@@ -257,12 +298,14 @@ export function ContributorsMarketplacePage() {
         ? (filters[filterType] as string[]).filter((item) => item !== value)
         : [...(filters[filterType] as string[]), value],
     };
-    
+
     setFilters(newFilters);
-    
-    if (filterType === 'type') {
+
+    if (filterType === "type") {
       if (newFilters.type.length === 1) {
-        const categoryMatch = CONTRIBUTOR_CATEGORIES.find(cat => cat.name === newFilters.type[0]);
+        const categoryMatch = CONTRIBUTOR_CATEGORIES.find(
+          (cat) => cat.name === newFilters.type[0],
+        );
         if (categoryMatch) {
           setSearchParams({ category: categoryMatch.id });
           return;
@@ -277,7 +320,7 @@ export function ContributorsMarketplacePage() {
     setSearchParams({});
   };
 
-  const toggleGroup = (group: 'type' | 'tag' | 'worksRange') => {
+  const toggleGroup = (group: "type" | "tag" | "worksRange") => {
     setCollapsedGroups((prev) => ({ ...prev, [group]: !prev[group] }));
   };
 
@@ -285,11 +328,12 @@ export function ContributorsMarketplacePage() {
     filters.type.length > 0 ||
     filters.tag.length > 0 ||
     filters.worksRange.length > 0 ||
-    filters.search.trim() !== '';
+    filters.search.trim() !== "";
 
   const breadcrumbLabel = selectedCategory
-    ? CONTRIBUTOR_CATEGORIES.find(cat => cat.id === selectedCategory)?.name ?? 'All Contributors'
-    : 'All Contributors';
+    ? (CONTRIBUTOR_CATEGORIES.find((cat) => cat.id === selectedCategory)
+        ?.name ?? "All Contributors")
+    : "All Contributors";
 
   return (
     <div className="min-h-screen flex flex-col bg-gray-50">
@@ -310,7 +354,9 @@ export function ContributorsMarketplacePage() {
               <li>
                 <div className="flex items-center text-gray-500">
                   <ChevronRightIcon size={16} className="text-gray-400" />
-                  <span className="ml-1 md:ml-2 text-gray-600">Contributors</span>
+                  <span className="ml-1 md:ml-2 text-gray-600">
+                    Contributors
+                  </span>
                 </div>
               </li>
               {selectedCategory && (
@@ -329,7 +375,9 @@ export function ContributorsMarketplacePage() {
               Explore DTMI Contributors
             </h1>
             <p className="text-gray-600">
-              Browse the collective intelligence powering DTMI, filter by contributor type, discover topical tags, and dive into their biographies, areas of expertise, and portfolio of published works.
+              Browse the collective intelligence powering DTMI, filter by
+              contributor type, discover topical tags, and dive into their
+              biographies, areas of expertise, and portfolio of published works.
             </p>
           </header>
 
@@ -339,7 +387,9 @@ export function ContributorsMarketplacePage() {
               type="text"
               placeholder="Search by name, expertise, or interest..."
               value={filters.search}
-              onChange={(e) => setFilters(prev => ({ ...prev, search: e.target.value }))}
+              onChange={(e) =>
+                setFilters((prev) => ({ ...prev, search: e.target.value }))
+              }
               className="w-full max-w-xl px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-gray-300 bg-white shadow-sm"
             />
           </div>
@@ -392,7 +442,10 @@ export function ContributorsMarketplacePage() {
                   onSelect={(value) => handleFilterChange("worksRange", value)}
                 />
                 {hasActiveFilters && (
-                  <button onClick={resetFilters} className="text-sm font-semibold text-blue-600">
+                  <button
+                    onClick={resetFilters}
+                    className="text-sm font-semibold text-blue-600"
+                  >
                     Reset Filters
                   </button>
                 )}
@@ -405,9 +458,14 @@ export function ContributorsMarketplacePage() {
             <aside className="hidden xl:block xl:w-1/4">
               <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-5 space-y-6 sticky top-24">
                 <div className="flex items-center justify-between">
-                  <h2 className="text-lg font-semibold text-gray-900">Filters</h2>
+                  <h2 className="text-lg font-semibold text-gray-900">
+                    Filters
+                  </h2>
                   {hasActiveFilters && (
-                    <button onClick={resetFilters} className="text-sm font-semibold text-blue-600">
+                    <button
+                      onClick={resetFilters}
+                      className="text-sm font-semibold text-blue-600"
+                    >
                       Reset
                     </button>
                   )}
@@ -444,11 +502,14 @@ export function ContributorsMarketplacePage() {
               <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4 gap-2 text-sm text-gray-600">
                 <span>
                   {loading
-                    ? 'Loading contributors…'
+                    ? "Loading contributors…"
                     : `Showing ${filteredContributors.length} of ${contributorProfiles.length} contributors`}
                 </span>
                 {hasActiveFilters && (
-                  <button onClick={resetFilters} className="text-blue-600 font-semibold">
+                  <button
+                    onClick={resetFilters}
+                    className="text-blue-600 font-semibold"
+                  >
                     Clear filters
                   </button>
                 )}
@@ -456,19 +517,28 @@ export function ContributorsMarketplacePage() {
 
               {loading ? (
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  {[1, 2, 3, 4].map(i => (
-                    <div key={i} className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 animate-pulse h-48" />
+                  {[1, 2, 3, 4].map((i) => (
+                    <div
+                      key={i}
+                      className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 animate-pulse h-48"
+                    />
                   ))}
                 </div>
               ) : (
                 <>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     {contributorsWithAdverts.map((item, index) =>
-                      item.type === 'contributor' ? (
-                        <ContributorCard key={`contributor-${item.data.id}`} contributor={item.data} />
+                      item.type === "contributor" ? (
+                        <ContributorCard
+                          key={`contributor-${item.data.id}`}
+                          contributor={item.data}
+                        />
                       ) : (
-                        <AdvertCard key={`advert-${item.data.id}-${index}`} advert={item.data} />
-                      )
+                        <AdvertCard
+                          key={`advert-${item.data.id}-${index}`}
+                          advert={item.data}
+                        />
+                      ),
                     )}
                   </div>
 
@@ -480,11 +550,14 @@ export function ContributorsMarketplacePage() {
                       </h3>
                       <p className="text-gray-500 mb-4">
                         {hasActiveFilters
-                          ? 'Try adjusting your filters or search term.'
-                          : 'Contributors will appear here once added via the admin panel.'}
+                          ? "Try adjusting your filters or search term."
+                          : "Contributors will appear here once added via the admin panel."}
                       </p>
                       {hasActiveFilters && (
-                        <button onClick={resetFilters} className="text-blue-600 font-semibold">
+                        <button
+                          onClick={resetFilters}
+                          className="text-blue-600 font-semibold"
+                        >
                           Reset Filters
                         </button>
                       )}
@@ -557,18 +630,17 @@ function FilterGroup({
   );
 }
 
-function AdvertCard({ advert }: { advert: typeof CONTRIBUTOR_ADVERTS[0] }) {
+function AdvertCard({ advert }: { advert: (typeof CONTRIBUTOR_ADVERTS)[0] }) {
   return (
-    <Link
-      to={advert.applicationUrl}
-      className="block"
-    >
-      <article className={`bg-gradient-to-br ${advert.gradient} rounded-2xl p-6 shadow-md hover:shadow-lg transition-all duration-200 flex flex-col gap-4 h-full text-white relative overflow-hidden`}>
+    <Link to={advert.applicationUrl} className="block">
+      <article
+        className={`bg-gradient-to-br ${advert.gradient} rounded-2xl p-6 shadow-md hover:shadow-lg transition-all duration-200 flex flex-col gap-4 h-full text-white relative overflow-hidden`}
+      >
         {/* Background decoration */}
         <div className="absolute top-0 right-0 w-32 h-32 opacity-10">
           <Sparkles className="w-full h-full" />
         </div>
-        
+
         <div className="flex items-start justify-between gap-4 relative z-10">
           <div className="flex items-start gap-4">
             <div className="w-14 h-14 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center border border-white/30">
@@ -582,12 +654,16 @@ function AdvertCard({ advert }: { advert: typeof CONTRIBUTOR_ADVERTS[0] }) {
             </div>
           </div>
           <div className="text-right">
-            <p className="text-xs uppercase tracking-wide text-white/60">Opportunity</p>
+            <p className="text-xs uppercase tracking-wide text-white/60">
+              Opportunity
+            </p>
             <p className="text-lg font-semibold text-white">Open</p>
           </div>
         </div>
 
-        <p className="text-sm text-white/90 relative z-10">{advert.description}</p>
+        <p className="text-sm text-white/90 relative z-10">
+          {advert.description}
+        </p>
 
         <div className="text-sm text-white/90 flex gap-2 relative z-10">
           <span className="font-semibold text-white">Benefits:</span>
@@ -613,12 +689,13 @@ function AdvertCard({ advert }: { advert: typeof CONTRIBUTOR_ADVERTS[0] }) {
   );
 }
 
-function CategoryCard({ category }: { category: typeof CONTRIBUTOR_CATEGORIES[0] }) {
+function CategoryCard({
+  category,
+}: {
+  category: (typeof CONTRIBUTOR_CATEGORIES)[0];
+}) {
   return (
-    <Link
-      to={`/contributors?category=${category.id}`}
-      className="block"
-    >
+    <Link to={`/contributors?category=${category.id}`} className="block">
       <article className="bg-white border border-gray-100 rounded-2xl p-6 shadow-md hover:shadow-lg transition-shadow duration-200 flex flex-col gap-4 h-full">
         <div className="flex items-start justify-between gap-4">
           <div className="flex items-start gap-4">
@@ -633,8 +710,12 @@ function CategoryCard({ category }: { category: typeof CONTRIBUTOR_CATEGORIES[0]
             </div>
           </div>
           <div className="text-right">
-            <p className="text-xs uppercase tracking-wide text-gray-400">Contributors</p>
-            <p className="text-lg font-semibold text-gray-900">{category.contributorCount}</p>
+            <p className="text-xs uppercase tracking-wide text-gray-400">
+              Contributors
+            </p>
+            <p className="text-lg font-semibold text-gray-900">
+              {category.contributorCount}
+            </p>
           </div>
         </div>
 
@@ -672,10 +753,7 @@ function ContributorCard({ contributor }: { contributor: ContributorProfile }) {
     )}`;
 
   return (
-    <Link
-      to={contributor.profileUrl || "/contributors"}
-      className="block"
-    >
+    <Link to={contributor.profileUrl || "/contributors"} className="block">
       <article className="bg-white border border-gray-100 rounded-2xl p-6 shadow-md hover:shadow-lg transition-shadow duration-200 flex flex-col gap-4 h-full cursor-pointer">
         <div className="flex items-start justify-between gap-4">
           <div className="flex items-start gap-4">
@@ -689,11 +767,18 @@ function ContributorCard({ contributor }: { contributor: ContributorProfile }) {
               <h3 className="text-xl font-semibold text-gray-900 leading-tight hover:underline">
                 {contributor.name}
               </h3>
+              {contributor.contributorTitle && (
+                <p className="text-sm font-medium text-gray-700">
+                  {contributor.contributorTitle}
+                </p>
+              )}
               <p className="text-sm text-gray-500">{contributor.affiliation}</p>
             </div>
           </div>
           <div className="text-right">
-            <p className="text-xs uppercase tracking-wide text-gray-400">Works</p>
+            <p className="text-xs uppercase tracking-wide text-gray-400">
+              Works
+            </p>
             <p className="text-lg font-semibold text-gray-900">
               {contributor.works}
             </p>
@@ -710,7 +795,7 @@ function ContributorCard({ contributor }: { contributor: ContributorProfile }) {
         <div className="mb-2 flex flex-wrap gap-2">
           <span className="inline-flex items-center text-xs font-semibold tracking-wide text-blue-700 uppercase">
             <span className="px-2 py-0.5 bg-blue-50 text-blue-600 rounded-full">
-              {contributor.type.replace(/s$/, '')}
+              {contributor.type.replace(/s$/, "")}
             </span>
           </span>
           {contributor.subCategory && (
@@ -720,8 +805,11 @@ function ContributorCard({ contributor }: { contributor: ContributorProfile }) {
               </span>
             </span>
           )}
-          {contributor.tags.slice(0, 2).map(tag => (
-            <span key={tag} className="px-2 py-0.5 bg-gray-100 text-gray-600 rounded-full text-xs">
+          {contributor.tags.slice(0, 2).map((tag) => (
+            <span
+              key={tag}
+              className="px-2 py-0.5 bg-gray-100 text-gray-600 rounded-full text-xs"
+            >
               {tag}
             </span>
           ))}

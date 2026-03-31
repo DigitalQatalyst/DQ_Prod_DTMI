@@ -49,12 +49,9 @@ import Modal from "../../shared/components/Modal";
 import {
   DIGITAL_PERSPECTIVES,
   DIGITAL_STREAMS,
-  DIGITAL_DOMAINS_BY_STREAM,
   DIGITAL_SECTORS,
-  CONTENT_TYPES,
   FORMATS,
   POPULARITY_TAGS,
-  getDomainsForStream,
 } from "../../shared/utils/filterConfig";
 export const BlogDetail: React.FC = () => {
   const navigate = useNavigate();
@@ -62,6 +59,9 @@ export const BlogDetail: React.FC = () => {
 
   const [formData, setFormData] = useState<Partial<Blog>>({});
   const [categories, setCategories] = useState<Category[]>([]);
+  const [groupedCategories, setGroupedCategories] = useState<Category[]>([]);
+  const [selectedParentId, setSelectedParentId] = useState<string>("");
+  const [dbpDomains, setDbpDomains] = useState<Category[]>([]);
   const [heroFile, setHeroFile] = useState<File | null>(null);
   const [heroPreview, setHeroPreview] = useState<string>("");
   const [loading, setLoading] = useState(true);
@@ -71,9 +71,6 @@ export const BlogDetail: React.FC = () => {
     type: ToastType;
   } | null>(null);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-  const [availableDomains, setAvailableDomains] = useState<
-    (typeof DIGITAL_DOMAINS_BY_STREAM)[keyof typeof DIGITAL_DOMAINS_BY_STREAM]
-  >([]);
 
   // Helper function to strip HTML tags
   const stripHtml = (html: string) => {
@@ -161,6 +158,18 @@ export const BlogDetail: React.FC = () => {
     thumbnailUrl: "",
   });
 
+  // Prediction Analysis specific state
+  const [predictionData, setPredictionData] = useState({
+    introduction: "",
+    visualSummary: "",
+    executiveSummary: "",
+    metrics: [""],
+    timeline: "",
+    scenarios: [""],
+    signals: [""],
+    detailedSections: [{ heading: "", content: "" }],
+  });
+
   const [thumbnailPreview, setThumbnailPreview] = useState<string>("");
 
   useEffect(() => {
@@ -168,13 +177,31 @@ export const BlogDetail: React.FC = () => {
       if (!id) return;
       setLoading(true);
       try {
-        const [blogData, catsData] = await Promise.all([
-          blogService.getBlogById(id),
-          categoryService.getCategories(),
-        ]);
+        const [blogData, catsData, groupedCatsData, dbpDomainsData] =
+          await Promise.all([
+            blogService.getBlogById(id),
+            categoryService.getCategories(),
+            categoryService.getCategoriesGroupedByFilterGroup("content-types"),
+            categoryService.getCategoriesByFilterGroup("dbp-domains"),
+          ]);
         setFormData(blogData);
         setCategories(catsData);
+        setGroupedCategories(groupedCatsData);
+        setDbpDomains(dbpDomainsData);
         setHeroPreview(blogData.heroImage || "");
+
+        // Set selectedParentId based on the blog's current category
+        if (blogData.categoryId && groupedCatsData.length > 0) {
+          const currentCategory = catsData.find(
+            (cat) => cat.id === blogData.categoryId,
+          );
+          if (currentCategory?.parent_id) {
+            setSelectedParentId(currentCategory.parent_id);
+          } else if (currentCategory && !currentCategory.parent_id) {
+            // If the category itself is a parent, set it as selected
+            setSelectedParentId(blogData.categoryId);
+          }
+        }
 
         if (blogData.type === "expert-interview") {
           try {
@@ -307,18 +334,6 @@ export const BlogDetail: React.FC = () => {
     init();
   }, [id]);
 
-  useEffect(() => {
-    if (formData.digital_stream) {
-      const domains = getDomainsForStream(formData.digital_stream);
-      setAvailableDomains(domains);
-    } else {
-      setAvailableDomains([]);
-      if (formData.digital_domain) {
-        setFormData((prev) => ({ ...prev, digital_domain: "" }));
-      }
-    }
-  }, [formData.digital_stream, formData.digital_domain]);
-
   const handleChange = (
     e: React.ChangeEvent<
       HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
@@ -330,6 +345,9 @@ export const BlogDetail: React.FC = () => {
         ...prev,
         [name]: (e.target as HTMLInputElement).checked,
       }));
+    } else if (name === "parentCategoryId") {
+      setSelectedParentId(value);
+      setFormData((prev) => ({ ...prev, categoryId: "" })); // Clear subcategory when parent changes
     } else if (name === "readTime") {
       setFormData((prev) => ({ ...prev, [name]: parseInt(value) || 0 }));
     } else {
@@ -349,6 +367,13 @@ export const BlogDetail: React.FC = () => {
     const newInsights = [...interviewData.insights];
     newInsights[index] = value;
     setInterviewData({ ...interviewData, insights: newInsights });
+  };
+
+  const addInsight = () => {
+    setInterviewData({
+      ...interviewData,
+      insights: [...interviewData.insights, ""],
+    });
   };
 
   const removeInsight = (index: number) => {
@@ -1544,25 +1569,6 @@ export const BlogDetail: React.FC = () => {
                   />
                 </div>
 
-                <div className="space-y-2">
-                  <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest">
-                    Category
-                  </label>
-                  <select
-                    name="categoryId"
-                    value={formData.categoryId}
-                    onChange={handleChange}
-                    className={`w-full px-4 py-2 bg-white border border-gray-200 rounded-lg text-sm focus:ring-1 ${formData.type === "article" ? "focus:ring-indigo-500" : "focus:ring-black"} outline-none transition-all`}
-                  >
-                    <option value="">Select Category</option>
-                    {categories.map((c) => (
-                      <option key={c.id} value={c.id}>
-                        {c.name}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-
                 <div className="space-y-2 text-xs">
                   <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest">
                     Author
@@ -1594,7 +1600,7 @@ export const BlogDetail: React.FC = () => {
                   />
                 </div>
               </div>
-            ) : formData.type === 'article' ? (
+
               <div className="space-y-8 animate-in fade-in duration-500">
                 {/* Excerpt/Summary */}
                 <div className="bg-white p-8 rounded-2xl border border-gray-100 shadow-sm space-y-4">
@@ -1657,112 +1663,10 @@ export const BlogDetail: React.FC = () => {
                     Marketplace Filters
                   </h4>
 
-                  {/* Content Type */}
+                  {/* Content Format */}
                   <div className="space-y-2">
                     <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest">
-                      Content Type
-                    </label>
-                    <select
-                      name="content_type"
-                      value={formData.content_type || ""}
-                      onChange={handleChange}
-                      className="w-full px-4 py-2 bg-white border border-gray-200 rounded-lg text-sm focus:ring-1 focus:ring-black outline-none transition-all"
-                    >
-                      <option value="">Select Type</option>
-                      {CONTENT_TYPES.map((ct) => (
-                        <option key={ct.id} value={ct.value}>
-                          {ct.label}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-
-                  {/* Digital Perspective */}
-                  <div className="space-y-2">
-                    <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest">
-                      Digital Perspective
-                    </label>
-                    <select
-                      name="digital_perspective"
-                      value={formData.digital_perspective || ""}
-                      onChange={handleChange}
-                      className="w-full px-4 py-2 bg-white border border-gray-200 rounded-lg text-sm focus:ring-1 focus:ring-black outline-none transition-all"
-                    >
-                      <option value="">Select Perspective</option>
-                      {DIGITAL_PERSPECTIVES.map((dp) => (
-                        <option key={dp.id} value={dp.value}>
-                          {dp.label}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-
-                  {/* Digital Stream */}
-                  <div className="space-y-2">
-                    <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest">
-                      Digital Stream
-                    </label>
-                    <select
-                      name="digital_stream"
-                      value={formData.digital_stream || ""}
-                      onChange={handleChange}
-                      className="w-full px-4 py-2 bg-white border border-gray-200 rounded-lg text-sm focus:ring-1 focus:ring-black outline-none transition-all"
-                    >
-                      <option value="">Select Stream</option>
-                      {DIGITAL_STREAMS.map((ds) => (
-                        <option key={ds.id} value={ds.value}>
-                          {ds.label}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-
-                  {/* Digital Domain (conditional) */}
-                  {formData.digital_stream && (
-                    <div className="space-y-2 p-3 bg-blue-50/50 rounded-lg border border-blue-100">
-                      <label className="text-[10px] font-black text-blue-600 uppercase tracking-widest">
-                        Digital Domain
-                      </label>
-                      <select
-                        name="digital_domain"
-                        value={formData.digital_domain || ""}
-                        onChange={handleChange}
-                        className="w-full px-4 py-2 bg-white border border-blue-200 rounded-lg text-sm focus:ring-1 focus:ring-blue-500 outline-none transition-all"
-                      >
-                        <option value="">Select Domain</option>
-                        {availableDomains.map((domain) => (
-                          <option key={domain.id} value={domain.value}>
-                            {domain.label}
-                          </option>
-                        ))}
-                      </select>
-                    </div>
-                  )}
-
-                  {/* Digital Sector */}
-                  <div className="space-y-2">
-                    <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest">
-                      Digital Sector
-                    </label>
-                    <select
-                      name="digital_sector"
-                      value={formData.digital_sector || ""}
-                      onChange={handleChange}
-                      className="w-full px-4 py-2 bg-white border border-gray-200 rounded-lg text-sm focus:ring-1 focus:ring-black outline-none transition-all"
-                    >
-                      <option value="">Select Sector</option>
-                      {DIGITAL_SECTORS.map((ds) => (
-                        <option key={ds.id} value={ds.value}>
-                          {ds.label}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-
-                  {/* Format */}
-                  <div className="space-y-2">
-                    <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest">
-                      Format
+                      Content Format
                     </label>
                     <select
                       name="format"
@@ -1779,10 +1683,131 @@ export const BlogDetail: React.FC = () => {
                     </select>
                   </div>
 
-                  {/* Popularity */}
+                  {/* Content Types */}
                   <div className="space-y-2">
                     <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest">
-                      Popularity Tag
+                      Content Types
+                    </label>
+                    {/* Parent Category */}
+                    <select
+                      name="parentCategoryId"
+                      value={selectedParentId}
+                      onChange={handleChange}
+                      className="w-full px-4 py-2 bg-white border border-gray-200 rounded-lg text-sm focus:ring-1 focus:ring-black outline-none transition-all"
+                    >
+                      <option value="">Select Type</option>
+                      {groupedCategories.map((p) => (
+                        <option key={p.id} value={p.id}>
+                          {p.name}
+                        </option>
+                      ))}
+                    </select>
+                    {/* Subcategory - only shown when parent is selected */}
+                    {selectedParentId && (
+                      <select
+                        name="categoryId"
+                        value={formData.categoryId || ""}
+                        onChange={handleChange}
+                        className="w-full px-4 py-2 bg-white border border-gray-200 rounded-lg text-sm focus:ring-1 focus:ring-black outline-none transition-all"
+                      >
+                        <option value="">Select Subcategory</option>
+                        {(
+                          groupedCategories.find(
+                            (p) => p.id === selectedParentId,
+                          )?.subcategories || []
+                        ).map((s) => (
+                          <option key={s.id} value={s.id}>
+                            {s.name}
+                          </option>
+                        ))}
+                      </select>
+                    )}
+                  </div>
+
+                  {/* Digital Perspectives */}
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest">
+                      Digital Perspectives
+                    </label>
+                    <select
+                      name="digital_perspective"
+                      value={formData.digital_perspective || ""}
+                      onChange={handleChange}
+                      className="w-full px-4 py-2 bg-white border border-gray-200 rounded-lg text-sm focus:ring-1 focus:ring-black outline-none transition-all"
+                    >
+                      <option value="">Select Perspective</option>
+                      {DIGITAL_PERSPECTIVES.map((dp) => (
+                        <option key={dp.id} value={dp.value}>
+                          {dp.label}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+
+                  {/* Digital Streams */}
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest">
+                      Digital Streams
+                    </label>
+                    <select
+                      name="digital_stream"
+                      value={formData.digital_stream || ""}
+                      onChange={handleChange}
+                      className="w-full px-4 py-2 bg-white border border-gray-200 rounded-lg text-sm focus:ring-1 focus:ring-black outline-none transition-all"
+                    >
+                      <option value="">Select Stream</option>
+                      {DIGITAL_STREAMS.map((ds) => (
+                        <option key={ds.id} value={ds.value}>
+                          {ds.label}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+
+                  {/* DBP Domains */}
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest">
+                      DBP Domains
+                    </label>
+                    <select
+                      name="digital_domain"
+                      value={formData.digital_domain || ""}
+                      onChange={handleChange}
+                      className="w-full px-4 py-2 bg-white border border-gray-200 rounded-lg text-sm focus:ring-1 focus:ring-black outline-none transition-all"
+                    >
+                      <option value="">Select Domain</option>
+                      {dbpDomains.map((domain) => (
+                        <option key={domain.id} value={domain.name}>
+                          {domain.name}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+
+                  {/* Digital Sectors */}
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest">
+                      Digital Sectors
+                    </label>
+                    <select
+                      name="digital_sector"
+                      value={formData.digital_sector || ""}
+                      onChange={handleChange}
+                      className="w-full px-4 py-2 bg-white border border-gray-200 rounded-lg text-sm focus:ring-1 focus:ring-black outline-none transition-all"
+                    >
+                      <option value="">Select Sector</option>
+                      {DIGITAL_SECTORS.map((ds) => (
+                        <option key={ds.id} value={ds.value}>
+                          {ds.label}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+
+                  {/* Popularity Tags */}
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest">
+                      Popularity Tags
                     </label>
                     <select
                       name="popularity"

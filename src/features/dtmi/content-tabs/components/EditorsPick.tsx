@@ -56,7 +56,7 @@ export const EditorsPick: React.FC = () => {
                 blog.heroImage ||
                 blog.thumbnailUrl ||
                 "/images/Article 01_hero image.png",
-              link: `/blog/${blog.slug}`,
+              link: blog.slug ? `/blog/${blog.slug}` : `/media/blog/${blog.id}`,
               author: blog.author?.name || "Editorial Team",
               editorNote:
                 "Essential reading for understanding digital transformation trends",

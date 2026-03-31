@@ -4,7 +4,7 @@ import { MobileDrawer } from "./components/MobileDrawer";
 import { ProfileDropdown } from "./ProfileDropdown";
 import { NotificationsMenu } from "./notifications/NotificationsMenu";
 import { NotificationCenter } from "./notifications/NotificationCenter";
-import { mockNotifications } from "./utils/mockNotifications";
+import { getNotifications } from "./utils/notifications";
 import { useAuth } from "@/shared/Header/context/AuthContext";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useDarkMode } from "../../hooks/useDarkMode";
@@ -24,7 +24,7 @@ export function Header({ "data-id": dataId }: HeaderProps) {
   const { isDarkMode } = useDarkMode();
 
   // Count unread notifications
-  const unreadCount = mockNotifications.filter((notif) => !notif.read).length;
+  const unreadCount = getNotifications().filter((notif) => !notif.read).length;
 
   // Toggle notifications menu
   const toggleNotificationsMenu = () => {

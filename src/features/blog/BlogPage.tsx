@@ -9,7 +9,6 @@ import { AuthorCard } from "../content/components/blog/AuthorCard";
 import { RelatedPosts } from "../content/components/blog/RelatedPosts";
 import { blogService, Blog } from "../../features/admin/shared/utils/supabase";
 import { useBlogTracking } from "../../hooks/useAnalytics";
-import { mockBlogs } from "../../data/mockBlogs";
 
 export default function BlogPage() {
   const { slug, id } = useParams<{ slug?: string; id?: string }>();
@@ -40,18 +39,8 @@ export default function BlogPage() {
             blogData = await blogService.getBlogById(id);
           }
         } catch (dbError) {
-          // Fallback to mockBlogs if database fetch fails
-          if (slug) {
-            const mockBlog = mockBlogs.find(b => b.slug === slug);
-            if (mockBlog) {
-              blogData = mockBlog as any;
-            }
-          } else if (id) {
-            const mockBlog = mockBlogs.find(b => b.id === id);
-            if (mockBlog) {
-              blogData = mockBlog as any;
-            }
-          }
+          console.error("Database fetch failed:", dbError);
+          // No fallback - just throw error if blog not found
         }
         
         if (!blogData) {

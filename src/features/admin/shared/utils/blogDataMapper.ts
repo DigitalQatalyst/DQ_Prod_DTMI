@@ -1,4 +1,17 @@
-import { BlogPost, BlogAuthor } from '../../data/mockBlogs';
+// Define interfaces locally since we removed mock data
+interface BlogPost {
+  id: string | number;
+  title: string;
+  content: string;
+  excerpt?: string;
+  publishDate: string;
+  author?: BlogAuthor;
+}
+
+interface BlogAuthor {
+  name: string;
+  avatar?: string;
+}
 
 export interface BlogFormData {
   title: string;

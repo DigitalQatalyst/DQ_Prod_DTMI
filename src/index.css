@@ -4,9 +4,6 @@
 @import "tailwindcss/utilities";
 /* DO NOT DELETE THESE TAILWIND IMPORTS, OTHERWISE THE STYLING WILL NOT RENDER AT ALL */
 
-/* Import books styles */
-@import "./styles/books.css";
-
 /* Research Report Dark Theme Colors */
 :root {
   --background: 225 50% 6%;
@@ -15,32 +12,32 @@
   --card-foreground: 210 40% 98%;
   --popover: 225 45% 10%;
   --popover-foreground: 210 40% 98%;
-  --primary: 16 100% 65%; /* Changed to orange #FF6B4D */
+  --primary: 16 100% 65%;  /* Changed to orange #FF6B4D */
   --primary-foreground: 0 0% 100%;
   --secondary: 225 40% 15%;
   --secondary-foreground: 210 40% 98%;
   --muted: 225 35% 20%;
   --muted-foreground: 215 20% 65%;
-  --accent: 16 100% 65%; /* Changed to orange #FF6B4D */
+  --accent: 16 100% 65%;  /* Changed to orange #FF6B4D */
   --accent-foreground: 0 0% 100%;
   --destructive: 0 84.2% 60.2%;
   --destructive-foreground: 210 40% 98%;
   --border: 225 30% 18%;
   --input: 225 30% 18%;
-  --ring: 16 100% 65%; /* Changed to orange #FF6B4D */
+  --ring: 16 100% 65%;  /* Changed to orange #FF6B4D */
   --radius: 0.5rem;
 }
 
 /* Custom utilities for research report */
 .text-gradient {
-  background: linear-gradient(135deg, #ff6b4d, #8b5cf6);
+  background: linear-gradient(135deg, #FF6B4D, #8B5CF6);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
 
 .section-highlight {
-  color: #ff6b4d;
+  color: #FF6B4D;
 }
 
 .glass-card {
@@ -50,48 +47,30 @@
 }
 
 /* Tailwind CSS variable classes */
-.bg-background {
-  background-color: hsl(var(--background));
-}
-.text-foreground {
-  color: hsl(var(--foreground));
-}
-.text-muted-foreground {
-  color: hsl(var(--muted-foreground));
-}
-.text-primary {
-  color: hsl(var(--primary));
-}
-.border-border {
-  border-color: hsl(var(--border));
-}
-.border-primary {
-  border-color: hsl(var(--primary));
-}
-.bg-primary\/10 {
-  background-color: hsl(var(--primary) / 0.1);
-}
-.border-primary\/30 {
-  border-color: hsl(var(--primary) / 0.3);
-}
+.bg-background { background-color: hsl(var(--background)); }
+.text-foreground { color: hsl(var(--foreground)); }
+.text-muted-foreground { color: hsl(var(--muted-foreground)); }
+.text-primary { color: hsl(var(--primary)); }
+.border-border { border-color: hsl(var(--border)); }
+.border-primary { border-color: hsl(var(--primary)); }
+.bg-primary\/10 { background-color: hsl(var(--primary) / 0.1); }
+.border-primary\/30 { border-color: hsl(var(--primary) / 0.3); }
 
 .no-scroll {
   overflow: hidden;
 }
 
 .scrollbar-hide {
-  -ms-overflow-style: none; /* IE and Edge */
-  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
 }
 
 .scrollbar-hide::-webkit-scrollbar {
-  display: none; /* Chrome, Safari and Opera */
+  display: none;  /* Chrome, Safari and Opera */
 }
 
 /* Prevent accidental horizontal overflow on tablets/phones */
-html,
-body,
-#root {
+html, body, #root {
   max-width: 100%;
   overflow-x: hidden;
 }
@@ -130,63 +109,34 @@ body,
 }
 
 /* TipTap content gets readable defaults similar to public page */
-.tiptap :where(p) {
-  @apply font-body my-3;
-}
-.tiptap :where(h2) {
-  @apply font-display text-2xl font-bold mt-6 mb-3;
-}
-.tiptap :where(h3) {
-  @apply font-display text-xl font-semibold mt-5 mb-2;
-}
-.tiptap :where(ul) {
-  @apply list-disc pl-6 my-3;
-}
-.tiptap :where(ol) {
-  @apply list-decimal pl-6 my-3;
-}
-.tiptap :where(blockquote) {
-  @apply border-l-4 pl-4 italic text-slate-600 my-4;
-}
-.tiptap :where(a) {
-  @apply text-blue-600 underline;
-}
-.tiptap :where(strong) {
-  @apply font-semibold;
-}
-.tiptap :where(hr) {
-  @apply my-6 border-slate-200;
-}
+.tiptap :where(p)       { @apply font-body my-3; }
+.tiptap :where(h1)      { @apply font-display text-3xl font-bold mt-8 mb-4; }
+.tiptap :where(h2)      { @apply font-display text-2xl font-bold mt-6 mb-3; }
+.tiptap :where(h3)      { @apply font-display text-xl font-semibold mt-5 mb-2; }
+.tiptap :where(h4)      { @apply font-display text-lg font-semibold mt-4 mb-2; }
+.tiptap :where(ul)      { @apply list-disc pl-6 my-3; }
+.tiptap :where(ol)      { @apply list-decimal pl-6 my-3; }
+.tiptap :where(blockquote) { @apply border-l-4 pl-4 italic text-slate-600 my-4; }
+.tiptap :where(a)       { @apply text-blue-600 underline; }
+.tiptap :where(strong)  { @apply font-semibold; }
+.tiptap :where(hr)      { @apply my-6 border-slate-200; }
 /* App-wide layout clamp used by PageLayout to avoid horizontal overflow on small screens */
 .app-clamp {
-  inline-size: 100%; /* logical width */
-  max-inline-size: 100dvw; /* cap at dynamic viewport width to avoid 100vw scrollbar spill */
-  overflow-x: clip; /* hard-stop horizontal overflow */
+  inline-size: 100%;            /* logical width */
+  max-inline-size: 100dvw;      /* cap at dynamic viewport width to avoid 100vw scrollbar spill */
+  overflow-x: clip;             /* hard-stop horizontal overflow */
   overscroll-behavior-x: contain;
 }
 /* Ensure children can shrink within flex/grid containers */
-.app-clamp,
-.app-clamp * {
+.app-clamp, .app-clamp * {
   min-inline-size: 0;
 }
 /* Defensive: elements trying to be viewport-wide inside the clamp should not exceed container */
-.app-clamp .w-screen {
-  width: 100% !important;
-  max-width: 100% !important;
-}
+.app-clamp .w-screen { width: 100% !important; max-width: 100% !important; }
 /* Media should never overflow the section */
-.app-clamp img,
-.app-clamp video,
-.app-clamp svg {
-  max-width: 100%;
-  height: auto;
-}
+.app-clamp img, .app-clamp video, .app-clamp svg { max-width: 100%; height: auto; }
 /* Tables stretch but stay contained */
-.app-clamp table {
-  width: 100%;
-  max-width: 100%;
-  border-collapse: collapse;
-}
+.app-clamp table { width: 100%; max-width: 100%; border-collapse: collapse; }
 /* Blog Content Styling */
 .blog-content h2 {
   @apply font-display text-2xl font-bold text-gray-900 mt-8 mb-4;
@@ -200,8 +150,7 @@ body,
   @apply font-body text-gray-700 leading-relaxed mb-4;
 }
 
-.blog-content ul,
-.blog-content ol {
+.blog-content ul, .blog-content ol {
   @apply mb-4 pl-6;
 }
 
@@ -277,7 +226,7 @@ body,
 }
 
 .section-highlight {
-  background: linear-gradient(135deg, #ff6b4d, #ff8d7a);
+  background: linear-gradient(135deg, #FF6B4D, #FF8D7A);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -286,7 +235,7 @@ body,
 /* Custom scrollbar styles for filter section */
 .custom-scrollbar {
   scrollbar-width: thin;
-  scrollbar-color: #cbd5e0 #f7fafc;
+  scrollbar-color: #CBD5E0 #F7FAFC;
 }
 
 .custom-scrollbar::-webkit-scrollbar {
@@ -294,17 +243,17 @@ body,
 }
 
 .custom-scrollbar::-webkit-scrollbar-track {
-  background: #f7fafc;
+  background: #F7FAFC;
   border-radius: 3px;
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb {
-  background: #cbd5e0;
+  background: #CBD5E0;
   border-radius: 3px;
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-  background: #a0aec0;
+  background: #A0AEC0;
 }
 
 /* Smooth expand/collapse animation */
@@ -317,9 +266,7 @@ body,
 .filter-expand-enter-active {
   max-height: 1000px;
   opacity: 1;
-  transition:
-    max-height 0.3s ease-in-out,
-    opacity 0.3s ease-in-out;
+  transition: max-height 0.3s ease-in-out, opacity 0.3s ease-in-out;
 }
 
 .filter-expand-exit {
@@ -331,9 +278,7 @@ body,
   max-height: 0;
   opacity: 0;
   overflow: hidden;
-  transition:
-    max-height 0.3s ease-in-out,
-    opacity 0.3s ease-in-out;
+  transition: max-height 0.3s ease-in-out, opacity 0.3s ease-in-out;
 }
 
 /* Sticky filter category header */

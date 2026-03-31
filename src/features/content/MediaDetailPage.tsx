@@ -197,24 +197,7 @@ const MediaDetailPage: React.FC = () => {
         } catch (e) {
         }
 
-        // Fallback to mock data
-        try {
-          const { mockKnowledgeHubItems } = await import('../../utils/mockMarketplaceData')
-          const mockItem = mockKnowledgeHubItems.find(item => item.id === id)
-          if (mockItem) {
-            setItem(mockItem)
-            // Get related items from same type
-            const related = mockKnowledgeHubItems
-              .filter(item => item.id !== id && item.mediaType === mockItem.mediaType)
-              .slice(0, 3)
-            setRelatedItems(related)
-            setLoading(false)
-            return
-          }
-        } catch (e) {
-        }
-
-        // Not found anywhere
+        // No fallback to mock data - just set error
         setError('Media not found')
       } catch (err) {
         console.error('Error fetching media details:', err)

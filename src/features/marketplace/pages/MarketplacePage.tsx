@@ -1,9 +1,14 @@
-import React, { useCallback, useEffect, useState, useRef } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+  useRef,
+} from "react";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { FilterSidebar, FilterConfig } from "../components/FilterSidebar.tsx";
 import { MarketplaceGrid } from "../components/MarketplaceGrid.tsx";
-import { BooksMarketplace } from "../components/BooksMarketplace.tsx";
 import { SearchBar } from "../../../shared/SearchBar.tsx";
 import {
   SubMarketplaceTabs,
@@ -63,15 +68,6 @@ const getContentTypesForTab = (activeTab: string): string[] => {
         "Sector Specifics",
         "Prediction Analysis",
       ];
-    case "books":
-      return [
-        "Books",
-        "Digital Transformation Guides",
-        "Strategic Frameworks",
-        "Leadership Handbooks",
-        "Industry Playbooks",
-        "Executive Summaries",
-      ];
     case "audio":
       return ["Expert Interviews", "Podcasts", "Expert Discussions"];
     case "videos":
@@ -91,6 +87,133 @@ import {
   listPublicMedia,
   mapGridToCard,
 } from "../../../services/knowledgeHubGrid.ts";
+import { categoryService } from "../../admin/shared/utils/supabase";
+
+const normalizeFilterOptionId = (value: string): string =>
+  String(value || "")
+    .trim()
+    .toLowerCase()
+    .replace(/&/g, "and")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+
+const buildDTMIFilterConfigFromCategories = (
+  categories: Array<any>,
+): FilterConfig[] => {
+  if (!Array.isArray(categories) || categories.length === 0) return [];
+
+  const enabled = categories.filter((c) => c?.is_filter_enabled);
+  const byGroup = (group: string) =>
+    enabled.filter((c) => c.filter_group === group);
+
+  const contentTypes = byGroup("content-types");
+  const contentTypeParents = contentTypes.filter((c) => !c.parent_id);
+  const contentTypeOptions = contentTypeParents
+    .map((parent) => {
+      const children = contentTypes
+        .filter((c) => c.parent_id === parent.id)
+        .sort(
+          (a, b) =>
+            (a.filter_display_order ?? 999) - (b.filter_display_order ?? 999),
+        )
+        .map((child) => ({
+          id: child.slug || normalizeFilterOptionId(child.name),
+          name: child.name,
+        }));
+
+      return {
+        id: parent.slug || normalizeFilterOptionId(parent.name),
+        name: parent.name,
+        children,
+      };
+    })
+    .filter((item) => item.children.length > 0);
+
+  const formatOptions = byGroup("content-format")
+    .filter((c) => !c.parent_id)
+    .sort(
+      (a, b) =>
+        (a.filter_display_order ?? 999) - (b.filter_display_order ?? 999),
+    )
+    .map((c) => ({
+      id: c.slug || normalizeFilterOptionId(c.name),
+      name: c.name,
+    }));
+
+  const perspectiveOptions = byGroup("digital-perspectives")
+    .filter(
+      (c) =>
+        !c.parent_id &&
+        (String(c.slug || "").match(/^d[1-6]-/i) ||
+          String(c.name || "").startsWith("D")),
+    )
+    .sort(
+      (a, b) =>
+        (a.filter_display_order ?? 999) - (b.filter_display_order ?? 999),
+    )
+    .map((c) => ({
+      id: c.slug || normalizeFilterOptionId(c.name),
+      name: c.name,
+    }));
+
+  const sectorOptions = byGroup("digital-sectors")
+    .filter((c) => !c.parent_id)
+    .sort(
+      (a, b) =>
+        (a.filter_display_order ?? 999) - (b.filter_display_order ?? 999),
+    )
+    .map((c) => ({
+      id: c.slug || normalizeFilterOptionId(c.name),
+      name: c.name,
+    }));
+
+  const dbpDomains = byGroup("dbp-domains");
+  const dbpParents = dbpDomains.filter((c) => !c.parent_id);
+  const platformDomainOptions = dbpParents
+    .map((parent) => ({
+      id: parent.slug || normalizeFilterOptionId(parent.name),
+      name: parent.name,
+      children: dbpDomains
+        .filter((c) => c.parent_id === parent.id)
+        .sort(
+          (a, b) =>
+            (a.filter_display_order ?? 999) - (b.filter_display_order ?? 999),
+        )
+        .map((child) => ({
+          id: child.slug || normalizeFilterOptionId(child.name),
+          name: child.name,
+        })),
+    }))
+    .filter((item) => item.children.length > 0);
+
+  return [
+    {
+      id: "contentType",
+      title: "Content Types",
+      options: contentTypeOptions,
+    },
+    {
+      id: "contentFormat",
+      title: "Content Format",
+      options: formatOptions,
+    },
+    {
+      id: "perspective6xd",
+      title: "Perspective (6xD)",
+      options: perspectiveOptions,
+    },
+    {
+      id: "sector",
+      title: "Sectors",
+      options: sectorOptions,
+    },
+    {
+      id: "platformDomain",
+      title: "Platform Domain (DBP)",
+      options: platformDomainOptions,
+    },
+  ].filter((group) => Array.isArray(group.options) && group.options.length > 0);
+};
 
 // Type for comparison items
 interface ComparisonItem {
@@ -256,8 +379,6 @@ export const MarketplacePage: React.FC<MarketplacePageProps> = ({
   const [filteredItems, setFilteredItems] = useState<any[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [filters, setFilters] = useState<Record<string, string[]>>({});
-  console.log("items fetched", items);
-
   // Filter sidebar visibility - should be visible on desktop, hidden on mobile by default
   const [showFilters, setShowFilters] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -314,12 +435,6 @@ export const MarketplacePage: React.FC<MarketplacePageProps> = ({
             description:
               "Strategic intellectual assets - Research & comprehensive reports",
           },
-          {
-            id: "books",
-            label: "📚 Books",
-            description:
-              "Digital transformation library - Comprehensive guides & frameworks",
-          },
         ]
       : [
           {
@@ -345,12 +460,6 @@ export const MarketplacePage: React.FC<MarketplacePageProps> = ({
     // Clear all filters when switching tabs
     setActiveFilters([]);
     setSearchQuery("");
-
-    // Auto-expand Content Types filter when Books tab is active
-    if (tabId === "books") {
-      setTypesExpanded(true); // Expand Content Types filter
-      setShowFilters(true); // Show filter sidebar for books
-    }
   }, []);
 
   // Loading and error states
@@ -421,7 +530,6 @@ export const MarketplacePage: React.FC<MarketplacePageProps> = ({
     }
     if (facetError) {
       console.error("GraphQL facets query error:", facetError);
-      console.warn("Facets query failed, using fallback filter configuration");
     }
   }, [productError, courseError, facetError]);
 
@@ -451,27 +559,12 @@ export const MarketplacePage: React.FC<MarketplacePageProps> = ({
     const format = searchParams.get("format");
     const popularity = searchParams.get("popularity");
     const expandCategory = searchParams.get("expandCategory");
-
-    console.log("🔍 [MarketplacePage] URL Parameters:", {
-      tab,
-      contentType,
-      category,
-      sector,
-      stream,
-      domain,
-      dimension,
-      format,
-      popularity,
-      expandCategory,
-    });
-
     // Handle tab parameter to set active sub-marketplace
     if (tab) {
       const validTabs = [
         "signals",
         "insights",
         "deep-analysis",
-        "books",
         "audio",
         "videos",
       ];
@@ -507,7 +600,6 @@ export const MarketplacePage: React.FC<MarketplacePageProps> = ({
 
     // Handle category parameter (general category filtering and digital perspectives)
     if (category) {
-      console.log("📂 [MarketplacePage] Category filter:", category);
       // Handle comma-separated categories
       const categories = category.split(",").map((c) => c.trim());
 
@@ -536,9 +628,6 @@ export const MarketplacePage: React.FC<MarketplacePageProps> = ({
 
       // If digital perspective filters are applied, automatically expand category filter section
       if (hasDigitalPerspectiveFilters) {
-        console.log(
-          "🎯 [MarketplacePage] Digital perspective filters detected, expanding category filter section",
-        );
         setCollapsedCategories((prev) => ({
           ...prev,
           "content-type": true, // Keep Content Type collapsed
@@ -557,7 +646,6 @@ export const MarketplacePage: React.FC<MarketplacePageProps> = ({
 
     // Handle expandCategory parameter to expand specific category sections
     if (expandCategory) {
-      console.log("📂 [MarketplacePage] Expanding category:", expandCategory);
       if (expandCategory === "digital-perspectives") {
         setCollapsedCategories((prev) => ({
           ...prev,
@@ -582,7 +670,6 @@ export const MarketplacePage: React.FC<MarketplacePageProps> = ({
               behavior: "smooth",
               block: "start",
             });
-            console.log("✅ [MarketplacePage] Scrolled to Category section");
           }
         }, 500);
       } else if (expandCategory === "digital-sectors") {
@@ -602,9 +689,6 @@ export const MarketplacePage: React.FC<MarketplacePageProps> = ({
         // Scroll to Digital Sectors subsection with multiple attempts to ensure DOM is ready
         const attemptScroll = (attempts = 0) => {
           if (attempts > 10) {
-            console.warn(
-              "⚠️ [MarketplacePage] Failed to find Digital Sectors subsection after 10 attempts",
-            );
             return;
           }
 
@@ -625,14 +709,7 @@ export const MarketplacePage: React.FC<MarketplacePageProps> = ({
               top: scrollPosition,
               behavior: "smooth",
             });
-            console.log(
-              "✅ [MarketplacePage] Scrolled to Digital Sectors subsection",
-              { scrollPosition },
-            );
           } else {
-            console.log(
-              `🔄 [MarketplacePage] Attempt ${attempts + 1}: Waiting for Digital Sectors subsection to render...`,
-            );
             setTimeout(() => attemptScroll(attempts + 1), 200);
           }
         };
@@ -662,7 +739,6 @@ export const MarketplacePage: React.FC<MarketplacePageProps> = ({
               behavior: "smooth",
               block: "start",
             });
-            console.log("✅ [MarketplacePage] Scrolled to Category section");
           }
         }, 500);
       }
@@ -670,7 +746,6 @@ export const MarketplacePage: React.FC<MarketplacePageProps> = ({
 
     // Handle sector parameter (for sector-specific filtering)
     if (sector) {
-      console.log("🏢 [MarketplacePage] Sector filter:", sector);
       // Handle comma-separated sectors
       const sectors = sector.split(",").map((s) => s.trim());
 
@@ -705,9 +780,6 @@ export const MarketplacePage: React.FC<MarketplacePageProps> = ({
       // If digital sector filters are applied, automatically expand category filter section
       // and collapse other subcategories to make Digital Sectors more visible
       if (hasDigitalSectorFilters) {
-        console.log(
-          "🎯 [MarketplacePage] Digital sector filters detected, expanding category filter section",
-        );
         setCollapsedCategories((prev) => ({
           ...prev,
           "content-type": true, // Keep Content Type collapsed
@@ -726,7 +798,6 @@ export const MarketplacePage: React.FC<MarketplacePageProps> = ({
 
     // Handle domain parameter (for digital domain filtering)
     if (domain) {
-      console.log("🌐 [MarketplacePage] Domain filter:", domain);
       // Handle comma-separated domains
       const domains = domain.split(",").map((d) => d.trim());
 
@@ -761,9 +832,6 @@ export const MarketplacePage: React.FC<MarketplacePageProps> = ({
 
       // If digital domain filters are applied, automatically expand category filter section
       if (hasDigitalDomainFilters) {
-        console.log(
-          "🎯 [MarketplacePage] Digital domain filters detected, expanding category filter section",
-        );
         setCollapsedCategories((prev) => ({
           ...prev,
           "content-type": true, // Keep Content Type collapsed
@@ -782,7 +850,6 @@ export const MarketplacePage: React.FC<MarketplacePageProps> = ({
 
     // Handle stream parameter (for digital stream filtering)
     if (stream) {
-      console.log("🌊 [MarketplacePage] Stream filter:", stream);
       // Handle comma-separated streams
       const streams = stream.split(",").map((s) => s.trim());
 
@@ -808,9 +875,6 @@ export const MarketplacePage: React.FC<MarketplacePageProps> = ({
 
       // If digital stream filters are applied, automatically expand category filter section
       if (hasDigitalStreamFilters) {
-        console.log(
-          "🎯 [MarketplacePage] Digital stream filters detected, expanding category filter section",
-        );
         setCollapsedCategories((prev) => ({
           ...prev,
           "content-type": true, // Keep Content Type collapsed
@@ -829,7 +893,6 @@ export const MarketplacePage: React.FC<MarketplacePageProps> = ({
 
     // Handle dimension parameter (for 6XD dimension filtering)
     if (dimension) {
-      console.log("📊 [MarketplacePage] Dimension filter:", dimension);
       setSearchQuery(decodeURIComponent(dimension));
     }
 
@@ -864,10 +927,6 @@ export const MarketplacePage: React.FC<MarketplacePageProps> = ({
     }
 
     if (filtersToApply.length > 0) {
-      console.log(
-        "✅ [MarketplacePage] Applying filters from URL:",
-        filtersToApply,
-      );
       setActiveFilters(filtersToApply);
     }
 
@@ -944,6 +1003,7 @@ export const MarketplacePage: React.FC<MarketplacePageProps> = ({
     ];
 
     const contentTypesList = [
+      "Blog",
       "Articles",
       "Blogs",
       "Whitepapers",
@@ -954,6 +1014,19 @@ export const MarketplacePage: React.FC<MarketplacePageProps> = ({
       "Videos",
       "Podcasts",
     ];
+
+    const contentTypeValueMap: Record<string, string> = {
+      Blog: "Blogs",
+      Blogs: "Blogs",
+      Article: "Articles",
+      Articles: "Articles",
+      Whitepaper: "Whitepapers",
+      Whitepapers: "Whitepapers",
+      "Expert Interview": "Expert Interviews",
+      "Expert Interviews": "Expert Interviews",
+      Podcast: "Podcasts",
+      Podcasts: "Podcasts",
+    };
 
     const formatsMap: Record<string, string> = {
       "Quick Reads": "Quick Reads",
@@ -994,7 +1067,7 @@ export const MarketplacePage: React.FC<MarketplacePageProps> = ({
       } else if (sectorsList.includes(filter)) {
         addUnique(digital_sector, filter);
       } else if (contentTypesList.includes(filter)) {
-        addUnique(content_type, filter);
+        addUnique(content_type, contentTypeValueMap[filter] || filter);
       } else if (formatsMap[filter]) {
         addUnique(format, formatsMap[filter]);
       } else if (popularityMap[filter]) {
@@ -1015,18 +1088,14 @@ export const MarketplacePage: React.FC<MarketplacePageProps> = ({
     };
   };
 
+  const marketplaceFilters = useMemo(
+    () => extractMarketplaceFilters(activeFilters),
+    [activeFilters],
+  );
+
   // DTMI: initial load (keyset pagination), with simple memory cache
   const loadKHInitial = useCallback(async () => {
     if (marketplaceType !== "dtmi") return;
-
-    // Skip data fetching for books tab since it has its own data source
-    if (activeSubMarketplace === "books") {
-      setItems([]);
-      setFilteredItems([]);
-      setKhFetching(false);
-      return;
-    }
-
     setKhFetching(true);
     setError(null);
     setKhCursor(null);
@@ -1051,7 +1120,7 @@ export const MarketplacePage: React.FC<MarketplacePageProps> = ({
         return;
       }
       // Convert content type filters to mediaType values for legacy filtering
-      let contentTypeParam: string | null = null;
+      let contentTypeParam = null;
 
       // Handle Audio and Videos tabs with specific content types
       if (activeSubMarketplace === "audio") {
@@ -1105,11 +1174,6 @@ export const MarketplacePage: React.FC<MarketplacePageProps> = ({
         const uniqueTypes = [...new Set(mappedTypes)];
         contentTypeParam =
           uniqueTypes.length > 0 ? uniqueTypes.join(",") : null;
-        console.log("🔄 [MarketplacePage] Mapped filters:", {
-          activeFilters,
-          mappedTypes: uniqueTypes,
-          contentTypeParam,
-        });
       }
 
       const {
@@ -1129,6 +1193,7 @@ export const MarketplacePage: React.FC<MarketplacePageProps> = ({
                 | "insights"
                 | "deep-analysis"
                 | null),
+        marketplaceFilters,
       });
       const mapped = gridItems.map(mapGridToCard);
       setKhPages([{ items: mapped, after: null, nextCursor }]);
@@ -1145,7 +1210,6 @@ export const MarketplacePage: React.FC<MarketplacePageProps> = ({
         totalCount,
       };
     } catch (e) {
-      console.warn("Knowledge Hub initial fetch failed", e);
     } finally {
       setKhFetching(false);
     }
@@ -1156,6 +1220,7 @@ export const MarketplacePage: React.FC<MarketplacePageProps> = ({
     computedPageSize,
     activeFilters,
     activeSubMarketplace,
+    marketplaceFilters,
   ]);
 
   // Removed auto-prefetch sentinel to avoid flicker and dupe fetches
@@ -1203,7 +1268,7 @@ export const MarketplacePage: React.FC<MarketplacePageProps> = ({
         const pageLimit = Math.max(1, khPageSize || computedPageSize);
 
         // Convert content type filters to mediaType values for legacy filtering
-        let contentTypeParam: string | null = null;
+        let contentTypeParam = null;
 
         // Handle Audio and Videos tabs with specific content types
         if (activeSubMarketplace === "audio") {
@@ -1272,6 +1337,7 @@ export const MarketplacePage: React.FC<MarketplacePageProps> = ({
                   | "insights"
                   | "deep-analysis"
                   | null),
+          marketplaceFilters,
         });
         const mapped = gridItems.map(mapGridToCard);
         setKhPages((prev) => [
@@ -1283,7 +1349,6 @@ export const MarketplacePage: React.FC<MarketplacePageProps> = ({
         setKhCursor(nextCursor);
         setKhHasMore(Boolean(nextCursor));
       } catch (e) {
-        console.warn("Knowledge Hub next page failed", e);
         // Revert current page on error
         setCurrentPage(target - 1);
       } finally {
@@ -1299,6 +1364,7 @@ export const MarketplacePage: React.FC<MarketplacePageProps> = ({
       debouncedSearch,
       activeFilters,
       activeSubMarketplace,
+      marketplaceFilters,
     ],
   );
 
@@ -1307,39 +1373,14 @@ export const MarketplacePage: React.FC<MarketplacePageProps> = ({
     const loadFilterOptions = async () => {
       try {
         if (marketplaceType === "dtmi") {
-          // Use tab-specific config for DTMI filters
-          let filterOptions: FilterConfig[] = [];
+          // Load DTMI filter taxonomy from database categories.
+          const categories = await categoryService.getCategories();
+          const filterOptions: FilterConfig[] =
+            buildDTMIFilterConfigFromCategories(categories);
 
-          if (activeSubMarketplace === "books") {
-            // For books tab, use written content filters but exclude the Books filter
-            const allFilters =
-              config.writtenFilterCategories || config.filterCategories;
-            filterOptions = allFilters.filter(
-              (filter) => filter.id !== "books",
-            );
-          } else {
-            // Use written content filters for other tabs
-            filterOptions =
-              config.writtenFilterCategories || config.filterCategories;
+          if (!filterOptions.length) {
+            throw new Error("No DTMI filter categories found in database");
           }
-
-          console.log("DTMI Filter Debug:", {
-            activeSubMarketplace,
-            hasWrittenFilters: !!config.writtenFilterCategories,
-            hasBooksFilters: !!config.booksFilterCategories,
-            writtenFiltersCount: config.writtenFilterCategories?.length,
-            booksFiltersCount: config.booksFilterCategories?.length,
-            legacyFiltersCount: config.filterCategories?.length,
-            selectedFilters: filterOptions.length,
-            filterOptions: filterOptions,
-            hasBooksAsTopLevel: config.writtenFilterCategories?.find(
-              (f) => f.id === "books",
-            ),
-            booksFilterStructure:
-              config.booksFilterCategories ||
-              config.writtenFilterCategories?.find((f) => f.id === "books")
-                ?.options,
-          });
 
           setFilterConfig(filterOptions);
 
@@ -1432,8 +1473,6 @@ export const MarketplacePage: React.FC<MarketplacePageProps> = ({
               };
             })
             .filter((config): config is FilterConfig => config !== null);
-
-          console.log("filterOptions:", filterOptions);
           setFilterConfig(filterOptions);
 
           // Initialize empty filters based on the configuration
@@ -1446,10 +1485,11 @@ export const MarketplacePage: React.FC<MarketplacePageProps> = ({
       } catch (err) {
         console.error("Error fetching filter options:", err);
         // Use fallback filter config from marketplace config
-        setFilterConfig(config.filterCategories);
+        const fallbackCategories = config.filterCategories || [];
+        setFilterConfig(fallbackCategories);
         // Initialize empty filters based on the configuration
         const initialFilters: Record<string, string[]> = {};
-        config.filterCategories.forEach((config) => {
+        fallbackCategories.forEach((config) => {
           initialFilters[config.id] = [];
         });
         setFilters(initialFilters);
@@ -1701,12 +1741,6 @@ export const MarketplacePage: React.FC<MarketplacePageProps> = ({
                 rawFormUrl || "https://www.tamm.abudhabi/en/login";
 
               if (product.id === "133" || !rawFormUrl) {
-                console.log(
-                  `Product "${product.name}" (ID: ${product.id}): Raw formUrl =`,
-                  rawFormUrl,
-                  "| Final =",
-                  finalFormUrl,
-                );
               }
 
               return {
@@ -1775,10 +1809,6 @@ export const MarketplacePage: React.FC<MarketplacePageProps> = ({
             if (b.id === "133") return 1;
             return 0;
           });
-
-          console.log("filters:", filters);
-          console.log("filteredItems:", prioritized);
-
           setItems(mappedItems);
           setFilteredItems(prioritized);
           setLoading(false);
@@ -2004,15 +2034,13 @@ export const MarketplacePage: React.FC<MarketplacePageProps> = ({
         <div className="flex items-center justify-between mb-2">
           <h1 className="text-3xl font-bold text-gray-800">{config.title}</h1>
           {/* Desktop Filter Button - Hidden on Mobile */}
-          {activeSubMarketplace !== "books" && (
-            <button
-              onClick={() => setShowFilters(true)}
-              className="hidden sm:flex items-center gap-2 px-4 py-2 bg-brand-navy text-white rounded-lg hover:bg-brand-navy/90 transition-colors"
-            >
-              <FilterIcon size={16} />
-              <span>Filter</span>
-            </button>
-          )}
+          <button
+            onClick={() => setShowFilters(true)}
+            className="hidden sm:flex items-center gap-2 px-4 py-2 bg-brand-navy text-white rounded-lg hover:bg-brand-navy/90 transition-colors"
+          >
+            <FilterIcon size={16} />
+            <span>Filter</span>
+          </button>
         </div>
         <div className="flex items-center justify-between mb-6">
           <p className="text-gray-600">{config.description}</p>
@@ -2028,17 +2056,15 @@ export const MarketplacePage: React.FC<MarketplacePageProps> = ({
         </div>
 
         {/* Mobile Filter Button - WEF Style, Hidden on Desktop */}
-        {activeSubMarketplace !== "books" && (
-          <div className="mb-6 sm:hidden">
-            <button
-              onClick={() => setShowFilters(true)}
-              className="w-full flex items-center justify-center gap-3 px-6 py-4 bg-brand-navy text-white rounded-full hover:bg-brand-navy/90 transition-colors font-medium"
-            >
-              <FilterIcon size={20} />
-              <span>Filter</span>
-            </button>
-          </div>
-        )}
+        <div className="mb-6 sm:hidden">
+          <button
+            onClick={() => setShowFilters(true)}
+            className="w-full flex items-center justify-center gap-3 px-6 py-4 bg-brand-navy text-white rounded-full hover:bg-brand-navy/90 transition-colors font-medium"
+          >
+            <FilterIcon size={20} />
+            <span>Filter</span>
+          </button>
+        </div>
 
         {/* Sub-marketplace tabs for DTMI and Services */}
         {(marketplaceType === "dtmi" ||
@@ -2067,9 +2093,7 @@ export const MarketplacePage: React.FC<MarketplacePageProps> = ({
                       ? "⚡ Signals"
                       : activeSubMarketplace === "insights"
                         ? "🔎 Insights"
-                        : activeSubMarketplace === "books"
-                          ? "📚 Books"
-                          : "🧠 Deep Analysis"
+                        : "🧠 Deep Analysis"
                     : activeSubMarketplace === "design-services"
                       ? "Design Services"
                       : activeSubMarketplace === "deploy-services-saas"
@@ -2082,9 +2106,7 @@ export const MarketplacePage: React.FC<MarketplacePageProps> = ({
                       ? "Scan emerging trends with short-form intellectual assets including blogs, commentary, and market signals."
                       : activeSubMarketplace === "insights"
                         ? "Understand concepts through structured analysis including articles, expert interviews, and case insights."
-                        : activeSubMarketplace === "books"
-                          ? "Digital transformation library with comprehensive guides and frameworks by expert authors."
-                          : "Strategic intellectual assets including whitepapers, research reports, and prediction analysis for deep strategic thinking."
+                        : "Strategic intellectual assets including whitepapers, research reports, and prediction analysis for deep strategic thinking."
                     : activeSubMarketplace === "design-services"
                       ? "Strategic design and architecture services to envision and blueprint your digital transformation."
                       : activeSubMarketplace === "deploy-services-saas"
@@ -2171,7 +2193,7 @@ export const MarketplacePage: React.FC<MarketplacePageProps> = ({
 
         <div className="space-y-6">
           {/* Filter Modal - Responsive Design */}
-          {showFilters && activeSubMarketplace !== "books" && (
+          {showFilters && (
             <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-2 sm:p-4">
               <div className="bg-white rounded-lg w-full max-w-sm sm:max-w-md md:max-w-lg lg:max-w-2xl xl:max-w-4xl max-h-[95vh] sm:max-h-[90vh] overflow-hidden flex flex-col">
                 {/* Modal Header */}
@@ -2234,63 +2256,28 @@ export const MarketplacePage: React.FC<MarketplacePageProps> = ({
                                 <div className="font-medium text-sm text-gray-800 border-b border-gray-100 pb-1">
                                   {category.name}
                                 </div>
-                                {category.id === "books"
-                                  ? // Special handling for Books section with deeper nesting
-                                    category.children?.map((bookFilter) => (
-                                      <div
-                                        key={bookFilter.id}
-                                        className="ml-2 sm:ml-4 space-y-2"
-                                      >
-                                        <div className="font-medium text-xs text-gray-700 mt-2 mb-1">
-                                          {bookFilter.name}
-                                        </div>
-                                        {bookFilter.children?.map((option) => (
-                                          <label
-                                            key={option.id}
-                                            className="flex items-center gap-3 cursor-pointer ml-2 sm:ml-4 py-1 sm:py-0"
-                                          >
-                                            <input
-                                              type="checkbox"
-                                              checked={activeFilters.includes(
-                                                option.name,
-                                              )}
-                                              onChange={() =>
-                                                handleKnowledgeHubFilterChange(
-                                                  option.name,
-                                                )
-                                              }
-                                              className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
-                                            />
-                                            <span className="text-sm text-gray-700">
-                                              {option.name}
-                                            </span>
-                                          </label>
-                                        ))}
-                                      </div>
-                                    ))
-                                  : // Standard handling for other sections
-                                    category.children?.map((subcategory) => (
-                                      <label
-                                        key={subcategory.id}
-                                        className="flex items-center gap-3 cursor-pointer ml-2 sm:ml-4 py-1 sm:py-0"
-                                      >
-                                        <input
-                                          type="checkbox"
-                                          checked={activeFilters.includes(
-                                            subcategory.name,
-                                          )}
-                                          onChange={() =>
-                                            handleKnowledgeHubFilterChange(
-                                              subcategory.name,
-                                            )
-                                          }
-                                          className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
-                                        />
-                                        <span className="text-sm text-gray-700">
-                                          {subcategory.name}
-                                        </span>
-                                      </label>
-                                    ))}
+                                {category.children?.map((subcategory) => (
+                                  <label
+                                    key={subcategory.id}
+                                    className="flex items-center gap-3 cursor-pointer ml-2 sm:ml-4 py-1 sm:py-0"
+                                  >
+                                    <input
+                                      type="checkbox"
+                                      checked={activeFilters.includes(
+                                        subcategory.name,
+                                      )}
+                                      onChange={() =>
+                                        handleKnowledgeHubFilterChange(
+                                          subcategory.name,
+                                        )
+                                      }
+                                      className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                                    />
+                                    <span className="text-sm text-gray-700">
+                                      {subcategory.name}
+                                    </span>
+                                  </label>
+                                ))}
                               </div>
                             ))}
                         </div>
@@ -2423,47 +2410,36 @@ export const MarketplacePage: React.FC<MarketplacePageProps> = ({
                         </svg>
                       </button>
                       {sectorsExpanded && (
-                        <div className="mt-3 sm:mt-4 space-y-3 max-h-48 sm:max-h-64 overflow-y-auto">
+                        <div className="mt-3 sm:mt-4 space-y-2 max-h-48 sm:max-h-64 overflow-y-auto">
                           {filterConfig
                             .find((f) => f.id === "sector")
-                            ?.options.map((sectorGroup) => (
-                              <div key={sectorGroup.id} className="space-y-2">
-                                <div className="font-medium text-sm text-gray-800 border-b border-gray-100 pb-1">
-                                  {sectorGroup.name}
-                                </div>
-                                {sectorGroup.children?.map((sector) => (
-                                  <label
-                                    key={sector.id}
-                                    className="flex items-center gap-3 cursor-pointer ml-2 sm:ml-4 py-1 sm:py-0"
-                                  >
-                                    <input
-                                      type="checkbox"
-                                      checked={activeFilters.includes(
-                                        sector.name,
-                                      )}
-                                      onChange={() =>
-                                        handleKnowledgeHubFilterChange(
-                                          sector.name,
-                                        )
-                                      }
-                                      className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
-                                    />
-                                    <span className="text-sm text-gray-700">
-                                      {sector.name}
-                                    </span>
-                                  </label>
-                                ))}
-                              </div>
+                            ?.options.map((sector) => (
+                              <label
+                                key={sector.id}
+                                className="flex items-center gap-3 cursor-pointer py-1 sm:py-0"
+                              >
+                                <input
+                                  type="checkbox"
+                                  checked={activeFilters.includes(sector.name)}
+                                  onChange={() =>
+                                    handleKnowledgeHubFilterChange(sector.name)
+                                  }
+                                  className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                                />
+                                <span className="text-sm text-gray-700">
+                                  {sector.name}
+                                </span>
+                              </label>
                             ))}
                         </div>
                       )}
                     </div>
 
                     {/* Platform Domain (DBP) Section - Nested */}
-                    <div className="border-b border-gray-200 pb-4 sm:pb-6">
+                    <div className="pb-4 sm:pb-0">
                       <button
                         onClick={() => setPlatformExpanded(!platformExpanded)}
-                        className="flex items-center justify-between w-full text-left py-2 sm:py-0"
+                        className="flex items-center justify-between w-full text-left py-2 sm:py-0 mb-3 sm:mb-4"
                       >
                         <h4 className="text-base sm:text-lg font-medium text-gray-900">
                           Platform Domain (DBP)
@@ -2518,71 +2494,6 @@ export const MarketplacePage: React.FC<MarketplacePageProps> = ({
                         </div>
                       )}
                     </div>
-
-                    {/* Books Section */}
-                    <div className="border-b border-gray-200 pb-4 sm:pb-6">
-                      <button
-                        onClick={() =>
-                          setCollapsedCategories((prev) => ({
-                            ...prev,
-                            books: !prev.books,
-                          }))
-                        }
-                        className="flex items-center justify-between w-full text-left py-2 sm:py-0"
-                      >
-                        <h4 className="text-base sm:text-lg font-medium text-gray-900">
-                          Books
-                        </h4>
-                        <svg
-                          className={`w-5 h-5 transition-transform ${!collapsedCategories.books ? "rotate-45" : ""}`}
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M12 6v6m0 0v6m0-6h6m-6 0H6"
-                          />
-                        </svg>
-                      </button>
-                      {!collapsedCategories.books && (
-                        <div className="space-y-3 max-h-48 sm:max-h-64 overflow-y-auto">
-                          {filterConfig
-                            .find((f) => f.id === "books")
-                            ?.options.map((bookCategory) => (
-                              <div key={bookCategory.id} className="space-y-2">
-                                <div className="font-medium text-sm text-gray-800 border-b border-gray-100 pb-1">
-                                  {bookCategory.name}
-                                </div>
-                                {bookCategory.children?.map((option) => (
-                                  <label
-                                    key={option.id}
-                                    className="flex items-center gap-3 cursor-pointer ml-2 sm:ml-4 py-1 sm:py-0"
-                                  >
-                                    <input
-                                      type="checkbox"
-                                      checked={activeFilters.includes(
-                                        option.name,
-                                      )}
-                                      onChange={() =>
-                                        handleKnowledgeHubFilterChange(
-                                          option.name,
-                                        )
-                                      }
-                                      className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
-                                    />
-                                    <span className="text-sm text-gray-700">
-                                      {option.name}
-                                    </span>
-                                  </label>
-                                ))}
-                              </div>
-                            ))}
-                        </div>
-                      )}
-                    </div>
                   </div>
                 </div>
 
@@ -2607,13 +2518,13 @@ export const MarketplacePage: React.FC<MarketplacePageProps> = ({
 
           {/* Main content */}
           <div className="w-full">
-            {loading && activeSubMarketplace !== "books" ? (
+            {loading ? (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
                 {[...Array(6)].map((_, idx) => (
                   <CourseCardSkeleton key={idx} />
                 ))}
               </div>
-            ) : error && !items.length && activeSubMarketplace !== "books" ? (
+            ) : error && !items.length ? (
               // Only show error if we have no items and there's an error
               <ErrorDisplay
                 message={
@@ -2624,11 +2535,6 @@ export const MarketplacePage: React.FC<MarketplacePageProps> = ({
                   `Failed to load ${marketplaceType}`
                 }
                 onRetry={retryFetch}
-              />
-            ) : activeSubMarketplace === "books" ? (
-              <BooksMarketplace
-                searchQuery={debouncedSearch}
-                activeFilters={activeFilters}
               />
             ) : filteredItems.length === 0 ? (
               <div className="text-center text-gray-600 py-8">

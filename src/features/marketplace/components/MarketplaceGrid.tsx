@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import { PromoCard } from "../../../shared/PromoCard";
 import { MarketplaceCard } from "./MarketplaceCard";
 import { ContentItemCard, ContentType } from "./ContentItemCard";
-import { getFallbackItems } from "../../../utils/fallbackData";
 export interface MarketplaceItem {
   id: string;
   title: string;
@@ -51,9 +50,7 @@ export const MarketplaceGrid: React.FC<MarketplaceGridProps> = ({
   const displayItems =
     items && items.length > 0
       ? items
-      : ENABLE_MOCKS
-        ? getFallbackItems(marketplaceType)
-        : [];
+      : []; // No fallback items since we removed mock data
   const totalItems = typeof totalCount === 'number' ? totalCount : displayItems.length;
   const showingItems = typeof showingCount === 'number' ? showingCount : displayItems.length;
   if (totalItems === 0) {

@@ -1,6 +1,28 @@
-import React, { useEffect, useRef } from 'react';
-import { ServiceItem } from '../../../types/marketplace';
-import { XIcon, Clock, Calendar, DollarSign, MapPin, BookmarkIcon, ScaleIcon, CheckCircleIcon, HomeIcon, ChevronRightIcon } from 'lucide-react';
+import React from "react";
+import { Link } from "react-router-dom";
+import { ServiceItem } from "../../../types/marketplace";
+import {
+  Modal,
+  ActionIcon,
+  Group,
+  Badge,
+  Stack,
+  Text,
+  Button,
+  ScrollArea,
+} from "@mantine/core";
+import {
+  Clock,
+  Calendar,
+  DollarSign,
+  MapPin,
+  BookmarkIcon,
+  ScaleIcon,
+  CheckCircleIcon,
+  HomeIcon,
+  ChevronRightIcon,
+} from "lucide-react";
+
 interface ServiceQuickViewModalProps {
   service: ServiceItem;
   onClose: () => void;
@@ -11,6 +33,7 @@ interface ServiceQuickViewModalProps {
   marketplaceType: string;
   primaryButtonText?: string;
 }
+
 export const ServiceQuickViewModal: React.FC<ServiceQuickViewModalProps> = ({
   service,
   onClose,
@@ -19,164 +42,295 @@ export const ServiceQuickViewModal: React.FC<ServiceQuickViewModalProps> = ({
   onToggleBookmark,
   onAddToComparison,
   marketplaceType,
-  primaryButtonText = 'Enroll Now'
+  primaryButtonText = "Enroll Now",
 }) => {
-  const modalRef = useRef<HTMLDivElement>(null);
-  useEffect(() => {
-    const handleEscape = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') {
-        onClose();
-      }
-    };
-    const handleClickOutside = (e: MouseEvent) => {
-      if (modalRef.current && !modalRef.current.contains(e.target as Node)) {
-        onClose();
-      }
-    };
-    document.addEventListener('keydown', handleEscape);
-    document.addEventListener('mousedown', handleClickOutside);
-    document.body.style.overflow = 'hidden';
-    return () => {
-      document.removeEventListener('keydown', handleEscape);
-      document.removeEventListener('mousedown', handleClickOutside);
-      document.body.style.overflow = 'auto';
-    };
-  }, [onClose]);
   // Extract key highlights from details (first 3)
   const keyHighlights = service.details?.slice(0, 3) || [];
   // Get title based on marketplace type
   const getMarketplaceTitle = () => {
     switch (marketplaceType) {
-      case 'courses':
-        return 'Course Preview';
-      case 'financial':
-        return 'Financial Service Preview';
-      case 'non-financial':
-        return 'Service Preview';
+      case "courses":
+        return "Course Preview";
+      case "financial":
+        return "Financial Service Preview";
+      case "non-financial":
+        return "Service Preview";
       default:
-        return 'Item Preview';
+        return "Item Preview";
     }
   };
   // Get breadcrumb title based on marketplace type
   const getBreadcrumbTitle = () => {
     switch (marketplaceType) {
-      case 'courses':
-        return 'Courses';
-      case 'financial':
-        return 'Financial Services';
-      case 'non-financial':
-        return 'Non-Financial Services';
+      case "courses":
+        return "Courses";
+      case "financial":
+        return "Financial Services";
+      case "non-financial":
+        return "Non-Financial Services";
       default:
-        return 'Marketplace';
+        return "Marketplace";
     }
   };
-  return <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
-      <div ref={modalRef} className="bg-white rounded-lg shadow-xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
-        <div className="sticky top-0 bg-white border-b border-gray-200 px-6 py-4 flex justify-between items-center">
-          <h2 className="text-xl font-bold text-gray-900 truncate">
-            {getMarketplaceTitle()}
-          </h2>
-          <div className="flex items-center space-x-3">
-            <button onClick={onToggleBookmark} className={`p-2 rounded-full ${isBookmarked ? 'bg-yellow-100 text-yellow-600' : 'bg-gray-100 text-gray-500 hover:bg-gray-200'}`} aria-label={isBookmarked ? 'Remove bookmark' : 'Add bookmark'}>
-              <BookmarkIcon size={18} className={isBookmarked ? 'fill-yellow-600' : ''} />
-            </button>
-            <button onClick={onAddToComparison} className="p-2 rounded-full bg-gray-100 text-gray-500 hover:bg-gray-200" aria-label="Add to comparison">
-              <ScaleIcon size={18} />
-            </button>
-            <button onClick={onClose} className="text-gray-500 hover:text-gray-700 transition-colors">
-              <XIcon size={24} />
-            </button>
-          </div>
-        </div>
-        <div className="p-6">
-          {/* Breadcrumbs */}
-          <nav className="flex mb-4" aria-label="Breadcrumb">
-            <ol className="inline-flex items-center space-x-1 md:space-x-2">
-              <li className="inline-flex items-center">
-                <a href="/" className="text-gray-600 hover:text-gray-900 inline-flex items-center text-sm">
-                  <HomeIcon size={14} className="mr-1" />
-                  <span>Home</span>
-                </a>
-              </li>
-              <li>
-                <div className="flex items-center">
-                  <ChevronRightIcon size={14} className="text-gray-400" />
-                  <a href={`/marketplace/${marketplaceType}`} className="ml-1 text-gray-600 hover:text-gray-900 md:ml-2 text-sm">
-                    {getBreadcrumbTitle()}
-                  </a>
-                </div>
-              </li>
-              <li aria-current="page">
-                <div className="flex items-center">
-                  <ChevronRightIcon size={14} className="text-gray-400" />
-                  <span className="ml-1 text-gray-500 md:ml-2 truncate max-w-[150px] text-sm">
-                    {service.title}
-                  </span>
-                </div>
-              </li>
-            </ol>
-          </nav>
-          <div className="flex items-center mb-4">
-            <img src={service.provider.logoUrl} alt={`${service.provider.name} logo`} className="h-12 w-12 object-contain mr-4" />
-            <div>
-              <span className="text-sm text-gray-500">Provided by</span>
-              <h3 className="text-lg font-medium text-gray-900">
-                {service.provider.name}
-              </h3>
+  return (
+    <Modal
+      opened={true}
+      onClose={onClose}
+      title={getMarketplaceTitle()}
+      size="xl"
+      styles={{
+        header: {
+          borderBottom: "1px solid #E5E7EB",
+          marginBottom: 0,
+          paddingBottom: "1rem",
+        },
+        title: {
+          fontSize: "1.25rem",
+          fontWeight: 700,
+          color: "#111827",
+        },
+        body: {
+          padding: "1.5rem",
+        },
+        content: {
+          maxHeight: "90vh",
+        },
+      }}
+    >
+      <Stack>
+        {/* Action buttons - Top right corner */}
+        <Group
+          justify="flex-end"
+          gap="xs"
+          style={{ marginTop: "-3rem", marginBottom: "1rem" }}
+        >
+          <ActionIcon
+            onClick={onToggleBookmark}
+            variant={isBookmarked ? "filled" : "light"}
+            color={isBookmarked ? "yellow" : "gray"}
+            size="lg"
+            radius="xl"
+            aria-label={isBookmarked ? "Remove bookmark" : "Add bookmark"}
+          >
+            <BookmarkIcon size={18} />
+          </ActionIcon>
+          <ActionIcon
+            onClick={onAddToComparison}
+            variant="light"
+            color="gray"
+            size="lg"
+            radius="xl"
+            aria-label="Add to comparison"
+          >
+            <ScaleIcon size={18} />
+          </ActionIcon>
+        </Group>
+
+        <ScrollArea.Autosize mah="calc(90vh - 150px)" offsetScrollbars>
+            {/* Breadcrumbs */}
+            <Group gap="xs" mb="md">
+              <Link
+                to="/"
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  textDecoration: "none",
+                  color: "#4B5563",
+                }}
+              >
+                <HomeIcon size={14} style={{ marginRight: "0.25rem" }} />
+                <Text size="sm">Home</Text>
+              </Link>
+              <ChevronRightIcon size={14} style={{ color: "#9CA3AF" }} />
+              <Link
+                to={`/marketplace/${marketplaceType}`}
+                style={{ textDecoration: "none", color: "#4B5563" }}
+              >
+                <Text size="sm">{getBreadcrumbTitle()}</Text>
+              </Link>
+              <ChevronRightIcon size={14} style={{ color: "#9CA3AF" }} />
+              <Text
+                size="sm"
+                c="dimmed"
+                lineClamp={1}
+                style={{ maxWidth: "150px" }}
+              >
+                {service.title}
+              </Text>
+            </Group>
+
+            {/* Provider Section */}
+            <Group mb="md">
+              <img
+                src={service.provider.logoUrl}
+                alt={`${service.provider.name} logo`}
+                style={{
+                  height: "3rem",
+                  width: "3rem",
+                  objectFit: "contain",
+                  borderRadius: "0.5rem",
+                  backgroundColor: "#F9FAFB",
+                  padding: "0.5rem",
+                }}
+                onError={(e) => {
+                  const target = e.target as HTMLImageElement;
+                  target.src = "/mzn_logo.png";
+                }}
+              />
+              <Stack gap={0}>
+                <Text size="sm" c="dimmed">
+                  Provided by
+                </Text>
+                <Text size="lg" fw={500} c="#111827">
+                  {service.provider.name}
+                </Text>
+              </Stack>
+            </Group>
+
+            {/* Title */}
+            <Text size="xl" fw={700} c="#111827" mb="sm">
+              {service.title}
+            </Text>
+
+            {/* Tags */}
+            <Group gap="xs" mb="md">
+              {service.tags &&
+                service.tags.map((tag, index) => {
+                  const colors = [
+                    { bg: "#EFF6FF", text: "#1E40AF", border: "#DBEAFE" },
+                    { bg: "#F0FDF4", text: "#15803D", border: "#DCFCE7" },
+                    { bg: "#FAF5FF", text: "#7E22CE", border: "#F3E8FF" },
+                  ];
+                  const colorSet = colors[index % 3];
+                  return (
+                    <Badge
+                      key={index}
+                      variant="light"
+                      styles={{
+                        root: {
+                          backgroundColor: colorSet.bg,
+                          color: colorSet.text,
+                          border: `1px solid ${colorSet.border}`,
+                          textTransform: "none",
+                          fontWeight: 500,
+                        },
+                      }}
+                    >
+                      {tag}
+                    </Badge>
+                  );
+                })}
+            </Group>
+            {/* Key Attributes */}
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
+                gap: "1rem",
+                marginBottom: "1.25rem",
+              }}
+            >
+              {service.duration && (
+                <Group gap="xs" align="center">
+                  <Clock size={18} style={{ color: "#374151" }} />
+                  <Text size="sm" c="#374151">
+                    {service.duration}
+                  </Text>
+                </Group>
+              )}
+              {service.startDate && (
+                <Group gap="xs" align="center">
+                  <Calendar size={18} style={{ color: "#374151" }} />
+                  <Text size="sm" c="#374151">
+                    Starts {service.startDate}
+                  </Text>
+                </Group>
+              )}
+              {service.price && (
+                <Group gap="xs" align="center">
+                  <DollarSign size={18} style={{ color: "#374151" }} />
+                  <Text size="sm" c="#374151">
+                    {service.price}
+                  </Text>
+                </Group>
+              )}
+              {service.location && (
+                <Group gap="xs" align="center">
+                  <MapPin size={18} style={{ color: "#374151" }} />
+                  <Text size="sm" c="#374151">
+                    {service.location}
+                  </Text>
+                </Group>
+              )}
             </div>
-          </div>
-          <h1 className="text-2xl font-bold text-gray-900 mb-3">
-            {service.title}
-          </h1>
-          <div className="flex flex-wrap gap-2 mb-4">
-            {service.tags && service.tags.map((tag, index) => <span key={index} className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${index % 3 === 0 ? 'bg-blue-50 text-blue-700 border border-blue-100' : index % 3 === 1 ? 'bg-green-50 text-green-700 border border-green-100' : 'bg-purple-50 text-purple-700 border border-purple-100'}`}>
-                  {tag}
-                </span>)}
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-5">
-            {service.duration && <div className="flex items-center text-gray-700">
-                <Clock className="mr-2" size={18} />
-                <span>{service.duration}</span>
-              </div>}
-            {service.startDate && <div className="flex items-center text-gray-700">
-                <Calendar className="mr-2" size={18} />
-                <span>Starts {service.startDate}</span>
-              </div>}
-            {service.price && <div className="flex items-center text-gray-700">
-                <DollarSign className="mr-2" size={18} />
-                <span>{service.price}</span>
-              </div>}
-            {service.location && <div className="flex items-center text-gray-700">
-                <MapPin className="mr-2" size={18} />
-                <span>{service.location}</span>
-              </div>}
-          </div>
-          <div className="mb-5">
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">
-              Description
-            </h3>
-            <p className="text-gray-700">{service.description}</p>
-          </div>
-          {keyHighlights.length > 0 && <div className="mb-6">
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                Key Highlights
-              </h3>
-              <ul className="space-y-2">
-                {keyHighlights.map((highlight, index) => <li key={index} className="flex items-start">
-                    <CheckCircleIcon size={18} className="text-green-500 mr-2 mt-0.5 flex-shrink-0" />
-                    <span className="text-gray-700">{highlight}</span>
-                  </li>)}
-              </ul>
-            </div>}
-          <div className="flex flex-col sm:flex-row gap-3 justify-end">
-            <button onClick={onViewDetails} className="px-4 py-2 text-sm font-medium text-blue-700 bg-blue-50 rounded-md border border-blue-200 hover:bg-blue-100 transition-colors">
-              View Full Details
-            </button>
-            <button className="px-4 py-2 text-sm font-medium text-white bg-gradient-to-r from-blue-600 to-purple-600 rounded-md hover:from-blue-700 hover:to-purple-700 transition-colors">
-              {primaryButtonText}
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>;
+
+            {/* Description */}
+            <Stack gap="xs" mb="md">
+              <Text size="lg" fw={600} c="#111827">
+                Description
+              </Text>
+              <Text size="sm" c="#374151">
+                {service.description}
+              </Text>
+            </Stack>
+
+            {/* Key Highlights */}
+            {keyHighlights.length > 0 && (
+              <Stack gap="xs" mb="md">
+                <Text size="lg" fw={600} c="#111827">
+                  Key Highlights
+                </Text>
+                <Stack gap="xs">
+                  {keyHighlights.map((highlight, index) => (
+                    <Group key={index} gap="xs" align="flex-start" wrap="nowrap">
+                      <CheckCircleIcon
+                        size={18}
+                        style={{
+                          color: "#10B981",
+                          marginTop: "0.125rem",
+                          flexShrink: 0,
+                        }}
+                      />
+                      <Text size="sm" c="#374151">
+                        {highlight}
+                      </Text>
+                    </Group>
+                  ))}
+                </Stack>
+              </Stack>
+            )}
+
+            {/* Action Buttons */}
+            <Group justify="flex-end" gap="sm">
+              <Button
+                onClick={onViewDetails}
+                variant="light"
+                color="blue"
+                styles={{
+                  root: {
+                    fontSize: "0.875rem",
+                  },
+                }}
+              >
+                View Full Details
+              </Button>
+              <Button
+                styles={{
+                  root: {
+                    background: "linear-gradient(to right, #2563EB, #9333EA)",
+                    fontSize: "0.875rem",
+                    "&:hover": {
+                      background: "linear-gradient(to right, #1D4ED8, #7E22CE)",
+                    },
+                  },
+                }}
+              >
+                {primaryButtonText}
+              </Button>
+            </Group>
+          </Stack>
+        </ScrollArea.Autosize>
+      </Stack>
+    </Modal>
+  );
 };

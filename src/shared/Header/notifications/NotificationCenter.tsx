@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { ArrowLeftIcon, SearchIcon, FilterIcon, XIcon, BellIcon } from 'lucide-react';
 import { NotificationItem } from './NotificationItem';
-import { mockNotifications, Notification } from '../utils/mockNotifications';
+import { getNotifications, Notification } from '../utils/notifications';
 interface NotificationCenterProps {
   onBack: () => void;
 }
@@ -20,7 +20,7 @@ export function NotificationCenter({
   useEffect(() => {
     setLoading(true);
     setTimeout(() => {
-      setNotifications(mockNotifications);
+      setNotifications(getNotifications());
       setLoading(false);
     }, 500);
   }, []);
