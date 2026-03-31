@@ -22,6 +22,11 @@ import {
   ClipboardCheck,
   Lightbulb,
   ArrowRight,
+  User,
+  BookmarkPlus,
+  BarChart3,
+  Tags,
+  Zap,
 } from "lucide-react";
 
 const BooksLandingPage = () => {
@@ -1636,7 +1641,292 @@ const BooksLandingPage = () => {
           </div>
         </section>
 
-        {/* 7. BROWSE BY CATEGORY - 6xD Books Grid with Filter Tabs */}
+        {/* 7. PERSONALIZATION - CREATE YOUR PERSONAL READING INTELLIGENCE */}
+        <section className="py-16 bg-white">
+          <div className="container mx-auto px-4 max-w-7xl">
+            <div className="grid lg:grid-cols-2 gap-12 items-center">
+              {/* Left Side - Copy + CTA */}
+              <div>
+                <h2 className="text-3xl md:text-4xl font-bold font-display mb-6 text-gray-900">
+                  Create Your Personal Reading Intelligence
+                </h2>
+                <p className="text-xl text-gray-600 mb-8 leading-relaxed">
+                  Shortlist, organize, and track the books that matter most to
+                  you. Let DTMI guide your learning journey.
+                </p>
+
+                {/* Features/Benefits */}
+                <div className="space-y-6 mb-8">
+                  <div className="flex items-start gap-4">
+                    <div className="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                      <BookmarkPlus className="w-6 h-6 text-orange-600" />
+                    </div>
+                    <div>
+                      <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                        Personalized Shortlists
+                      </h3>
+                      <p className="text-gray-600">
+                        Save books according to your role, goals, or topics.
+                        Build reading lists that align with your transformation
+                        priorities.
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-start gap-4">
+                    <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                      <BarChart3 className="w-6 h-6 text-blue-600" />
+                    </div>
+                    <div>
+                      <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                        Track Your Progress
+                      </h3>
+                      <p className="text-gray-600">
+                        Keep track of what you've read, want to read, or plan to
+                        review. Monitor your learning journey over time.
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-start gap-4">
+                    <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                      <Zap className="w-6 h-6 text-green-600" />
+                    </div>
+                    <div>
+                      <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                        Tailored Recommendations
+                      </h3>
+                      <p className="text-gray-600">
+                        Get book suggestions based on your interests, reading
+                        history, and transformation goals.
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-start gap-4">
+                    <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                      <Tags className="w-6 h-6 text-purple-600" />
+                    </div>
+                    <div>
+                      <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                        Organize by Themes
+                      </h3>
+                      <p className="text-gray-600">
+                        Group books into collections like AI, Digital
+                        Transformation, Leadership, or Strategy for easy access.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* CTAs */}
+                <div className="space-y-4">
+                  <button
+                    onClick={() =>
+                      navigate("/auth/signup?redirect=/books/shortlist")
+                    }
+                    className="w-full sm:w-auto px-8 py-4 bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-600 hover:to-red-700 text-white font-bold text-lg rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
+                  >
+                    Create My Shortlist
+                  </button>
+                  <div className="flex items-center gap-4">
+                    <button
+                      onClick={() =>
+                        navigate("/auth/signin?redirect=/books/shortlist")
+                      }
+                      className="text-gray-600 hover:text-orange-600 font-medium transition-colors"
+                    >
+                      Already have an account? Sign In
+                    </button>
+                  </div>
+                  <p className="text-sm text-gray-500">
+                    It's free, personalized, and takes less than a minute to set
+                    up.
+                  </p>
+                </div>
+              </div>
+
+              {/* Right Side - Visual Demo */}
+              <div className="relative">
+                {/* Main Shortlist Interface Preview */}
+                <div className="bg-gray-50 rounded-xl p-6 shadow-lg border border-gray-200">
+                  <div className="flex items-center justify-between mb-6">
+                    <h3 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
+                      <User className="w-5 h-5 text-orange-600" />
+                      My Reading Lists
+                    </h3>
+                    <span className="text-sm text-gray-500">
+                      3 lists • 12 books
+                    </span>
+                  </div>
+
+                  {/* Sample Lists */}
+                  <div className="space-y-4">
+                    {/* AI Strategy List */}
+                    <div className="bg-white rounded-lg p-4 border border-gray-100 hover:border-orange-200 transition-colors group">
+                      <div className="flex items-center justify-between mb-3">
+                        <div className="flex items-center gap-3">
+                          <div className="w-8 h-8 bg-orange-100 rounded-lg flex items-center justify-center">
+                            <Zap className="w-4 h-4 text-orange-600" />
+                          </div>
+                          <div>
+                            <h4 className="font-semibold text-gray-900 group-hover:text-orange-600 transition-colors">
+                              AI Strategy
+                            </h4>
+                            <p className="text-sm text-gray-500">5 books</p>
+                          </div>
+                        </div>
+                        <div className="flex -space-x-2">
+                          {[1, 2, 3].map((i) => (
+                            <div
+                              key={i}
+                              className="w-8 h-10 bg-gradient-to-br from-blue-100 to-blue-200 rounded border-2 border-white shadow-sm"
+                            ></div>
+                          ))}
+                          <div className="w-8 h-10 bg-gray-200 rounded border-2 border-white shadow-sm flex items-center justify-center">
+                            <span className="text-xs font-medium text-gray-600">
+                              +2
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="flex flex-wrap gap-1">
+                        <span className="text-xs bg-orange-100 text-orange-700 px-2 py-1 rounded-full">
+                          AI
+                        </span>
+                        <span className="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded-full">
+                          Strategy
+                        </span>
+                        <span className="text-xs bg-green-100 text-green-700 px-2 py-1 rounded-full">
+                          Leadership
+                        </span>
+                      </div>
+                    </div>
+
+                    {/* Digital Transformation List */}
+                    <div className="bg-white rounded-lg p-4 border border-gray-100 hover:border-green-200 transition-colors group">
+                      <div className="flex items-center justify-between mb-3">
+                        <div className="flex items-center gap-3">
+                          <div className="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center">
+                            <Target className="w-4 h-4 text-green-600" />
+                          </div>
+                          <div>
+                            <h4 className="font-semibold text-gray-900 group-hover:text-green-600 transition-colors">
+                              Digital Transformation
+                            </h4>
+                            <p className="text-sm text-gray-500">4 books</p>
+                          </div>
+                        </div>
+                        <div className="flex -space-x-2">
+                          {[1, 2, 3, 4].map((i) => (
+                            <div
+                              key={i}
+                              className="w-8 h-10 bg-gradient-to-br from-green-100 to-green-200 rounded border-2 border-white shadow-sm"
+                            ></div>
+                          ))}
+                        </div>
+                      </div>
+                      <div className="flex flex-wrap gap-1">
+                        <span className="text-xs bg-green-100 text-green-700 px-2 py-1 rounded-full">
+                          Transformation
+                        </span>
+                        <span className="text-xs bg-purple-100 text-purple-700 px-2 py-1 rounded-full">
+                          Change
+                        </span>
+                      </div>
+                    </div>
+
+                    {/* Platform Strategy List */}
+                    <div className="bg-white rounded-lg p-4 border border-gray-100 hover:border-blue-200 transition-colors group">
+                      <div className="flex items-center justify-between mb-3">
+                        <div className="flex items-center gap-3">
+                          <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
+                            <FileText className="w-4 h-4 text-blue-600" />
+                          </div>
+                          <div>
+                            <h4 className="font-semibold text-gray-900 group-hover:text-blue-600 transition-colors">
+                              Platform Strategy
+                            </h4>
+                            <p className="text-sm text-gray-500">3 books</p>
+                          </div>
+                        </div>
+                        <div className="flex -space-x-2">
+                          {[1, 2, 3].map((i) => (
+                            <div
+                              key={i}
+                              className="w-8 h-10 bg-gradient-to-br from-blue-100 to-blue-200 rounded border-2 border-white shadow-sm"
+                            ></div>
+                          ))}
+                        </div>
+                      </div>
+                      <div className="flex flex-wrap gap-1">
+                        <span className="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded-full">
+                          Platforms
+                        </span>
+                        <span className="text-xs bg-orange-100 text-orange-700 px-2 py-1 rounded-full">
+                          Business Models
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Add New List Button */}
+                  <button className="w-full mt-4 py-3 border-2 border-dashed border-gray-300 hover:border-orange-300 hover:bg-orange-50 rounded-lg text-gray-600 hover:text-orange-600 font-medium transition-colors flex items-center justify-center gap-2">
+                    <BookmarkPlus className="w-4 h-4" />
+                    Create New List
+                  </button>
+                </div>
+
+                {/* Floating Recommendation Card */}
+                <div className="absolute -bottom-4 -right-4 bg-white rounded-lg shadow-xl border border-gray-200 p-4 max-w-xs">
+                  <div className="flex items-center gap-2 mb-2">
+                    <Zap className="w-4 h-4 text-orange-500" />
+                    <span className="text-sm font-semibold text-gray-900">
+                      Recommended for you
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <div className="w-8 h-10 bg-gradient-to-br from-orange-100 to-orange-200 rounded shadow-sm"></div>
+                    <div>
+                      <p className="text-sm font-medium text-gray-900">
+                        Platform Revolution
+                      </p>
+                      <p className="text-xs text-gray-500">
+                        Based on your AI Strategy list
+                      </p>
+                    </div>
+                  </div>
+                  <button className="w-full mt-3 py-2 bg-orange-500 hover:bg-orange-600 text-white text-sm font-medium rounded transition-colors">
+                    Add to List
+                  </button>
+                </div>
+
+                {/* Progress Indicator */}
+                <div className="absolute -top-4 -left-4 bg-white rounded-lg shadow-lg border border-gray-200 p-3">
+                  <div className="flex items-center gap-2 mb-2">
+                    <BarChart3 className="w-4 h-4 text-green-500" />
+                    <span className="text-sm font-semibold text-gray-900">
+                      Reading Progress
+                    </span>
+                  </div>
+                  <div className="space-y-2">
+                    <div className="flex justify-between text-xs">
+                      <span className="text-gray-600">This Month</span>
+                      <span className="font-medium text-gray-900">
+                        3 of 5 books
+                      </span>
+                    </div>
+                    <div className="w-24 h-2 bg-gray-200 rounded-full overflow-hidden">
+                      <div className="w-3/5 h-full bg-gradient-to-r from-green-400 to-green-500 rounded-full"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* 8. BROWSE BY CATEGORY - 6xD Books Grid with Filter Tabs */}
         <section className="py-16 bg-gray-50">
           <div className="container mx-auto px-4 md:px-6 max-w-7xl">
             <div className="mb-12">
@@ -1793,7 +2083,7 @@ const BooksLandingPage = () => {
             </div>
           </div>
         </section>
-        {/* 8. TOP AI BOOKS FOR LEADERS */}
+        {/* 9. TOP AI BOOKS FOR LEADERS */}
         <section className="py-16 bg-white">
           <div className="container mx-auto px-4 max-w-7xl">
             <h2 className="text-3xl md:text-4xl font-bold font-display mb-12 text-gray-900 text-center">
@@ -1909,7 +2199,7 @@ const BooksLandingPage = () => {
           </div>
         </section>
 
-        {/* 9. MUST-READ DIGITAL TRANSFORMATION BOOKS */}
+        {/* 10. MUST-READ DIGITAL TRANSFORMATION BOOKS */}
         <section className="py-16 bg-gray-50">
           <div className="container mx-auto px-4 max-w-7xl">
             <h2 className="text-3xl md:text-4xl font-bold font-display mb-12 text-gray-900 text-center">
@@ -2031,7 +2321,7 @@ const BooksLandingPage = () => {
           </div>
         </section>
 
-        {/* 10. REVIEWS HIGHLIGHT */}
+        {/* 11. REVIEWS HIGHLIGHT */}
         <section className="py-16 bg-gray-900 text-white">
           <div className="container mx-auto px-4 max-w-6xl">
             <h2 className="text-3xl md:text-4xl font-bold font-display mb-12 text-center">
@@ -2068,7 +2358,7 @@ const BooksLandingPage = () => {
           </div>
         </section>
 
-        {/* 11. PERSONAL READING LIST */}
+        {/* 12. PERSONAL READING LIST */}
         <section className="py-16 bg-white">
           <div className="container mx-auto px-4 max-w-6xl">
             <div className="grid lg:grid-cols-2 gap-12 items-center">
@@ -2147,7 +2437,7 @@ const BooksLandingPage = () => {
           </div>
         </section>
 
-        {/* 12. CONNECT TO DTMI CONTENT */}
+        {/* 13. CONNECT TO DTMI CONTENT */}
         <section className="py-16 bg-gradient-to-br from-gray-900 to-gray-800 text-white">
           <div className="container mx-auto px-4 max-w-6xl text-center">
             <h2 className="text-3xl md:text-4xl font-bold font-display mb-6">
@@ -2176,7 +2466,7 @@ const BooksLandingPage = () => {
           </div>
         </section>
 
-        {/* 13. FINAL CTA */}
+        {/* 14. FINAL CTA */}
         <section className="py-16 bg-white">
           <div className="container mx-auto px-4 max-w-4xl text-center">
             <h2 className="text-3xl md:text-4xl font-bold font-display mb-6 text-gray-900">
