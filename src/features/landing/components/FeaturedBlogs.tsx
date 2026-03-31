@@ -59,19 +59,19 @@ export function FeaturedBlogs() {
         </div>
 
         {/* Two-Column Layout */}
-        <Grid>
+        <Grid align="stretch">
           {/* Left Column - Featured Blog */}
-          <Grid.Col span={{ base: 12, lg: 6 }}>
+          <Grid.Col span={{ base: 12, lg: 6 }} className="flex">
             <FeaturedBlogCard blog={featuredBlog} onClick={() => navigate(featuredBlog.link)} />
           </Grid.Col>
 
           {/* Right Column - Related Blogs */}
           <Grid.Col span={{ base: 12, lg: 6 }}>
-            <Stack gap="md">
+            <Stack gap="md" className="h-full">
               <Title order={3} size="h4" className="text-xl font-bold text-gray-900">
                 Related Blogs
               </Title>
-              <Stack gap="md">
+              <Stack gap={0} className="flex-1 divide-y divide-gray-200">
                 {relatedBlogs.map((blog) => (
                   <RelatedBlogCard 
                     key={blog.id} 
@@ -95,13 +95,14 @@ interface FeaturedBlogCardProps {
 
 function FeaturedBlogCard({ blog, onClick }: FeaturedBlogCardProps) {
   return (
-    <div className="group cursor-pointer" onClick={onClick}>
-      {/* Image */}
-      <div className="relative h-64 rounded-lg overflow-hidden mb-4">
+    <div className="group cursor-pointer h-full flex flex-col" onClick={onClick}>
+      {/* Image — grows to fill available vertical space */}
+      <div className="relative rounded-lg overflow-hidden mb-4 flex-1 min-h-[200px]">
         <Image
           src={blog.image}
           alt={blog.title}
           className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+          style={{ position: 'absolute', inset: 0 }}
         />
       </div>
 
@@ -115,13 +116,13 @@ function FeaturedBlogCard({ blog, onClick }: FeaturedBlogCardProps) {
         <Title 
           order={3} 
           size="h3" 
-          className="text-2xl md:text-3xl font-bold text-gray-900 group-hover:text-brand-coral transition-colors leading-tight"
+          className="text-2xl md:text-3xl font-bold text-gray-900 group-hover:text-brand-coral transition-colors leading-tight line-clamp-2"
         >
           {blog.title}
         </Title>
 
-        {/* Description */}
-        <Text c="dimmed" size="sm" className="leading-relaxed">
+        {/* Description — capped to 3 lines to balance with right column */}
+        <Text c="dimmed" size="sm" className="leading-relaxed line-clamp-3">
           {blog.description}
         </Text>
 
@@ -150,7 +151,7 @@ function RelatedBlogCard({ blog, onClick }: RelatedBlogCardProps) {
   return (
     <Group 
       gap="md" 
-      className="group cursor-pointer pb-5 border-b border-gray-200 last:border-b-0" 
+      className="group cursor-pointer py-4 last:pb-0" 
       onClick={onClick}
       align="flex-start"
     >
@@ -164,7 +165,7 @@ function RelatedBlogCard({ blog, onClick }: RelatedBlogCardProps) {
       </div>
 
       {/* Content */}
-      <Stack gap="xs" className="flex-1">
+      <Stack gap={4} className="flex-1">
         <Title 
           order={4} 
           size="sm" 
@@ -173,7 +174,11 @@ function RelatedBlogCard({ blog, onClick }: RelatedBlogCardProps) {
         >
           {blog.title}
         </Title>
-        <Text size="xs" c="dimmed">{blog.date}</Text>
+        {/* Description — capped to 2 lines */}
+        <Text size="xs" c="dimmed" className="line-clamp-2 leading-relaxed">
+          {blog.description}
+        </Text>
+        <Text size="xs" c="dimmed" className="mt-1">{blog.date}</Text>
       </Stack>
     </Group>
   );
