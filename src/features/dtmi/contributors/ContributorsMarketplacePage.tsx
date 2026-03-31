@@ -689,61 +689,7 @@ function AdvertCard({ advert }: { advert: (typeof CONTRIBUTOR_ADVERTS)[0] }) {
   );
 }
 
-function CategoryCard({
-  category,
-}: {
-  category: (typeof CONTRIBUTOR_CATEGORIES)[0];
-}) {
-  return (
-    <Link to={`/contributors?category=${category.id}`} className="block">
-      <article className="bg-white border border-gray-100 rounded-2xl p-6 shadow-md hover:shadow-lg transition-shadow duration-200 flex flex-col gap-4 h-full">
-        <div className="flex items-start justify-between gap-4">
-          <div className="flex items-start gap-4">
-            <div className="w-14 h-14 rounded-full bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center text-2xl border border-gray-100">
-              {category.icon}
-            </div>
-            <div>
-              <h3 className="text-xl font-semibold text-gray-900 leading-tight">
-                {category.name}
-              </h3>
-              <p className="text-sm text-gray-500">DigitalQatalyst</p>
-            </div>
-          </div>
-          <div className="text-right">
-            <p className="text-xs uppercase tracking-wide text-gray-400">
-              Contributors
-            </p>
-            <p className="text-lg font-semibold text-gray-900">
-              {category.contributorCount}
-            </p>
-          </div>
-        </div>
 
-        <p className="text-sm text-gray-700">{category.description}</p>
-
-        <div className="text-sm text-gray-600 flex gap-2">
-          <span className="font-semibold text-gray-900">Expertise:</span>
-          <span>{category.expertise}</span>
-        </div>
-
-        <div className="mb-2 flex flex-wrap gap-2">
-          <span className="inline-flex items-center text-xs font-semibold tracking-wide text-purple-700 uppercase">
-            <span className="px-2 py-0.5 bg-purple-50 text-purple-600 rounded-full">
-              Category
-            </span>
-          </span>
-        </div>
-
-        <div className="flex items-center justify-between border-t border-gray-100 pt-4 mt-auto">
-          <span className="inline-flex items-center gap-2 text-sm font-semibold text-brand-coral">
-            Explore Contributors
-            <ArrowRight className="h-4 w-4" />
-          </span>
-        </div>
-      </article>
-    </Link>
-  );
-}
 
 function ContributorCard({ contributor }: { contributor: ContributorProfile }) {
   const avatarUrl =
@@ -767,11 +713,6 @@ function ContributorCard({ contributor }: { contributor: ContributorProfile }) {
               <h3 className="text-xl font-semibold text-gray-900 leading-tight hover:underline">
                 {contributor.name}
               </h3>
-              {contributor.contributorTitle && (
-                <p className="text-sm font-medium text-gray-700">
-                  {contributor.contributorTitle}
-                </p>
-              )}
               <p className="text-sm text-gray-500">{contributor.affiliation}</p>
             </div>
           </div>
@@ -793,8 +734,15 @@ function ContributorCard({ contributor }: { contributor: ContributorProfile }) {
         </div>
 
         <div className="mb-2 flex flex-wrap gap-2">
-          <span className="inline-flex items-center text-xs font-semibold tracking-wide text-blue-700 uppercase">
-            <span className="px-2 py-0.5 bg-blue-50 text-blue-600 rounded-full">
+          {contributor.contributorTitle && (
+            <span className="inline-flex items-center text-xs font-bold tracking-wide text-blue-700 uppercase">
+              <span className="px-3 py-1 bg-blue-100 text-blue-800 rounded-full shadow-sm">
+                {contributor.contributorTitle}
+              </span>
+            </span>
+          )}
+          <span className="inline-flex items-center text-[10px] font-bold tracking-wider text-gray-500 uppercase opacity-80">
+            <span className="px-2 py-0.5 bg-gray-50 border border-gray-200 text-gray-400 rounded-lg">
               {contributor.type.replace(/s$/, "")}
             </span>
           </span>

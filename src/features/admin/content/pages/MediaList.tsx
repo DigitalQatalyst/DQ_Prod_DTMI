@@ -468,7 +468,9 @@ const MediaList: React.FC = () => {
                 </div>
                 <div>
                   <p className="text-xs font-semibold text-gray-900">{currentItem.author?.name || 'Anonymous'}</p>
-                  <p className="text-xs text-gray-500 mt-0.5">{currentItem.author?.title || 'Contributor'}</p>
+                  <p className="text-xs font-semibold text-brand-coral uppercase tracking-wide mt-0.5">
+                    {currentItem.author?.contributorTitle || currentItem.author?.title || 'Contributor'}
+                  </p>
                 </div>
                 {currentItem.type === 'article' && (
                   <div className="ml-4 flex items-center gap-2">
@@ -536,7 +538,9 @@ const MediaList: React.FC = () => {
               <div className="space-y-4 flex-1 pt-2">
                 <div>
                   <h2 className="text-2xl font-bold text-gray-900">{currentAuthor.name}</h2>
-                  <p className="text-xs text-gray-500 mt-1">{currentAuthor.title}</p>
+                  <p className="text-xs font-semibold text-brand-coral uppercase tracking-wide mt-1">
+                    {currentAuthor.contributorTitle || currentAuthor.title}
+                  </p>
                 </div>
                 <p className="text-sm text-gray-500 leading-relaxed italic border-l-4 border-black/5 pl-5">
                   {currentAuthor.bio || 'This intellectual architect has chosen to remain mystical for now.'}

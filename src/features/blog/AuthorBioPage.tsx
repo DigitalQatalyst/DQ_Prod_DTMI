@@ -117,6 +117,11 @@ export function AuthorBioPage() {
                 {author.title && (
                   <p className="text-sm text-gray-500">{author.title}</p>
                 )}
+                {author.contributorTitle && (
+                  <p className="text-xs font-semibold text-brand-coral uppercase tracking-wide">
+                    {author.contributorTitle}
+                  </p>
+                )}
                 {author.location && (
                   <div className="flex items-center gap-1 text-xs text-gray-400">
                     <MapPin size={12} /> {author.location}
