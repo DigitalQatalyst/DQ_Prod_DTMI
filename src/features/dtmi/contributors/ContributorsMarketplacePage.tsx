@@ -30,6 +30,16 @@ const initialFilters: ContributorFilters = {
   search: "",
 };
 
+const PREDEFINED_TAGS = [
+  { id: "Digital Transformation", label: "Digital Transformation" },
+  { id: "AI & Automation", label: "AI & Automation" },
+  { id: "Digital Cognitive Organizations (DCO)", label: "Digital Cognitive Organizations (DCO)" },
+  { id: "Digital Business Platforms (DBP)", label: "Digital Business Platforms (DBP)" },
+  { id: "Workforce & Organizational Design", label: "Workforce & Organizational Design" },
+  { id: "Emerging Technologies", label: "Emerging Technologies" },
+  { id: "Economy & Market Analysis", label: "Economy & Market Analysis" },
+];
+
 const WORKS_BUCKETS = [
   { id: "0-5", label: "0–5 works", matches: (count: number) => count <= 5 },
   {
@@ -194,26 +204,12 @@ export function ContributorsMarketplacePage() {
 
   // Sync type filter with category URL param — also reveals the grid
   useEffect(() => {
-    if (selectedCategory) {
-      const categoryName = CONTRIBUTOR_CATEGORIES.find(
-        (cat) => cat.id === selectedCategory,
-      )?.name;
-      setFilters((prev) => ({
-        ...prev,
-        type: categoryName ? [categoryName] : [],
-      }));
+    if (selectedCategory && selectedCategory !== "all") {
       setShowContributors(true); // auto-reveal when navigated with ?category=
-    } else {
-      setFilters((prev) => ({ ...prev, type: [] }));
-    }
-  }, [selectedCategory]);
-
-  // Handle ?showAll=true — reveal grid with no filter
-  useEffect(() => {
-    if (searchParams.get("showAll") === "true") {
+    } else if (selectedCategory === "all") {
       setShowContributors(true);
     }
-  }, [searchParams]);
+  }, [selectedCategory]);
 
   const typeOptions: FilterOption[] = useMemo(() => {
     const standardTypes: FilterOption[] = [
@@ -235,11 +231,15 @@ export function ContributorsMarketplacePage() {
   }, [contributorProfiles]);
 
   const tagOptions: FilterOption[] = useMemo(() => {
-    return Array.from(
+    // Combine predefined tags with any additional tags from contributor profiles
+    const dynamicTags = Array.from(
       new Set(contributorProfiles.flatMap((profile) => profile.tags)),
     )
+      .filter((tag) => !PREDEFINED_TAGS.find((predefined) => predefined.id === tag))
       .sort()
       .map((value) => ({ id: value, label: value }));
+    
+    return [...PREDEFINED_TAGS, ...dynamicTags];
   }, [contributorProfiles]);
 
   const worksOptions: FilterOption[] = WORKS_BUCKETS.map(({ id, label }) => ({
@@ -312,18 +312,11 @@ export function ContributorsMarketplacePage() {
     };
 
     setFilters(newFilters);
+    setShowContributors(true);
 
-    if (filterType === "type") {
-      if (newFilters.type.length === 1) {
-        const categoryMatch = CONTRIBUTOR_CATEGORIES.find(
-          (cat) => cat.name === newFilters.type[0],
-        );
-        if (categoryMatch) {
-          setSearchParams({ category: categoryMatch.id });
-          return;
-        }
-      }
-      setSearchParams({});
+    // Don't handle URL parameters for type filters to allow multiple selection
+    if (filterType !== "type") {
+      // Handle other filter URL logic here if needed
     }
   };
 
@@ -365,18 +358,34 @@ export function ContributorsMarketplacePage() {
                 </Link>
               </li>
               <li>
-                <div className="flex items-center text-gray-500">
+                <div className="flex items-center">
                   <ChevronRightIcon size={16} className="text-gray-400" />
-                  <span className="ml-1 md:ml-2 text-gray-600">
+                  <Link
+                    to="/contributors"
+                    className="ml-1 md:ml-2 text-gray-600 hover:text-brand-coral transition-colors"
+                  >
                     Contributors
-                  </span>
+                  </Link>
                 </div>
               </li>
               {selectedCategory && (
                 <li aria-current="page">
                   <div className="flex items-center text-gray-500">
                     <ChevronRightIcon size={16} className="text-gray-400" />
-                    <span className="ml-1 md:ml-2">{breadcrumbLabel}</span>
+                    {selectedCategory === "all" ? (
+                      <Link
+                        to="/contributors"
+                        className="ml-1 md:ml-2 text-gray-600 hover:text-brand-coral transition-colors"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          resetFilters();
+                        }}
+                      >
+                        {breadcrumbLabel}
+                      </Link>
+                    ) : (
+                      <span className="ml-1 md:ml-2">{breadcrumbLabel}</span>
+                    )}
                   </div>
                 </li>
               )}
@@ -394,16 +403,20 @@ export function ContributorsMarketplacePage() {
             </p>
           </header>
 
-          {/* Category cards grid — only shown when no category filter is active */}
-          {!selectedCategory && (
+          {/* Category cards grid — only shown when contributors grid is not yet revealed */}
+          {!showContributors && (
             <div className="mb-10">
               <div className="flex items-center justify-between mb-4">
                 <p className="text-sm text-gray-500">
                   Explore {CONTRIBUTOR_CATEGORIES.length} contributor categories
                 </p>
                 <button
-                  onClick={() => setShowContributors(true)}
-                  className="inline-flex items-center gap-2 bg-brand-coral text-white font-semibold text-sm px-5 py-2.5 rounded-lg hover:bg-opacity-90 transition-all"
+                  onClick={() => {
+                    setFilters(initialFilters);
+                    setSearchParams({ category: "all" });
+                    setShowContributors(true);
+                  }}
+                  className="inline-flex items-center gap-2 bg-brand-coral text-white font-semibold text-sm px-5 py-2.5 rounded-lg hover:bg-opacity-90 transition-all shadow-sm active:scale-95"
                 >
                   View All Contributors
                   <ArrowRight size={16} />
@@ -448,9 +461,20 @@ export function ContributorsMarketplacePage() {
                     </p>
 
                     {/* Expertise */}
-                    <div className="flex flex-wrap gap-1 text-sm text-gray-600">
-                      <span className="font-semibold text-gray-900">Expertise:</span>
-                      <span>{cat.expertise}</span>
+                    <div className="flex flex-col gap-2">
+                      <span className="text-[10px] font-bold uppercase tracking-widest text-gray-400">
+                        Expertise
+                      </span>
+                      <div className="flex flex-wrap gap-1.5">
+                        {(cat.expertise || "").split(",").map((item, idx) => (
+                          <span
+                            key={idx}
+                            className="px-2 py-0.5 bg-indigo-50 text-indigo-600 rounded text-[11px] font-medium border border-indigo-100"
+                          >
+                            {item.trim()}
+                          </span>
+                        ))}
+                      </div>
                     </div>
 
                     {/* Category tag */}
@@ -471,27 +495,24 @@ export function ContributorsMarketplacePage() {
             </div>
           )}
 
-          {/* Active category banner — shows which filter is active with a clear option */}
+          {/* Active category banner — shows which filter is active */}
           {selectedCategory && (
-            <div className="flex items-center justify-between mb-6 bg-white border border-gray-100 rounded-xl px-5 py-3 shadow-sm">
+            <div className="flex items-center mb-6 bg-white border border-gray-100 rounded-xl px-5 py-3 shadow-sm animate-in fade-in slide-in-from-top-1">
               <div className="flex items-center gap-3">
-                <span className="text-2xl">
-                  {CONTRIBUTOR_CATEGORIES.find(c => c.id === selectedCategory)?.icon}
-                </span>
+                <div className="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center text-xl border border-blue-100">
+                  {selectedCategory !== "all"
+                    ? CONTRIBUTOR_CATEGORIES.find(c => c.id === selectedCategory)?.icon
+                    : "🌟"}
+                </div>
                 <div>
-                  <p className="text-xs text-gray-400 uppercase tracking-wide font-semibold">Filtered by category</p>
+                  <p className="text-[10px] text-gray-400 uppercase tracking-widest font-bold">Current View</p>
                   <p className="font-bold text-gray-900 text-sm">
-                    {CONTRIBUTOR_CATEGORIES.find(c => c.id === selectedCategory)?.name}
+                    {selectedCategory !== "all"
+                      ? CONTRIBUTOR_CATEGORIES.find(c => c.id === selectedCategory)?.name
+                      : "All Contributors"}
                   </p>
                 </div>
               </div>
-              <button
-                onClick={resetFilters}
-                className="flex items-center gap-1.5 text-xs font-semibold text-gray-500 hover:text-brand-coral transition-colors"
-              >
-                <XIcon size={14} />
-                Clear filter
-              </button>
             </div>
           )}
 
@@ -540,7 +561,7 @@ export function ContributorsMarketplacePage() {
                       collapsed={collapsedGroups.type}
                       isFirst
                       onToggleCollapse={() => toggleGroup("type")}
-                      onSelect={(value) => handleFilterChange("type", value)}
+                      onSelect={(value) => { handleFilterChange("type", value); setShowContributors(true); }}
                     />
                     <FilterGroup
                       title="Interests / Tags"
@@ -548,7 +569,7 @@ export function ContributorsMarketplacePage() {
                       selected={filters.tag}
                       collapsed={collapsedGroups.tag}
                       onToggleCollapse={() => toggleGroup("tag")}
-                      onSelect={(value) => handleFilterChange("tag", value)}
+                      onSelect={(value) => { handleFilterChange("tag", value); setShowContributors(true); }}
                     />
                     <FilterGroup
                       title="Contribution Volume"
@@ -556,7 +577,7 @@ export function ContributorsMarketplacePage() {
                       selected={filters.worksRange}
                       collapsed={collapsedGroups.worksRange}
                       onToggleCollapse={() => toggleGroup("worksRange")}
-                      onSelect={(value) => handleFilterChange("worksRange", value)}
+                      onSelect={(value) => { handleFilterChange("worksRange", value); setShowContributors(true); }}
                     />
                     {hasActiveFilters && (
                       <button
@@ -602,7 +623,7 @@ export function ContributorsMarketplacePage() {
                       selected={filters.tag}
                       collapsed={collapsedGroups.tag}
                       onToggleCollapse={() => toggleGroup("tag")}
-                      onSelect={(value) => handleFilterChange("tag", value)}
+                      onSelect={(value) => { handleFilterChange("tag", value); setShowContributors(true); }}
                     />
                     <FilterGroup
                       title="Contribution Volume"
@@ -610,7 +631,7 @@ export function ContributorsMarketplacePage() {
                       selected={filters.worksRange}
                       collapsed={collapsedGroups.worksRange}
                       onToggleCollapse={() => toggleGroup("worksRange")}
-                      onSelect={(value) => handleFilterChange("worksRange", value)}
+                      onSelect={(value) => { handleFilterChange("worksRange", value); setShowContributors(true); }}
                     />
                   </div>
                 </aside>
@@ -736,11 +757,11 @@ function FilterGroup({
             >
               <input
                 type="checkbox"
-                className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                className="h-5 w-5 rounded border-gray-300 text-blue-600 checked:bg-blue-600 checked:border-blue-600"
                 checked={selected.includes(option.id)}
                 onChange={() => onSelect(option.id)}
               />
-              {option.label}
+              {option.label.replace(/\s*\([^)]*\)/g, '')}
             </label>
           ))}
         </div>
@@ -845,11 +866,24 @@ function ContributorCard({ contributor }: { contributor: ContributorProfile }) {
           </div>
         </div>
 
-        <p className="text-sm text-gray-700 line-clamp-3">{contributor.bio}</p>
+        {/* Bio */}
+        <p className="text-sm text-gray-600 line-clamp-3 leading-relaxed">{contributor.bio}</p>
 
-        <div className="text-sm text-gray-600 flex gap-2">
-          <span className="font-semibold text-gray-900">Expertise:</span>
-          <span className="line-clamp-1">{contributor.expertise}</span>
+        {/* Expertise Badges */}
+        <div className="flex flex-col gap-1.5">
+          <span className="text-[10px] font-bold uppercase tracking-widest text-gray-400">
+            Areas of Expertise
+          </span>
+          <div className="flex flex-wrap gap-1.5">
+            {(contributor.expertise || "").split(",").map((item, idx) => (
+              <span 
+                key={idx} 
+                className="px-2.5 py-1 bg-indigo-50 text-indigo-700 rounded-md text-[11px] font-semibold border border-indigo-100/50"
+              >
+                {item.trim()}
+              </span>
+            ))}
+          </div>
         </div>
 
         <div className="mb-2 flex flex-wrap gap-2">
