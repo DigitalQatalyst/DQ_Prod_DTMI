@@ -11,6 +11,49 @@ const BooksLandingPage = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [isLoaded, setIsLoaded] = useState(false);
   const [activeFilter, setActiveFilter] = useState("D1: Digital Economy");
+  const [showSuggestions, setShowSuggestions] = useState(false);
+  const [selectedSuggestionIndex, setSelectedSuggestionIndex] = useState(-1);
+
+  // Smart search suggestions
+  const smartSuggestions = [
+    "AI for business leaders",
+    "Platform strategy",
+    "Digital transformation case studies",
+    "Organizational change",
+  ];
+
+  // Handle keyboard navigation for suggestions
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (!showSuggestions) return;
+
+    switch (e.key) {
+      case "ArrowDown":
+        e.preventDefault();
+        setSelectedSuggestionIndex((prev) =>
+          prev < smartSuggestions.length - 1 ? prev + 1 : prev,
+        );
+        break;
+      case "ArrowUp":
+        e.preventDefault();
+        setSelectedSuggestionIndex((prev) => (prev > 0 ? prev - 1 : -1));
+        break;
+      case "Enter":
+        if (selectedSuggestionIndex >= 0) {
+          e.preventDefault();
+          const suggestion = smartSuggestions[selectedSuggestionIndex];
+          setSearchQuery(suggestion);
+          setShowSuggestions(false);
+          navigate(
+            `/marketplace/dtmi?tab=books&search=${encodeURIComponent(suggestion)}`,
+          );
+        }
+        break;
+      case "Escape":
+        setShowSuggestions(false);
+        setSelectedSuggestionIndex(-1);
+        break;
+    }
+  };
 
   useEffect(() => {
     setIsLoaded(true);
@@ -108,7 +151,7 @@ const BooksLandingPage = () => {
           <div className="container mx-auto px-4 relative z-10">
             <div className="max-w-4xl mx-auto text-center text-white">
               <h1
-                className="text-5xl md:text-6xl font-bold font-display mb-6"
+                className="text-4xl md:text-5xl lg:text-6xl font-bold font-display mb-6 leading-tight"
                 style={{
                   opacity: isLoaded ? 1 : 0,
                   transform: isLoaded ? "translateY(0)" : "translateY(30px)",
@@ -116,7 +159,8 @@ const BooksLandingPage = () => {
                     "opacity 0.8s ease-out 0.2s, transform 0.8s ease-out 0.2s",
                 }}
               >
-                DTMI Books
+                Discover the Books That Define the Digital Economy, AI, and
+                Transformation
               </h1>
 
               <p
@@ -128,11 +172,12 @@ const BooksLandingPage = () => {
                     "opacity 1s ease-out 0.4s, transform 1s ease-out 0.4s",
                 }}
               >
-                Discover, review, and shortlist the most relevant books on
-                Digital Transformation, AI, and the Digital Economy.
+                A curated intelligence layer to help you find, evaluate, and
+                shortlist the most relevant books for strategy, learning, and
+                real-world transformation.
               </p>
 
-              {/* Search Bar */}
+              {/* Smart Search Bar */}
               <form
                 onSubmit={handleSearch}
                 className="max-w-2xl mx-auto mb-8"
@@ -144,14 +189,50 @@ const BooksLandingPage = () => {
                 }}
               >
                 <div className="relative">
-                  <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+                  <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5 z-10" />
                   <input
                     type="text"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    placeholder="Search books, authors, or topics…"
+                    onFocus={() => {
+                      setShowSuggestions(true);
+                      setSelectedSuggestionIndex(-1);
+                    }}
+                    onBlur={() =>
+                      setTimeout(() => setShowSuggestions(false), 200)
+                    }
+                    onKeyDown={handleKeyDown}
+                    placeholder="Search books, authors, topics, or themes (e.g., AI strategy, platform business, digital transformation)"
                     className="w-full pl-12 pr-4 py-4 text-gray-900 bg-white/95 backdrop-blur-sm rounded-lg border border-white/20 focus:ring-2 focus:ring-orange-400 focus:outline-none focus:border-orange-400 transition-all duration-300"
                   />
+
+                  {/* Smart Suggestions Dropdown */}
+                  {showSuggestions && (
+                    <div className="absolute top-full left-0 right-0 mt-2 bg-white/95 backdrop-blur-sm border border-white/20 rounded-lg shadow-xl z-20">
+                      <div className="p-2">
+                        <div className="text-xs text-gray-500 px-3 py-2 font-medium">
+                          Popular searches:
+                        </div>
+                        {smartSuggestions.map((suggestion, index) => (
+                          <button
+                            key={index}
+                            type="button"
+                            onClick={() => {
+                              setSearchQuery(suggestion);
+                              setShowSuggestions(false);
+                              navigate(
+                                `/marketplace/dtmi?tab=books&search=${encodeURIComponent(suggestion)}`,
+                              );
+                            }}
+                            className="w-full text-left px-3 py-2 text-gray-700 hover:bg-orange-50 hover:text-orange-600 rounded-md transition-colors duration-200 flex items-center gap-2"
+                          >
+                            <Search className="w-4 h-4 text-gray-400" />
+                            {suggestion}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  )}
                 </div>
               </form>
 
@@ -169,15 +250,13 @@ const BooksLandingPage = () => {
                   onClick={() => navigate("/marketplace/dtmi?tab=books")}
                   className="px-8 py-4 bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-600 hover:to-red-700 text-white font-bold text-lg rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
                 >
-                  Explore Books
+                  Browse Books
                 </button>
                 <button
-                  onClick={() =>
-                    navigate("/marketplace/dtmi?tab=books&view=collections")
-                  }
+                  onClick={() => navigate("/books/shortlist")}
                   className="px-8 py-4 border-2 border-white text-white font-bold text-lg rounded-lg hover:bg-white hover:text-gray-900 transition-all duration-300"
                 >
-                  Browse Collections
+                  View My Shortlist
                 </button>
               </div>
             </div>
@@ -187,15 +266,16 @@ const BooksLandingPage = () => {
         <section className="py-16 bg-gray-50">
           <div className="container mx-auto px-4 max-w-4xl text-center">
             <h2 className="text-3xl md:text-4xl font-bold font-display mb-6 text-gray-900">
-              Why DTMI Books?
+              Your Curated Intelligence Layer
             </h2>
             <p className="text-xl text-gray-700 leading-relaxed">
-              Finding the right books can be overwhelming. DTMI Books simplifies
-              this by curating, reviewing, and organizing the most relevant
-              reads for understanding digital transformation, artificial
-              intelligence, and the digital economy. Whether you are a leader,
-              practitioner, or learner, this is your guide to the books that
-              truly matter.
+              Finding the right books can be overwhelming. DTMI Books serves as
+              your curated intelligence layer, simplifying the discovery process
+              by organizing, reviewing, and shortlisting the most relevant reads
+              for understanding digital transformation, artificial intelligence,
+              and the digital economy. Whether you are a leader, practitioner,
+              or learner, this is your guide to the books that truly matter for
+              strategy, learning, and real-world transformation.
             </p>
           </div>
         </section>
