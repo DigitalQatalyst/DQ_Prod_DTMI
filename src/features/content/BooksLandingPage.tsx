@@ -7,8 +7,6 @@ import { frontierBooks } from "../../utils/mockBookData";
 import {
   Star,
   Search,
-  BookOpen,
-  Brain,
   CheckCircle,
   FileText,
   Target,
@@ -20,6 +18,10 @@ import {
   X,
   Sliders,
   GitCompare,
+  Compass,
+  ClipboardCheck,
+  Lightbulb,
+  ArrowRight,
 } from "lucide-react";
 
 const BooksLandingPage = () => {
@@ -1505,7 +1507,136 @@ const BooksLandingPage = () => {
           </div>
         </section>
 
-        {/* 6. BROWSE BY CATEGORY - 6xD Books Grid with Filter Tabs */}
+        {/* 6. HOW IT WORKS - PROCESS CLARITY */}
+        <section className="py-16 bg-gray-50">
+          <div className="container mx-auto px-4 max-w-6xl">
+            <div className="text-center mb-16">
+              <h2 className="text-3xl md:text-4xl font-bold font-display mb-4 text-gray-900">
+                How DTMI Books Works
+              </h2>
+              <p className="text-xl text-gray-600 leading-relaxed max-w-3xl mx-auto">
+                A simple, structured approach to discovering, evaluating, and
+                organizing the books that matter most.
+              </p>
+            </div>
+
+            {/* 4-Step Horizontal Flow */}
+            <div className="relative">
+              {/* Connecting Line */}
+              <div className="hidden md:block absolute top-16 left-1/2 transform -translate-x-1/2 w-3/4 h-0.5 bg-gradient-to-r from-orange-200 via-orange-300 to-orange-200"></div>
+
+              <div className="grid md:grid-cols-4 gap-8 relative">
+                {/* Step 1 - Discover */}
+                <div className="group text-center hover:transform hover:-translate-y-2 transition-all duration-300">
+                  <div className="relative mb-6">
+                    {/* Step Number Circle */}
+                    <div className="w-16 h-16 bg-gradient-to-r from-orange-500 to-red-600 rounded-full flex items-center justify-center text-white font-bold text-xl mx-auto mb-4 shadow-lg group-hover:shadow-xl transition-shadow">
+                      1
+                    </div>
+                    {/* Icon Container */}
+                    <div className="w-12 h-12 bg-white border-2 border-orange-100 rounded-lg flex items-center justify-center mx-auto group-hover:border-orange-300 group-hover:bg-orange-50 transition-colors">
+                      <Compass className="w-6 h-6 text-orange-600 group-hover:scale-110 transition-transform" />
+                    </div>
+                    {/* Arrow (hidden on mobile) */}
+                    <div className="hidden md:block absolute -right-8 top-8">
+                      <ArrowRight className="w-6 h-6 text-orange-300" />
+                    </div>
+                  </div>
+                  <h3 className="text-xl font-bold text-gray-900 mb-3 group-hover:text-orange-600 transition-colors">
+                    Discover
+                  </h3>
+                  <p className="text-gray-600 leading-relaxed">
+                    Browse curated collections or explore books by topic, role,
+                    or theme.
+                  </p>
+                </div>
+
+                {/* Step 2 - Evaluate */}
+                <div className="group text-center hover:transform hover:-translate-y-2 transition-all duration-300">
+                  <div className="relative mb-6">
+                    {/* Step Number Circle */}
+                    <div className="w-16 h-16 bg-gradient-to-r from-orange-500 to-red-600 rounded-full flex items-center justify-center text-white font-bold text-xl mx-auto mb-4 shadow-lg group-hover:shadow-xl transition-shadow">
+                      2
+                    </div>
+                    {/* Icon Container */}
+                    <div className="w-12 h-12 bg-white border-2 border-orange-100 rounded-lg flex items-center justify-center mx-auto group-hover:border-orange-300 group-hover:bg-orange-50 transition-colors">
+                      <ClipboardCheck className="w-6 h-6 text-orange-600 group-hover:scale-110 transition-transform" />
+                    </div>
+                    {/* Arrow (hidden on mobile) */}
+                    <div className="hidden md:block absolute -right-8 top-8">
+                      <ArrowRight className="w-6 h-6 text-orange-300" />
+                    </div>
+                  </div>
+                  <h3 className="text-xl font-bold text-gray-900 mb-3 group-hover:text-orange-600 transition-colors">
+                    Evaluate
+                  </h3>
+                  <p className="text-gray-600 leading-relaxed">
+                    Read structured reviews, scores, and insights to understand
+                    why each book matters.
+                  </p>
+                </div>
+
+                {/* Step 3 - Shortlist */}
+                <div className="group text-center hover:transform hover:-translate-y-2 transition-all duration-300">
+                  <div className="relative mb-6">
+                    {/* Step Number Circle */}
+                    <div className="w-16 h-16 bg-gradient-to-r from-orange-500 to-red-600 rounded-full flex items-center justify-center text-white font-bold text-xl mx-auto mb-4 shadow-lg group-hover:shadow-xl transition-shadow">
+                      3
+                    </div>
+                    {/* Icon Container */}
+                    <div className="w-12 h-12 bg-white border-2 border-orange-100 rounded-lg flex items-center justify-center mx-auto group-hover:border-orange-300 group-hover:bg-orange-50 transition-colors">
+                      <Bookmark className="w-6 h-6 text-orange-600 group-hover:scale-110 transition-transform" />
+                    </div>
+                    {/* Arrow (hidden on mobile) */}
+                    <div className="hidden md:block absolute -right-8 top-8">
+                      <ArrowRight className="w-6 h-6 text-orange-300" />
+                    </div>
+                  </div>
+                  <h3 className="text-xl font-bold text-gray-900 mb-3 group-hover:text-orange-600 transition-colors">
+                    Shortlist
+                  </h3>
+                  <p className="text-gray-600 leading-relaxed">
+                    Save books into personalized lists based on your goals and
+                    priorities.
+                  </p>
+                </div>
+
+                {/* Step 4 - Learn & Apply */}
+                <div className="group text-center hover:transform hover:-translate-y-2 transition-all duration-300">
+                  <div className="relative mb-6">
+                    {/* Step Number Circle */}
+                    <div className="w-16 h-16 bg-gradient-to-r from-orange-500 to-red-600 rounded-full flex items-center justify-center text-white font-bold text-xl mx-auto mb-4 shadow-lg group-hover:shadow-xl transition-shadow">
+                      4
+                    </div>
+                    {/* Icon Container */}
+                    <div className="w-12 h-12 bg-white border-2 border-orange-100 rounded-lg flex items-center justify-center mx-auto group-hover:border-orange-300 group-hover:bg-orange-50 transition-colors">
+                      <Lightbulb className="w-6 h-6 text-orange-600 group-hover:scale-110 transition-transform" />
+                    </div>
+                  </div>
+                  <h3 className="text-xl font-bold text-gray-900 mb-3 group-hover:text-orange-600 transition-colors">
+                    Learn & Apply
+                  </h3>
+                  <p className="text-gray-600 leading-relaxed">
+                    Use insights from books to inform strategy, decision-making,
+                    and transformation initiatives.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* Call to Action */}
+            <div className="text-center mt-12">
+              <button
+                onClick={() => navigate("/marketplace/dtmi?tab=books")}
+                className="px-8 py-3 bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-600 hover:to-red-700 text-white font-bold rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
+              >
+                Start Discovering Books
+              </button>
+            </div>
+          </div>
+        </section>
+
+        {/* 7. BROWSE BY CATEGORY - 6xD Books Grid with Filter Tabs */}
         <section className="py-16 bg-gray-50">
           <div className="container mx-auto px-4 md:px-6 max-w-7xl">
             <div className="mb-12">
@@ -1662,7 +1793,7 @@ const BooksLandingPage = () => {
             </div>
           </div>
         </section>
-        {/* 7. TOP AI BOOKS FOR LEADERS */}
+        {/* 8. TOP AI BOOKS FOR LEADERS */}
         <section className="py-16 bg-white">
           <div className="container mx-auto px-4 max-w-7xl">
             <h2 className="text-3xl md:text-4xl font-bold font-display mb-12 text-gray-900 text-center">
@@ -1778,7 +1909,7 @@ const BooksLandingPage = () => {
           </div>
         </section>
 
-        {/* 8. MUST-READ DIGITAL TRANSFORMATION BOOKS */}
+        {/* 9. MUST-READ DIGITAL TRANSFORMATION BOOKS */}
         <section className="py-16 bg-gray-50">
           <div className="container mx-auto px-4 max-w-7xl">
             <h2 className="text-3xl md:text-4xl font-bold font-display mb-12 text-gray-900 text-center">
@@ -1900,7 +2031,7 @@ const BooksLandingPage = () => {
           </div>
         </section>
 
-        {/* 9. REVIEWS HIGHLIGHT */}
+        {/* 10. REVIEWS HIGHLIGHT */}
         <section className="py-16 bg-gray-900 text-white">
           <div className="container mx-auto px-4 max-w-6xl">
             <h2 className="text-3xl md:text-4xl font-bold font-display mb-12 text-center">
@@ -1937,62 +2068,6 @@ const BooksLandingPage = () => {
           </div>
         </section>
 
-        {/* 10. HOW IT WORKS */}
-        <section className="py-16 bg-gray-50">
-          <div className="container mx-auto px-4 max-w-6xl">
-            <div className="text-center mb-12">
-              <h2 className="text-3xl md:text-4xl font-bold font-display mb-4 text-gray-900">
-                How It Works
-              </h2>
-            </div>
-
-            <div className="grid md:grid-cols-4 gap-8">
-              {[
-                {
-                  step: "1",
-                  title: "Discover",
-                  description:
-                    "Discover curated books across key digital topics",
-                  icon: Search,
-                },
-                {
-                  step: "2",
-                  title: "Read & Review",
-                  description:
-                    "Read summaries, insights, and structured reviews",
-                  icon: BookOpen,
-                },
-                {
-                  step: "3",
-                  title: "Save",
-                  description: "Save books to your personal reading list",
-                  icon: BookOpen,
-                },
-                {
-                  step: "4",
-                  title: "Learn & Apply",
-                  description: "Build your knowledge and apply what you learn",
-                  icon: Brain,
-                },
-              ].map((step) => (
-                <div key={step.step} className="text-center">
-                  <div className="relative mb-6">
-                    <div className="w-16 h-16 bg-gradient-to-r from-orange-500 to-red-600 rounded-full flex items-center justify-center text-white font-bold text-xl mx-auto mb-4">
-                      {step.step}
-                    </div>
-                    <div className="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center mx-auto">
-                      <step.icon className="w-6 h-6 text-orange-600" />
-                    </div>
-                  </div>
-                  <h3 className="text-xl font-bold text-gray-900 mb-3">
-                    {step.title}
-                  </h3>
-                  <p className="text-gray-600">{step.description}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
         {/* 11. PERSONAL READING LIST */}
         <section className="py-16 bg-white">
           <div className="container mx-auto px-4 max-w-6xl">
