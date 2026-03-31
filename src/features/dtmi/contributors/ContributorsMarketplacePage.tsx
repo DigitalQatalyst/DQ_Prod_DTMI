@@ -139,6 +139,10 @@ export function ContributorsMarketplacePage() {
 
   const [filters, setFilters] = useState<ContributorFilters>(initialFilters);
   const [showFilters, setShowFilters] = useState(false);
+  // Show contributors grid if URL already carries ?category= or ?showAll=true (e.g. navigated from landing page)
+  const [showContributors, setShowContributors] = useState(
+    () => !!searchParams.get("category") || searchParams.get("showAll") === "true",
+  );
   const [collapsedGroups, setCollapsedGroups] = useState<
     Record<"type" | "tag" | "worksRange", boolean>
   >({
@@ -158,7 +162,7 @@ export function ContributorsMarketplacePage() {
       .getAuthors()
       .then((authors) => {
         // Show all authors — contributor_type is used for filtering, not gating
-        const dbProfiles: ContributorProfile[] = authors.map((a, i) => {
+        const dbProfiles: ContributorProfile[] = authors.map((a: any, i) => {
           const slug =
             a.slug ||
             a.name
@@ -188,7 +192,7 @@ export function ContributorsMarketplacePage() {
       .finally(() => setLoading(false));
   }, []);
 
-  // Sync type filter with category URL param
+  // Sync type filter with category URL param — also reveals the grid
   useEffect(() => {
     if (selectedCategory) {
       const categoryName = CONTRIBUTOR_CATEGORIES.find(
@@ -198,10 +202,18 @@ export function ContributorsMarketplacePage() {
         ...prev,
         type: categoryName ? [categoryName] : [],
       }));
+      setShowContributors(true); // auto-reveal when navigated with ?category=
     } else {
       setFilters((prev) => ({ ...prev, type: [] }));
     }
   }, [selectedCategory]);
+
+  // Handle ?showAll=true — reveal grid with no filter
+  useEffect(() => {
+    if (searchParams.get("showAll") === "true") {
+      setShowContributors(true);
+    }
+  }, [searchParams]);
 
   const typeOptions: FilterOption[] = useMemo(() => {
     const standardTypes: FilterOption[] = [
@@ -318,6 +330,7 @@ export function ContributorsMarketplacePage() {
   const resetFilters = () => {
     setFilters(initialFilters);
     setSearchParams({});
+    setShowContributors(false);
   };
 
   const toggleGroup = (group: "type" | "tag" | "worksRange") => {
@@ -381,192 +394,298 @@ export function ContributorsMarketplacePage() {
             </p>
           </header>
 
-          {/* Search bar */}
-          <div className="mb-6">
-            <input
-              type="text"
-              placeholder="Search by name, expertise, or interest..."
-              value={filters.search}
-              onChange={(e) =>
-                setFilters((prev) => ({ ...prev, search: e.target.value }))
-              }
-              className="w-full max-w-xl px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-gray-300 bg-white shadow-sm"
-            />
-          </div>
-
-          {/* Mobile filter toggle */}
-          <div className="xl:hidden bg-white rounded-2xl shadow-sm border border-gray-100 mb-6">
-            <button
-              onClick={() => setShowFilters((prev) => !prev)}
-              className="w-full flex items-center justify-between px-4 py-3 text-gray-700 font-medium"
-              aria-expanded={showFilters}
-              aria-controls="mobile-contributor-filters"
-            >
-              <span className="inline-flex items-center gap-2">
-                <FilterIcon size={18} />
-                {showFilters ? "Hide Filters" : "Show Filters"}
-              </span>
-              <XIcon
-                size={18}
-                className={`transition-transform ${showFilters ? "rotate-45" : ""}`}
-              />
-            </button>
-            {showFilters && (
-              <div
-                id="mobile-contributor-filters"
-                className="px-4 pb-4 space-y-5 border-t border-gray-100"
-              >
-                <FilterGroup
-                  title="Contributor Type"
-                  options={typeOptions}
-                  selected={filters.type}
-                  collapsed={collapsedGroups.type}
-                  isFirst
-                  onToggleCollapse={() => toggleGroup("type")}
-                  onSelect={(value) => handleFilterChange("type", value)}
-                />
-                <FilterGroup
-                  title="Interests / Tags"
-                  options={tagOptions}
-                  selected={filters.tag}
-                  collapsed={collapsedGroups.tag}
-                  onToggleCollapse={() => toggleGroup("tag")}
-                  onSelect={(value) => handleFilterChange("tag", value)}
-                />
-                <FilterGroup
-                  title="Contribution Volume"
-                  options={worksOptions}
-                  selected={filters.worksRange}
-                  collapsed={collapsedGroups.worksRange}
-                  onToggleCollapse={() => toggleGroup("worksRange")}
-                  onSelect={(value) => handleFilterChange("worksRange", value)}
-                />
-                {hasActiveFilters && (
+          {/* Category cards grid — only shown when no category filter is active */}
+          {!selectedCategory && (
+            <div className="mb-10">
+              <div className="flex items-center justify-between mb-4">
+                <p className="text-sm text-gray-500">
+                  Explore {CONTRIBUTOR_CATEGORIES.length} contributor categories
+                </p>
+                <button
+                  onClick={() => setShowContributors(true)}
+                  className="inline-flex items-center gap-2 bg-brand-coral text-white font-semibold text-sm px-5 py-2.5 rounded-lg hover:bg-opacity-90 transition-all"
+                >
+                  View All Contributors
+                  <ArrowRight size={16} />
+                </button>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {CONTRIBUTOR_CATEGORIES.map((cat) => (
                   <button
-                    onClick={resetFilters}
-                    className="text-sm font-semibold text-blue-600"
+                    key={cat.id}
+                    onClick={() => {
+                      setSearchParams({ category: cat.id });
+                      setShowContributors(true);
+                    }}
+                    className="text-left bg-white border border-gray-200 rounded-2xl p-6 shadow-sm hover:shadow-md hover:border-brand-coral/30 transition-all duration-200 flex flex-col gap-4 group"
                   >
-                    Reset Filters
+                    {/* Header row */}
+                    <div className="flex items-start justify-between gap-4">
+                      <div className="flex items-start gap-4">
+                        <div className="w-12 h-12 rounded-full bg-gray-100 flex items-center justify-center text-2xl flex-shrink-0 border border-gray-200">
+                          {cat.icon}
+                        </div>
+                        <div>
+                          <h3 className="font-bold text-gray-900 text-base leading-tight group-hover:text-brand-coral transition-colors">
+                            {cat.name}
+                          </h3>
+                          <p className="text-sm text-gray-500 mt-0.5">DigitalQatalyst</p>
+                        </div>
+                      </div>
+                      <div className="text-right flex-shrink-0">
+                        <p className="text-[10px] font-semibold uppercase tracking-widest text-gray-400">
+                          Contributors
+                        </p>
+                        <p className="text-2xl font-bold text-gray-900 leading-tight">
+                          {cat.contributorCount}
+                        </p>
+                      </div>
+                    </div>
+
+                    {/* Description */}
+                    <p className="text-sm text-gray-600 leading-relaxed">
+                      {cat.description}
+                    </p>
+
+                    {/* Expertise */}
+                    <div className="flex flex-wrap gap-1 text-sm text-gray-600">
+                      <span className="font-semibold text-gray-900">Expertise:</span>
+                      <span>{cat.expertise}</span>
+                    </div>
+
+                    {/* Category tag */}
+                    <div>
+                      <span className="text-xs font-bold uppercase tracking-widest text-blue-600">
+                        Category
+                      </span>
+                    </div>
+
+                    {/* CTA */}
+                    <div className="border-t border-gray-100 pt-4 mt-auto flex items-center gap-2 text-sm font-semibold text-brand-coral">
+                      Explore Contributors
+                      <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
+                    </div>
                   </button>
-                )}
+                ))}
               </div>
-            )}
-          </div>
+            </div>
+          )}
 
-          <div className="flex flex-col xl:flex-row gap-6">
-            {/* Sidebar filters */}
-            <aside className="hidden xl:block xl:w-1/4">
-              <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-5 space-y-6 sticky top-24">
-                <div className="flex items-center justify-between">
-                  <h2 className="text-lg font-semibold text-gray-900">
-                    Filters
-                  </h2>
-                  {hasActiveFilters && (
-                    <button
-                      onClick={resetFilters}
-                      className="text-sm font-semibold text-blue-600"
-                    >
-                      Reset
-                    </button>
-                  )}
-                </div>
-                <FilterGroup
-                  title="Contributor Type"
-                  options={typeOptions}
-                  selected={filters.type}
-                  collapsed={collapsedGroups.type}
-                  isFirst
-                  onToggleCollapse={() => toggleGroup("type")}
-                  onSelect={(value) => handleFilterChange("type", value)}
-                />
-                <FilterGroup
-                  title="Interests / Tags"
-                  options={tagOptions}
-                  selected={filters.tag}
-                  collapsed={collapsedGroups.tag}
-                  onToggleCollapse={() => toggleGroup("tag")}
-                  onSelect={(value) => handleFilterChange("tag", value)}
-                />
-                <FilterGroup
-                  title="Contribution Volume"
-                  options={worksOptions}
-                  selected={filters.worksRange}
-                  collapsed={collapsedGroups.worksRange}
-                  onToggleCollapse={() => toggleGroup("worksRange")}
-                  onSelect={(value) => handleFilterChange("worksRange", value)}
-                />
-              </div>
-            </aside>
-
-            <section className="xl:w-3/4">
-              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4 gap-2 text-sm text-gray-600">
-                <span>
-                  {loading
-                    ? "Loading contributors…"
-                    : `Showing ${filteredContributors.length} of ${contributorProfiles.length} contributors`}
+          {/* Active category banner — shows which filter is active with a clear option */}
+          {selectedCategory && (
+            <div className="flex items-center justify-between mb-6 bg-white border border-gray-100 rounded-xl px-5 py-3 shadow-sm">
+              <div className="flex items-center gap-3">
+                <span className="text-2xl">
+                  {CONTRIBUTOR_CATEGORIES.find(c => c.id === selectedCategory)?.icon}
                 </span>
-                {hasActiveFilters && (
-                  <button
-                    onClick={resetFilters}
-                    className="text-blue-600 font-semibold"
-                  >
-                    Clear filters
-                  </button>
-                )}
+                <div>
+                  <p className="text-xs text-gray-400 uppercase tracking-wide font-semibold">Filtered by category</p>
+                  <p className="font-bold text-gray-900 text-sm">
+                    {CONTRIBUTOR_CATEGORIES.find(c => c.id === selectedCategory)?.name}
+                  </p>
+                </div>
+              </div>
+              <button
+                onClick={resetFilters}
+                className="flex items-center gap-1.5 text-xs font-semibold text-gray-500 hover:text-brand-coral transition-colors"
+              >
+                <XIcon size={14} />
+                Clear filter
+              </button>
+            </div>
+          )}
+
+          {/* Search + Filters + Grid — only shown after a category or View All is clicked */}
+          {showContributors && (
+            <>
+              {/* Search bar */}
+              <div className="mb-6">
+                <input
+                  type="text"
+                  placeholder="Search by name, expertise, or interest..."
+                  value={filters.search}
+                  onChange={(e) =>
+                    setFilters((prev) => ({ ...prev, search: e.target.value }))
+                  }
+                  className="w-full max-w-xl px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-gray-300 bg-white shadow-sm"
+                />
               </div>
 
-              {loading ? (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  {[1, 2, 3, 4].map((i) => (
-                    <div
-                      key={i}
-                      className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 animate-pulse h-48"
+              {/* Mobile filter toggle */}
+              <div className="xl:hidden bg-white rounded-2xl shadow-sm border border-gray-100 mb-6">
+                <button
+                  onClick={() => setShowFilters((prev) => !prev)}
+                  className="w-full flex items-center justify-between px-4 py-3 text-gray-700 font-medium"
+                  aria-expanded={showFilters}
+                  aria-controls="mobile-contributor-filters"
+                >
+                  <span className="inline-flex items-center gap-2">
+                    <FilterIcon size={18} />
+                    {showFilters ? "Hide Filters" : "Show Filters"}
+                  </span>
+                  <XIcon
+                    size={18}
+                    className={`transition-transform ${showFilters ? "rotate-45" : ""}`}
+                  />
+                </button>
+                {showFilters && (
+                  <div
+                    id="mobile-contributor-filters"
+                    className="px-4 pb-4 space-y-5 border-t border-gray-100"
+                  >
+                    <FilterGroup
+                      title="Contributor Type"
+                      options={typeOptions}
+                      selected={filters.type}
+                      collapsed={collapsedGroups.type}
+                      isFirst
+                      onToggleCollapse={() => toggleGroup("type")}
+                      onSelect={(value) => handleFilterChange("type", value)}
                     />
-                  ))}
-                </div>
-              ) : (
-                <>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    {contributorsWithAdverts.map((item, index) =>
-                      item.type === "contributor" ? (
-                        <ContributorCard
-                          key={`contributor-${item.data.id}`}
-                          contributor={item.data}
-                        />
-                      ) : (
-                        <AdvertCard
-                          key={`advert-${item.data.id}-${index}`}
-                          advert={item.data}
-                        />
-                      ),
+                    <FilterGroup
+                      title="Interests / Tags"
+                      options={tagOptions}
+                      selected={filters.tag}
+                      collapsed={collapsedGroups.tag}
+                      onToggleCollapse={() => toggleGroup("tag")}
+                      onSelect={(value) => handleFilterChange("tag", value)}
+                    />
+                    <FilterGroup
+                      title="Contribution Volume"
+                      options={worksOptions}
+                      selected={filters.worksRange}
+                      collapsed={collapsedGroups.worksRange}
+                      onToggleCollapse={() => toggleGroup("worksRange")}
+                      onSelect={(value) => handleFilterChange("worksRange", value)}
+                    />
+                    {hasActiveFilters && (
+                      <button
+                        onClick={resetFilters}
+                        className="text-sm font-semibold text-blue-600"
+                      >
+                        Reset Filters
+                      </button>
                     )}
                   </div>
+                )}
+              </div>
 
-                  {filteredContributors.length === 0 && (
-                    <div className="bg-white border border-dashed border-gray-200 rounded-2xl p-10 text-center mt-6">
-                      <Users className="w-12 h-12 text-gray-300 mx-auto mb-4" />
-                      <h3 className="text-xl font-semibold text-gray-900 mb-2">
-                        No contributors found
-                      </h3>
-                      <p className="text-gray-500 mb-4">
-                        {hasActiveFilters
-                          ? "Try adjusting your filters or search term."
-                          : "Contributors will appear here once added via the admin panel."}
-                      </p>
+              <div className="flex flex-col xl:flex-row gap-6">
+                {/* Sidebar filters */}
+                <aside className="hidden xl:block xl:w-1/4">
+                  <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-5 space-y-6 sticky top-24">
+                    <div className="flex items-center justify-between">
+                      <h2 className="text-lg font-semibold text-gray-900">
+                        Filters
+                      </h2>
                       {hasActiveFilters && (
                         <button
                           onClick={resetFilters}
-                          className="text-blue-600 font-semibold"
+                          className="text-sm font-semibold text-blue-600"
                         >
-                          Reset Filters
+                          Reset
                         </button>
                       )}
                     </div>
+                    <FilterGroup
+                      title="Contributor Type"
+                      options={typeOptions}
+                      selected={filters.type}
+                      collapsed={collapsedGroups.type}
+                      isFirst
+                      onToggleCollapse={() => toggleGroup("type")}
+                      onSelect={(value) => { handleFilterChange("type", value); setShowContributors(true); }}
+                    />
+                    <FilterGroup
+                      title="Interests / Tags"
+                      options={tagOptions}
+                      selected={filters.tag}
+                      collapsed={collapsedGroups.tag}
+                      onToggleCollapse={() => toggleGroup("tag")}
+                      onSelect={(value) => handleFilterChange("tag", value)}
+                    />
+                    <FilterGroup
+                      title="Contribution Volume"
+                      options={worksOptions}
+                      selected={filters.worksRange}
+                      collapsed={collapsedGroups.worksRange}
+                      onToggleCollapse={() => toggleGroup("worksRange")}
+                      onSelect={(value) => handleFilterChange("worksRange", value)}
+                    />
+                  </div>
+                </aside>
+
+                <section className="xl:w-3/4">
+                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4 gap-2 text-sm text-gray-600">
+                    <span>
+                      {loading
+                        ? "Loading contributors…"
+                        : `Showing ${filteredContributors.length} of ${contributorProfiles.length} contributors`}
+                    </span>
+                    {hasActiveFilters && (
+                      <button
+                        onClick={resetFilters}
+                        className="text-blue-600 font-semibold"
+                      >
+                        Clear filters
+                      </button>
+                    )}
+                  </div>
+
+                  {loading ? (
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      {[1, 2, 3, 4].map((i) => (
+                        <div
+                          key={i}
+                          className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 animate-pulse h-48"
+                        />
+                      ))}
+                    </div>
+                  ) : (
+                    <>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        {contributorsWithAdverts.map((item, index) =>
+                          item.type === "contributor" ? (
+                            <ContributorCard
+                              key={`contributor-${item.data.id}`}
+                              contributor={item.data}
+                            />
+                          ) : (
+                            <AdvertCard
+                              key={`advert-${item.data.id}-${index}`}
+                              advert={item.data}
+                            />
+                          ),
+                        )}
+                      </div>
+
+                      {filteredContributors.length === 0 && (
+                        <div className="bg-white border border-dashed border-gray-200 rounded-2xl p-10 text-center mt-6">
+                          <Users className="w-12 h-12 text-gray-300 mx-auto mb-4" />
+                          <h3 className="text-xl font-semibold text-gray-900 mb-2">
+                            No contributors found
+                          </h3>
+                          <p className="text-gray-500 mb-4">
+                            {hasActiveFilters
+                              ? "Try adjusting your filters or search term."
+                              : "Contributors will appear here once added via the admin panel."}
+                          </p>
+                          {hasActiveFilters && (
+                            <button
+                              onClick={resetFilters}
+                              className="text-blue-600 font-semibold"
+                            >
+                              Reset Filters
+                            </button>
+                          )}
+                        </div>
+                      )}
+                    </>
                   )}
-                </>
-              )}
-            </section>
-          </div>
+                </section>
+              </div>
+            </>
+          )}
         </div>
       </main>
       <Footer />

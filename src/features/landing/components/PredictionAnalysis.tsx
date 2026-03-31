@@ -101,9 +101,9 @@ export function PredictionAnalysis() {
         >
           {predictions.map((prediction) => (
             <Carousel.Slide key={prediction.id}>
-              <PredictionCard 
-                prediction={prediction} 
-                onClick={() => navigate(prediction.link)} 
+              <PredictionCard
+                prediction={prediction}
+                onClick={() => navigate(prediction.link)}
               />
             </Carousel.Slide>
           ))}
@@ -121,51 +121,50 @@ interface PredictionCardProps {
 function PredictionCard({ prediction, onClick }: PredictionCardProps) {
   return (
     <div
-      className="bg-white min-h- rounded-2xl overflow-hidden shadow-lg cursor-pointer hover:shadow-xl transition-all duration-300"
+      className="bg-white rounded-2xl overflow-hidden shadow-lg cursor-pointer hover:shadow-xl transition-all duration-300 border border-gray-100"
       onClick={onClick}
     >
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-0 h-[500px]">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-0 min-h-[400px] lg:h-[480px]">
         {/* Text Content - Left */}
-        <div className="p-8 md:p-12 flex flex-col justify-center order-2 lg:order-1">
-          <Badge 
-            variant="light" 
-            color="orange" 
-            size="sm" 
-            className="mb-4 w-fit"
+        <div className="p-8 md:p-12 lg:p-14 flex flex-col justify-center order-2 lg:order-1 bg-white">
+          <Badge
+            variant="filled"
+            color="indigo"
+            size="sm"
+            className="mb-4 w-fit rounded-full px-4 py-1"
           >
             {prediction.category}
           </Badge>
-          
-          <Title 
-            order={3} 
-            size="h3" 
-            className="text-2xl md:text-3xl font-bold text-gray-900 mb-4 leading-tight line-clamp-2"
+
+          <Title
+            order={3}
+            size="h3"
+            className="text-xl md:text-2xl font-bold text-gray-900 mb-4 leading-tight font-display tracking-tight"
           >
             {prediction.title}
           </Title>
-          
-          <Text 
-            c="dimmed" 
-            className="mb-6 leading-relaxed flex-grow line-clamp-4"
+
+          <Text
+            className="text-sm md:text-base text-gray-600 mb-6 leading-relaxed line-clamp-4"
           >
             {prediction.description}
           </Text>
-          
-          <Group gap="xs" className="text-gray-900 hover:text-brand-coral transition-colors font-semibold group cursor-pointer">
-            <Text fw={600}>Read more</Text>
-            <IconArrowRight 
-              size={20} 
-              className="group-hover:translate-x-1 transition-transform" 
+
+          <Group gap="xs" className="text-indigo-600 hover:text-indigo-700 transition-colors font-bold group cursor-pointer mt-auto lg:mt-0">
+            <span className="text-sm uppercase tracking-wider">Read full analysis</span>
+            <IconArrowRight
+              size={18}
+              className="group-hover:translate-x-1 transition-transform"
             />
           </Group>
         </div>
 
         {/* Image - Right */}
-        <div className="relative h-full lg:h-full order-1 lg:order-2">
+        <div className="relative h-[250px] lg:h-full order-1 lg:order-2 overflow-hidden">
           <img
             src={prediction.image}
             alt={prediction.title}
-            className="w-full h-full object-cover"
+            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
           />
         </div>
       </div>

@@ -9,7 +9,7 @@ import { DigitalPerspectives } from "./components/DigitalPerspectives";
 import { FeaturedBlogs } from "./components/FeaturedBlogs";
 import { DigitalDomains } from "./components/DigitalDomains";
 import { MarketplaceOfMinds } from "./components/MarketplaceOfMinds";
-import { ContributorAdvertCards } from "./components/ContributorAdvertCards";
+
 import { FeaturedContent } from "./components/FeaturedContent";
 import { WeekHighlightsHomepage } from "./components/WeekHighlightsHomepage";
 import ModernDQChatbot from "../../shared/ModernDQChatbot";
@@ -47,7 +47,7 @@ const DtmiLandingPage = () => {
             <SectorInsights />
             <DigitalDomains />
             <MarketplaceOfMinds />
-            <ContributorAdvertCards />
+
             <FeaturedContent />
             <NewsletterSignupForm />
             {/* <DTMIPageFooter /> */}

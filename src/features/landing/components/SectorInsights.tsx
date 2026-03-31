@@ -160,11 +160,11 @@ export function SectorInsights() {
     <section className="py-12 bg-gray-50">
       <div className="container mx-auto px-4 md:px-6">
         {/* Header */}
-        <div className="text-center mb-8">
-          <h2 className="font-display text-3xl md:text-4xl font-bold mb-3 tracking-tight text-gray-900">
+        <div className="text-center mb-10">
+          <h2 className="font-display text-4xl md:text-5xl font-bold mb-3 tracking-tight text-gray-900">
             Explore Insights Across Industries
           </h2>
-          <p className="text-gray-600 max-w-3xl mx-auto">
+          <p className="text-gray-600 max-w-3xl mx-auto text-lg">
             Discover how industries leverage digital transformation for superior
             experiences and advantage.
           </p>
