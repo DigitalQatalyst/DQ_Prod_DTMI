@@ -210,6 +210,50 @@ const BooksLandingPage = () => {
       `/marketplace/dtmi?tab=books&search=${encodeURIComponent(searchQuery)}`,
     );
   };
+
+  const domains = [
+    { id: "D1", label: "Digital Economy Essentials", accentColor: "text-blue-600", dotColor: "bg-blue-600", bg: "bg-white", books: [
+      { title: "The Second Machine Age", author: "Erik Brynjolfsson & Andrew McAfee", description: "A foundational look at how digital technologies reshape the global economy.", tags: ["Digital Economy", "Foundational"], score: "9.1", img: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=400&q=80" },
+      { title: "Digital Empires", author: "Anu Bradford", description: "Analyzes the global battle to regulate technology and its economic implications.", tags: ["Policy", "Regulation"], score: "8.7", img: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=400&q=80" },
+      { title: "The Age of Surveillance Capitalism", author: "Shoshana Zuboff", description: "Explores the new economic order where human experience is raw material for data.", tags: ["Data Economy", "Society"], score: "9.3", img: "https://images.unsplash.com/photo-1518770660439-4636190af475?w=400&q=80" },
+    ]},
+    { id: "D2", label: "Building Digital Cognitive Organizations", accentColor: "text-purple-600", dotColor: "bg-purple-600", bg: "bg-gray-50", books: [
+      { title: "Cognitive Kin", author: "Christophe Kolb & Jan Rosen (2026)", description: "Explores how agentic AI becomes a digital workforce that reasons and pursues goals.", tags: ["AI", "DCO", "2026"], score: "9.0", img: "https://images.unsplash.com/photo-1485827404703-89b55fcc595e?w=400&q=80" },
+      { title: "Autonomous", author: "Vala Afshar & Henry King (2025)", description: "A roadmap for building businesses that use digital labor to scale.", tags: ["AI-First", "Strategy", "2025"], score: "8.8", img: "https://images.unsplash.com/photo-1677442135703-1787eea5ce01?w=400&q=80" },
+      { title: "Cognitive Organizations", author: "Kenneth Correa", description: "Focuses on leveraging Generative AI and intelligent agents for automation.", tags: ["GenAI", "Automation"], score: "8.6", img: "https://images.unsplash.com/photo-1620712943543-bcc4688e7485?w=400&q=80" },
+    ]},
+    { id: "D3", label: "AI and Intelligent Enterprise Leadership", accentColor: "text-orange-600", dotColor: "bg-orange-600", bg: "bg-white", books: [
+      { title: "Co-Intelligence", author: "Prof. Ethan Mollick", description: "A practical guide to human-AI collaboration for organizational development.", tags: ["AI", "Leadership", "Practical"], score: "9.2", img: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&q=80" },
+      { title: "The Coming Wave", author: "Mustafa Suleyman", description: "Addresses the containment problem and maintaining control over powerful tech.", tags: ["AI Risk", "Governance"], score: "9.0", img: "https://images.unsplash.com/photo-1518770660439-4636190af475?w=400&q=80" },
+      { title: "Responsible Artificial Intelligence", author: "Virginia Dignum", description: "Essential for leaders navigating the ethical implications and governance of AI.", tags: ["AI Ethics", "Governance"], score: "8.9", img: "https://images.unsplash.com/photo-1677442135703-1787eea5ce01?w=400&q=80" },
+    ]},
+    { id: "D4", label: "Platform Business and Digital Business Platform Strategy", accentColor: "text-green-600", dotColor: "bg-green-600", bg: "bg-gray-50", books: [
+      { title: "Platform Revolution", author: "Parker, Van Alstyne & Choudary", description: "The foundational text on how networked markets transform business.", tags: ["Platforms", "Strategy", "Foundational"], score: "9.4", img: "https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=400&q=80" },
+      { title: "Platform Business Models", author: "R. Srinivasan (2025)", description: "A strategic guide to designing and operating modern platform firms.", tags: ["Platforms", "Business Models", "2025"], score: "8.8", img: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=400&q=80" },
+      { title: "Digital Business Models", author: "Sebastien Ronteau", description: "Evaluates multisided platforms, the sharing economy, and freemium models.", tags: ["Business Models", "Platforms"], score: "8.5", img: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=400&q=80" },
+    ]},
+    { id: "D5", label: "Digital Transformation and Change Execution", accentColor: "text-red-600", dotColor: "bg-red-600", bg: "bg-white", books: [
+      { title: "The Digital Transformation Playbook", author: "David L. Rogers", description: "A classic framework for rethinking strategy across five key domains.", tags: ["Transformation", "Framework"], score: "9.1", img: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&q=80" },
+      { title: "Why Digital Transformations Fail", author: "Tony Saldanha", description: "Offers a disciplined process for ensuring transformation efforts succeed.", tags: ["Change Management", "Strategy"], score: "8.9", img: "https://images.unsplash.com/photo-1485827404703-89b55fcc595e?w=400&q=80" },
+      { title: "Leading Digital", author: "Westerman, Bonnet & McAfee", description: "Outlines how leaders turn technology into business transformation.", tags: ["Leadership", "Transformation"], score: "9.0", img: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=400&q=80" },
+    ]},
+    { id: "D6", label: "Future of Work and Digital Workforce Design", accentColor: "text-teal-600", dotColor: "bg-teal-600", bg: "bg-gray-50", books: [
+      { title: "Irreplaceable", author: "Pascal Bornet", description: "Focuses on pragmatic career shifts and balancing tech adoption with workforce needs.", tags: ["Future of Work", "AI", "Careers"], score: "8.8", img: "https://images.unsplash.com/photo-1521737711867-e3b97375f902?w=400&q=80" },
+      { title: "Digital HR", author: "Amelia Manuti", description: "A critical management approach to the digitalization of HRM in the new normal.", tags: ["HR", "Digital", "Management"], score: "8.5", img: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=400&q=80" },
+      { title: "Back to Human", author: "Dan Schawbel", description: "Addresses how leaders can create human connection in an age of digital isolation.", tags: ["Leadership", "Culture"], score: "8.6", img: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&q=80" },
+    ]},
+    { id: "D7", label: "Organizational Design for the Digital Era", accentColor: "text-indigo-600", dotColor: "bg-indigo-600", bg: "bg-white", books: [
+      { title: "Reinventing Organizations", author: "Frederic Laloux", description: "A guide for designing organizations inspired by the next stage of human consciousness.", tags: ["Org Design", "Culture"], score: "9.2", img: "https://images.unsplash.com/photo-1485827404703-89b55fcc595e?w=400&q=80" },
+      { title: "Team Topologies", author: "Pais & Skelton", description: "A step-by-step guide to designing teams for fast, sustainable flow in software-led businesses.", tags: ["Teams", "Agile", "Design"], score: "9.0", img: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=400&q=80" },
+      { title: "The Phoenix and the Unicorn", author: "Peter Hinssen", description: "Offers a roadmap for corporate innovation and cultural renewal.", tags: ["Innovation", "Culture"], score: "8.7", img: "https://images.unsplash.com/photo-1518770660439-4636190af475?w=400&q=80" },
+    ]},
+    { id: "D8", label: "Tools, Accelerators, and Practical Enablers for Transformation", accentColor: "text-amber-600", dotColor: "bg-amber-600", bg: "bg-gray-50", books: [
+      { title: "Building a Second Brain", author: "Tiago Forte", description: "A methodology for capturing and organizing digital information for high output.", tags: ["Productivity", "Knowledge"], score: "8.9", img: "https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=400&q=80" },
+      { title: "The Lean Startup", author: "Eric Ries", description: "Provides the essential Build-Measure-Learn framework for rapid digital experimentation.", tags: ["Lean", "Startup", "Framework"], score: "9.3", img: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=400&q=80" },
+      { title: "AI Engineering", author: "Chip Huyen (2025)", description: "A comprehensive guide to building real-world applications with foundation models.", tags: ["AI", "Engineering", "2025"], score: "9.1", img: "https://images.unsplash.com/photo-1677442135703-1787eea5ce01?w=400&q=80" },
+    ]},
+  ];
+
 
   return (
     <div className="flex flex-col w-full min-h-screen bg-gray-50">
