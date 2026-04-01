@@ -362,3 +362,157 @@ const BooksLandingPage = () => {
                 </button>
               </div>
             </div>
+
+          </div>
+        </section>
+
+        {/* DOMAIN SECTIONS */}
+        {domains.map((domain) => (
+          <section key={domain.id} className={`py-16 ${domain.bg}`}>
+            <div className="container mx-auto px-4 md:px-6">
+              <div className="flex items-center justify-between mb-12">
+                <div>
+                  <div className="flex items-center mb-4">
+                    <div className={`w-4 h-4 ${domain.dotColor} rounded-full mr-3`}></div>
+                    <span className={`text-sm font-bold ${domain.accentColor} uppercase tracking-wider`}>{domain.id}</span>
+                  </div>
+                  <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-2">{domain.label}</h2>
+                  <p className="text-gray-500 text-sm">Showcasing 3 of 6 highly-regarded books including foundational texts and 2024-2025 releases</p>
+                </div>
+                <button onClick={() => navigate("/marketplace/dtmi?tab=books")} className={`hidden md:flex items-center ${domain.accentColor} hover:opacity-80 font-semibold transition-opacity`}>
+                  View All Books <ArrowRight className="w-4 h-4 ml-1" />
+                </button>
+              </div>
+              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {domain.books.map((book) => (
+                  <div key={book.title} className="bg-white border border-gray-200 rounded-xl p-6 hover:shadow-lg transition-all duration-300 group">
+                    <div className="relative mb-6">
+                      <div className="h-48 bg-gradient-to-br from-gray-100 to-gray-200 rounded-lg overflow-hidden">
+                        <img src={book.img} alt={book.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }} />
+                      </div>
+                    </div>
+                    <div className="space-y-3">
+                      <h3 className="text-lg font-bold text-gray-900 line-clamp-2 group-hover:text-orange-600 transition-colors">{book.title}</h3>
+                      <p className="text-sm text-gray-500 italic">{book.author}</p>
+                      <div className="flex flex-wrap gap-1">
+                        {book.tags.map((tag) => (
+                          <span key={tag} className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded-full">{tag}</span>
+                        ))}
+                      </div>
+                      <p className="text-gray-600 text-sm line-clamp-2">{book.description}</p>
+                      <div className="flex items-center justify-between pt-2 border-t border-gray-100">
+                        <div className="flex items-center gap-1">
+                          <span className="text-xs text-gray-500">DTMI Score:</span>
+                          <span className={`font-bold text-sm ${domain.accentColor}`}>{book.score}</span>
+                          <span className="text-xs text-gray-400">/ 10</span>
+                        </div>
+                        <button onClick={() => navigate("/marketplace/dtmi?tab=books")} className={`text-xs ${domain.accentColor} hover:opacity-80 font-medium`}>View Details</button>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </section>
+        ))}
+
+        {/* TESTIMONIALS CAROUSEL */}
+        <section className="py-16 bg-white">
+          <div className="container mx-auto px-4 max-w-7xl">
+            <div className="text-center mb-16">
+              <h2 className="text-3xl md:text-4xl font-bold mb-4 text-gray-900">Trusted by Leaders and Learners in the Digital Economy</h2>
+              <p className="text-xl text-gray-600 leading-relaxed max-w-3xl mx-auto">Hear from professionals, executives, and enthusiasts who rely on DTMI Books.</p>
+            </div>
+            <div className="relative max-w-4xl mx-auto mb-12">
+              <div className="overflow-hidden rounded-2xl">
+                <div className="flex transition-transform duration-500 ease-in-out" style={{ transform: `translateX(-${currentTestimonial * 100}%)` }}>
+                  {testimonials.map((t) => (
+                    <div key={t.id} className="w-full flex-shrink-0">
+                      <div className="bg-gray-50 p-12 text-center border border-gray-100">
+                        <Quote className="w-16 h-16 text-orange-200 mx-auto mb-6" />
+                        <p className="text-2xl md:text-3xl text-gray-700 leading-relaxed italic font-light max-w-3xl mx-auto mb-8">"{t.quote}"</p>
+                        <div className="flex items-center justify-center gap-4">
+                          <div className={`w-16 h-16 bg-gradient-to-br ${t.color} rounded-full flex items-center justify-center text-white font-bold text-xl`}>{t.initials}</div>
+                          <div className="text-left">
+                            <p className="font-bold text-xl text-gray-900">{t.name}</p>
+                            <p className="text-gray-600 text-lg">{t.role}</p>
+                            <div className="flex items-center gap-2 mt-1">
+                              {t.badgeIcon === "verified" && <div className="w-2 h-2 bg-green-500 rounded-full"></div>}
+                              {t.badgeIcon === "award" && <Award className="w-4 h-4 text-orange-500" />}
+                              {t.badgeIcon === "bookmark" && <BookmarkPlus className="w-4 h-4 text-purple-500" />}
+                              {t.badgeIcon === "star" && <Star className="w-4 h-4 text-yellow-500 fill-current" />}
+                              {t.badgeIcon === "users" && <Users className="w-4 h-4 text-teal-500" />}
+                              {t.badgeIcon === "file" && <FileText className="w-4 h-4 text-rose-500" />}
+                              <span className="text-sm text-gray-500">{t.badge}</span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+              <button onClick={prevTestimonial} className="absolute left-4 top-1/2 transform -translate-y-1/2 w-12 h-12 bg-white hover:bg-gray-50 rounded-full shadow-lg border border-gray-200 flex items-center justify-center transition-all hover:scale-105"><ChevronLeft className="w-6 h-6 text-gray-600" /></button>
+              <button onClick={nextTestimonial} className="absolute right-4 top-1/2 transform -translate-y-1/2 w-12 h-12 bg-white hover:bg-gray-50 rounded-full shadow-lg border border-gray-200 flex items-center justify-center transition-all hover:scale-105"><ChevronRight className="w-6 h-6 text-gray-600" /></button>
+              <div className="flex justify-center gap-2 mt-8">
+                {testimonials.map((_, i) => (
+                  <button key={i} onClick={() => setCurrentTestimonial(i)} className={`w-3 h-3 rounded-full transition-all duration-200 ${i === currentTestimonial ? "bg-orange-500 scale-110" : "bg-gray-300 hover:bg-gray-400"}`} />
+                ))}
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* FINAL CTA */}
+        <section className="relative py-20 overflow-hidden bg-gradient-to-br from-[#0A1628] via-[#1a2942] to-[#0f1f3d]">
+          <div className="container mx-auto px-4 max-w-3xl text-center relative z-10">
+            <div className="w-16 h-16 mx-auto mb-6 bg-orange-500/20 rounded-full flex items-center justify-center border border-orange-500/30">
+              <BookmarkPlus className="w-8 h-8 text-orange-400" />
+            </div>
+            <h2 className="text-3xl md:text-4xl font-bold text-white mb-4 leading-tight">Start Building Your Personal Reading Intelligence Today</h2>
+            <p className="text-lg text-white/80 mb-10 leading-relaxed max-w-2xl mx-auto">Sign up for free and begin curating, shortlisting, and tracking the books that matter most to your role and goals.</p>
+            <div className="mb-4">
+              <button onClick={() => navigate("/signup")} className="group inline-flex items-center gap-3 px-10 py-4 bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-600 hover:to-red-700 text-white font-bold text-lg rounded-lg shadow-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-1">
+                <Bookmark className="w-5 h-5 group-hover:scale-110 transition-transform duration-300" />
+                Create My Shortlist
+                <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform duration-300" />
+              </button>
+            </div>
+            <p className="text-sm text-white/50 mb-10">It is free, quick, and personalized to your learning goals.</p>
+            <div className="flex flex-col sm:flex-row gap-3 justify-center">
+              <button onClick={() => navigate("/signin")} className="px-6 py-3 border border-white/30 text-white/80 hover:border-white hover:text-white rounded-lg font-medium transition-all text-sm">Sign In</button>
+              <button onClick={() => navigate("/marketplace/dtmi?tab=books")} className="px-6 py-3 border border-white/30 text-white/80 hover:border-white hover:text-white rounded-lg font-medium transition-all text-sm">Browse Featured Collections</button>
+            </div>
+          </div>
+        </section>
+
+        {/* CROSS-LAYER PROMOTION */}
+        <section className="py-16 bg-gray-50">
+          <div className="container mx-auto px-4 md:px-6">
+            <div className="text-center mb-12">
+              <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Explore Other Intelligence Layers</h2>
+              <p className="text-xl text-gray-600 max-w-3xl mx-auto">Access our complete digital transformation intelligence ecosystem</p>
+            </div>
+            <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+              <div className="bg-white rounded-xl p-8 shadow-sm border border-gray-100">
+                <h3 className="text-2xl font-bold text-gray-900 mb-4">Signals</h3>
+                <p className="text-gray-600 mb-6 leading-relaxed">Early indicators and trend alerts that help you stay ahead of the curve</p>
+                <button onClick={() => navigate("/signals")} className="bg-brand-coral hover:bg-orange-600 text-white px-6 py-3 rounded-lg font-semibold transition-colors">Explore Signals</button>
+              </div>
+              <div className="bg-white rounded-xl p-8 shadow-sm border border-gray-100">
+                <h3 className="text-2xl font-bold text-gray-900 mb-4">Deep Analysis</h3>
+                <p className="text-gray-600 mb-6 leading-relaxed">Comprehensive research reports and strategic insights for informed decision-making</p>
+                <button onClick={() => navigate("/research")} className="bg-brand-coral hover:bg-orange-600 text-white px-6 py-3 rounded-lg font-semibold transition-colors">Explore Deep Analysis</button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+      </main>
+      <Footer />
+      <ModernDQChatbot />
+    </div>
+  );
+};
+
+export default BooksLandingPage;
