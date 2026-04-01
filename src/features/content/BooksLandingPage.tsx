@@ -364,8 +364,8 @@ const BooksLandingPage = () => {
             </div>
           </div>
         </section>
-        {/* 2. WHY DTMI BOOKS - 4 VALUE PILLARS */}
-        <section className="py-16 bg-gray-50">
+        {/* D1 | DIGITAL ECONOMY ESSENTIALS */}
+        <section className="py-16 bg-white">
           <div className="container mx-auto px-4 max-w-6xl">
             <div className="text-center mb-16">
               <h2 className="text-3xl md:text-4xl font-bold font-display mb-6 text-gray-900">
