@@ -157,16 +157,53 @@ const buildDTMIFilterConfigFromCategories = (
       name: c.name,
     }));
 
-  const sectorOptions = byGroup("digital-sectors")
-    .filter((c) => !c.parent_id)
-    .sort(
-      (a, b) =>
-        (a.filter_display_order ?? 999) - (b.filter_display_order ?? 999),
-    )
-    .map((c) => ({
-      id: c.slug || normalizeFilterOptionId(c.name),
-      name: c.name,
-    }));
+  const sectorOptions = [
+    {
+      id: "cross",
+      name: "Cross",
+      children: [
+        { id: "economy40", name: "Economy 4.0" },
+        { id: "experience40", name: "Experience 4.0" },
+        { id: "agility40", name: "Agility 4.0" },
+        { id: "intelligence40", name: "Intelligence 4.0" },
+        { id: "workspace40", name: "Workspace 4.0" },
+      ],
+    },
+    {
+      id: "primary",
+      name: "Primary",
+      children: [
+        { id: "mining40", name: "Mining 4.0" },
+        { id: "farming40", name: "Farming 4.0" },
+      ],
+    },
+    {
+      id: "secondary",
+      name: "Secondary",
+      children: [
+        { id: "plant40", name: "Plant 4.0" },
+        { id: "logistics40", name: "Logistics 4.0" },
+        { id: "infrastructure40", name: "Infrastructure 4.0" },
+      ],
+    },
+    {
+      id: "tertiary",
+      name: "Tertiary",
+      children: [
+        { id: "government40", name: "Government 4.0" },
+        { id: "services40", name: "Services 4.0" },
+        { id: "retail40", name: "Retail 4.0" },
+      ],
+    },
+    {
+      id: "quaternary",
+      name: "Quaternary",
+      children: [
+        { id: "hospitality40", name: "Hospitality 4.0" },
+        { id: "wellness40", name: "Wellness 4.0" },
+      ],
+    },
+  ];
 
   const dbpDomains = byGroup("dbp-domains");
   const dbpParents = dbpDomains.filter((c) => !c.parent_id);
@@ -2608,26 +2645,37 @@ export const MarketplacePage: React.FC<MarketplacePageProps> = ({
                         </svg>
                       </button>
                       {sectorsExpanded && (
-                        <div className="mt-3 sm:mt-4 space-y-2 max-h-48 sm:max-h-64 overflow-y-auto">
+                        <div className="mt-3 sm:mt-4 space-y-3 max-h-48 sm:max-h-64 overflow-y-auto">
                           {filterConfig
                             .find((f) => f.id === "sector")
                             ?.options.map((sector) => (
-                              <label
-                                key={sector.id}
-                                className="flex items-center gap-3 cursor-pointer py-1 sm:py-0"
-                              >
-                                <input
-                                  type="checkbox"
-                                  checked={activeFilters.includes(sector.name)}
-                                  onChange={() =>
-                                    handleKnowledgeHubFilterChange(sector.name)
-                                  }
-                                  className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
-                                />
-                                <span className="text-sm text-gray-700">
+                              <div key={sector.id} className="space-y-2">
+                                <div className="font-medium text-sm text-gray-800 border-b border-gray-100 pb-1">
                                   {sector.name}
-                                </span>
-                              </label>
+                                </div>
+                                {sector.children?.map((child) => (
+                                  <label
+                                    key={child.id}
+                                    className="flex items-center gap-3 cursor-pointer ml-2 sm:ml-4 py-1 sm:py-0"
+                                  >
+                                    <input
+                                      type="checkbox"
+                                      checked={activeFilters.includes(
+                                        child.name,
+                                      )}
+                                      onChange={() =>
+                                        handleKnowledgeHubFilterChange(
+                                          child.name,
+                                        )
+                                      }
+                                      className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                                    />
+                                    <span className="text-sm text-gray-700">
+                                      {child.name}
+                                    </span>
+                                  </label>
+                                ))}
+                              </div>
                             ))}
                         </div>
                       )}
