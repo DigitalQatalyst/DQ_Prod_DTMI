@@ -170,9 +170,9 @@ const BooksLandingPage = () => {
       { title: "Digital Business Models", author: "Sebastien Ronteau", description: "Evaluates multisided platforms, the sharing economy, and freemium models.", tags: ["Business Models", "Platforms"], score: "8.5", img: "/DBP/imgi_41_default.jpg" },
     ]},
     { id: "D5", label: "Digital Transformation and Change Execution", accentColor: "text-red-600", dotColor: "bg-red-600", bg: "bg-white", books: [
-      { title: "The Digital Transformation Playbook", author: "David L. Rogers", description: "A classic framework for rethinking strategy across five key domains.", tags: ["Transformation", "Framework"], score: "9.1", img: "/Digital%20transformation/imgi_10_the_digital_transformation_roadmap.jpg" },
+      { title: "The Digital Transformation Roadmap", author: "David L. Rogers", description: "A practical roadmap for leading digital transformation across five strategic domains.", tags: ["Transformation", "Roadmap"], score: "9.1", img: "/Digital%20transformation/imgi_10_the_digital_transformation_roadmap.jpg" },
       { title: "Why Digital Transformations Fail", author: "Tony Saldanha", description: "Offers a disciplined process for ensuring transformation efforts succeed.", tags: ["Change Management", "Strategy"], score: "8.9", img: "/Digital%20transformation/imgi_9_Why_Digital_Transformations_Fail_amazon.png" },
-      { title: "Leading Digital", author: "Westerman, Bonnet & McAfee", description: "Outlines how leaders turn technology into business transformation.", tags: ["Leadership", "Transformation"], score: "9.0", img: "/Digital%20transformation/imgi_4_designed_for_digital.jpg" },
+      { title: "Designed for Digital", author: "Jeanne W. Ross et al.", description: "Explains the five building blocks of digital success for modern enterprises.", tags: ["Digital Strategy", "Design"], score: "9.0", img: "/Digital%20transformation/imgi_4_designed_for_digital.jpg" },
     ]},
     { id: "D6", label: "Future of Work and Digital Workforce Design", accentColor: "text-teal-600", dotColor: "bg-teal-600", bg: "bg-gray-50", books: [
       { title: "Irreplaceable", author: "Pascal Bornet", description: "Focuses on pragmatic career shifts and balancing tech adoption with workforce needs.", tags: ["Future of Work", "AI", "Careers"], score: "8.8", img: "/Future%20of%20Work/imgi_21_top-books-on-future-of-work-8.jpg" },
@@ -185,9 +185,9 @@ const BooksLandingPage = () => {
       { title: "The Phoenix and the Unicorn", author: "Peter Hinssen", description: "Offers a roadmap for corporate innovation and cultural renewal.", tags: ["Innovation", "Culture"], score: "8.7", img: "/organization%20desigh/imgi_27_corporate-culture-2.png" },
     ]},
     { id: "D8", label: "Tools, Accelerators, and Practical Enablers for Transformation", accentColor: "text-amber-600", dotColor: "bg-amber-600", bg: "bg-gray-50", books: [
-      { title: "Building a Second Brain", author: "Tiago Forte", description: "A methodology for capturing and organizing digital information for high output.", tags: ["Productivity", "Knowledge"], score: "8.9", img: "/digital%20leaders/imgi_11_accelerate.jpg" },
-      { title: "The Lean Startup", author: "Eric Ries", description: "Provides the essential Build-Measure-Learn framework for rapid digital experimentation.", tags: ["Lean", "Startup", "Framework"], score: "9.3", img: "/digital%20leaders/imgi_12_phoenix-project.jpg" },
-      { title: "AI Engineering", author: "Chip Huyen (2025)", description: "A comprehensive guide to building real-world applications with foundation models.", tags: ["AI", "Engineering", "2025"], score: "9.1", img: "/digital%20leaders/imgi_8_value-flywheel.jpg" },
+      { title: "Accelerate", author: "Nicole Forsgren, Jez Humble & Gene Kim", description: "The science behind high-performing technology organizations and DevOps transformation.", tags: ["DevOps", "Performance", "Transformation"], score: "9.2", img: "/digital%20leaders/imgi_11_accelerate.jpg" },
+      { title: "The Phoenix Project", author: "Gene Kim, Kevin Behr & George Spafford", description: "A novel about IT, DevOps, and helping your business win in the digital age.", tags: ["DevOps", "IT", "Transformation"], score: "9.1", img: "/digital%20leaders/imgi_12_phoenix-project.jpg" },
+      { title: "The Value Flywheel Effect", author: "David Anderson et al.", description: "How to create long-term value through modern engineering and cloud-native practices.", tags: ["Cloud", "Strategy", "Engineering"], score: "8.8", img: "/digital%20leaders/imgi_8_value-flywheel.jpg" },
     ]},
   ];
 
