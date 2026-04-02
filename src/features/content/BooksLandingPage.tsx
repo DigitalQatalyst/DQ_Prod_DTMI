@@ -413,10 +413,6 @@ const BooksLandingPage = () => {
             <div className="container mx-auto px-4 md:px-6">
               <div className="flex items-center justify-between mb-12">
                 <div>
-                  <div className="flex items-center mb-4">
-                    <div className={`w-4 h-4 ${domain.dotColor} rounded-full mr-3`}></div>
-                    <span className={`text-sm font-bold ${domain.accentColor} uppercase tracking-wider`}>{domain.id}</span>
-                  </div>
                   <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-2">{domain.label}</h2>
                 </div>
                 <button onClick={() => navigate("/marketplace/dtmi?tab=books")} className={`hidden md:flex items-center ${domain.accentColor} hover:opacity-80 font-semibold transition-opacity`}>
