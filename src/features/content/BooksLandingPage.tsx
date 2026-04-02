@@ -213,8 +213,8 @@ const BooksLandingPage = () => {
 
   const domains = [
     { id: "D1", label: "Digital Economy Essentials", accentColor: "text-blue-600", dotColor: "bg-blue-600", bg: "bg-white", books: [
-      { title: "The Second Machine Age", author: "Erik Brynjolfsson & Andrew McAfee", description: "A foundational look at how digital technologies reshape the global economy.", tags: ["Digital Economy", "Foundational"], score: "9.1", img: "/digital-economy-essential/imgi_1_cover_the-bitcoin-standard_360px_1747142961.jpg" },
-      { title: "Digital Empires", author: "Anu Bradford", description: "Analyzes the global battle to regulate technology and its economic implications.", tags: ["Policy", "Regulation"], score: "8.7", img: "/digital-economy-essential/imgi_27_cover_the-new-geography-of-jobs_360px_1747148116.webp" },
+      { title: "The Bitcoin Standard", author: "Saifedean Ammous", description: "A deep dive into the economics of Bitcoin and its role in the future of the digital economy.", tags: ["Digital Economy", "Crypto"], score: "8.9", img: "/digital-economy-essential/imgi_1_cover_the-bitcoin-standard_360px_1747142961.jpg" },
+      { title: "The New Geography of Jobs", author: "Enrico Moretti", description: "Explores how the digital economy is reshaping cities, careers, and economic opportunity.", tags: ["Digital Economy", "Labor"], score: "8.8", img: "/digital-economy-essential/imgi_27_cover_the-new-geography-of-jobs_360px_1747148116.webp" },
       { title: "The Age of Surveillance Capitalism", author: "Shoshana Zuboff", description: "Explores the new economic order where human experience is raw material for data.", tags: ["Data Economy", "Society"], score: "9.3", img: "/digital-economy-essential/imgi_2_cover_the-age-of-surveillance-capitalism_360px_1747144484.jpg" },
     ]},
     { id: "D2", label: "Building Digital Cognitive Organizations", accentColor: "text-purple-600", dotColor: "bg-purple-600", bg: "bg-gray-50", books: [
