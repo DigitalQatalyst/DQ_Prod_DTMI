@@ -238,9 +238,9 @@ const BooksLandingPage = () => {
       { title: "Leading Digital", author: "Westerman, Bonnet & McAfee", description: "Outlines how leaders turn technology into business transformation.", tags: ["Leadership", "Transformation"], score: "9.0", img: "/DBP/imgi_13_default.jpg" },
     ]},
     { id: "D6", label: "Future of Work and Digital Workforce Design", accentColor: "text-teal-600", dotColor: "bg-teal-600", bg: "bg-gray-50", books: [
-      { title: "Irreplaceable", author: "Pascal Bornet", description: "Focuses on pragmatic career shifts and balancing tech adoption with workforce needs.", tags: ["Future of Work", "AI", "Careers"], score: "8.8", img: "https://images.unsplash.com/photo-1521737711867-e3b97375f902?w=400&q=80" },
-      { title: "Digital HR", author: "Amelia Manuti", description: "A critical management approach to the digitalization of HRM in the new normal.", tags: ["HR", "Digital", "Management"], score: "8.5", img: "/DBP/imgi_41_default.jpg" },
-      { title: "Back to Human", author: "Dan Schawbel", description: "Addresses how leaders can create human connection in an age of digital isolation.", tags: ["Leadership", "Culture"], score: "8.6", img: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&q=80" },
+      { title: "Irreplaceable", author: "Pascal Bornet", description: "Focuses on pragmatic career shifts and balancing tech adoption with workforce needs.", tags: ["Future of Work", "AI", "Careers"], score: "8.8", img: "/Future%20of%20Work/imgi_21_top-books-on-future-of-work-8.jpg" },
+      { title: "Digital HR", author: "Amelia Manuti", description: "A critical management approach to the digitalization of HRM in the new normal.", tags: ["HR", "Digital", "Management"], score: "8.5", img: "/Future%20of%20Work/imgi_25_top-books-on-future-of-work-5.jpg" },
+      { title: "Back to Human", author: "Dan Schawbel", description: "Addresses how leaders can create human connection in an age of digital isolation.", tags: ["Leadership", "Culture"], score: "8.6", img: "/Future%20of%20Work/imgi_29_top-books-on-future-of-work-1.jpg" },
     ]},
     { id: "D7", label: "Organizational Design for the Digital Era", accentColor: "text-indigo-600", dotColor: "bg-indigo-600", bg: "bg-white", books: [
       { title: "Reinventing Organizations", author: "Frederic Laloux", description: "A guide for designing organizations inspired by the next stage of human consciousness.", tags: ["Org Design", "Culture"], score: "9.2", img: "/building-digital-cognitive-organizations/imgi_3_default.png" },
