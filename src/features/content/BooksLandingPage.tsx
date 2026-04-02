@@ -305,7 +305,7 @@ const BooksLandingPage = () => {
                     "opacity 0.8s ease-out 0.2s, transform 0.8s ease-out 0.2s",
                 }}
               >
-                Books that Shape the Digital Economy, AI, and Transformation
+                Essential Books for the Digital Age
               </h1>
 
               <p
