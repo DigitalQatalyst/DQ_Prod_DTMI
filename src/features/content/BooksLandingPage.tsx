@@ -456,7 +456,7 @@ const BooksLandingPage = () => {
         <section className="py-16 bg-white">
           <div className="container mx-auto px-4 max-w-7xl">
             <div className="text-center mb-16">
-              <h2 className="text-3xl md:text-4xl font-bold mb-4 text-gray-900">Trusted by Leaders and Learners in the Digital Economy</h2>
+              <h2 className="text-3xl md:text-4xl font-bold mb-4 text-gray-900">What Leaders Say</h2>
               <p className="text-xl text-gray-600 leading-relaxed max-w-3xl mx-auto">Hear from professionals, executives, and enthusiasts who rely on DTMI Books.</p>
             </div>
             <div className="relative max-w-4xl mx-auto mb-12">
