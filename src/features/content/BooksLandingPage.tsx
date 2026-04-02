@@ -418,7 +418,6 @@ const BooksLandingPage = () => {
                     <span className={`text-sm font-bold ${domain.accentColor} uppercase tracking-wider`}>{domain.id}</span>
                   </div>
                   <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-2">{domain.label}</h2>
-                  <p className="text-gray-500 text-sm">Showcasing 3 of 6 highly-regarded books including foundational texts and 2024-2025 releases</p>
                 </div>
                 <button onClick={() => navigate("/marketplace/dtmi?tab=books")} className={`hidden md:flex items-center ${domain.accentColor} hover:opacity-80 font-semibold transition-opacity`}>
                   View All Books <ArrowRight className="w-4 h-4 ml-1" />
