@@ -181,8 +181,8 @@ const BooksLandingPage = () => {
     ]},
     { id: "D7", label: "Organizational Design for the Digital Era", accentColor: "text-indigo-600", dotColor: "bg-indigo-600", bg: "bg-white", books: [
       { title: "Reinventing Organizations", author: "Frederic Laloux", description: "A guide for designing organizations inspired by the next stage of human consciousness.", tags: ["Org Design", "Culture"], score: "9.2", img: "/organization%20desigh/imgi_2_org-design-routledge-3ed1.png" },
-      { title: "Team Topologies", author: "Pais & Skelton", description: "A step-by-step guide to designing teams for fast, sustainable flow in software-led businesses.", tags: ["Teams", "Agile", "Design"], score: "9.0", img: "/organization%20desigh/imgi_26_guide-to-organization-design-2.jpg" },
-      { title: "The Phoenix and the Unicorn", author: "Peter Hinssen", description: "Offers a roadmap for corporate innovation and cultural renewal.", tags: ["Innovation", "Culture"], score: "8.7", img: "/organization%20desigh/imgi_27_corporate-culture-2.png" },
+      { title: "Guide to Organisation Design", author: "Naomi Stanford", description: "A practical guide to creating high-performing and adaptable organizations.", tags: ["Org Design", "Structure"], score: "8.8", img: "/organization%20desigh/imgi_26_guide-to-organization-design-2.jpg" },
+      { title: "Corporate Culture and Performance", author: "John P. Kotter & James L. Heskett", description: "Examines how corporate culture impacts long-term business performance.", tags: ["Culture", "Leadership", "Performance"], score: "8.7", img: "/organization%20desigh/imgi_27_corporate-culture-2.png" },
     ]},
     { id: "D8", label: "Tools, Accelerators, and Practical Enablers for Transformation", accentColor: "text-amber-600", dotColor: "bg-amber-600", bg: "bg-gray-50", books: [
       { title: "Accelerate", author: "Nicole Forsgren, Jez Humble & Gene Kim", description: "The science behind high-performing technology organizations and DevOps transformation.", tags: ["DevOps", "Performance", "Transformation"], score: "9.2", img: "/digital%20leaders/imgi_11_accelerate.jpg" },
