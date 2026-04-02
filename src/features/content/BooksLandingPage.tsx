@@ -57,72 +57,9 @@ const BooksLandingPage = () => {
 
   // Testimonials data
   const testimonials = [
-    {
-      id: 1,
-      quote:
-        "DTMI Books helped me identify the most relevant AI strategy books for our leadership team — no more sifting through endless recommendations.",
-      name: "Alex Mwangi",
-      role: "Head of Digital Transformation",
-      initials: "AM",
-      color: "from-blue-500 to-blue-600",
-      badge: "Verified Professional",
-      badgeIcon: "verified",
-    },
-    {
-      id: 2,
-      quote:
-        "The multi-dimensional reviews and insights are unmatched. It's like having a research team curate your reading list.",
-      name: "Priya Sharma",
-      role: "Innovation Strategist",
-      initials: "PS",
-      color: "from-green-500 to-green-600",
-      badge: "Top 5 books saved this month",
-      badgeIcon: "award",
-    },
-    {
-      id: 3,
-      quote:
-        "The personalized recommendations align perfectly with my role and learning goals. I've saved over 20 books already.",
-      name: "Michael Kimani",
-      role: "Product Manager",
-      initials: "MK",
-      color: "from-purple-500 to-purple-600",
-      badge: "20+ books shortlisted",
-      badgeIcon: "bookmark",
-    },
-    {
-      id: 4,
-      quote:
-        "Finally, a platform that understands the nuance between different digital transformation approaches. The DTMI scores are incredibly helpful.",
-      name: "Sarah Chen",
-      role: "Chief Technology Officer",
-      initials: "SC",
-      color: "from-indigo-500 to-indigo-600",
-      badge: "5-star platform rating",
-      badgeIcon: "star",
-    },
-    {
-      id: 5,
-      quote:
-        "The AI-powered recommendations have introduced me to books I never would have discovered. My team's transformation knowledge has accelerated significantly.",
-      name: "Robert Johnson",
-      role: "VP of Digital Strategy",
-      initials: "RJ",
-      color: "from-teal-500 to-teal-600",
-      badge: "Team leader • 15+ members",
-      badgeIcon: "users",
-    },
-    {
-      id: 6,
-      quote:
-        "As a researcher, I appreciate the structured approach to book evaluation. The insights go far beyond typical book reviews.",
-      name: "Dr. Lisa Wang",
-      role: "Digital Economy Researcher",
-      initials: "LW",
-      color: "from-rose-500 to-rose-600",
-      badge: "Academic • Published researcher",
-      badgeIcon: "file",
-    },
+    { id: 1, quote: "DTMI Books helped me identify the most relevant AI strategy books for our leadership team.", name: "Alex Mwangi", role: "Head of Digital Transformation", initials: "AM", color: "from-blue-500 to-blue-600", badge: "Verified Professional", badgeIcon: "verified" },
+    { id: 2, quote: "The multi-dimensional reviews and insights are unmatched. It's like having a research team curate your reading list.", name: "Priya Sharma", role: "Innovation Strategist", initials: "PS", color: "from-green-500 to-green-600", badge: "Top 5 books saved this month", badgeIcon: "award" },
+    { id: 3, quote: "The personalized recommendations align perfectly with my role and learning goals. I've saved over 20 books already.", name: "Michael Kimani", role: "Product Manager", initials: "MK", color: "from-purple-500 to-purple-600", badge: "20+ books shortlisted", badgeIcon: "bookmark" },
   ];
 
   // Auto-advance carousel
