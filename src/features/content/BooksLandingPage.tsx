@@ -436,29 +436,6 @@ const BooksLandingPage = () => {
           </div>
         </section>
 
-        {/* FINAL CTA */}
-        <section className="relative py-20 overflow-hidden bg-gradient-to-br from-[#0A1628] via-[#1a2942] to-[#0f1f3d]">
-          <div className="container mx-auto px-4 max-w-3xl text-center relative z-10">
-            <div className="w-16 h-16 mx-auto mb-6 bg-orange-500/20 rounded-full flex items-center justify-center border border-orange-500/30">
-              <BookmarkPlus className="w-8 h-8 text-orange-400" />
-            </div>
-            <h2 className="text-3xl md:text-4xl font-bold text-white mb-4 leading-tight">Start Building Your Personal Reading Intelligence Today</h2>
-            <p className="text-lg text-white/80 mb-10 leading-relaxed max-w-2xl mx-auto">Sign up for free and begin curating, shortlisting, and tracking the books that matter most to your role and goals.</p>
-            <div className="mb-4">
-              <button onClick={() => navigate("/signup")} className="group inline-flex items-center gap-3 px-10 py-4 bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-600 hover:to-red-700 text-white font-bold text-lg rounded-lg shadow-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-1">
-                <Bookmark className="w-5 h-5 group-hover:scale-110 transition-transform duration-300" />
-                Create My Shortlist
-                <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform duration-300" />
-              </button>
-            </div>
-            <p className="text-sm text-white/50 mb-10">It is free, quick, and personalized to your learning goals.</p>
-            <div className="flex flex-col sm:flex-row gap-3 justify-center">
-              <button onClick={() => navigate("/signin")} className="px-6 py-3 border border-white/30 text-white/80 hover:border-white hover:text-white rounded-lg font-medium transition-all text-sm">Sign In</button>
-              <button onClick={() => navigate("/marketplace/dtmi?tab=books")} className="px-6 py-3 border border-white/30 text-white/80 hover:border-white hover:text-white rounded-lg font-medium transition-all text-sm">Browse Featured Collections</button>
-            </div>
-          </div>
-        </section>
-
         {/* CROSS-LAYER PROMOTION */}
         <section className="py-16 bg-gray-50">
           <div className="container mx-auto px-4 md:px-6">
