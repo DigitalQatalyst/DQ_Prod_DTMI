@@ -248,9 +248,9 @@ const BooksLandingPage = () => {
       { title: "The Phoenix and the Unicorn", author: "Peter Hinssen", description: "Offers a roadmap for corporate innovation and cultural renewal.", tags: ["Innovation", "Culture"], score: "8.7", img: "/organization%20desigh/imgi_27_corporate-culture-2.png" },
     ]},
     { id: "D8", label: "Tools, Accelerators, and Practical Enablers for Transformation", accentColor: "text-amber-600", dotColor: "bg-amber-600", bg: "bg-gray-50", books: [
-      { title: "Building a Second Brain", author: "Tiago Forte", description: "A methodology for capturing and organizing digital information for high output.", tags: ["Productivity", "Knowledge"], score: "8.9", img: "https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=400&q=80" },
-      { title: "The Lean Startup", author: "Eric Ries", description: "Provides the essential Build-Measure-Learn framework for rapid digital experimentation.", tags: ["Lean", "Startup", "Framework"], score: "9.3", img: "/digital-economy-essential/imgi_2_cover_the-age-of-surveillance-capitalism_360px_1747144484.jpg" },
-      { title: "AI Engineering", author: "Chip Huyen (2025)", description: "A comprehensive guide to building real-world applications with foundation models.", tags: ["AI", "Engineering", "2025"], score: "9.1", img: "/Ai%20books/imgi_56_image-4.png" },
+      { title: "Building a Second Brain", author: "Tiago Forte", description: "A methodology for capturing and organizing digital information for high output.", tags: ["Productivity", "Knowledge"], score: "8.9", img: "/digital%20leaders/imgi_11_accelerate.jpg" },
+      { title: "The Lean Startup", author: "Eric Ries", description: "Provides the essential Build-Measure-Learn framework for rapid digital experimentation.", tags: ["Lean", "Startup", "Framework"], score: "9.3", img: "/digital%20leaders/imgi_12_phoenix-project.jpg" },
+      { title: "AI Engineering", author: "Chip Huyen (2025)", description: "A comprehensive guide to building real-world applications with foundation models.", tags: ["AI", "Engineering", "2025"], score: "9.1", img: "/digital%20leaders/imgi_8_value-flywheel.jpg" },
     ]},
   ];
 
