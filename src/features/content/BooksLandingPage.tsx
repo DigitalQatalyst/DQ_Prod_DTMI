@@ -317,7 +317,7 @@ const BooksLandingPage = () => {
                     "opacity 1s ease-out 0.4s, transform 1s ease-out 0.4s",
                 }}
               >
-                Essential Reads for Understanding the Future of Technology, Business, and Innovation
+                Discover the books that provide invaluable insights for navigating today's rapidly evolving digital landscape
               </p>
 
               {/* Smart Search Bar */}
